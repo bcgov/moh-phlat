@@ -20,7 +20,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu_utilization" {
   tags                = local.common_tags
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.bcer_cluster.name
+    ClusterName = aws_ecs_cluster.phlat_cluster.name
     ServiceName = aws_ecs_service.main.name
   }
 
@@ -42,7 +42,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_memory_utilization" {
   tags                = local.common_tags
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.bcer_cluster.name
+    ClusterName = aws_ecs_cluster.phlat_cluster.name
     ServiceName = aws_ecs_service.main.name
   }
 
@@ -63,7 +63,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_service_status" {
   tags                = local.common_tags
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.bcer_cluster.name
+    ClusterName = aws_ecs_cluster.phlat_cluster.name
     ServiceName = aws_ecs_service.main.name
   }
 
@@ -86,7 +86,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_network_traffic" {
   tags                = local.common_tags
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.bcer_cluster.name
+    ClusterName = aws_ecs_cluster.phlat_cluster.name
     ServiceName = aws_ecs_service.main.name
   }
 
@@ -109,7 +109,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_disk_usage" {
   tags                = local.common_tags
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.bcer_cluster.name
+    ClusterName = aws_ecs_cluster.phlat_cluster.name
     ServiceName = aws_ecs_service.main.name
   }
 
@@ -132,7 +132,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_task_failures" {
   tags                = local.common_tags
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.bcer_cluster.name
+    ClusterName = aws_ecs_cluster.phlat_cluster.name
   }
 
   alarm_description = "Alarm for Amazon ECS task failures"

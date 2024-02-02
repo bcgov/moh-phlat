@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "sql_scripts" {
 }
 
 resource "aws_s3_bucket" "static" {
-  bucket = "bcer-${var.target_env}"
+  bucket = "phlat-${var.target_env}"
 
   # tags = {
   #   Environment = "development"

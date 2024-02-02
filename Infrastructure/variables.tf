@@ -22,16 +22,16 @@ variable "fargate_memory" {
   default     = 1024
 }
 
-variable "bcer_cluster_name" {
+variable "phlat_cluster_name" {
   description = "Name for the FAM database cluster -- must be unique"
-  default     = "bcer-cluster"
+  default     = "phlat-cluster"
   type        = string
 }
 
 variable "common_tags" {
   description = "Common tags for created resources"
   default = {
-    Application = "bcer"
+    Application = "phlat"
   }
 }
 
@@ -84,7 +84,7 @@ variable "api_url" {
 
 variable "db_instance_identifier" {
   description = "Identifies the cluster ID of aurora_rds_v2"
-  default     = "bcer-cluster"
+  default     = "phlat-cluster"
 }
 
 variable "timezone" {

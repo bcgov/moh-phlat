@@ -1,9 +1,9 @@
-resource "aws_ecs_cluster" "bcer_cluster" {
+resource "aws_ecs_cluster" "phlat_cluster" {
   name = "${var.application}_cluster"
 }
 
-resource "aws_ecs_cluster_capacity_providers" "bcer_cluster" {
-  cluster_name       = aws_ecs_cluster.bcer_cluster.name
+resource "aws_ecs_cluster_capacity_providers" "phlat_cluster" {
+  cluster_name       = aws_ecs_cluster.phlat_cluster.name
   capacity_providers = ["FARGATE"]
 
   default_capacity_provider_strategy {
@@ -13,7 +13,7 @@ resource "aws_ecs_cluster_capacity_providers" "bcer_cluster" {
   }
 }
 
-resource "aws_ecs_task_definition" "bcer_td" {
+resource "aws_ecs_task_definition" "phlat_td" {
   family                   = "${var.application}-${var.target_env}-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "bcer_td" {
       essential = true
       name      = "${var.application}-${var.target_env}-definition"
       #change to variable to env. for GH Actions
-      image       = "${data.aws_caller_identity.current.account_id}.dkr.ecr.ca-central-1.amazonaws.com/bcer-api:latest"
+      image       = "${data.aws_caller_identity.current.account_id}.dkr.ecr.ca-central-1.amazonaws.com/phlat-api:latest"
       cpu         = var.fargate_cpu
       memory      = var.fargate_memory
       networkMode = "awsvpc"
@@ -48,59 +48,59 @@ resource "aws_ecs_task_definition" "bcer_td" {
         { name = "DB_PORT"
         valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:port::" },
         { name = "APPLICATION_PORT"
-        valueFrom = aws_secretsmanager_secret_version.bcer_application_port.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_application_port.arn },
         { name = "AWS_ENV"
-        valueFrom = aws_secretsmanager_secret_version.bcer_aws_env.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_aws_env.arn },
         { name = "BC_DIRECTION_API_KEY"
-        valueFrom = aws_secretsmanager_secret_version.bcer_bc_direction_api_key.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_bc_direction_api_key.arn },
         { name = "CLOSE_LOCATION_CRON_TIME"
-        valueFrom = aws_secretsmanager_secret_version.bcer_close_location_cron_time.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_close_location_cron_time.arn },
         { name = "CRON_JOB_NAMES"
-        valueFrom = aws_secretsmanager_secret_version.bcer_cron_job_names.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_cron_job_names.arn },
         { name = "DB_DATABASE"
-        valueFrom = aws_secretsmanager_secret_version.bcer_db_database.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_db_database.arn },
         { name = "DB_SCHEMA"
-        valueFrom = aws_secretsmanager_secret_version.bcer_db_schema.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_db_schema.arn },
         { name = "EMAIL_GENERIC_NOTIFICATION_TEMPLATE_ID"
-        valueFrom = aws_secretsmanager_secret_version.bcer_email_generic_notification_template_id.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_email_generic_notification_template_id.arn },
         { name = "ENABLE_SUBSCRIPTION"
-        valueFrom = aws_secretsmanager_secret_version.bcer_enable_subscription.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_enable_subscription.arn },
         { name = "ENABLE_TEXT_MESSAGES"
-        valueFrom = aws_secretsmanager_secret_version.bcer_enable_text_messages.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_enable_text_messages.arn },
         { name = "GA_KEY"
-        valueFrom = aws_secretsmanager_secret_version.bcer_ga_key.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_ga_key.arn },
         { name = "HEAPSNAPSHOT_ENABLED"
-        valueFrom = aws_secretsmanager_secret_version.bcer_heapsnapshot_enabled.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_heapsnapshot_enabled.arn },
         { name = "KEYCLOAK_AUTH_URL"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_auth_url.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_auth_url.arn },
         { name = "KEYCLOAK_CLIENT"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_client.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client.arn },
         { name = "KEYCLOAK_DATA_AUTH_URL"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_data_auth_url.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_data_auth_url.arn },
         { name = "KEYCLOAK_DATA_CLIENT"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_data_client.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_data_client.arn },
         { name = "KEYCLOAK_DATA_REALM"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_data_realm.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_data_realm.arn },
         { name = "KEYCLOAK_PORT"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_port.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_port.arn },
         { name = "KEYCLOAK_REALM"
-        valueFrom = aws_secretsmanager_secret_version.bcer_keycloak_realm.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_realm.arn },
         { name = "LOAD_CERTS"
-        valueFrom = aws_secretsmanager_secret_version.bcer_load_certs.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_load_certs.arn },
         { name = "LOGS_PATH"
-        valueFrom = aws_secretsmanager_secret_version.bcer_logs_path.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_logs_path.arn },
         { name = "MAP_BOX_ACCESS_TOKEN"
-        valueFrom = aws_secretsmanager_secret_version.bcer_map_box_access_token.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_map_box_access_token.arn },
         { name = "NOI_EXPIRY_DATE"
-        valueFrom = aws_secretsmanager_secret_version.bcer_noi_expiry_date.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_noi_expiry_date.arn },
         { name = "SALES_REPORT_END_DATE"
-        valueFrom = aws_secretsmanager_secret_version.bcer_sales_report_end_date.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_sales_report_end_date.arn },
         { name = "TEXT_API_KEY"
-        valueFrom = aws_secretsmanager_secret_version.bcer_text_api_key.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_text_api_key.arn },
         { name = "TEXT_GENERIC_NOTIFICATION_TEMPLATE_ID"
-        valueFrom = aws_secretsmanager_secret_version.bcer_text_generic_notification_template_id.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_text_generic_notification_template_id.arn },
         { name = "VAPING_NOTIFICATION_EMAIL"
-        valueFrom = aws_secretsmanager_secret_version.bcer_vaping_notification_email.arn },
+        valueFrom = aws_secretsmanager_secret_version.phlat_vaping_notification_email.arn },
       ]
       environment = [
         { name = "TZ"
@@ -122,8 +122,8 @@ resource "aws_ecs_task_definition" "bcer_td" {
 
 resource "aws_ecs_service" "main" {
   name                              = "${var.application}-${var.target_env}-service"
-  cluster                           = aws_ecs_cluster.bcer_cluster.arn
-  task_definition                   = aws_ecs_task_definition.bcer_td.arn
+  cluster                           = aws_ecs_cluster.phlat_cluster.arn
+  task_definition                   = aws_ecs_task_definition.phlat_td.arn
   desired_count                     = var.app_count
   health_check_grace_period_seconds = 30
   wait_for_steady_state             = false

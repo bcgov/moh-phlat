@@ -11,9 +11,9 @@ generate "dev_tfvars" {
   fargate_memory = 1024
   app_port = 4000
   fam_console_idp_name = "DEV-IDIR"
-  application = "bcer"
-  application_url = "bcer-dev.hlth.gov.bc.ca"
-  api_url = "bcer-dev.api.hlth.gov.bc.ca"
+  application = "phlat"
+  application_url = "phlat-dev.hlth.gov.bc.ca"
+  api_url = "phlat-dev.api.hlth.gov.bc.ca"
   aurora_acu_min = 0.5
   aurora_acu_max = 1
   EOF

@@ -1,5 +1,5 @@
 locals {
-  s3_origin_id = "bcer-${var.target_env}"
+  s3_origin_id = "phlat-${var.target_env}"
 }
 
 provider "aws" {
@@ -7,7 +7,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "aws_acm_certificate" "bcer_certificate" {
+data "aws_acm_certificate" "phlat_certificate" {
   provider    = aws.us-east-1
   domain      = var.application_url
   statuses    = ["ISSUED"]
@@ -26,8 +26,8 @@ data "aws_cloudfront_cache_policy" "Managed-CachingOptimized" {
   name = "Managed-CachingOptimized"
 }
 
-resource "aws_cloudfront_origin_access_control" "bcer" {
-  name                              = "bcer-${var.target_env}"
+resource "aws_cloudfront_origin_access_control" "phlat" {
+  name                              = "phlat-${var.target_env}"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -37,7 +37,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.static.bucket_regional_domain_name
     origin_id                = local.s3_origin_id
-    origin_access_control_id = aws_cloudfront_origin_access_control.bcer.id
+    origin_access_control_id = aws_cloudfront_origin_access_control.phlat.id
     origin_shield {
       enabled              = true
       origin_shield_region = "us-east-1"
@@ -106,7 +106,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = data.aws_acm_certificate.bcer_certificate.arn
+    acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
     minimum_protocol_version = "TLSv1.2_2021"
     ssl_support_method       = "sni-only"
   }

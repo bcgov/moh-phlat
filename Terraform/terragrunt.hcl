@@ -16,7 +16,7 @@ generate "remote_state" {
 terraform {
   backend "s3" {
     bucket         = "terraform-remote-state-${local.project}-${local.environment}"
-    key            = "${local.project}/${local.environment}/bcer-app.tfstate"
+    key            = "${local.project}/${local.environment}/phlat-app.tfstate"
     dynamodb_table = "terraform-remote-state-lock-${local.project}"
     region         = "ca-central-1"
     encrypt        = true
@@ -33,7 +33,7 @@ generate "tfvars" {
   contents          = <<-EOF
     app_image  = "${local.app_image}"
     target_env = "${local.environment}"  
-    application = "bcer"
+    application = "phlat"
 EOF
 }
 
