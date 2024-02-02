@@ -157,7 +157,7 @@ jobs:
 
       - name: Copy env file to phlat frontend app
         run: |
-          cd frontend/phlat-app
+          cd frontend/app
           cp .config/.env.aws.${{ github.event.inputs.environment }} app/.env
 
       - name: Configure AWS Credentials
@@ -168,13 +168,13 @@ jobs:
 
       - name: Build project phlat frontend app
         run: |
-          cd frontend/phlat-app/app
+          cd frontend/app
           npm install
-          npm run build
+          npm run ci
 
       - name: Upload to S3 bucket phlat frontend app
         run: |
-          cd frontend/phlat-app/app/build
+          cd frontend/app/build
           aws s3 sync . s3://phlat-${{ github.event.inputs.environment }}/frontend --delete
         env:
           AWS_REGION: ca-central-1
