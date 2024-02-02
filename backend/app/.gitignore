@@ -30,4 +30,3 @@ dist-ssr
 .vscode
 **/node_modules
 **/target
-**/src/main/resources/application*.*
