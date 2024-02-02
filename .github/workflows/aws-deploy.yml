@@ -134,7 +134,7 @@ jobs:
         run: |
           cd packages/phlat-shared-components
           npm install
-          npm run build
+          npm ci
 
       - name: Copy env file to phlat frontend app
         run: |
