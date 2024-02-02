@@ -7,12 +7,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "aws_acm_certificate" "phlat_certificate" {
-  provider    = aws.us-east-1
-  domain      = var.application_url
-  statuses    = ["ISSUED"]
-  most_recent = true
-}
+#data "aws_acm_certificate" "phlat_certificate" {
+#  provider    = aws.us-east-1
+#  domain      = var.application_url
+#  statuses    = ["ISSUED"]
+#  most_recent = true
+#}
 
 data "aws_cloudfront_cache_policy" "Managed-CachingOptimized" {
   name = "Managed-CachingOptimized"
@@ -83,11 +83,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  viewer_certificate {
-    acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
-    minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method       = "sni-only"
-  }
+  #viewer_certificate {
+  #  acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
+  #  minimum_protocol_version = "TLSv1.2_2021"
+  #  ssl_support_method       = "sni-only"
+  #}
 }
 
 # to get the Cloud front URL if doamin/alias is not configured
