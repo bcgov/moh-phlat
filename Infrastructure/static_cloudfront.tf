@@ -14,14 +14,6 @@ data "aws_acm_certificate" "phlat_certificate" {
   most_recent = true
 }
 
-resource "aws_cloudfront_function" "redirect" {
-  name    = "indexRedirect"
-  runtime = "cloudfront-js-1.0"
-  comment = "Redirect all requests to index.html"
-  publish = true
-  code    = file("redirect.js")
-}
-
 data "aws_cloudfront_cache_policy" "Managed-CachingOptimized" {
   name = "Managed-CachingOptimized"
 }
@@ -65,21 +57,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "/retailer*"
-    target_origin_id       = aws_s3_bucket.static.id
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    viewer_protocol_policy = "redirect-to-https"
-    cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
-    compress               = true
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.redirect.arn
-    }
-  }
-
-  ordered_cache_behavior {
-    path_pattern           = "/portal*"
+    path_pattern           = "/app*"
     target_origin_id       = aws_s3_bucket.static.id
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
