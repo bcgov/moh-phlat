@@ -1,0 +1,31 @@
+{
+  "baseAuthButton": {
+    "logout": "Logout",
+    "login": "Login"
+  },
+  "bCGovFooter": {
+    "home": "Home",
+    "about": "About gov.bc.ca",
+    "disclaimer": "Disclaimer",
+    "privacy": "Privacy",
+    "accessibility": "Accessibility",
+    "copyRight": "Copyright",
+    "contactUs": "Contact Us"
+  },
+  "bCGovNavBar": {
+    "home": "Home"
+  },
+  "homePage": {
+    "title": "Welcome to PHLAT",
+    "subTitle": "Plr Healthservice delivery site data Load Assistant Tool",
+    "startFileUpload": "Start file upload",
+    "loginToStart": "Login to start"
+  },
+  "login":{
+    "authenticateWith": "Authenticate With"
+  },
+  "notFound":{
+    "pageNotFound": "404 Page Not Found",
+    "gotohome": "Goto Home"
+  }
+}
