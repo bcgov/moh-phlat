@@ -83,11 +83,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  #viewer_certificate {
+  viewer_certificate {
+     cloudfront_default_certificate = true
   #  acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
   #  minimum_protocol_version = "TLSv1.2_2021"
   #  ssl_support_method       = "sni-only"
-  #}
+  }
 }
 
 # to get the Cloud front URL if doamin/alias is not configured
