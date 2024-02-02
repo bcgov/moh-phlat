@@ -6,10 +6,6 @@ on:
         description: 'Environment to deploy to'
         type: environment
         required: true
-      migrations:
-        description: 'Run database migrations'
-        type: boolean
-        required: true
       frontends:
         description: 'Deploy frontends'
         type: boolean
@@ -71,7 +67,6 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build and push Docker images
-        if: inputs.migrations == false
         uses: docker/build-push-action@v4
         with:
           builder: ${{ steps.buildx.outputs.name }}
