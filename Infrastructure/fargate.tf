@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "phlat_td" {
       essential = true
       name      = "${var.application}-${var.target_env}-definition"
       #change to variable to env. for GH Actions
-      image       = "${data.aws_caller_identity.current.account_id}.dkr.ecr.ca-central-1.amazonaws.com/phlat-api:latest"
+      image       = "${data.aws_caller_identity.current.account_id}.dkr.ecr.ca-central-1.amazonaws.com/phlat:latest"
       cpu         = var.fargate_cpu
       memory      = var.fargate_memory
       networkMode = "awsvpc"
