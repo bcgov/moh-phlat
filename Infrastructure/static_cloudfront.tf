@@ -38,7 +38,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_root_object = "index.html"
   enabled             = true
   is_ipv6_enabled     = true
-  aliases             = [var.application_url]
+  #aliases             = [var.application_url]
 
   default_cache_behavior {
     target_origin_id       = local.s3_origin_id
