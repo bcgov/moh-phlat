@@ -145,7 +145,7 @@ jobs:
         run: |
           cd frontend/app
           npm install
-          npm run ci
+          npm ci
 
       - name: Upload to S3 bucket phlat frontend app
         run: |
