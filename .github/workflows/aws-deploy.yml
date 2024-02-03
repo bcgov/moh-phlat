@@ -130,10 +130,10 @@ jobs:
         with:
           node-version: 16
 
-      - name: Copy env file to phlat frontend app
-        run: |
-          cd frontend/app
-          cp .config/.env.aws.${{ github.event.inputs.environment }} app/.env
+#      - name: Copy env file to phlat frontend app
+#        run: |
+#          cd frontend/app
+#          cp .config/.env.aws.${{ github.event.inputs.environment }} app/.env
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
