@@ -130,12 +130,6 @@ jobs:
         with:
           node-version: 16
 
-      - name: Build project shared components
-        run: |
-          cd packages/phlat-shared-components
-          npm install
-          npm ci
-
       - name: Copy env file to phlat frontend app
         run: |
           cd frontend/app
