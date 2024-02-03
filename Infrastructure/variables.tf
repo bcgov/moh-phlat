@@ -9,7 +9,7 @@ variable "aws_region" {
 
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
-  default     = "BCER_EcsTaskExecutionRole"
+  default     = "PHLAT_EcsTaskExecutionRole"
 }
 
 variable "fargate_cpu" {
@@ -62,7 +62,7 @@ variable "app_image" {
 
 variable "app_count" {
   description = "Number of docker containers to run"
-  default     = 2
+  default     = 1
 }
 
 variable "fam_console_idp_name" {
