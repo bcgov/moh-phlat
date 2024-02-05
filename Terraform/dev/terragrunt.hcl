@@ -13,7 +13,7 @@ generate "dev_tfvars" {
   fam_console_idp_name = "DEV-IDIR"
   application = "phlat"
   application_url = "phlat-dev.hlth.gov.bc.ca"
-  api_url = "phlat-dev.api.hlth.gov.bc.ca"
+  api_url = "phlat.jy4drv-dev.nimbus.cloud.gov.bc.ca/"
   aurora_acu_min = 0.5
   aurora_acu_max = 1
   EOF
