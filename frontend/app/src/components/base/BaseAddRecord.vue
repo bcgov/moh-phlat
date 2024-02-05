@@ -32,7 +32,7 @@ export default {
 
 <template>
   <v-card>
-    <v-card-title class="text-h5 pb-0" :lang="lang">Add record</v-card-title>
+    <v-card-title class="text-h5 pb-0">Add record</v-card-title>
     <v-card-text>
       <hr />
       <v-col v-for="(item, index) in selectedItemToAdd" :key="index">

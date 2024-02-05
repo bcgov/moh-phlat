@@ -37,7 +37,7 @@ export default {
     ],
     ignoreToEdit: [
       { key: 'id' },
-      { key: 'createBy' },
+      { key: 'createdBy' },
       { key: 'createdAt' },
       { key: 'updatedAt' },
       { key: 'updatedBy' },
@@ -219,7 +219,6 @@ export default {
     },
 
     save() {
-      console.log('calling save function');
       if (this.editedIndex > -1) {
         Object.assign(this.inputSrcData[this.editedIndex], this.editedItem);
       } else {
@@ -256,7 +255,6 @@ export default {
           });
         }
       } catch (error) {
-        console.log('errorr-', error);
         this.addNotification({
           text: error.message || 'Something went wrong',
           type: 'error',
@@ -273,7 +271,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1 :lang="lang">{{ fileName }}</h1>
+        <h1>{{ fileName }}</h1>
       </div>
 
       <!-- search input -->
@@ -286,9 +284,6 @@ export default {
           single-line
           hide-details
           class="pb-5"
-          :class="{ label: isRTL }"
-          :lang="lang"
-          @update:modelValue="handleSearch"
         ></v-text-field>
       </div>
       <div>
@@ -305,7 +300,7 @@ export default {
                 @click="onShowColumnDialog"
               />
             </template>
-            <span :lang="lang">Manage Columns</span>
+            <span>Manage Columns</span>
           </v-tooltip>
         </span>
       </div>
@@ -314,7 +309,7 @@ export default {
     <div>
       <div></div>
       <v-data-table
-        :key="forceTableRefresh"
+        key="forceTableRefresh"
         height="70vh"
         :headers="HEADERS"
         fixed-header
@@ -367,9 +362,7 @@ export default {
           @saving-filter-data="updateFilter"
           @cancel-filter-data="showColumnsDialog = false"
         >
-          <template #filter-title
-            ><span :lang="lang"> Manage Columns </span></template
-          >
+          <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
       </v-dialog>
 

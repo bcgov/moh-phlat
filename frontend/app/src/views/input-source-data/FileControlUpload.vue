@@ -210,9 +210,6 @@ export default {
           if (this.fileName === '' || this.fileName === undefined) {
             this.fileName = formData.get('file').name;
           }
-          // console.log(formData.get('file'));
-          // debugger;
-
           formData.append('fileName', this.fileName);
           formData.append('batchLabelName', this.batchLabelName);
           formData.append('fileExtractedDate', this.fileExtractedDate);
@@ -225,7 +222,7 @@ export default {
           // save it
           this.save(formData);
         } catch (e) {
-          console.log('22ee at catch', e);
+          console.error(e); // eslint-disable-line no-console
         }
       } else {
         this.runTypeHasError = true;
@@ -244,7 +241,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1 :lang="lang">File Control / Upload</h1>
+        <h1>File Control / Upload</h1>
       </div>
     </div>
 
@@ -280,7 +277,7 @@ export default {
                   @click="runTypeHasError = false"
                 >
                   <template #label>
-                    <span :lang="lang" v-html="item.name"></span>
+                    <span v-html="item.name"></span>
                   </template>
                 </v-checkbox>
               </v-col>

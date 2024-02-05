@@ -18,13 +18,43 @@ export default {
   data() {
     return {
       loading: this.isLoading,
+      idToEdit: this.itemToEdit.id,
       selectedItemToEdit: Object.assign({}, this.itemToEdit),
+      requiredField: [
+        (value) => {
+          if (value) return true;
+          return 'This field is required.';
+        },
+      ],
     };
   },
-  computed: {},
+  computed: {
+    FILTER_ITEMS() {
+      this.ignoreToEdit.forEach((item) => {
+        const keyToRemove = item.key;
+        if (
+          Object.prototype.hasOwnProperty.call(
+            this.selectedItemToEdit,
+            keyToRemove
+          )
+        ) {
+          delete this.selectedItemToEdit[keyToRemove];
+        }
+      });
+      return this.selectedItemToEdit;
+    },
+  },
   methods: {
     handleSave() {
-      this.$emit('handle-record-save', this.selectedItemToEdit);
+      if (this.valid) {
+        this.$emit('handle-record-save', {
+          ...this.selectedItemToEdit,
+          id: this.idToEdit,
+        });
+      }
+    },
+    checkForm: function (e) {
+      e.preventDefault();
     },
   },
 };
@@ -32,39 +62,48 @@ export default {
 
 <template>
   <v-card>
-    <v-card-title class="text-h5 pb-0" :lang="lang"
+    <v-card-title class="text-h5 pb-0"
       >Edit record #{{ selectedItemToEdit.id }}</v-card-title
     >
     <v-card-text>
       <hr />
-      <v-col v-for="(item, index) in selectedItemToEdit" :key="index">
-        <v-text-field
-          :key="index + `ITEM`"
-          v-model="selectedItemToEdit[index]"
-          :readonly="ignoreToEdit.some((item) => item.key === index)"
-          density="compact"
-          variant="outlined"
-          :label="
-            ignoreToEdit.some((item) => item.key === index)
-              ? index + `(Read Only)`
-              : index
-          "
-        ></v-text-field>
-      </v-col>
-      <v-card-actions class="justify-center">
-        <v-btn
-          :disabled="loading"
-          :loading="loading"
-          block
-          class="text-none mb-4 text-primary"
-          color="indigo-darken-3"
-          size="x-large"
-          variant="outlined"
-          @click="handleSave"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
+      <v-form
+        ref="settingsForm"
+        v-model="valid"
+        @submit.prevent="handleSave"
+        @submit="checkForm"
+      >
+        <v-col v-for="(item, key) in FILTER_ITEMS" :key="key">
+          <v-text-field
+            :key="key + `ITEM`"
+            v-model="selectedItemToEdit[key]"
+            :readonly="ignoreToEdit.some((item) => item.key === key)"
+            density="compact"
+            :rules="requiredField"
+            :required="true"
+            variant="outlined"
+            :label="
+              ignoreToEdit.some((item) => item.key === key)
+                ? key + `(Read Only)`
+                : key
+            "
+          ></v-text-field>
+        </v-col>
+        <v-card-actions class="justify-center">
+          <v-btn
+            :disabled="loading"
+            :loading="loading"
+            block
+            class="text-none mb-4 text-primary"
+            color="indigo-darken-3"
+            size="x-large"
+            variant="outlined"
+            type="submit"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card-text>
   </v-card>
 </template>

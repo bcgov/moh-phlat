@@ -72,7 +72,7 @@ export default {
 </script>
 
 <template>
-  <v-card :class="{ 'dir-rtl': isRTL }">
+  <v-card>
     <v-card-title class="text-h5 pb-0 titleWrapper">
       <slot name="filter-title"></slot>
     </v-card-title>
@@ -94,8 +94,6 @@ export default {
           variant="filled"
           density="compact"
           class="mt-3"
-          :class="{ label: isRTL }"
-          :lang="lang"
         >
         </v-text-field>
         <v-tooltip location="bottom">
@@ -114,7 +112,7 @@ export default {
               />
             </v-btn>
           </template>
-          <span :lang="lang">Reset</span>
+          <span>Reset</span>
         </v-tooltip>
       </div>
       <v-data-table
@@ -132,23 +130,19 @@ export default {
         class="bg-grey-lighten-5 mb-3"
         disable-pagination
         return-object
-        :lang="lang"
       >
       </v-data-table>
       <v-btn
         data-test="save-btn"
         class="bg-primary mt-3"
-        :lang="lang"
         @click="savingFilterData"
       >
         {{ inputSaveButtonText }}
       </v-btn>
       <v-btn
         data-test="cancel-btn"
-        class="mt-3 text-primary"
-        :class="isRTL ? 'mr-3' : 'ml-3'"
+        class="mt-3 ml-3 text-primary"
         variant="outlined"
-        :lang="lang"
         @click="cancelFilterData"
         >Cancel</v-btn
       >

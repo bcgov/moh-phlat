@@ -3,7 +3,7 @@ import { appAxios } from '~/services/interceptors';
 
 export default {
   async serviceGetAllStatus() {
-    return appAxios().get(`status/view/all`);
+    return appAxios().get(`status/view/all?isDeleted=false`);
   },
   async serviceGetStatusById(id) {
     return appAxios().get(`status/view/${id}`);

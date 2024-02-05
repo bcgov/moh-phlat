@@ -37,7 +37,6 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         '~': resolve(__dirname, './src'),
-        '~formiojs': resolve(__dirname, './node_modules/formiojs'),
         '~font-awesome': resolve(__dirname, './node_modules/font-awesome'),
         '~vuetify': resolve(__dirname, './node_modules/vuetify'),
         // no clue why crypto is required, but unit tests will not run without it
@@ -52,7 +51,6 @@ export default defineConfig(({ command, mode }) => {
         include: [
           'src/**/*.{js,vue}',
           '!src/main.js',
-          '!src/formio/**/*.*',
           '!src/plugins/*.*',
         ],
         extension: ['.js', '.json', '.vue', '.jsx'],

@@ -6,12 +6,7 @@ export default {
   components: {
     BaseFilter,
   },
-  props: {
-    formId: {
-      type: String,
-      required: true,
-    },
-  },
+  props: {},
   data: () => ({
     loading: true,
     dialog: false,
@@ -37,6 +32,7 @@ export default {
         align: 'start',
         sortable: false,
         key: 'id',
+        // fixed: true,
       },
       { title: 'File Name', key: 'fileName' },
       { title: 'Uploaded By', key: 'userId' },
@@ -78,7 +74,12 @@ export default {
         title: 'Is Wk Location Practitioner?',
         key: 'loadTypeWPIXref',
       },
-      { title: 'Actions', key: 'actions', sortable: false },
+      {
+        title: 'Actions',
+        key: 'actions',
+        sortable: false,
+        fixed: true,
+      },
     ],
     onlyShowColumns: [],
     desserts: [],
@@ -172,7 +173,6 @@ export default {
     },
 
     async updateFilter(data) {
-      console.log('datadata-', data);
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -257,7 +257,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1 :lang="lang">File Task Management</h1>
+        <h1>File Task Management</h1>
       </div>
 
       <!-- search input -->
@@ -270,9 +270,6 @@ export default {
           single-line
           hide-details
           class="pb-5"
-          :class="{ label: isRTL }"
-          :lang="lang"
-          @update:modelValue="handleSearch"
         ></v-text-field>
       </div>
       <div>
@@ -289,7 +286,7 @@ export default {
                 @click="onShowColumnDialog"
               />
             </template>
-            <span :lang="lang">Manage Columns</span>
+            <span>Manage Columns</span>
           </v-tooltip>
         </span>
       </div>
@@ -298,7 +295,7 @@ export default {
     <div>
       <div></div>
       <v-data-table
-        :key="forceTableRefresh"
+        key="forceTableRefresh"
         :headers="HEADERS"
         :items="desserts"
         :items-length="desserts.length"
@@ -380,9 +377,7 @@ export default {
           @saving-filter-data="updateFilter"
           @cancel-filter-data="showColumnsDialog = false"
         >
-          <template #filter-title
-            ><span :lang="lang"> Manage Columns </span></template
-          >
+          <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
       </v-dialog>
     </div>

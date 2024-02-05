@@ -18,7 +18,7 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         );
         this.singleControlTableData = data;
       } catch (error) {
-        console.log('Something went wrong. (SJHSD#3226)', error);
+        console.log('Something went wrong. (SJHSD#3226)', error); // eslint-disable-line no-console
       }
     },
     async fetchAddControlTable(payload) {
@@ -28,25 +28,50 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         );
         this.singleControlTableData = data;
       } catch (error) {
-        console.log('Something went wrong. (JWSLL#2426)', error);
+        console.log('Something went wrong. (JWSLL#2426)', error); // eslint-disable-line no-console
       }
     },
     async fetchGetControlTableById(id) {
+      const notificationStore = useNotificationStore();
       try {
         const { data } = await controlTableService.serviceGetControlTableById(
           id
         );
-        this.singleControlTableData = data;
+
+        if (data.data) {
+          this.singleControlTableData = data.data;
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'No record found.',
+            type: data.status || 'warning',
+          });
+        }
       } catch (error) {
-        console.log('Something went wrong. (OSMDJ#2026)', error);
+        notificationStore.addNotification({
+          text: error.response.data.message || 'Something went wrong',
+          type: error.response.data.status != 200 ? 'error' : 'success',
+        });
+        console.log('Something went wrong. (OSMDJ#2026)', error); // eslint-disable-line no-console
       }
     },
     async fetchGetAllControlTable() {
+      const notificationStore = useNotificationStore();
       try {
         const { data } = await controlTableService.serviceGetAllControlTable();
-        this.allControlTableData = data;
+        if (data.data && data.data.length) {
+          this.allControlTableData = data.data;
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'No record found.',
+            type: data.status || 'warning',
+          });
+        }
       } catch (error) {
-        console.log('Something went wrong. (KSDOD#5965)', error);
+        console.log('Something went wrong. (KSDOD#5965)', error); // eslint-disable-line no-console
+        notificationStore.addNotification({
+          text: error.response.data.message || 'Something went wrong',
+          type: error.response.data.status != 200 ? 'error' : 'success',
+        });
       }
     },
     async fetchDeleteControlTableById(id) {
@@ -62,7 +87,7 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         // });
       } catch (error) {
         this.deletedControlTableData = error.response;
-        console.log('Something went wrong. (LDPWJJ#12655)', error);
+        console.log('Something went wrong. (LDPWJJ#12655)', error); // eslint-disable-line no-console
         notificationStore.addNotification({
           text: error.response.statusText,
           type: error.response.status != 200 ? 'error' : 'success',
@@ -75,7 +100,7 @@ export const useControlTableDataStore = defineStore('controltabledata', {
           await controlTableService.serviceDeleteAllControlTable();
         this.allControlTableData = data;
       } catch (error) {
-        console.log('Something went wrong. (JDWIIK#5698)', error);
+        console.log('Something went wrong. (JDWIIK#5698)', error); // eslint-disable-line no-console
       }
     },
   },

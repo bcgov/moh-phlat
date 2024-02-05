@@ -35,6 +35,7 @@ export default {
     ],
     ignoreToEdit: [
       { key: 'id' },
+      { key: 'isDeleted' },
       { key: 'createBy' },
       { key: 'createdAt' },
       { key: 'updatedAt' },
@@ -45,6 +46,7 @@ export default {
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
+    showDeleted: false,
   }),
 
   computed: {
@@ -88,6 +90,9 @@ export default {
       let headers = this.BASE_FILTER_HEADERS;
 
       return headers;
+    },
+    FILTER_DELETED_DATA() {
+      return this.desserts /*.filter(({ isDeleted }) => isDeleted === false)*/;
     },
   },
 
@@ -170,7 +175,7 @@ export default {
 
     async deleteItem(item) {
       // If deleted then go ahead
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = item.index;
       this.dialogDelete = true;
       this.deleteSingleItem = item;
     },
@@ -186,7 +191,7 @@ export default {
 
     async deleteItemConfirm() {
       await this.fetchDeleteStatusById(this.deleteSingleItem.key);
-      if (this.deletedStatusData.status === 200) {
+      if (this.deletedStatusData.statusCode === 200) {
         this.desserts.splice(this.editedIndex, 1);
       }
       this.closeDelete();
@@ -219,36 +224,22 @@ export default {
     },
 
     async handleRecordAdd(newRecord) {
-      console.log('handleRecordAdd--', newRecord);
       this.loading = true;
       try {
         await this.fetchAddStatus(newRecord);
         const data = this.singleStatusData;
         if (data.id) {
-          this.addNotification({
-            text: 'Record successfully added.',
-            type: 'success',
-          });
           this.desserts = [...this.desserts, data];
           this.loading = false;
           this.dialogNewItem = false;
           this.close();
         } else {
-          this.addNotification({
-            text: data.message || 'Something went wrong.',
-            type: 'error',
-          });
           this.loading = false;
           this.dialogNewItem = false;
         }
       } catch (error) {
-        console.log('errorr-', error);
         this.loading = false;
         this.dialogNewItem = false;
-        this.addNotification({
-          text: error.message || 'Something went wrong',
-          type: 'error',
-        });
       }
     },
     async handleRecordSave(selectedItemToEdit) {
@@ -277,7 +268,6 @@ export default {
         //   });
         // }
       } catch (error) {
-        console.log('errorr-', error);
         this.addNotification({
           text: error.message || 'Something went wrong',
           type: 'error',
@@ -294,7 +284,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1 :lang="lang">Manage Status Codes</h1>
+        <h1>Manage Status Codes</h1>
       </div>
 
       <!-- search input -->
@@ -307,9 +297,6 @@ export default {
           single-line
           hide-details
           class="pb-5"
-          :class="{ label: isRTL }"
-          :lang="lang"
-          @update:modelValue="handleSearch"
         ></v-text-field>
       </div>
       <div>
@@ -326,7 +313,7 @@ export default {
                 @click="onShowColumnDialog"
               />
             </template>
-            <span :lang="lang">Manage Columns</span>
+            <span>Manage Columns</span>
           </v-tooltip>
         </span>
         <span>
@@ -342,7 +329,7 @@ export default {
                 @click="onShowAddItemDialog"
               />
             </template>
-            <span :lang="lang">Add new item</span>
+            <span>Add new item</span>
           </v-tooltip>
         </span>
       </div>
@@ -351,9 +338,9 @@ export default {
     <div>
       <div></div>
       <v-data-table
-        :key="forceTableRefresh"
+        key="forceTableRefresh"
         :headers="HEADERS"
-        :items="desserts"
+        :items="FILTER_DELETED_DATA"
         :items-length="desserts.length"
         density="compact"
         :sort-by="[{ key: 'calories', order: 'asc' }]"
@@ -402,9 +389,7 @@ export default {
           @saving-filter-data="updateFilter"
           @cancel-filter-data="showColumnsDialog = false"
         >
-          <template #filter-title
-            ><span :lang="lang"> Manage Columns </span></template
-          >
+          <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
       </v-dialog>
 

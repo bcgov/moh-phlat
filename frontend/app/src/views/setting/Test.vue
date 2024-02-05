@@ -120,7 +120,6 @@ export default {
     },
 
     async updateFilter(data) {
-      console.log('datadata-', data);
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -205,7 +204,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1 :lang="lang">Manage Status Codes</h1>
+        <h1>Manage Status Codes</h1>
       </div>
 
       <!-- search input -->
@@ -218,9 +217,6 @@ export default {
           single-line
           hide-details
           class="pb-5"
-          :class="{ label: isRTL }"
-          :lang="lang"
-          @update:modelValue="handleSearch"
         ></v-text-field>
       </div>
       <div>
@@ -237,7 +233,7 @@ export default {
                 @click="onShowColumnDialog"
               />
             </template>
-            <span :lang="lang">Manage Columns</span>
+            <span>Manage Columns</span>
           </v-tooltip>
         </span>
       </div>
@@ -246,7 +242,7 @@ export default {
     <div>
       <div></div>
       <v-data-table
-        :key="forceTableRefresh"
+        key="forceTableRefresh"
         :headers="HEADERS"
         :items="desserts"
         :items-length="desserts.length"
@@ -300,9 +296,7 @@ export default {
           @saving-filter-data="updateFilter"
           @cancel-filter-data="showColumnsDialog = false"
         >
-          <template #filter-title
-            ><span :lang="lang"> Manage Columns </span></template
-          >
+          <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
       </v-dialog>
     </div>

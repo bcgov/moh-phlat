@@ -13,7 +13,6 @@ export function appAxios(timeout = 10000) {
   const axiosOptions = { timeout: timeout };
   if (appStore.config) {
     axiosOptions.baseURL = `${appStore.config.basePath}/${appStore.config.apiPath}`;
-    // console.log('test axios = ', axiosOptions.baseURL);
   }
 
   const instance = axios.create(axiosOptions);
