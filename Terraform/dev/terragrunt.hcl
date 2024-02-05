@@ -9,7 +9,7 @@ generate "dev_tfvars" {
   contents          = <<-EOF
   fargate_cpu = 512
   fargate_memory = 1024
-  app_port = 4000
+  app_port = 8088
   fam_console_idp_name = "DEV-IDIR"
   application = "phlat"
   application_url = "phlat-dev.hlth.gov.bc.ca"
