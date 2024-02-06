@@ -43,6 +43,13 @@ generate "provider" {
   contents  = <<EOF
 provider "aws" {
   region  = var.aws_region
+  default_tags {
+    tags = {
+      "Created By"    = "Terraform"
+      "Project"       = "PHLAT"
+      "Service Owner" = "Midtier"
+    }
+  }
 }
 EOF
 }
