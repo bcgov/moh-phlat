@@ -47,7 +47,7 @@ provider "aws" {
     tags = {
       "Created By"    = "Terraform"
       "Project"       = "PHLAT"
-      "Service Owner" = "Midtier"
+      "Service Owner" = "Registries"
     }
   }
 }
