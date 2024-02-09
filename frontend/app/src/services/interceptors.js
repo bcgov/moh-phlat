@@ -12,7 +12,8 @@ export function appAxios(timeout = 10000) {
   const appStore = useAppStore();
   const axiosOptions = { timeout: timeout };
   if (appStore.config) {
-    axiosOptions.baseURL = `${appStore.config.basePath}/${appStore.config.apiPath}`;
+    /*axiosOptions.baseURL = `${appStore.config.basePath}/${appStore.config.apiPath}`;*/
+    axiosOptions.baseURL = `https://phlatapi-dev.vytep.com/`;
   }
 
   const instance = axios.create(axiosOptions);
