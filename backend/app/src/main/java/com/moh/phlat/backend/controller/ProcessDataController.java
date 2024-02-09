@@ -1,6 +1,7 @@
 package com.moh.phlat.backend.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,25 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.moh.phlat.backend.exception.HandleInternalException;
-import com.moh.phlat.backend.exception.HandleNotFoundException;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import jakarta.validation.Valid;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.response.ResponseMessage;
+import com.moh.phlat.backend.service.DbUtilityService;
 
 @RestController
 @RequestMapping("/processdata")
 @CrossOrigin(origins = "*")
 public class ProcessDataController {
-	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessDataController.class);
 
 	@Autowired
 	private ControlRepository controlRepository;
@@ -36,204 +36,208 @@ public class ProcessDataController {
 	@Autowired
 	private ProcessDataRepository processDataRepository;
 
-	// create input data row
-	@PostMapping("/add")
-	public ResponseEntity<ProcessData> addProcessData(@RequestBody ProcessData newProcessData)
-			throws HandleInternalException {
-		ProcessData processData = new ProcessData();
-		processData.setControlTableId(newProcessData.getControlTableId());
-		processData.setDoNotLoad(newProcessData.getDoNotLoad());
-		processData.setInternalId(newProcessData.getInternalId());
-		processData.setHdsSurvInternalId(newProcessData.getHdsSurvInternalId());
-		processData.setFacilitySurvInternalId(newProcessData.getFacilitySurvInternalId());
-		processData.setHdsSource(newProcessData.getHdsSource());
-		processData.setHdsTypeConcat(newProcessData.getHdsTypeConcat());
-		processData.setHdsName(newProcessData.getHdsName());
-		processData.setCivicAddressClean(newProcessData.getCivicAddressClean());
-		processData.setBusName(newProcessData.getBusName());
-		processData.setFacilityDetailsAdditionalInfo(newProcessData.getFacilityDetailsAdditionalInfo());
-		processData.setHdsTelAreaCode(newProcessData.getHdsTelAreaCode());
-		processData.setHdsTelNumber(newProcessData.getHdsTelNumber());
-		processData.setHdsCellAreaCode(newProcessData.getHdsCellAreaCode());
-		processData.setHdsCellNumber(newProcessData.getHdsCellNumber());
-		processData.setHdsFaxAreaCode(newProcessData.getHdsFaxAreaCode());
-		processData.setHdsFaxNumber(newProcessData.getHdsFaxNumber());
-		processData.setPhysProcessStatus(newProcessData.getPhysProcessStatus());
-		processData.setPhysMailabilityScore(newProcessData.getPhysProcessStatus());
-		processData.setPhysCity(newProcessData.getPhysCity());
-		processData.setPhysProvince(newProcessData.getPhysProvince());
-		processData.setPhysPcode(newProcessData.getPhysPcode());
-		processData.setPhysCountry(newProcessData.getPhysCountry());
-		processData.setPhysAddress1(newProcessData.getPhysAddress1());
-		processData.setPhysAddress2(newProcessData.getPhysAddress2());
-		processData.setPhysAddress3(newProcessData.getPhysAddress3());
-		processData.setPhysAddress4(newProcessData.getPhysAddress4());
-		processData.setBuilding(newProcessData.getBuilding());
-		processData.setUnit(newProcessData.getUnit());
-		processData.setCivicAddressCleanOld(newProcessData.getCivicAddressCleanOld());
-		processData.setMailProcessStatus(newProcessData.getMailProcessStatus());
-		processData.setMailMailabilityScore(newProcessData.getMailMailabilityScore());
-
-		processData.setMailCity(newProcessData.getMailCity());
-		processData.setMailProvince(newProcessData.getMailProvince());
-		processData.setMailPcode(newProcessData.getMailPcode());
-		processData.setMailCountry(newProcessData.getMailCountry());
-		processData.setMailAddress1(newProcessData.getMailAddress1());
-		processData.setMailAddress2(newProcessData.getMailAddress2());
-		processData.setMailAddress3(newProcessData.getMailAddress3());
-		processData.setMailAddress4(newProcessData.getMailAddress4());
-
-		processData.setDatabcLatitude(newProcessData.getDatabcLatitude());
-		processData.setDatabcLongitude(newProcessData.getDatabcLongitude());
-		processData.setDatabcUnitNo(newProcessData.getDatabcUnitNo());
-		processData.setDatabcCivicNumber(newProcessData.getDatabcCivicNumber());
-		processData.setDatabcStreetName(newProcessData.getDatabcStreetName());
-		processData.setDatabcStreetType(newProcessData.getDatabcStreetType());
-		processData.setDatabcLocalityName(newProcessData.getDatabcLocalityName());
-		processData.setDatabcProvinceCode(newProcessData.getDatabcProvinceCode());
-		processData.setDatabcSiteId(newProcessData.getDatabcSiteId());
-		processData.setDatabcScore(newProcessData.getDatabcScore());
-		processData.setDatabcMatchPrecision(newProcessData.getDatabcMatchPrecision());
-		processData.setDatabcPrecisionPoints(newProcessData.getDatabcMatchPrecision());
-		processData.setDatabcChsaCode(newProcessData.getDatabcChsaCode());
-		processData.setDatabcChsaName(newProcessData.getDatabcChsaName());
-		processData.setDatabcLhaName(newProcessData.getDatabcLhaName());
-		processData.setDatabcHsdaName(newProcessData.getDatabcHsdaName());
-		processData.setDatabcHaName(newProcessData.getDatabcHaName());
-
-		processData.setDatabcUserChid(newProcessData.getDatabcUserChid());
-		processData.setDatabcPcnCode(newProcessData.getDatabcPcnCode());
-		processData.setDatabcPcnName(newProcessData.getDatabcPcnName());
-		processData.setDatabcStatus(newProcessData.getDatabcStatus());
-
-		processData.setStatusCode(newProcessData.getStatusCode());
-
-		try {
-			processDataRepository.save(processData);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			throw new HandleInternalException(
-					"Cannot add a record to the process data table. Please report this to your system administrator");
-		}
-		return new ResponseEntity<>(processData, HttpStatus.CREATED);
-	}
+	@Autowired
+	private DbUtilityService dbUtilityService;
 
 	@GetMapping("/view/all")
-	public @ResponseBody Iterable<ProcessData> getAllProcessDatas() {
-		return processDataRepository.findAll();
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDatas() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseMessage("success", 200, "", processDataRepository.findAll()));
 	}
 
 	// get process data by control id
 	@GetMapping("/view/controltableid/{controlTableId}")
-	public @ResponseBody Iterable<ProcessData> getAllProcessDataByControlTableId(@PathVariable Long controlTableId)
-			throws HandleNotFoundException {
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
+			@PathVariable Long controlTableId) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
-		if (controlTableData.isPresent()) {
-			return processDataRepository.getAllProcessDataByControlTableId(controlTableId);
-		} else {
-			throw new HandleNotFoundException("Control Table does not have id: " + controlTableId);
+		if (controlTableData.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
+					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				processDataRepository.getAllProcessDataByControlTableId(controlTableId)));
 
 	}
 
 	// get specific row by id
 	@GetMapping("/view/{id}")
-	public ProcessData getProcessDataById(@PathVariable Long id) throws HandleNotFoundException {
-		return processDataRepository.findById(id)
-				.orElseThrow(() -> new HandleNotFoundException("Process data not found with id: " + id));
+	public ResponseEntity<ResponseMessage> getProcessDataById(@PathVariable Long id) {
+		Optional<ProcessData> processData = processDataRepository.findById(id);
+		if (processData.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ResponseMessage("success", 404, "Process Data not found for id: " + id, "[]"));
+		}
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseMessage("success", 200, "", processDataRepository.findById(id)));
+
 	}
 
 	// update an existing input source data record
 	@PutMapping("/update/{id}")
-	public ResponseEntity<ProcessData> updateProcessDataById(@RequestBody @Valid ProcessData requestProcessData,
-			@PathVariable Long id) throws HandleNotFoundException, HandleInternalException {
-		ProcessData processData = processDataRepository.findById(id)
-				.orElseThrow(() -> new HandleNotFoundException("Process data not found with id: " + id));
+	public ResponseEntity<ResponseMessage> updateProcessDataById(@RequestBody @Valid ProcessData requestProcessData,
+			@PathVariable Long id) {
 
-		// processData.setControlTableId(requestProcessData.getControlTableId());
+		Optional<ProcessData> _processData = processDataRepository.findById(id);
+
+		if (_processData.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ResponseMessage("error", 404, "Process data not found with id: " + id, "[]"));
+		}
+
+		ProcessData processData = _processData.get();
 		processData.setDoNotLoad(requestProcessData.getDoNotLoad());
-		processData.setInternalId(requestProcessData.getInternalId());
-		processData.setHdsSurvInternalId(requestProcessData.getHdsSurvInternalId());
-		processData.setFacilitySurvInternalId(requestProcessData.getFacilitySurvInternalId());
-		processData.setHdsSource(requestProcessData.getHdsSource());
-		processData.setHdsTypeConcat(requestProcessData.getHdsTypeConcat());
+		processData.setStakeholder(requestProcessData.getStakeholder());
+		processData.setHdsIpcId(requestProcessData.getHdsIpcId());
+		processData.setHdsCpnId(requestProcessData.getHdsCpnId());
+		processData.setHdsProviderIdentifier1(requestProcessData.getHdsProviderIdentifier1());
+		processData.setHdsProviderIdentifier2(requestProcessData.getHdsProviderIdentifier2());
+		processData.setHdsProviderIdentifier3(requestProcessData.getHdsProviderIdentifier3());
+		processData.setHdsProviderIdentifierType1(requestProcessData.getHdsProviderIdentifierType1());
+		processData.setHdsProviderIdentifierType2(requestProcessData.getHdsProviderIdentifierType2());
+		processData.setHdsProviderIdentifierType3(requestProcessData.getHdsProviderIdentifierType3());
+		processData.setHdsType(requestProcessData.getHdsType());
 		processData.setHdsName(requestProcessData.getHdsName());
-		processData.setCivicAddressClean(requestProcessData.getCivicAddressClean());
-		processData.setBusName(requestProcessData.getBusName());
-		processData.setFacilityDetailsAdditionalInfo(requestProcessData.getFacilityDetailsAdditionalInfo());
-		processData.setHdsTelAreaCode(requestProcessData.getHdsTelAreaCode());
-		processData.setHdsTelNumber(requestProcessData.getHdsTelNumber());
+		processData.setHdsNameAlias(requestProcessData.getHdsNameAlias());
+		processData.setHdsPreferredNameFlag(requestProcessData.getHdsPreferredNameFlag());
+		processData.setHdsEmail(requestProcessData.getHdsEmail());
+		processData.setHdsWebsite(requestProcessData.getHdsWebsite());
+		processData.setHdsBusTelAreaCode(requestProcessData.getHdsBusTelAreaCode());
+		processData.setHdsBusTelNumber(requestProcessData.getHdsBusTelNumber());
+		processData.setHdsTelExtension(requestProcessData.getHdsTelExtension());
 		processData.setHdsCellAreaCode(requestProcessData.getHdsCellAreaCode());
 		processData.setHdsCellNumber(requestProcessData.getHdsCellNumber());
 		processData.setHdsFaxAreaCode(requestProcessData.getHdsFaxAreaCode());
 		processData.setHdsFaxNumber(requestProcessData.getHdsFaxNumber());
-		processData.setPhysProcessStatus(requestProcessData.getPhysProcessStatus());
-		processData.setPhysMailabilityScore(requestProcessData.getPhysProcessStatus());
-		processData.setPhysCity(requestProcessData.getPhysCity());
-		processData.setPhysProvince(requestProcessData.getPhysProvince());
-		processData.setPhysPcode(requestProcessData.getPhysPcode());
-		processData.setPhysCountry(requestProcessData.getPhysCountry());
-		processData.setPhysAddress1(requestProcessData.getPhysAddress1());
-		processData.setPhysAddress2(requestProcessData.getPhysAddress2());
-		processData.setPhysAddress3(requestProcessData.getPhysAddress3());
-		processData.setPhysAddress4(requestProcessData.getPhysAddress4());
-		processData.setBuilding(requestProcessData.getBuilding());
-		processData.setUnit(requestProcessData.getUnit());
-		processData.setCivicAddressCleanOld(requestProcessData.getCivicAddressCleanOld());
-		processData.setMailProcessStatus(requestProcessData.getMailProcessStatus());
-		processData.setMailMailabilityScore(requestProcessData.getMailMailabilityScore());
-
+		processData.setHdsServiceDeliveryType(requestProcessData.getHdsServiceDeliveryType());
+		processData.setPcnClinicType(requestProcessData.getPcnClinicType());
+		processData.setPcnPciFlag(requestProcessData.getPcnPciFlag());
+		processData.setHdsHoursOfOperation(requestProcessData.getHdsHoursOfOperation());
+		processData.setHdsContactName(requestProcessData.getHdsContactName());
+		processData.setHdsIsForProfitFlag(requestProcessData.getHdsIsForProfitFlag());
+		processData.setSourceStatus(requestProcessData.getSourceStatus());
+		processData.setHdsParentIpcId(requestProcessData.getHdsParentIpcId());
+		processData.setBusIpcId(requestProcessData.getBusIpcId());
+		processData.setBusCpnId(requestProcessData.getBusCpnId());
+		processData.setBusName(requestProcessData.getBusName());
+		processData.setBusLegalName(requestProcessData.getBusLegalName());
+		processData.setBusPayeeNumber(requestProcessData.getBusPayeeNumber());
+		processData.setBusOwnerName(requestProcessData.getBusOwnerName());
+		processData.setBusOwnerType(requestProcessData.getBusOwnerType());
+		processData.setBusOwnerTypeOther(requestProcessData.getBusOwnerTypeOther());
+		processData.setFacBuildingName(requestProcessData.getFacBuildingName());
+		processData.setFacilityHdsDetailsAdditionalInfo(requestProcessData.getFacilityHdsDetailsAdditionalInfo());
+		processData.setPhysicalAddr1(requestProcessData.getPhysicalAddr1());
+		processData.setPhysicalAddr2(requestProcessData.getPhysicalAddr2());
+		processData.setPhysicalAddr3(requestProcessData.getPhysicalAddr3());
+		processData.setPhysicalAddr4(requestProcessData.getPhysicalAddr4());
+		processData.setPhysicalCity(requestProcessData.getPhysicalCity());
+		processData.setPhysicalProvince(requestProcessData.getPhysicalProvince());
+		processData.setPhysicalPcode(requestProcessData.getPhysicalPcode());
+		processData.setPhysicalCountry(requestProcessData.getPhysicalCountry());
+		processData.setPhysAddrIsPrivate(requestProcessData.getPhysAddrIsPrivate());
+		processData.setMailAddr1(requestProcessData.getMailAddr1());
+		processData.setMailAddr2(requestProcessData.getMailAddr2());
+		processData.setMailAddr3(requestProcessData.getMailAddr3());
+		processData.setMailAddr4(requestProcessData.getMailAddr4());
 		processData.setMailCity(requestProcessData.getMailCity());
-		processData.setMailProvince(requestProcessData.getMailProvince());
+		processData.setMailBc(requestProcessData.getMailBc());
 		processData.setMailPcode(requestProcessData.getMailPcode());
 		processData.setMailCountry(requestProcessData.getMailCountry());
-		processData.setMailAddress1(requestProcessData.getMailAddress1());
-		processData.setMailAddress2(requestProcessData.getMailAddress2());
-		processData.setMailAddress3(requestProcessData.getMailAddress3());
-		processData.setMailAddress4(requestProcessData.getMailAddress4());
-
-		processData.setDatabcLatitude(requestProcessData.getDatabcLatitude());
-		processData.setDatabcLongitude(requestProcessData.getDatabcLongitude());
-		processData.setDatabcUnitNo(requestProcessData.getDatabcUnitNo());
-		processData.setDatabcCivicNumber(requestProcessData.getDatabcCivicNumber());
-		processData.setDatabcStreetName(requestProcessData.getDatabcStreetName());
-		processData.setDatabcStreetType(requestProcessData.getDatabcStreetType());
-		processData.setDatabcLocalityName(requestProcessData.getDatabcLocalityName());
-		processData.setDatabcProvinceCode(requestProcessData.getDatabcProvinceCode());
-		processData.setDatabcSiteId(requestProcessData.getDatabcSiteId());
-		processData.setDatabcScore(requestProcessData.getDatabcScore());
-		processData.setDatabcMatchPrecision(requestProcessData.getDatabcMatchPrecision());
-		processData.setDatabcPrecisionPoints(requestProcessData.getDatabcMatchPrecision());
-		processData.setDatabcChsaCode(requestProcessData.getDatabcChsaCode());
-		processData.setDatabcChsaName(requestProcessData.getDatabcChsaName());
-		processData.setDatabcLhaName(requestProcessData.getDatabcLhaName());
-		processData.setDatabcHsdaName(requestProcessData.getDatabcHsdaName());
-		processData.setDatabcHaName(requestProcessData.getDatabcHaName());
-
-		processData.setDatabcUserChid(requestProcessData.getDatabcUserChid());
-		processData.setDatabcPcnCode(requestProcessData.getDatabcPcnCode());
-		processData.setDatabcPcnName(requestProcessData.getDatabcPcnName());
-		processData.setDatabcStatus(requestProcessData.getDatabcStatus());
-
-		processData.setStatusCode(requestProcessData.getStatusCode());
+		processData.setMailAddrIsPrivate(requestProcessData.getMailAddrIsPrivate());
+		processData.setRowstatusCode(requestProcessData.getRowstatusCode());
 		processData.setUpdatedBy(requestProcessData.getUpdatedBy());
 		processData.setUpdatedAt(new Date());
 
 		try {
 			processDataRepository.save(processData);
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", processData));
 		} catch (Exception e) {
-			if (e.getMessage().contains("foreign key constraint")) {
-				throw new HandleInternalException(
-						"Invalid row status code found. Cannot update process data with id: " + id);
-			} else {
-				logger.error(e.getMessage());
-				throw new HandleInternalException("Cannot update process data with id: " + id
-						+ ". Please report this to your system administrator.");
-			}
+			logger.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
+					"Internal error encountered while updating Process Data with id: " + id, "[]"));
 		}
-		return new ResponseEntity<>(processData, HttpStatus.OK);
 	}
 
-	
+	@GetMapping("/getformfields/header")
+	public String getAllHeader() {
+		return dbUtilityService.getVariablesByTableNameSortedById("PROCESS_DATA");
+	}
+
+	// get specific row by id
+	@PutMapping("/validate/{id}")
+	public ResponseEntity<ResponseMessage> validateProcessDataById(@PathVariable Long id) {
+
+		Optional<ProcessData> _processData = processDataRepository.findById(id);
+		if (_processData.isPresent()) {
+			ProcessData processData = _processData.get();
+
+			Optional<Control> _control = controlRepository.findById(processData.getControlTableId());
+			if (_control.isPresent()) {
+				Control control = _control.get();
+				
+				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_IN_PROGRESS");
+				
+				if ((!processData.getDoNotLoad().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals("COMPLETE"))) {
+					logger.info("validate process data with id: " + id);
+				    // run asyn process
+					dbUtilityService.validateProcessData(control, processData);
+				} else {
+					logger.info("skip validating process data with id: " + id);
+				}
+
+				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_COMPLETED");
+				
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+						controlRepository.findById(processData.getControlTableId())));
+			}
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ResponseMessage("error", 404, "Control Id not found.", "[]"));
+
+	}
+
+
+	@PutMapping("/validateallbycontroltableid/{id}")
+	public ResponseEntity<ResponseMessage> validateAllProcessData(@PathVariable Long id) {
+
+		List<ProcessData> _processDataList = processDataRepository.getAllProcessDataByControlTableId(id);
+		
+		if (_processDataList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Nothing to validate.", "[]"));
+			
+		}
+		dbUtilityService.setControlStatus(id, "PRE-VALIDATION_IN_PROGRESS");
+		// asynchronous operation
+		dbUtilityService.validateProcessDataByControlTableId(id);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "","Validation process started!"));
+	}
+
+	@PutMapping("/plrload/{controlTableId}")
+	public ResponseEntity<ResponseMessage> plrLoad(@PathVariable Long controlTableId) {
+
+		Optional<Control> _control = controlRepository.findById(controlTableId);
+		if (_control.isPresent()) {
+			Control control = _control.get();
+			if (!control.getStatusCode().equals("APPROVED")) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Missing approval from Reg Admin to load to PLR.", "[]"));
+			}
+		}
+		
+		List<ProcessData> _processDataList = processDataRepository.getAllProcessDataByControlTableId(controlTableId);
+		
+		if (_processDataList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Nothing to load to PLR.", "[]"));
+			
+		}
+		dbUtilityService.setControlStatus(controlTableId, "PLR_LOAD_IN_PROGRESS");
+		// asynchronous operation
+		dbUtilityService.loadProcessDataToPlr(controlTableId);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "","PLR load process started!"));
+	}
 }

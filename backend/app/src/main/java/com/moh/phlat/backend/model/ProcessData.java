@@ -14,203 +14,211 @@ public class ProcessData {
 //    @Column(name="ID")
 	private Long id;
 
-	@Column(name = "CONTROL_ID")
-	private Long controlTableId;
-
-	@Column(name = "DO_NOT_LOAD")
-	private String doNotLoad;
-
-	@Column(name = "INTERNAL_ID")
-	private String internalId;
-
-	@Column(name = "HDS_SURV_INTERNAL_ID")
-	private String hdsSurvInternalId;
-
-	@Column(name = "FACILITY_SURV_INTERNAL_ID")
-	private String facilitySurvInternalId;
-
-	@Column(name = "HDS_SOURCE")
-	private String hdsSource;
-
-	@Column(name = "HDS_TYPE_CONCAT")
-	private String hdsTypeConcat;
-
-	@Column(name = "HDS_NAME")
-	private String hdsName;
-
-	@Column(name = "CIVIC_ADDRESS_CLEAN")
-	private String civicAddressClean;
-
-	@Column(name = "BUS_NAME")
-	private String busName;
-
-	@Column(name = "FACILITY_DETAILS_ADDITIONAL_INFO")
-	private String facilityDetailsAdditionalInfo;
-
-	@Column(name = "HDS_TEL_AREA_CODE")
-	private String hdsTelAreaCode;
-
-	@Column(name = "HDS_TEL_NUMBER")
-	private String hdsTelNumber;
-
-	@Column(name = "HDS_CELL_AREA_CODE")
-	private String hdsCellAreaCode;
-
-	@Column(name = "HDS_CELL_NUMBER")
-	private String hdsCellNumber;
-
-	@Column(name = "HDS_FAX_AREA_CODE")
-	private String hdsFaxAreaCode;
-
-	@Column(name = "HDS_FAX_NUMBER")
-	private String hdsFaxNumber;
-
-	@Column(name = "PHYS_PROCESS_STATUS")
-	private String physProcessStatus;
-
-	@Column(name = "PHYS_MAILABILITY_SCORE")
-	private String physMailabilityScore;
-
-	@Column(name = "PHYS_CITY")
-	private String physCity;
-
-	@Column(name = "PHYS_PROVINCE")
-	private String physProvince;
-
-	@Column(name = "PHYS_PCODE")
-	private String physPcode;
-
-	@Column(name = "PHYS_COUNTRY")
-	private String physCountry;
-
-	@Column(name = "PHYS_ADDR_1")
-	private String physAddress1;
-
-	@Column(name = "PHYS_ADDR_2")
-	private String physAddress2;
-
-	@Column(name = "PHYS_ADDR_3")
-	private String physAddress3;
-
-	@Column(name = "PHYS_ADDR_4")
-	private String physAddress4;
-
-	@Column(name = "BUILDING")
-	private String building;
-
-	@Column(name = "UNIT")
-	private String unit;
-
-	@Column(name = "CIVIC_ADDRESS_CLEAN_OLD")
-	private String civicAddressCleanOld;
-
-	@Column(name = "MAIL_PROCESS_STATUS")
-	private String mailProcessStatus;
-
-	@Column(name = "MAIL_MAILABILITY_SCORE")
-	private String mailMailabilityScore;
-
-	@Column(name = "MAIL_CITY")
-	private String mailCity;
-
-	@Column(name = "MAIL_PROVINCE")
-	private String mailProvince;
-
-	@Column(name = "MAIL_PCODE")
-	private String mailPcode;
-
-	@Column(name = "MAIL_COUNTRY")
-	private String mailCountry;
-
-	@Column(name = "MAIL_ADDR_1")
-	private String mailAddress1;
-
-	@Column(name = "MAIL_ADDR_2")
-	private String mailAddress2;
-
-	@Column(name = "MAIL_ADDR_3")
-	private String mailAddress3;
-
-	@Column(name = "MAIL_ADDR_4")
-	private String mailAddress4;
-
-	@Column(name = "DATABC_LATITUDE")
-	private String databcLatitude;
-
-	@Column(name = "DATABC_LONGITUDE")
-	private String databcLongitude;
-
-	@Column(name = "DATABC_UNIT_NO")
-	private String databcUnitNo;
-
-	@Column(name = "DATABC_CIVIC_NUMBER")
-	private String databcCivicNumber;
-
-	@Column(name = "DATABC_STREET_NAME")
-	private String databcStreetName;
-
-	@Column(name = "DATABC_STREET_TYPE")
-	private String databcStreetType;
-
-	@Column(name = "DATABC_LOCALITY_NAME")
-	private String databcLocalityName;
-
-	@Column(name = "DATABC_PROVINCE_CODE")
-	private String databcProvinceCode;
-
-	@Column(name = "DATABC_SITE_ID")
-	private String databcSiteId;
-
-	@Column(name = "DATABC_SCORE")
-	private String databcScore;
-
-	@Column(name = "DATABC_MATCH_PRECISION")
-	private String databcMatchPrecision;
-
-	@Column(name = "DATABC_PRECISION_POINTS")
-	private String databcPrecisionPoints;
-
-	@Column(name = "DATABC_CHSA_CODE")
-	private String databcChsaCode;
-
-	@Column(name = "DATABC_CHSA_NAME")
-	private String databcChsaName;
-
-	@Column(name = "DATABC_LHA_NAME")
-	private String databcLhaName;
-
-	@Column(name = "DATABC_HSDA_NAME")
-	private String databcHsdaName;
-
-	@Column(name = "DATABC_HA_NAME")
-	private String databcHaName;
-
-	@Column(name = "DATABC_USER_CHID")
-	private String databcUserChid;
-
-	@Column(name = "DATABC_PCN_CODE")
-	private String databcPcnCode;
-
-	@Column(name = "DATABC_PCN_NAME")
-	private String databcPcnName;
-
-	@Column(name = "DATABC_STATUS")
-	private String databcStatus;
-
-	@Column(name = "ROWSTATUS_CODE")
-	private String statusCode;
-
-	@Column(name = "CREATED_AT")
-	private Date createdAt;
-
-	@Column(name = "CREATED_BY")
-	private String createdBy;
-
-	@Column(name = "UPDATED_AT")
-	private Date updatedAt;
-
-	@Column(name = "UPDATED_BY")
-	private String updatedBy;
+    @Column(name="control_id")
+    private Long controlTableId;    
+    
+    
+    @Column(name="do_not_load")
+    private String doNotLoad;
+
+
+    @Column(name="stakeholder")
+    private String stakeholder;
+    
+    @Column(name="hds_ipc_id")
+    private String hdsIpcId;
+
+    @Column(name="hds_cpn_id")
+    private String hdsCpnId;
+    
+    @Column(name="hds_provider_identifier1")
+    private String hdsProviderIdentifier1;
+
+    @Column(name="hds_provider_identifier2")
+    private String hdsProviderIdentifier2;
+    
+    @Column(name="hds_provider_identifier3")
+    private String hdsProviderIdentifier3;
+
+    @Column(name="hds_provider_identifier_type1")
+    private String hdsProviderIdentifierType1;
+
+    @Column(name="hds_provider_identifier_type2")
+    private String hdsProviderIdentifierType2;
+    
+    @Column(name="hds_provider_identifier_type3")
+    private String hdsProviderIdentifierType3;
+    
+    @Column(name="hds_hibc_facility_id")
+    private String hdsHibcFacilityId;
+
+    @Column(name="hds_type")
+    private String hdsType;
+
+    @Column(name="hds_name")
+    private String hdsName;
+
+    @Column(name="hds_name_alias")
+    private String hdsNameAlias;
+    
+    @Column(name="hds_preferred_name_flag")
+    private String hdsPreferredNameFlag;
+    
+    @Column(name="hds_email")
+    private String hdsEmail;
+    
+    @Column(name="hds_website")
+    private String hdsWebsite;
+    
+    @Column(name="hds_bus_tel_area_code")
+    private String hdsBusTelAreaCode;
+    
+    @Column(name="hds_bus_tel_number")
+    private String hdsBusTelNumber;
+
+    @Column(name="hds_tel_extension")
+    private String hdsTelExtension;
+    
+    @Column(name="hds_cell_area_code")
+    private String hdsCellAreaCode;   
+    
+    @Column(name="hds_cell_number")
+    private String hdsCellNumber;
+    
+    @Column(name="hds_fax_area_code")
+    private String hdsFaxAreaCode;
+      
+    @Column(name="hds_fax_number")
+    private String hdsFaxNumber;   
+    
+    @Column(name="hds_service_delivery_type")
+    private String hdsServiceDeliveryType;   
+    
+    @Column(name="pcn_clinic_type")
+    private String pcnClinicType;  
+    
+    @Column(name="pcn_pci_flag")
+    private String pcnPciFlag;  
+    
+    @Column(name="hds_hours_of_operation")
+    private String hdsHoursOfOperation;  
+
+    @Column(name="hds_contact_name")
+    private String hdsContactName;  
+    
+    @Column(name="hds_is_for_profit_flag")
+    private String hdsIsForProfitFlag;  
+    
+    @Column(name="source_status")
+    private String sourceStatus;  
+    
+    @Column(name="hds_parent_ipc_id")
+    private String hdsParentIpcId;  
+    
+    @Column(name="bus_ipc_id")
+    private String busIpcId;  
+    
+    @Column(name="bus_cpn_id")
+    private String busCpnId;  
+    
+    @Column(name="bus_name")
+    private String busName;
+    
+    @Column(name="bus_legal_name")
+    private String busLegalName;
+    
+    @Column(name="bus_payee_number")
+    private String busPayeeNumber;
+    
+    @Column(name="bus_owner_name")
+    private String busOwnerName;
+    
+    @Column(name="bus_owner_type")
+    private String busOwnerType;
+    
+    @Column(name="bus_owner_type_other")
+    private String busOwnerTypeOther;
+    
+    @Column(name="fac_building_name")
+    private String facBuildingName;
+    
+    @Column(name="facility_hds_details_additional_info")
+    private String facilityHdsDetailsAdditionalInfo;
+    
+    @Column(name="physical_addr1")
+    private String physicalAddr1;  
+    
+    @Column(name="physical_addr2")
+    private String physicalAddr2;  
+    
+    @Column(name="physical_addr3")
+    private String physicalAddr3;  
+    
+    @Column(name="physical_addr4")
+    private String physicalAddr4;  
+     
+    @Column(name="physical_city")
+    private String physicalCity;  
+    
+    @Column(name="physical_province")
+    private String physicalProvince;  
+
+    @Column(name="physical_pcode")
+    private String physicalPcode;  
+    
+    @Column(name="physical_country")
+    private String physicalCountry;  
+    
+    @Column(name="phys_addr_is_private")
+    private String physAddrIsPrivate;  
+    
+    @Column(name="mail_addr1")
+    private String mailAddr1;  
+    
+    @Column(name="mail_addr2")
+    private String mailAddr2;  
+
+    @Column(name="mail_addr3")
+    private String mailAddr3;
+    
+    @Column(name="mail_addr4")
+    private String mailAddr4;  
+    
+    @Column(name="mail_city")
+    private String mailCity;  
+    
+    @Column(name="mail_bc")
+    private String mailBc;
+    
+    @Column(name="mail_pcode")
+    private String mailPcode;
+    
+    @Column(name="mail_country")
+    private String mailCountry;  
+    
+    @Column(name="mail_addr_is_private")
+    private String mailAddrIsPrivate;  
+    
+    @Column(name="facility_id")
+    private Long facility_id;
+    
+    @Column(name="rowstatus_code")
+    private String rowstatusCode;  
+    
+    @Column(name="error_msg")
+    private String errorMsg;  
+    
+ 	@Column(name="created_at")
+    private Date createdAt;
+
+	@Column(name="created_by")
+    private String createdBy;
+    
+    @Column(name="updated_at")
+    private Date updatedAt;
+
+	@Column(name="updated_by")
+    private String updatedBy;
 
 	public Long getId() {
 		return id;
@@ -236,44 +244,92 @@ public class ProcessData {
 		this.doNotLoad = doNotLoad;
 	}
 
-	public String getInternalId() {
-		return internalId;
+	public String getStakeholder() {
+		return stakeholder;
 	}
 
-	public void setInternalId(String internalId) {
-		this.internalId = internalId;
+	public void setStakeholder(String stakeholder) {
+		this.stakeholder = stakeholder;
 	}
 
-	public String getHdsSurvInternalId() {
-		return hdsSurvInternalId;
+	public String getHdsIpcId() {
+		return hdsIpcId;
 	}
 
-	public void setHdsSurvInternalId(String hdsSurvInternalId) {
-		this.hdsSurvInternalId = hdsSurvInternalId;
+	public void setHdsIpcId(String hdsIpcId) {
+		this.hdsIpcId = hdsIpcId;
 	}
 
-	public String getFacilitySurvInternalId() {
-		return facilitySurvInternalId;
+	public String getHdsCpnId() {
+		return hdsCpnId;
 	}
 
-	public void setFacilitySurvInternalId(String facilitySurvInternalId) {
-		this.facilitySurvInternalId = facilitySurvInternalId;
+	public void setHdsCpnId(String hdsCpnId) {
+		this.hdsCpnId = hdsCpnId;
 	}
 
-	public String getHdsSource() {
-		return hdsSource;
+	public String getHdsProviderIdentifier1() {
+		return hdsProviderIdentifier1;
 	}
 
-	public void setHdsSource(String hdsSource) {
-		this.hdsSource = hdsSource;
+	public void setHdsProviderIdentifier1(String hdsProviderIdentifier1) {
+		this.hdsProviderIdentifier1 = hdsProviderIdentifier1;
 	}
 
-	public String getHdsTypeConcat() {
-		return hdsTypeConcat;
+	public String getHdsProviderIdentifier2() {
+		return hdsProviderIdentifier2;
 	}
 
-	public void setHdsTypeConcat(String hdsTypeConcat) {
-		this.hdsTypeConcat = hdsTypeConcat;
+	public void setHdsProviderIdentifier2(String hdsProviderIdentifier2) {
+		this.hdsProviderIdentifier2 = hdsProviderIdentifier2;
+	}
+
+	public String getHdsProviderIdentifier3() {
+		return hdsProviderIdentifier3;
+	}
+
+	public void setHdsProviderIdentifier3(String hdsProviderIdentifier3) {
+		this.hdsProviderIdentifier3 = hdsProviderIdentifier3;
+	}
+
+	public String getHdsProviderIdentifierType1() {
+		return hdsProviderIdentifierType1;
+	}
+
+	public void setHdsProviderIdentifierType1(String hdsProviderIdentifierType1) {
+		this.hdsProviderIdentifierType1 = hdsProviderIdentifierType1;
+	}
+
+	public String getHdsProviderIdentifierType2() {
+		return hdsProviderIdentifierType2;
+	}
+
+	public void setHdsProviderIdentifierType2(String hdsProviderIdentifierType2) {
+		this.hdsProviderIdentifierType2 = hdsProviderIdentifierType2;
+	}
+
+	public String getHdsProviderIdentifierType3() {
+		return hdsProviderIdentifierType3;
+	}
+
+	public void setHdsProviderIdentifierType3(String hdsProviderIdentifierType3) {
+		this.hdsProviderIdentifierType3 = hdsProviderIdentifierType3;
+	}
+
+	public String getHdsHibcFacilityId() {
+		return hdsHibcFacilityId;
+	}
+
+	public void setHdsHibcFacilityId(String hdsHibcFacilityId) {
+		this.hdsHibcFacilityId = hdsHibcFacilityId;
+	}
+
+	public String getHdsType() {
+		return hdsType;
+	}
+
+	public void setHdsType(String hdsType) {
+		this.hdsType = hdsType;
 	}
 
 	public String getHdsName() {
@@ -284,44 +340,60 @@ public class ProcessData {
 		this.hdsName = hdsName;
 	}
 
-	public String getCivicAddressClean() {
-		return civicAddressClean;
+	public String getHdsNameAlias() {
+		return hdsNameAlias;
 	}
 
-	public void setCivicAddressClean(String civicAddressClean) {
-		this.civicAddressClean = civicAddressClean;
+	public void setHdsNameAlias(String hdsNameAlias) {
+		this.hdsNameAlias = hdsNameAlias;
 	}
 
-	public String getBusName() {
-		return busName;
+	public String getHdsPreferredNameFlag() {
+		return hdsPreferredNameFlag;
 	}
 
-	public void setBusName(String busName) {
-		this.busName = busName;
+	public void setHdsPreferredNameFlag(String hdsPreferredNameFlag) {
+		this.hdsPreferredNameFlag = hdsPreferredNameFlag;
 	}
 
-	public String getFacilityDetailsAdditionalInfo() {
-		return facilityDetailsAdditionalInfo;
+	public String getHdsEmail() {
+		return hdsEmail;
 	}
 
-	public void setFacilityDetailsAdditionalInfo(String facilityDetailsAdditionalInfo) {
-		this.facilityDetailsAdditionalInfo = facilityDetailsAdditionalInfo;
+	public void setHdsEmail(String hdsEmail) {
+		this.hdsEmail = hdsEmail;
 	}
 
-	public String getHdsTelAreaCode() {
-		return hdsTelAreaCode;
+	public String getHdsWebsite() {
+		return hdsWebsite;
 	}
 
-	public void setHdsTelAreaCode(String hdsTelAreaCode) {
-		this.hdsTelAreaCode = hdsTelAreaCode;
+	public void setHdsWebsite(String hdsWebsite) {
+		this.hdsWebsite = hdsWebsite;
 	}
 
-	public String getHdsTelNumber() {
-		return hdsTelNumber;
+	public String getHdsBusTelAreaCode() {
+		return hdsBusTelAreaCode;
 	}
 
-	public void setHdsTelNumber(String hdsTelNumber) {
-		this.hdsTelNumber = hdsTelNumber;
+	public void setHdsBusTelAreaCode(String hdsBusTelAreaCode) {
+		this.hdsBusTelAreaCode = hdsBusTelAreaCode;
+	}
+
+	public String getHdsBusTelNumber() {
+		return hdsBusTelNumber;
+	}
+
+	public void setHdsBusTelNumber(String hdsBusTelNumber) {
+		this.hdsBusTelNumber = hdsBusTelNumber;
+	}
+
+	public String getHdsTelExtension() {
+		return hdsTelExtension;
+	}
+
+	public void setHdsTelExtension(String hdsTelExtension) {
+		this.hdsTelExtension = hdsTelExtension;
 	}
 
 	public String getHdsCellAreaCode() {
@@ -356,124 +428,252 @@ public class ProcessData {
 		this.hdsFaxNumber = hdsFaxNumber;
 	}
 
-	public String getPhysProcessStatus() {
-		return physProcessStatus;
+	public String getHdsServiceDeliveryType() {
+		return hdsServiceDeliveryType;
 	}
 
-	public void setPhysProcessStatus(String physProcessStatus) {
-		this.physProcessStatus = physProcessStatus;
+	public void setHdsServiceDeliveryType(String hdsServiceDeliveryType) {
+		this.hdsServiceDeliveryType = hdsServiceDeliveryType;
 	}
 
-	public String getPhysMailabilityScore() {
-		return physMailabilityScore;
+	public String getPcnClinicType() {
+		return pcnClinicType;
 	}
 
-	public void setPhysMailabilityScore(String physMailabilityScore) {
-		this.physMailabilityScore = physMailabilityScore;
+	public void setPcnClinicType(String pcnClinicType) {
+		this.pcnClinicType = pcnClinicType;
 	}
 
-	public String getPhysCity() {
-		return physCity;
+	public String getPcnPciFlag() {
+		return pcnPciFlag;
 	}
 
-	public void setPhysCity(String physCity) {
-		this.physCity = physCity;
+	public void setPcnPciFlag(String pcnPciFlag) {
+		this.pcnPciFlag = pcnPciFlag;
 	}
 
-	public String getPhysProvince() {
-		return physProvince;
+	public String getHdsHoursOfOperation() {
+		return hdsHoursOfOperation;
 	}
 
-	public void setPhysProvince(String physProvince) {
-		this.physProvince = physProvince;
+	public void setHdsHoursOfOperation(String hdsHoursOfOperation) {
+		this.hdsHoursOfOperation = hdsHoursOfOperation;
 	}
 
-	public String getPhysPcode() {
-		return physPcode;
+	public String getHdsContactName() {
+		return hdsContactName;
 	}
 
-	public void setPhysPcode(String physPcode) {
-		this.physPcode = physPcode;
+	public void setHdsContactName(String hdsContactName) {
+		this.hdsContactName = hdsContactName;
 	}
 
-	public String getPhysCountry() {
-		return physCountry;
+	public String getHdsIsForProfitFlag() {
+		return hdsIsForProfitFlag;
 	}
 
-	public void setPhysCountry(String physCountry) {
-		this.physCountry = physCountry;
+	public void setHdsIsForProfitFlag(String hdsIsForProfitFlag) {
+		this.hdsIsForProfitFlag = hdsIsForProfitFlag;
 	}
 
-	public String getPhysAddress1() {
-		return physAddress1;
+	public String getSourceStatus() {
+		return sourceStatus;
 	}
 
-	public void setPhysAddress1(String physAddress1) {
-		this.physAddress1 = physAddress1;
+	public void setSourceStatus(String sourceStatus) {
+		this.sourceStatus = sourceStatus;
 	}
 
-	public String getPhysAddress2() {
-		return physAddress2;
+	public String getHdsParentIpcId() {
+		return hdsParentIpcId;
 	}
 
-	public void setPhysAddress2(String physAddress2) {
-		this.physAddress2 = physAddress2;
+	public void setHdsParentIpcId(String hdsParentIpcId) {
+		this.hdsParentIpcId = hdsParentIpcId;
 	}
 
-	public String getPhysAddress3() {
-		return physAddress3;
+	public String getBusIpcId() {
+		return busIpcId;
 	}
 
-	public void setPhysAddress3(String physAddress3) {
-		this.physAddress3 = physAddress3;
+	public void setBusIpcId(String busIpcId) {
+		this.busIpcId = busIpcId;
 	}
 
-	public String getPhysAddress4() {
-		return physAddress4;
+	public String getBusCpnId() {
+		return busCpnId;
 	}
 
-	public void setPhysAddress4(String physAddress4) {
-		this.physAddress4 = physAddress4;
+	public void setBusCpnId(String busCpnId) {
+		this.busCpnId = busCpnId;
 	}
 
-	public String getBuilding() {
-		return building;
+	public String getBusName() {
+		return busName;
 	}
 
-	public void setBuilding(String building) {
-		this.building = building;
+	public void setBusName(String busName) {
+		this.busName = busName;
 	}
 
-	public String getUnit() {
-		return unit;
+	public String getBusLegalName() {
+		return busLegalName;
 	}
 
-	public void setUnit(String unit) {
-		this.unit = unit;
+	public void setBusLegalName(String busLegalName) {
+		this.busLegalName = busLegalName;
 	}
 
-	public String getCivicAddressCleanOld() {
-		return civicAddressCleanOld;
+	public String getBusPayeeNumber() {
+		return busPayeeNumber;
 	}
 
-	public void setCivicAddressCleanOld(String civicAddressCleanOld) {
-		this.civicAddressCleanOld = civicAddressCleanOld;
+	public void setBusPayeeNumber(String busPayeeNumber) {
+		this.busPayeeNumber = busPayeeNumber;
 	}
 
-	public String getMailProcessStatus() {
-		return mailProcessStatus;
+	public String getBusOwnerName() {
+		return busOwnerName;
 	}
 
-	public void setMailProcessStatus(String mailProcessStatus) {
-		this.mailProcessStatus = mailProcessStatus;
+	public void setBusOwnerName(String busOwnerName) {
+		this.busOwnerName = busOwnerName;
 	}
 
-	public String getMailMailabilityScore() {
-		return mailMailabilityScore;
+	public String getBusOwnerType() {
+		return busOwnerType;
 	}
 
-	public void setMailMailabilityScore(String mailMailabilityScore) {
-		this.mailMailabilityScore = mailMailabilityScore;
+	public void setBusOwnerType(String busOwnerType) {
+		this.busOwnerType = busOwnerType;
+	}
+
+	public String getBusOwnerTypeOther() {
+		return busOwnerTypeOther;
+	}
+
+	public void setBusOwnerTypeOther(String busOwnerTypeOther) {
+		this.busOwnerTypeOther = busOwnerTypeOther;
+	}
+
+	public String getFacBuildingName() {
+		return facBuildingName;
+	}
+
+	public void setFacBuildingName(String facBuildingName) {
+		this.facBuildingName = facBuildingName;
+	}
+
+	public String getFacilityHdsDetailsAdditionalInfo() {
+		return facilityHdsDetailsAdditionalInfo;
+	}
+
+	public void setFacilityHdsDetailsAdditionalInfo(String facilityHdsDetailsAdditionalInfo) {
+		this.facilityHdsDetailsAdditionalInfo = facilityHdsDetailsAdditionalInfo;
+	}
+
+	public String getPhysicalAddr1() {
+		return physicalAddr1;
+	}
+
+	public void setPhysicalAddr1(String physicalAddr1) {
+		this.physicalAddr1 = physicalAddr1;
+	}
+
+	public String getPhysicalAddr2() {
+		return physicalAddr2;
+	}
+
+	public void setPhysicalAddr2(String physicalAddr2) {
+		this.physicalAddr2 = physicalAddr2;
+	}
+
+	public String getPhysicalAddr3() {
+		return physicalAddr3;
+	}
+
+	public void setPhysicalAddr3(String physicalAddr3) {
+		this.physicalAddr3 = physicalAddr3;
+	}
+
+	public String getPhysicalAddr4() {
+		return physicalAddr4;
+	}
+
+	public void setPhysicalAddr4(String physicalAddr4) {
+		this.physicalAddr4 = physicalAddr4;
+	}
+
+	public String getPhysicalCity() {
+		return physicalCity;
+	}
+
+	public void setPhysicalCity(String physicalCity) {
+		this.physicalCity = physicalCity;
+	}
+
+	public String getPhysicalProvince() {
+		return physicalProvince;
+	}
+
+	public void setPhysicalProvince(String physicalProvince) {
+		this.physicalProvince = physicalProvince;
+	}
+
+	public String getPhysicalPcode() {
+		return physicalPcode;
+	}
+
+	public void setPhysicalPcode(String physicalPcode) {
+		this.physicalPcode = physicalPcode;
+	}
+
+	public String getPhysicalCountry() {
+		return physicalCountry;
+	}
+
+	public void setPhysicalCountry(String physicalCountry) {
+		this.physicalCountry = physicalCountry;
+	}
+
+	public String getPhysAddrIsPrivate() {
+		return physAddrIsPrivate;
+	}
+
+	public void setPhysAddrIsPrivate(String physAddrIsPrivate) {
+		this.physAddrIsPrivate = physAddrIsPrivate;
+	}
+
+	public String getMailAddr1() {
+		return mailAddr1;
+	}
+
+	public void setMailAddr1(String mailAddr1) {
+		this.mailAddr1 = mailAddr1;
+	}
+
+	public String getMailAddr2() {
+		return mailAddr2;
+	}
+
+	public void setMailAddr2(String mailAddr2) {
+		this.mailAddr2 = mailAddr2;
+	}
+
+	public String getMailAddr3() {
+		return mailAddr3;
+	}
+
+	public void setMailAddr3(String mailAddr3) {
+		this.mailAddr3 = mailAddr3;
+	}
+
+	public String getMailAddr4() {
+		return mailAddr4;
+	}
+
+	public void setMailAddr4(String mailAddr4) {
+		this.mailAddr4 = mailAddr4;
 	}
 
 	public String getMailCity() {
@@ -484,12 +684,12 @@ public class ProcessData {
 		this.mailCity = mailCity;
 	}
 
-	public String getMailProvince() {
-		return mailProvince;
+	public String getMailBc() {
+		return mailBc;
 	}
 
-	public void setMailProvince(String mailProvince) {
-		this.mailProvince = mailProvince;
+	public void setMailBc(String mailBc) {
+		this.mailBc = mailBc;
 	}
 
 	public String getMailPcode() {
@@ -508,212 +708,36 @@ public class ProcessData {
 		this.mailCountry = mailCountry;
 	}
 
-	public String getMailAddress1() {
-		return mailAddress1;
+	public String getMailAddrIsPrivate() {
+		return mailAddrIsPrivate;
 	}
 
-	public void setMailAddress1(String mailAddress1) {
-		this.mailAddress1 = mailAddress1;
+	public void setMailAddrIsPrivate(String mailAddrIsPrivate) {
+		this.mailAddrIsPrivate = mailAddrIsPrivate;
 	}
 
-	public String getMailAddress2() {
-		return mailAddress2;
+	public Long getFacility_id() {
+		return facility_id;
 	}
 
-	public void setMailAddress2(String mailAddress2) {
-		this.mailAddress2 = mailAddress2;
+	public void setFacility_id(Long facility_id) {
+		this.facility_id = facility_id;
 	}
 
-	public String getMailAddress3() {
-		return mailAddress3;
+	public String getRowstatusCode() {
+		return rowstatusCode;
 	}
 
-	public void setMailAddress3(String mailAddress3) {
-		this.mailAddress3 = mailAddress3;
+	public void setRowstatusCode(String rowstatusCode) {
+		this.rowstatusCode = rowstatusCode;
 	}
 
-	public String getMailAddress4() {
-		return mailAddress4;
+	public String getErrorMsg() {
+		return errorMsg;
 	}
 
-	public void setMailAddress4(String mailAddress4) {
-		this.mailAddress4 = mailAddress4;
-	}
-
-	public String getDatabcLatitude() {
-		return databcLatitude;
-	}
-
-	public void setDatabcLatitude(String databcLatitude) {
-		this.databcLatitude = databcLatitude;
-	}
-
-	public String getDatabcLongitude() {
-		return databcLongitude;
-	}
-
-	public void setDatabcLongitude(String databcLongitude) {
-		this.databcLongitude = databcLongitude;
-	}
-
-	public String getDatabcUnitNo() {
-		return databcUnitNo;
-	}
-
-	public void setDatabcUnitNo(String databcUnitNo) {
-		this.databcUnitNo = databcUnitNo;
-	}
-
-	public String getDatabcCivicNumber() {
-		return databcCivicNumber;
-	}
-
-	public void setDatabcCivicNumber(String databcCivicNumber) {
-		this.databcCivicNumber = databcCivicNumber;
-	}
-
-	public String getDatabcStreetName() {
-		return databcStreetName;
-	}
-
-	public void setDatabcStreetName(String databcStreetName) {
-		this.databcStreetName = databcStreetName;
-	}
-
-	public String getDatabcStreetType() {
-		return databcStreetType;
-	}
-
-	public void setDatabcStreetType(String databcStreetType) {
-		this.databcStreetType = databcStreetType;
-	}
-
-	public String getDatabcLocalityName() {
-		return databcLocalityName;
-	}
-
-	public void setDatabcLocalityName(String databcLocalityName) {
-		this.databcLocalityName = databcLocalityName;
-	}
-
-	public String getDatabcProvinceCode() {
-		return databcProvinceCode;
-	}
-
-	public void setDatabcProvinceCode(String databcProvinceCode) {
-		this.databcProvinceCode = databcProvinceCode;
-	}
-
-	public String getDatabcSiteId() {
-		return databcSiteId;
-	}
-
-	public void setDatabcSiteId(String databcSiteId) {
-		this.databcSiteId = databcSiteId;
-	}
-
-	public String getDatabcScore() {
-		return databcScore;
-	}
-
-	public void setDatabcScore(String databcScore) {
-		this.databcScore = databcScore;
-	}
-
-	public String getDatabcMatchPrecision() {
-		return databcMatchPrecision;
-	}
-
-	public void setDatabcMatchPrecision(String databcMatchPrecision) {
-		this.databcMatchPrecision = databcMatchPrecision;
-	}
-
-	public String getDatabcPrecisionPoints() {
-		return databcPrecisionPoints;
-	}
-
-	public void setDatabcPrecisionPoints(String databcPrecisionPoints) {
-		this.databcPrecisionPoints = databcPrecisionPoints;
-	}
-
-	public String getDatabcChsaCode() {
-		return databcChsaCode;
-	}
-
-	public void setDatabcChsaCode(String databcChsaCode) {
-		this.databcChsaCode = databcChsaCode;
-	}
-
-	public String getDatabcChsaName() {
-		return databcChsaName;
-	}
-
-	public void setDatabcChsaName(String databcChsaName) {
-		this.databcChsaName = databcChsaName;
-	}
-
-	public String getDatabcLhaName() {
-		return databcLhaName;
-	}
-
-	public void setDatabcLhaName(String databcLhaName) {
-		this.databcLhaName = databcLhaName;
-	}
-
-	public String getDatabcHsdaName() {
-		return databcHsdaName;
-	}
-
-	public void setDatabcHsdaName(String databcHsdaName) {
-		this.databcHsdaName = databcHsdaName;
-	}
-
-	public String getDatabcHaName() {
-		return databcHaName;
-	}
-
-	public void setDatabcHaName(String databcHaName) {
-		this.databcHaName = databcHaName;
-	}
-
-	public String getDatabcUserChid() {
-		return databcUserChid;
-	}
-
-	public void setDatabcUserChid(String databcUserChid) {
-		this.databcUserChid = databcUserChid;
-	}
-
-	public String getDatabcPcnCode() {
-		return databcPcnCode;
-	}
-
-	public void setDatabcPcnCode(String databcPcnCode) {
-		this.databcPcnCode = databcPcnCode;
-	}
-
-	public String getDatabcPcnName() {
-		return databcPcnName;
-	}
-
-	public void setDatabcPcnName(String databcPcnName) {
-		this.databcPcnName = databcPcnName;
-	}
-
-	public String getDatabcStatus() {
-		return databcStatus;
-	}
-
-	public void setDatabcStatus(String databcStatus) {
-		this.databcStatus = databcStatus;
-	}
-
-	public String getStatusCode() {
-		return statusCode;
-	}
-
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
 	public Date getCreatedAt() {
@@ -748,4 +772,6 @@ public class ProcessData {
 		this.updatedBy = updatedBy;
 	}
 
+	
+	
 }

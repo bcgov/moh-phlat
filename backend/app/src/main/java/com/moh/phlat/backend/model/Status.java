@@ -21,6 +21,11 @@ public class Status {
     @NotEmpty(message="Description must not be null or empty.")
     private String description;
 
+	@Column(name="type",  length=10, nullable = false)
+    @NotNull(message="Status type is required.")
+    @NotEmpty(message="Status type must not be null or empty.")
+    private String type;
+
     @Column(name="is_deleted")
     private Boolean isDeleted;
 
@@ -47,6 +52,14 @@ public class Status {
 
 	public void setDescription(String descr) {
 		this.description = descr;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public Boolean getIsDeleted() {

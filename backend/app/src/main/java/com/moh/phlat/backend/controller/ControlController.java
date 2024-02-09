@@ -6,19 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.moh.phlat.backend.exception.HandleInternalException;
-import com.moh.phlat.backend.exception.HandleNotFoundException;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.response.ResponseMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,73 +29,49 @@ public class ControlController {
 	@Autowired
 	private ControlRepository controlRepository;
 
-	@PostMapping(value = "/add")
-	public ResponseEntity<Control> createControl(@RequestBody Control requestControl) throws HandleInternalException {
-		Control _controlTable = new Control();
-		_controlTable.setFileName(requestControl.getFileName());
-		_controlTable.setUserId(requestControl.getUserId());
-		_controlTable.setFileExtractedDate(requestControl.getFileExtractedDate());
-		_controlTable.setProcessStartDate(requestControl.getProcessStartDate());
-		_controlTable.setProcessEndDate(requestControl.getProcessEndDate());
-		_controlTable.setBatchLabelName(requestControl.getBatchLabelName());
-
-		_controlTable.setLoadTypeFacility(requestControl.getLoadTypeFacility());
-		_controlTable.setLoadTypeHds(requestControl.getLoadTypeHds());
-		_controlTable.setLoadTypeOrg(requestControl.getLoadTypeOrg());
-		_controlTable.setLoadTypeOFRelationship(requestControl.getLoadTypeOFRelationship());
-		_controlTable.setLoadTypeOORelationship(requestControl.getLoadTypeOORelationship());
-		_controlTable.setLoadTypeIORelationship(requestControl.getLoadTypeIORelationship());
-		_controlTable.setLoadTypeWOXref(requestControl.getLoadTypeWOXref());
-		_controlTable.setLoadTypeWPIXref(requestControl.getLoadTypeWPIXref());
-		_controlTable.setStatusCode(requestControl.getStatusCode());
-
-		_controlTable.setCreatedBy(requestControl.getCreatedBy());
-		_controlTable.setCreatedAt(new Date());
-
-		try {
-			controlRepository.save(_controlTable);
-		} catch (Exception e) {
-			if (e.getMessage().contains("duplicate")) {
-				throw new HandleInternalException(
-						"Control table already has file name: " + requestControl.getFileName());
-			} else {
-				logger.error(e.getMessage());
-				throw new HandleInternalException("Cannot add control file name: " + requestControl.getFileName()
-						+ ". Please report this to your system administrator");
-			}
-		}
-		return new ResponseEntity<>(_controlTable, HttpStatus.CREATED);
-	}
-
 	@GetMapping("/view/all")
-	public @ResponseBody Iterable<Control> getAllControls() {
-		return controlRepository.findAll();
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseMessage("success", 200, "", controlRepository.findAll()));
 	}
 
 	// view specific file control
 	@GetMapping("/view/{id}")
-	public Control getControlById(@PathVariable Long id) throws HandleNotFoundException {
-		return controlRepository.findById(id)
-				.orElseThrow(() -> new HandleNotFoundException("Control not found with id: " + id));
+	public ResponseEntity<ResponseMessage> getControlById(@PathVariable Long id) {
+		Optional<Control> controlTable = controlRepository.findById(id);
+		if (controlTable.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ResponseMessage("success", 404, "Control table not found with id: " + id, "[]"));
+		}
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseMessage("success", 200, "", controlRepository.findById(id)));
 	}
-	
+
 	@GetMapping("/view/filename/{fileName}")
-	public Iterable<Control> getControlByFileName(@PathVariable String fileName) {
-		return controlRepository.findByFileName(fileName);
+	public ResponseEntity<ResponseMessage> getControlByFileName(@PathVariable String fileName) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseMessage("success", 200, "", controlRepository.findByFileName(fileName)));
+
 	}
 
 	@PutMapping("/update/{id}")
-	public ResponseEntity<Control> updateControl(@PathVariable("id") long id, @RequestBody Control requestControl) throws HandleNotFoundException {
+	public ResponseEntity<ResponseMessage> updateControl(@PathVariable("id") long id,
+			@RequestBody Control requestControl) {
 		Optional<Control> controlTableData = controlRepository.findById(id);
-		
-		if (controlTableData.isPresent()) {
+
+		if (controlTableData.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ResponseMessage("error", 404, "Control table not found with id: " + id, "[]"));
+		}
+
+		try {
+
 			Control _controlTable = controlTableData.get();
 
 			_controlTable.setFileName(requestControl.getFileName());
 			_controlTable.setUserId(requestControl.getUserId());
 			_controlTable.setFileExtractedDate(requestControl.getFileExtractedDate());
-			_controlTable.setProcessStartDate(requestControl.getProcessStartDate());
-			_controlTable.setProcessEndDate(requestControl.getProcessEndDate());
 			_controlTable.setBatchLabelName(requestControl.getBatchLabelName());
 
 			_controlTable.setLoadTypeFacility(requestControl.getLoadTypeFacility());
@@ -114,29 +87,46 @@ public class ControlController {
 			_controlTable.setUpdatedBy(requestControl.getUpdatedBy());
 			_controlTable.setUpdatedAt(new Date());
 
-			return new ResponseEntity<>(controlRepository.save(_controlTable), HttpStatus.OK);
-		} else {
-			throw new HandleNotFoundException("Control not found with id: " + id);
+			controlRepository.save(_controlTable);
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _controlTable));
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
+					"Internal error encountered while updating Control table with id: " + id, "[]"));
+		}
+	}
+	
+	@PutMapping("/approve/{id}")
+	public ResponseEntity<ResponseMessage> approveToLoadToPLR(@PathVariable("id") long id,
+			@RequestBody Control requestControl) {
+		Optional<Control> controlTableData = controlRepository.findById(id);
+
+		if (controlTableData.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ResponseMessage("error", 404, "Control table not found with id: " + id, "[]"));
+		}
+
+		try {
+
+			Control _controlTable = controlTableData.get();
+
+			_controlTable.setStatusCode("APPROVED");
+
+			_controlTable.setUpdatedBy(requestControl.getUpdatedBy());
+			_controlTable.setUpdatedAt(new Date());
+
+			controlRepository.save(_controlTable);
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _controlTable));
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
+					"Internal error encountered while approving constrol table with id: " + id, "[]"));
 		}
 	}
 
-	/*
-	 * MIGHT NEED THIS CODE LATER
-	 * 
-	 * @DeleteMapping("/delete/{id}") public ResponseEntity<HttpStatus>
-	 * deleteControl(@PathVariable("id") long id) { try {
-	 * controlRepository.deleteById(id); return new
-	 * ResponseEntity<>(HttpStatus.NO_CONTENT); } catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); } }
-	 */
-
-	/*
-	 * @DeleteMapping("/delete/all") public ResponseEntity<HttpStatus>
-	 * deleteAllControls() { try { controlRepository.deleteAll(); return new
-	 * ResponseEntity<>(HttpStatus.NO_CONTENT); } catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
-
+	
 }

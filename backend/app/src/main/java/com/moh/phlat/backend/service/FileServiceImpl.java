@@ -24,7 +24,6 @@ import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.model.SourceData;
-import com.moh.phlat.backend.model.User;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.exception.HandleNotFoundException;
 import com.moh.phlat.backend.model.ProcessData;
@@ -49,7 +48,6 @@ public class FileServiceImpl implements FileService {
     
 	@Override
 	public boolean hasCsvFormat(MultipartFile file,String tableName) {
-//		String expectedHeaderLine = "DO_NOT_LOAD,INTERNAL_ID,HDS_SURV_INTERNAL_ID,FACILITY_SURV_INTERNAL_ID,HDS_SOURCE,HDS_TYPE_CONCAT,HDS_NAME,CIVIC_ADDRESS_CLEAN,BUS_NAME,FACILITY_DETAILS_ADDITIONAL_INFO,HDS_TEL_AREA_CODE,HDS_TEL_NUMBER,HDS_CELL_AREA_CODE,HDS_CELL_NUMBER,HDS_FAX_AREA_CODE,HDS_FAX_NUMBER,PHYS_PROCESS_STATUS,PHYS_MAILABILITY_SCORE,PHYS_CITY,PHYS_PROVINCE,PHYS_PCODE,PHYS_COUNTRY,PHYS_ADDR_1,PHYS_ADDR_2,PHYS_ADDR_3,PHYS_ADDR_4,BUILDING,UNIT,CIVIC_ADDRESS_CLEAN_OLD,MAIL_PROCESS_STATUS,MAIL_MAILABILITY_SCORE,MAIL_CITY,MAIL_PROVINCE,MAIL_PCODE,MAIL_COUNTRY,MAIL_ADDR_1,MAIL_ADDR_2,MAIL_ADDR_3,MAIL_ADDR_4,DATABC_LATITUDE,DATABC_LONGITUDE,DATABC_UNIT_NO,DATABC_CIVIC_NUMBER,DATABC_STREET_NAME,DATABC_STREET_TYPE,DATABC_LOCALITY_NAME,DATABC_PROVINCE_CODE,DATABC_SITE_ID,DATABC_SCORE,DATABC_MATCH_PRECISION,DATABC_PRECISION_POINTS,DATABC_CHSA_CODE,DATABC_CHSA_NAME,DATABC_LHA_NAME,DATABC_HSDA_NAME,DATABC_HA_NAME,DATABC_USER_CHID,DATABC_PCN_CODE,DATABC_PCN_NAME,DATABC_STATUS";
 		String expectedHeaderLine = dbUtilityService.getHeadersByTableNameSortedById(tableName.toUpperCase()).trim();
 		
 		String type = "text/csv";
@@ -74,12 +72,9 @@ public class FileServiceImpl implements FileService {
 		if (Objects.isNull(headerLine))
 			return false; // empty file
 		
-//		logger.info("act:" + headerLine + "(" + expectedHeaderLine.length() + ")");
-//		logger.info("exp:" + expectedHeaderLine + "(" + expectedHeaderLine.length() + ")");
-		
-
 		if (!expectedHeaderLine.trim().equals(headerLine.trim())) {
-//			logger.info("HEADER ARE NOT EQUAL");
+			logger.info("act:" + headerLine + "(" + expectedHeaderLine.length() + ")");
+			logger.info("exp:" + expectedHeaderLine + "(" + expectedHeaderLine.length() + ")");
 			return false; // headers not match expected values
 		}
 		
@@ -97,23 +92,24 @@ public class FileServiceImpl implements FileService {
 			sourceDataRepository.saveAll(sourceData);
 
 
-			Control control = controlRepository.findById(controlTableId)
-					.orElseThrow(() -> new HandleNotFoundException("Control not found with id: " + controlTableId));
+			Optional<Control> _control = controlRepository.findById(controlTableId);
 
-			control.setStatusCode("UPLOAD_COMPLETED");
-			control.setUpdatedBy("SYSTEM");
-			control.setUpdatedAt(new Date());
+			if (_control.isPresent()) {
+				Control control = _control.get();
+				
+				control.setStatusCode("UPLOAD_COMPLETED");
+				control.setUpdatedBy("SYSTEM");
+				control.setUpdatedAt(new Date());
 			
-			controlRepository.save(control);
-			logger.info("Parsing CSV file completed successfully.");
+				controlRepository.save(control);
 
-			logger.info("Loading process data table starts...");
-			copyInputSourceDataToProcessData(controlTableId);
+				logger.info("Loading process data table starts...");
+				copyInputSourceDataToProcessData(controlTableId);
+			}
 			logger.info("Loading process data table completed successfully.");
 
-		} catch (IOException | HandleNotFoundException e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
+		} catch (IOException e){
+			logger.error("Unexpected error: " + e.getMessage());
 		}
 
 	}
@@ -127,65 +123,65 @@ public class FileServiceImpl implements FileService {
 			for (CSVRecord csvRecords : records) {
 				SourceData sourceData = new SourceData(controlTableId, 
 						csvRecords.get("DO_NOT_LOAD"), 
-						csvRecords.get("INTERNAL_ID"),
-						csvRecords.get("HDS_SURV_INTERNAL_ID"),	
-						csvRecords.get("FACILITY_SURV_INTERNAL_ID"),
-						csvRecords.get("HDS_SOURCE"),
-						csvRecords.get("HDS_TYPE_CONCAT"),
-						csvRecords.get("HDS_NAME"),						
-						csvRecords.get("CIVIC_ADDRESS_CLEAN"),
-						csvRecords.get("BUS_NAME"),
-						csvRecords.get("FACILITY_DETAILS_ADDITIONAL_INFO"),
-						csvRecords.get("HDS_TEL_AREA_CODE"),
-						csvRecords.get("HDS_TEL_NUMBER"),
+						csvRecords.get("STAKEHOLDER"),
+						csvRecords.get("HDS_IPC_ID"),	
+						csvRecords.get("HDS_CPN_ID"),
+						csvRecords.get("HDS_PROVIDER_IDENTIFIER1"),
+						csvRecords.get("HDS_PROVIDER_IDENTIFIER2"),
+						csvRecords.get("HDS_PROVIDER_IDENTIFIER3"),						
+						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE1"),
+						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE2"),
+						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE3"),
+						csvRecords.get("HDS_HIBC_FACILITY_ID"),
+						csvRecords.get("HDS_TYPE"),
+						csvRecords.get("HDS_NAME"),												
+						csvRecords.get("HDS_NAME_ALIAS"),	
+						csvRecords.get("HDS_PREFERRED_NAME_FLAG"),							
+						csvRecords.get("HDS_EMAIL"),	
+						csvRecords.get("HDS_WEBSITE"),	
+						csvRecords.get("HDS_BUS_TEL_AREA_CODE"),
+						csvRecords.get("HDS_BUS_TEL_NUMBER"),
+						csvRecords.get("HDS_TEL_EXTENSION"),	
 						csvRecords.get("HDS_CELL_AREA_CODE"),
 						csvRecords.get("HDS_CELL_NUMBER"),
 						csvRecords.get("HDS_FAX_AREA_CODE"),
 						csvRecords.get("HDS_FAX_NUMBER"),
-						csvRecords.get("PHYS_PROCESS_STATUS"),
-						csvRecords.get("PHYS_MAILABILITY_SCORE"),
-						csvRecords.get("PHYS_CITY"),
-						csvRecords.get("PHYS_PROVINCE"),
-						csvRecords.get("PHYS_PCODE"),
-						csvRecords.get("PHYS_COUNTRY"),
-						csvRecords.get("PHYS_ADDR_1"),
-						csvRecords.get("PHYS_ADDR_2"),
-						csvRecords.get("PHYS_ADDR_3"),
-						csvRecords.get("PHYS_ADDR_4"),
-						csvRecords.get("BUILDING"),
-						csvRecords.get("UNIT"),
-						csvRecords.get("CIVIC_ADDRESS_CLEAN_OLD"),
-						csvRecords.get("MAIL_PROCESS_STATUS"),
-						csvRecords.get("MAIL_MAILABILITY_SCORE"),
-						csvRecords.get("MAIL_CITY"),
-						csvRecords.get("MAIL_PROVINCE"),
+						csvRecords.get("HDS_SERVICE_DELIVERY_TYPE"),
+						csvRecords.get("PCN_CLINIC_TYPE"),
+						csvRecords.get("PCN_PCI_FLAG"),
+						csvRecords.get("HDS_HOURS_OF_OPERATION"),						
+						csvRecords.get("HDS_CONTACT_NAME"),
+						csvRecords.get("HDS_IS_FOR_PROFIT_FLAG"),	
+						csvRecords.get("SOURCE_STATUS"),							
+						csvRecords.get("HDS_PARENT_IPC_ID"),	
+						csvRecords.get("BUS_IPC_ID"),							
+						csvRecords.get("BUS_CPN_ID"),	
+						csvRecords.get("BUS_NAME"),							
+						csvRecords.get("BUS_LEGAL_NAME"),							
+						csvRecords.get("BUS_PAYEE_NUMBER"),
+						csvRecords.get("BUS_OWNER_NAME"),
+						csvRecords.get("BUS_OWNER_TYPE"),
+						csvRecords.get("BUS_OWNER_TYPE_OTHER"),
+						csvRecords.get("FAC_BUILDING_NAME"),	
+						csvRecords.get("FACILITY_HDS_DETAILS_ADDITIONAL_INFO"),			
+						csvRecords.get("PHYSICAL_ADDR1"),
+						csvRecords.get("PHYSICAL_ADDR2"),
+						csvRecords.get("PHYSICAL_ADDR3"),
+						csvRecords.get("PHYSICAL_ADDR4"),
+						csvRecords.get("PHYSICAL_CITY"),						
+						csvRecords.get("PHYSICAL_PROVINCE"),
+						csvRecords.get("PHYSICAL_PCODE"),
+						csvRecords.get("PHYSICAL_COUNTRY"),
+						csvRecords.get("PHYS_ADDR_IS_PRIVATE"),	
+						csvRecords.get("MAIL_ADDR1"),
+						csvRecords.get("MAIL_ADDR2"),
+						csvRecords.get("MAIL_ADDR3"),
+						csvRecords.get("MAIL_ADDR4"),
+						csvRecords.get("MAIL_CITY"),						
+						csvRecords.get("MAIL_BC"),
 						csvRecords.get("MAIL_PCODE"),
-						csvRecords.get("MAIL_COUNTRY"),					
-						csvRecords.get("MAIL_ADDR_1"),
-						csvRecords.get("MAIL_ADDR_2"),
-						csvRecords.get("MAIL_ADDR_3"),
-						csvRecords.get("MAIL_ADDR_4"),
-						csvRecords.get("DATABC_LATITUDE"),
-						csvRecords.get("DATABC_LONGITUDE"),
-						csvRecords.get("DATABC_UNIT_NO"),
-						csvRecords.get("DATABC_CIVIC_NUMBER"),
-						csvRecords.get("DATABC_STREET_NAME"),
-						csvRecords.get("DATABC_STREET_TYPE"),
-						csvRecords.get("DATABC_LOCALITY_NAME"),
-						csvRecords.get("DATABC_PROVINCE_CODE"),
-						csvRecords.get("DATABC_SITE_ID"),
-						csvRecords.get("DATABC_SCORE"),
-						csvRecords.get("DATABC_MATCH_PRECISION"),
-						csvRecords.get("DATABC_PRECISION_POINTS"),
-						csvRecords.get("DATABC_CHSA_CODE"),
-						csvRecords.get("DATABC_CHSA_NAME"),
-						csvRecords.get("DATABC_LHA_NAME"),
-						csvRecords.get("DATABC_HSDA_NAME"),
-						csvRecords.get("DATABC_HA_NAME"),
-						csvRecords.get("DATABC_USER_CHID"),
-						csvRecords.get("DATABC_PCN_CODE"),
-						csvRecords.get("DATABC_PCN_NAME"),
-						csvRecords.get("DATABC_STATUS"),
+						csvRecords.get("MAIL_COUNTRY"),
+						csvRecords.get("MAIL_ADDR_IS_PRIVATE"),							
 						new Date(), // created_at
 						"SYSTEM", // created_by
 						null, // updated_at
@@ -196,7 +192,7 @@ public class FileServiceImpl implements FileService {
 			return sourceDatas;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
+			logger.error("Unexpected error: " + e.getMessage());
 			//e.printStackTrace();
 		}
 		return null;
@@ -215,72 +211,73 @@ public class FileServiceImpl implements FileService {
 	        processData.setId(s.getId());
 	        processData.setControlTableId(s.getControlTableId());
 	        processData.setDoNotLoad(s.getDoNotLoad());
-	        processData.setInternalId(s.getInternalId());
-	        processData.setHdsSurvInternalId(s.getHdsSurvInternalId());
-	        processData.setFacilitySurvInternalId(s.getFacilitySurvInternalId());
-	        processData.setHdsSource(s.getHdsSource());
-	        processData.setHdsTypeConcat(s.getHdsTypeConcat());
-	        processData.setHdsName(s.getHdsName());
-	        processData.setCivicAddressClean(s.getCivicAddressClean());
-	        processData.setBusName(s.getBusName());        
-	        processData.setFacilityDetailsAdditionalInfo(s.getFacilityDetailsAdditionalInfo());
-	        processData.setHdsTelAreaCode(s.getHdsTelAreaCode()); 
-	        processData.setHdsTelNumber(s.getHdsTelNumber());  	        
-	        processData.setHdsCellAreaCode(s.getHdsCellAreaCode());	
-	        processData.setHdsCellNumber(s.getHdsCellNumber());  	        
-	        processData.setHdsFaxAreaCode(s.getHdsFaxAreaCode());	
-	        processData.setHdsFaxNumber(s.getHdsFaxNumber());  	        
-	        processData.setPhysProcessStatus(s.getPhysProcessStatus());  	
-	        processData.setPhysMailabilityScore(s.getPhysProcessStatus());  
-	        processData.setPhysCity(s.getPhysCity());  	        
-	        processData.setPhysProvince(s.getPhysProvince());          
-	        processData.setPhysPcode(s.getPhysPcode());
-	        processData.setPhysCountry(s.getPhysCountry());
-	        processData.setPhysAddress1(s.getPhysAddress1());
-	        processData.setPhysAddress2(s.getPhysAddress2());
-	        processData.setPhysAddress3(s.getPhysAddress3());
-	        processData.setPhysAddress4(s.getPhysAddress4());
-	        processData.setBuilding(s.getBuilding());	        
-	        processData.setUnit(s.getUnit());
-	        processData.setCivicAddressCleanOld(s.getCivicAddressCleanOld());
-	        processData.setMailProcessStatus(s.getMailProcessStatus());
-	        processData.setMailMailabilityScore(s.getMailMailabilityScore());
+	        processData.setStakeholder(s.getStakeholder());
+	        processData.setHdsIpcId(s.getHdsIpcId());
+	        processData.setHdsCpnId(s.getHdsCpnId());
+	        processData.setHdsProviderIdentifier1(s.getHdsProviderIdentifier1());
+	        processData.setHdsProviderIdentifier2(s.getHdsProviderIdentifier2());	        
+	        processData.setHdsProviderIdentifier3(s.getHdsProviderIdentifier3());
+	        processData.setHdsProviderIdentifierType1(s.getHdsProviderIdentifierType1());
+	        processData.setHdsProviderIdentifierType2(s.getHdsProviderIdentifierType2());	        
+	        processData.setHdsProviderIdentifierType3(s.getHdsProviderIdentifierType3());
+	        processData.setHdsType(s.getHdsType());
+	        processData.setHdsName(s.getHdsName());        
+	        processData.setHdsNameAlias(s.getHdsNameAlias());    
+	        processData.setHdsPreferredNameFlag(s.getHdsPreferredNameFlag());    
+	        processData.setHdsEmail(s.getHdsEmail());  
+	        processData.setHdsWebsite(s.getHdsWebsite());  
+	        processData.setHdsBusTelAreaCode(s.getHdsBusTelAreaCode()); 
+	        processData.setHdsBusTelNumber(s.getHdsBusTelNumber());  	     
+	        processData.setHdsTelExtension(s.getHdsTelExtension());  	
+	        processData.setHdsCellAreaCode(s.getHdsCellAreaCode());  	
+	        processData.setHdsCellNumber(s.getHdsCellNumber());          
+	        processData.setHdsFaxAreaCode(s.getHdsFaxAreaCode());  	
+	        processData.setHdsFaxNumber(s.getHdsFaxNumber());   
+	        processData.setHdsServiceDeliveryType(s.getHdsServiceDeliveryType());  
+	        processData.setPcnClinicType(s.getPcnClinicType());
+	        processData.setPcnPciFlag(s.getPcnPciFlag());
+	        processData.setHdsHoursOfOperation(s.getHdsHoursOfOperation());
+	        processData.setHdsContactName(s.getHdsContactName()); 
+	        processData.setHdsIsForProfitFlag(s.getHdsIsForProfitFlag());    
+		    processData.setSourceStatus(s.getSourceStatus());   
+	        processData.setHdsParentIpcId(s.getHdsParentIpcId());        
+	        processData.setBusIpcId(s.getBusIpcId());
+	        processData.setBusCpnId(s.getBusCpnId());
+		    processData.setBusName(s.getBusName()); 
+		    processData.setBusLegalName(s.getBusLegalName()); 
+		    processData.setBusPayeeNumber(s.getBusPayeeNumber()); 
+		    processData.setBusOwnerName(s.getBusOwnerName()); 
+		    processData.setBusOwnerType(s.getBusOwnerType()); 
+		    processData.setBusOwnerTypeOther(s.getBusOwnerTypeOther()); 		    
+		    processData.setFacBuildingName(s.getFacBuildingName()); 		    
+	        processData.setFacilityHdsDetailsAdditionalInfo(s.getFacilityHdsDetailsAdditionalInfo());
+	        processData.setPhysicalAddr1(s.getPhysicalAddr1());
+	        processData.setPhysicalAddr2(s.getPhysicalAddr2());	  
+	        processData.setPhysicalAddr3(s.getPhysicalAddr3());
+	        processData.setPhysicalAddr4(s.getPhysicalAddr4());
+	        processData.setPhysicalCity(s.getPhysicalCity());        
+	        processData.setPhysicalProvince(s.getPhysicalProvince());      
+	        processData.setPhysicalPcode(s.getPhysicalPcode());      
+	        processData.setPhysicalCountry(s.getPhysicalCountry());     
+	        processData.setPhysAddrIsPrivate(s.getPhysAddrIsPrivate());    	        
+	        processData.setMailAddr1(s.getMailAddr1());
+	        processData.setMailAddr2(s.getMailAddr2());	        
+	        processData.setMailAddr3(s.getMailAddr3());
+	        processData.setMailAddr4(s.getMailAddr4());
+	        processData.setMailCity(s.getMailCity());        
+	        processData.setMailBc(s.getMailBc());      
+	        processData.setMailPcode(s.getMailPcode());      
+	        processData.setMailCountry(s.getMailCountry());     
+	        processData.setMailAddrIsPrivate(s.getMailAddrIsPrivate());  	        
+	        processData.setCreatedAt(s.getCreatedAt());
+	        processData.setCreatedBy(s.getCreatedBy());
 	        
-	        processData.setMailCity(s.getMailCity());  	        
-	        processData.setMailProvince(s.getMailProvince());          
-	        processData.setMailPcode(s.getMailPcode());
-	        processData.setMailCountry(s.getMailCountry());
-	        processData.setMailAddress1(s.getMailAddress1());
-	        processData.setMailAddress2(s.getMailAddress2());
-	        processData.setMailAddress3(s.getMailAddress3());
-	        processData.setMailAddress4(s.getMailAddress4());
+	        if (s.getDoNotLoad().equals("Y")) {
+		        processData.setRowstatusCode("DO_NOT_LOAD"); 
+	        } else {;
+	        	processData.setRowstatusCode("INITIAL"); 
+	        }
 	        
-	        processData.setDatabcLatitude(s.getDatabcLatitude()); 
-	        processData.setDatabcLongitude(s.getDatabcLongitude());   
-	        processData.setDatabcUnitNo(s.getDatabcUnitNo()); 
-	        processData.setDatabcCivicNumber(s.getDatabcCivicNumber()); 	 
-	        processData.setDatabcStreetName(s.getDatabcStreetName()); 
-	        processData.setDatabcStreetType(s.getDatabcStreetType()); 	 
-	        processData.setDatabcLocalityName(s.getDatabcLocalityName());
-	        processData.setDatabcProvinceCode(s.getDatabcProvinceCode()); 	 
-	        processData.setDatabcSiteId(s.getDatabcSiteId());
-	        processData.setDatabcScore(s.getDatabcScore()); 	 
-	        processData.setDatabcMatchPrecision(s.getDatabcMatchPrecision()); 	 
-	        processData.setDatabcPrecisionPoints(s.getDatabcMatchPrecision()); 	 
-	        processData.setDatabcChsaCode(s.getDatabcChsaCode()); 	 
-	        processData.setDatabcChsaName(s.getDatabcChsaName()); 	       
-	        processData.setDatabcLhaName(s.getDatabcLhaName()); 	  	        
-	        processData.setDatabcHsdaName(s.getDatabcHsdaName()); 	  
-	        processData.setDatabcHaName(s.getDatabcHaName()); 	  
-	        
-	        processData.setDatabcUserChid(s.getDatabcUserChid()); 		
-	        processData.setDatabcPcnCode(s.getDatabcPcnCode()); 	
-	        processData.setDatabcPcnName(s.getDatabcPcnName());
-	        processData.setDatabcStatus(s.getDatabcStatus()); 	
-
-	        processData.setStatusCode("INITIAL"); 
-	        processData.setCreatedAt(new Date());
-	        processData.setCreatedBy("SYSTEM");
 	        processDataRepository.save(processData);
 
 

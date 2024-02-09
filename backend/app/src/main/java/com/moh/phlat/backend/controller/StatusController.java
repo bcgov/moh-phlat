@@ -19,30 +19,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moh.phlat.backend.exception.HandleInternalException;
-import com.moh.phlat.backend.exception.HandleNotFoundException;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Status;
 import com.moh.phlat.backend.repository.StatusRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/status")
 @CrossOrigin(origins = "*")
 public class StatusController {
-	private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
 
 	@Autowired
 	private StatusRepository statusRepository;
 
 	// create new status
 	@PostMapping("/add")
-	public ResponseEntity<ResponseMessage> addNewStatus(@RequestBody @Valid Status requestStatus) {
+	public ResponseEntity<ResponseMessage> addNewStatus(@RequestBody Status requestStatus) {
 		Status status = new Status();
 		status.setCode(requestStatus.getCode());
 		status.setDescription(requestStatus.getDescription());
+		status.setType(requestStatus.getType());
 		status.setIsDeleted(false);
 
 		try {
@@ -99,55 +95,41 @@ public class StatusController {
 	// update an existing status
 
 	@PutMapping("/update/{id}")
-	public ResponseEntity<ResponseMessage> updateStatusById(@RequestBody @Valid Status requestStatus,
-			@PathVariable Long id) throws HandleNotFoundException {
+	public ResponseEntity<ResponseMessage> updateStatusById(@RequestBody Status requestStatus,
+			@PathVariable Long id) {
 		Optional<Status> status = statusRepository.findById(id);
 		if (status.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("success", 404, "Status not found with id: " + id, "[]"));
+					.body(new ResponseMessage("error", 404, "Status code not found with id: " + id, "[]"));
 		}
-
-		Status existingStatus = statusRepository.findById(id)
-				.orElseThrow(() -> new HandleNotFoundException("Status not found with id: " + id));
-
-		// only update the Description
-		existingStatus.setDescription(requestStatus.getDescription());
-
+		
 		try {
-			statusRepository.save(existingStatus);
+			Status status1 = status.get();
+			status1.setDescription(requestStatus.getDescription());
+			status1.setType(requestStatus.getType());
+			statusRepository.save(status1);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", status1));
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500, "", "[]"));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseMessage("error", 500, "Internal error encountered while updating Status Code with id: " + id, "[]"));
 		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", existingStatus));
 	}
 
 	// soft delete a status
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<ResponseMessage> deleteStatusById(@PathVariable("id") Long id)
-			throws HandleNotFoundException, HandleInternalException {
+	public ResponseEntity<ResponseMessage> deleteStatusById(@PathVariable("id") Long id) {
 		Optional<Status> status = statusRepository.findById(id);
-		if (status.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("success", 404, "Status not found with id: " + id, "[]"));
+
+		if (status.isPresent()) {
+			Status status1 = status.get();
+			status1.setIsDeleted(true);
+
+			statusRepository.save(status1);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", status1));
 		}
-
-		Status existingStatus = statusRepository.findById(id)
-				.orElseThrow(() -> new HandleNotFoundException("Status not found with id: " + id));
-
-		// handle soft delete
-		existingStatus.setIsDeleted(true);
-
-		try {
-			statusRepository.save(existingStatus);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500, "", "[]"));
-		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", existingStatus));
-
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ResponseMessage("error", 404, "Status code not found with id: " + id, "[]"));
 	}
 
 }
