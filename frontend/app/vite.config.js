@@ -24,7 +24,7 @@ export default defineConfig(({ command, mode }) => {
         // '^/app/api': proxyObject,
         // '^/app/config': proxyObject,
         '/app/api': {
-          target: env.VITE_BACKEND_API_URL ? env.VITE_BACKEND_API_URL : 'http://localhost:8088',
+          target: env.VITE_BACKEND_API_URL ? env.VITE_BACKEND_API_URL : 'https://phlatapi-dev.vytep.com',
           changeOrigin: false,
           rewrite: (path) => path.replace(/^\/app\/api/, ''),
           // configure: (proxy, options) => {
