@@ -27,7 +27,7 @@ export default {
           <p locale="lang">{{ $t('trans.homePage.subTitle') }}<br /></p>
 
           <v-btn
-            :to="{ name: 'FileControlUpload' }"
+            :to="{ name: 'SourceDataUpload' }"
             class="mb-5"
             color="primary"
             data-test="create-or-login-btn"
@@ -128,7 +128,7 @@ export default {
             {{ $t('trans.homePage.createOnlineTitle') }}
           </p>
           <v-btn
-            :to="{ name: 'FileControlUpload' }"
+            :to="{ name: 'SourceDataUpload' }"
             class="mb-5"
             color="primary"
           >

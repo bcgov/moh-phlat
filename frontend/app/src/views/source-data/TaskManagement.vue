@@ -79,6 +79,7 @@ export default {
         key: 'actions',
         sortable: false,
         fixed: true,
+        width: '120px',
       },
     ],
     onlyShowColumns: [],
@@ -204,10 +205,19 @@ export default {
       this.dialogDelete = true;
       this.deleteSingleItem = item;
     },
+    redirectToProcessView(id) {
+      this.loading = true;
+      this.$router.push({
+        name: 'ProcessControlView',
+        query: {
+          id: id,
+        },
+      });
+    },
     redirectToView(id) {
       this.loading = true;
       this.$router.push({
-        name: 'FileControlView',
+        name: 'SourceControlView',
         query: {
           id: id,
         },
@@ -354,12 +364,22 @@ export default {
           </v-dialog>
         </template>
         <template #item.actions="{ item }">
-          <v-icon size="small" class="me-2" @click="redirectToView(item.key)">
+          <v-icon
+            size="small"
+            class="me-2"
+            label="VIEW"
+            @click="redirectToView(item.key)"
+          >
             mdi-format-list-bulleted
           </v-icon>
-          <!-- <v-icon size="small" class="me-2" @click="editItem(item)">
+          <v-icon
+            size="small"
+            class="me-2"
+            label="EDIT"
+            @click="redirectToProcessView(item.key)"
+          >
             mdi-pencil
-          </v-icon> -->
+          </v-icon>
           <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
         <!-- <template #no-data>

@@ -21,7 +21,7 @@ export default {
           <p>{{ $t('trans.homePage.subTitle') }}<br /></p>
 
           <v-btn
-            :to="{ name: 'FileControlUpload' }"
+            :to="{ name: 'SourceDataUpload' }"
             class="mb-5"
             color="primary"
             data-test="create-or-login-btn"

@@ -40,7 +40,7 @@ export default {
           </router-link>
         </li>
         <li>
-          <router-link data-cy="aboutLinks" :to="{ name: 'FileControlUpload' }">
+          <router-link data-cy="aboutLinks" :to="{ name: 'SourceDataUpload' }">
             File Control / Upload
           </router-link>
         </li>

@@ -46,12 +46,12 @@ export default {
       { key: 'controlTableId' },
     ],
     headers: [
-      {
-        title: 'Actions',
-        key: 'actions',
-        sortable: false,
-        align: 'end',
-      },
+      // {
+      //   title: 'Actions',
+      //   key: 'actions',
+      //   sortable: false,
+      //   align: 'end',
+      // },
     ],
     onlyShowColumns: [],
     loading: true,

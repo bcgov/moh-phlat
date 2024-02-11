@@ -39,25 +39,24 @@ export default function getRouter(basePath = '/') {
         },
       },
       {
-        path: '/input-source-data',
+        path: '/data',
         component: () => import('~/views/File.vue'),
         children: [
           {
-            path: 'file-control-upload',
-            name: 'FileControlUpload',
-            component: () =>
-              import('~/views/input-source-data/FileControlUpload.vue'),
+            path: 'task-management',
+            name: 'TaskManagement',
+            component: () => import('~/views/source-data/TaskManagement.vue'),
             meta: {
-              breadcrumbTitle: 'File Control upload',
+              breadcrumbTitle: 'File Task management',
               // requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
           },
           {
-            path: 'file-control-view',
-            name: 'FileControlView',
+            path: 'source-control-view',
+            name: 'SourceControlView',
             component: () =>
-              import('~/views/input-source-data/FileControlView.vue'),
+              import('~/views/source-data/SourceControlView.vue'),
             meta: {
               breadcrumbTitle: 'File Control View',
               // requiresAuth: IdentityProviders.IDIR,
@@ -70,24 +69,29 @@ export default function getRouter(basePath = '/') {
               };
             },
           },
-          // {
-          //   path: '/:pathMatch(.*)*',
-          //   name: 'FileView',
-          //   component: () => import('~/views/input-source-data/FileControlView.vue'),
-          //   meta: {
-          //     breadcrumbTitle: 'File View',
-          //     // requiresAuth: IdentityProviders.IDIR,
-          //     hasLogin: true,
-          //   },
-          //   props: createProps,
-          // },
           {
-            path: 'task-management',
-            name: 'TaskManagement',
+            path: 'process-control-view',
+            name: 'ProcessControlView',
             component: () =>
-              import('~/views/input-source-data/TaskManagement.vue'),
+              import('~/views/source-data/ProcessControlView.vue'),
             meta: {
-              breadcrumbTitle: 'File Task management',
+              breadcrumbTitle: 'File Control View',
+              // requiresAuth: IdentityProviders.IDIR,
+              hasLogin: true,
+            },
+            props: (route) => {
+              return {
+                ...route.query,
+                ...route.params,
+              };
+            },
+          },
+          {
+            path: 'souce-data-upload',
+            name: 'SourceDataUpload',
+            component: () => import('~/views/source-data/SourceDataUpload.vue'),
+            meta: {
+              breadcrumbTitle: 'File Control upload',
               // requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },

@@ -3,26 +3,31 @@ import '@bcgov/bc-sans/css/BCSans.css';
 import '~/assets/scss/style.scss';
 
 import axios from 'axios';
-// import Keycloak from 'keycloak-js';
+import Keycloak from 'keycloak-js';
 import NProgress from 'nprogress';
 import { createPinia } from 'pinia';
 import { createApp, h } from 'vue';
-
+import { formatDate, formatDateLong } from '~/utils/filters';
 import App from '~/App.vue';
 
 import i18n from '~/internationalization';
 import vuetify from '~/plugins/vuetify';
 import getRouter from '~/router';
-// import { useAuthStore } from '~/store/auth';
+import { useAuthStore } from '~/store/auth';
 import { useAppStore } from '~/store/app';
-// import { assertOptions, getConfig, sanitizeConfig } from '~/utils/keycloak';
+import { assertOptions, getConfig, sanitizeConfig } from '~/utils/keycloak';
 
-// let keycloak = null;
+let keycloak = null;
 const pinia = createPinia();
 
 const app = createApp({
   render: () => h(App),
 });
+
+app.config.globalProperties.$filters = {
+  formatDate,
+  formatDateLong,
+};
 
 /* import clipboard */
 import Clipboard from 'vue3-clipboard';
@@ -120,18 +125,17 @@ async function loadConfig() {
     const appStore = useAppStore();
     appStore.config = Object.freeze(config);
 
-    // if (
-    //   !config ||
-    //   !config.keycloak ||
-    //   !config.keycloak.clientId ||
-    //   !config.keycloak.realm ||
-    //   !config.keycloak.serverUrl
-    // ) {
-    //   throw new Error('Keycloak is misconfigured');
-    // }
+    if (
+      !config ||
+      !config.keycloak ||
+      !config.keycloak.clientId ||
+      !config.keycloak.realm ||
+      !config.keycloak.serverUrl
+    ) {
+      throw new Error('Keycloak is misconfigured');
+    }
 
-    // loadKeycloak(config);
-    initializeApp(true, config.basePath);
+    loadKeycloak(config);
   } catch (err) {
     sessionStorage.removeItem(storageKey);
     initializeApp(false); // Attempt to gracefully fail
@@ -144,71 +148,71 @@ async function loadConfig() {
  * Applies Keycloak authentication capabilities
  * @param {object} config A config object
  */
-// function loadKeycloak(config) {
-//   const defaultParams = {
-//     config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
-//     init: { onLoad: 'login-required' },
-//   };
+function loadKeycloak(config) {
+  const defaultParams = {
+    config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
+    init: { onLoad: 'login-required' },
+  };
 
-//   const options = Object.assign({}, defaultParams, {
-//     init: { onLoad: 'check-sso' },
-//     config: {
-//       clientId: config.keycloak.clientId,
-//       realm: config.keycloak.realm,
-//       url: config.keycloak.serverUrl,
-//     },
-//     onReady: () => {
-//       initializeApp(true, config.basePath);
-//     },
-//     onInitError: (error) => {
-//       console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
-//       console.error(error); // eslint-disable-line no-console
-//     },
-//   });
+  const options = Object.assign({}, defaultParams, {
+    init: { onLoad: 'check-sso' },
+    config: {
+      clientId: config.keycloak.clientId,
+      realm: config.keycloak.realm,
+      url: config.keycloak.serverUrl,
+    },
+    onReady: () => {
+      initializeApp(true, config.basePath);
+    },
+    onInitError: (error) => {
+      console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
+      console.error(error); // eslint-disable-line no-console
+    },
+  });
 
-//   if (assertOptions(options).hasError)
-//     throw new Error(`Invalid options given: ${assertOptions(options).error}`);
+  if (assertOptions(options).hasError)
+    throw new Error(`Invalid options given: ${assertOptions(options).error}`);
 
-//   getConfig(options.config)
-//     .then((cfg) => {
-//       const ctor = sanitizeConfig(cfg);
+  getConfig(options.config)
+    .then((cfg) => {
+      const ctor = sanitizeConfig(cfg);
 
-//       const authStore = useAuthStore();
+      const authStore = useAuthStore();
 
-//       keycloak = new Keycloak(ctor);
-//       keycloak.onReady = (authenticated) => {
-//         authStore.updateKeycloak(keycloak, authenticated);
-//         authStore.ready = true;
-//         typeof options.onReady === 'function' && options.onReady();
-//       };
-//       keycloak.onAuthSuccess = () => {
-//         // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
-//         // Refresh token if it's valid for less then 60 seconds
-//         const updateTokenInterval = setInterval(
-//           () =>
-//             keycloak.updateToken(60).catch(() => {
-//               keycloak.clearToken();
-//             }),
-//           10000
-//         );
-//         authStore.logoutFn = () => {
-//           clearInterval(updateTokenInterval);
-//           keycloak.logout(
-//             options.logout || { redirectUri: config['logoutRedirectUri'] }
-//           );
-//         };
-//       };
-//       keycloak.onAuthRefreshSuccess = () => {
-//         authStore.updateKeycloak(keycloak, true);
-//       };
-//       keycloak.onAuthLogout = () => {
-//         authStore.updateKeycloak(keycloak, false);
-//       };
-//       keycloak.init(options.init).catch((err) => {
-//         typeof options.onInitError === 'function' && options.onInitError(err);
-//       });
-//     })
-//     .catch((err) => {
-//       console.log(err); // eslint-disable-line no-console
-//     });
-// }
+      keycloak = new Keycloak(ctor);
+      keycloak.onReady = (authenticated) => {
+        authStore.updateKeycloak(keycloak, authenticated);
+        authStore.ready = true;
+        typeof options.onReady === 'function' && options.onReady();
+      };
+      keycloak.onAuthSuccess = () => {
+        // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
+        // Refresh token if it's valid for less then 60 seconds
+        const updateTokenInterval = setInterval(
+          () =>
+            keycloak.updateToken(60).catch(() => {
+              keycloak.clearToken();
+            }),
+          10000
+        );
+        authStore.logoutFn = () => {
+          clearInterval(updateTokenInterval);
+          keycloak.logout(
+            options.logout || { redirectUri: config['logoutRedirectUri'] }
+          );
+        };
+      };
+      keycloak.onAuthRefreshSuccess = () => {
+        authStore.updateKeycloak(keycloak, true);
+      };
+      keycloak.onAuthLogout = () => {
+        authStore.updateKeycloak(keycloak, false);
+      };
+      keycloak.init(options.init).catch((err) => {
+        typeof options.onInitError === 'function' && options.onInitError(err);
+      });
+    })
+    .catch((err) => {
+      console.log(err); // eslint-disable-line no-console
+    });
+}

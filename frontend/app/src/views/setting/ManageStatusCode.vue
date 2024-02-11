@@ -31,6 +31,7 @@ export default {
       },
       { title: 'Code', key: 'code' },
       { title: 'Description', key: 'description' },
+      { title: 'Type', key: 'type' },
       { title: 'Actions', key: 'actions', sortable: false },
     ],
     ignoreToEdit: [
@@ -182,7 +183,7 @@ export default {
     redirectToView(id) {
       this.loading = true;
       this.$router.push({
-        name: 'FileControlView',
+        name: 'SourceControlView',
         query: {
           id: id,
         },
@@ -404,7 +405,7 @@ export default {
 
       <v-dialog v-model="dialogNewItem" width="900">
         <BaseAddRecord
-          :item-to-add="{ code: '', description: '' }"
+          :item-to-add="{ code: '', description: '', type: 'USER' }"
           :is-loading="loading"
           @handle-record-add="handleRecordAdd"
         />

@@ -1,43 +1,74 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
+import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
 import { mapActions, mapState } from 'pinia';
-import { useStatusDataStore } from '~/store/statusdata';
+import { useProcessDataStore } from '~/store/processData';
+import { useControlTableDataStore } from '~/store/controltabledata';
+import { useNotificationStore } from '~/store/notification';
+
 export default {
   components: {
     BaseFilter,
+    BaseEditRecord,
   },
-  props: {},
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
-    loading: true,
+    fileName: 'Loading...',
     dialog: false,
     dialogDelete: false,
     showColumnsDialog: false,
     deleteSingleItem: {},
-    editSingleItem: {},
     filterData: [],
-    filterIgnore: [],
+    filterIgnore: [
+      // {
+      //   key: 'confirmationID',
+      // },
+      // {
+      //   key: 'actions',
+      // },
+      // {
+      //   key: 'event',
+      // },
+    ],
+    ignoreToEdit: [
+      { key: 'id' },
+      { key: 'createdBy' },
+      { key: 'createdAt' },
+      { key: 'updatedAt' },
+      { key: 'updatedBy' },
+      { key: 'userId' },
+      { key: 'statusCode' },
+      { key: 'controlTableId' },
+    ],
     headers: [
       {
-        title: '#',
-        align: 'start',
+        title: 'Actions',
+        key: 'actions',
         sortable: false,
-        key: 'id',
+        align: 'end',
       },
-      { title: 'Code', key: 'code' },
-      { title: 'Description', key: 'description' },
-      { title: 'Actions', key: 'actions', sortable: false },
     ],
     onlyShowColumns: [],
-    desserts: [],
+    loading: true,
+    inputSrcData: [],
     editedIndex: -1,
+    editedItem: {},
+    defaultItem: {},
   }),
 
   computed: {
-    ...mapState(useStatusDataStore, [
-      'singleStatusData',
-      'allStatusData',
-      'deletedStatusData',
+    ...mapState(useProcessDataStore, [
+      'processData',
+      'formFieldHeaders',
+      'deleteProcessDataById',
+      'updatedProcessData',
     ]),
+    ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -85,28 +116,42 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     this.initialize();
   },
-
   methods: {
-    ...mapActions(useStatusDataStore, [
-      'fetchGetAllStatus',
-      'fetchDeleteStatusById',
-      'fetchUpdateStatus',
+    ...mapActions(useNotificationStore, ['addNotification']),
+    ...mapActions(useProcessDataStore, [
+      'fetchProcessDataByControlId',
+      'fetchFormFieldHeaders',
+      'updateSingleProcessRecord',
     ]),
-    async populateStatus() {
-      // Get the submissions for this form
-      await this.fetchGetAllStatus();
-      const tableRows = this.allStatusData.map((s) => {
-        return s;
-      });
-      this.desserts = tableRows;
-    },
+    ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     initialize() {
       this.loading = true;
-      this.populateStatus();
+      this.populateControlTable();
+      this.populateHeaders();
+      this.populateInputSource();
       this.loading = false;
+    },
+    async populateControlTable() {
+      await this.fetchGetControlTableById(this.id);
+      const controlTableData = this.singleControlTableData;
+      this.fileName = controlTableData.fileName;
+    },
+    async populateHeaders() {
+      // Get the header for this table
+      await this.fetchFormFieldHeaders();
+      const tableHeaders = this.formFieldHeaders.map((h) => {
+        return { title: h, key: h };
+      });
+      this.headers = [...tableHeaders, ...this.headers];
+    },
+
+    async populateInputSource() {
+      // Get the submissions for this form
+      await this.fetchProcessDataByControlId(this.id);
+      this.inputSrcData = this.processData;
     },
 
     onShowColumnDialog() {
@@ -129,70 +174,92 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      //   this.filterIgnore = [...thisfilterIgnore, ...this.filterIgnore];
-      //   this.headers = headers;
-
-      //   await this.updateFormPreferencesForCurrentUser({
-      //     formId: this.form.id,
-      //     preferences: preferences,
-      //   });
-      //   await this.populateSubmissionsTable();
+      await this.populateInputSource();
     },
 
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.inputSrcData.indexOf(item);
+      this.editedItem = Object.assign({}, item);
       this.dialog = true;
-      this.editSingleItem = item;
     },
 
-    async deleteItem(item) {
-      // If deleted then go ahead
-      this.editedIndex = this.desserts.indexOf(item);
+    deleteItem(item) {
+      this.editedIndex = this.inputSrcData.indexOf(item);
+      this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
       this.deleteSingleItem = item;
     },
-    redirectToView(id) {
-      this.loading = true;
-      this.$router.push({
-        name: 'SourceControlView',
-        query: {
-          id: id,
-        },
-      });
-    },
 
     async deleteItemConfirm() {
-      await this.fetchDeleteStatusById(this.deleteSingleItem.key);
-      if (this.deletedStatusData.status === 200) {
-        this.desserts.splice(this.editedIndex, 1);
+      await this.deleteProcessDataById(this.deleteSingleItem.key);
+      if (this.deletedProcessData.status === 200) {
+        this.inputSrcData.splice(this.editedIndex, 1);
+        this.closeDelete();
+        this.deleteSingleItem = {};
       }
-      this.closeDelete();
-      this.deleteSingleItem = {};
     },
 
     close() {
       this.deleteSingleItem = {};
+      this.editedItem = {};
       this.dialog = false;
       this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
     },
 
     closeDelete() {
-      this.dialogDelete = false;
       this.deleteSingleItem = {};
+      this.dialogDelete = false;
       this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
     },
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex]);
+        Object.assign(this.inputSrcData[this.editedIndex], this.editedItem);
       } else {
-        this.desserts.push();
+        this.inputSrcData.push(this.editedItem);
       }
       this.close();
+    },
+    async handleRecordSave(selectedItemToEdit) {
+      this.loading = true;
+      try {
+        await this.updateSingleProcessRecord(
+          selectedItemToEdit.id,
+          selectedItemToEdit
+        );
+        const data = this.updatedProcessData;
+
+        if (data.id) {
+          this.addNotification({
+            text: 'Record successfully updated.',
+            type: 'success',
+          });
+
+          const i = this.inputSrcData.findIndex(
+            (x) => x.id === selectedItemToEdit.id
+          );
+          this.inputSrcData[i] = selectedItemToEdit;
+
+          this.loading = false;
+          this.close();
+        } else {
+          this.addNotification({
+            text: data.message || 'Something went wrong.',
+            type: 'error',
+          });
+        }
+      } catch (error) {
+        this.addNotification({
+          text: error.message || 'Something went wrong',
+          type: 'error',
+        });
+      }
     },
   },
 };
@@ -204,7 +271,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1>Manage Status Codes</h1>
+        <h1>{{ fileName }}</h1>
       </div>
 
       <!-- search input -->
@@ -243,11 +310,13 @@ export default {
       <div></div>
       <v-data-table
         key="forceTableRefresh"
+        height="70vh"
         :headers="HEADERS"
-        :items="desserts"
-        :items-length="desserts.length"
+        fixed-header
+        :items="inputSrcData"
+        :items-length="inputSrcData.length"
         density="compact"
-        :sort-by="[{ key: 'calories', order: 'asc' }]"
+        :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
       >
         <template #top>
@@ -273,17 +342,14 @@ export default {
           </v-dialog>
         </template>
         <template #item.actions="{ item }">
-          <v-icon size="small" class="me-2" @click="redirectToView(item.key)">
-            mdi-format-list-bulleted
-          </v-icon>
-          <!-- <v-icon size="small" class="me-2" @click="editItem(item)">
+          <v-icon size="small" class="me-2" @click="editItem(item)">
             mdi-pencil
-          </v-icon> -->
+          </v-icon>
           <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
-        <!-- <template #no-data>
+        <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
-        </template> -->
+        </template>
       </v-data-table>
 
       <v-dialog v-model="showColumnsDialog" width="700">
@@ -298,6 +364,15 @@ export default {
         >
           <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
+      </v-dialog>
+
+      <v-dialog v-model="dialog" width="900">
+        <BaseEditRecord
+          :item-to-edit="editedItem.selectable"
+          :ignore-to-edit="ignoreToEdit"
+          :is-loading="loading"
+          @handle-record-save="handleRecordSave"
+        />
       </v-dialog>
     </div>
   </div>
@@ -332,5 +407,12 @@ export default {
   font-weight: normal;
   color: #003366 !important;
   font-size: 1.1em;
+}
+
+.style-1 {
+  background-color: rgb(215, 215, 44);
+}
+.style-2 {
+  background-color: rgb(114, 114, 67);
 }
 </style>
