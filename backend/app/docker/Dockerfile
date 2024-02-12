@@ -19,11 +19,7 @@ COPY pom.xml .
 
 COPY src/ ./src/
 RUN mvn package 
-# compute the created jar name and put it in a known location to copy to the next layer.
-# If the user changes pom.xml to have a different version, or artifactId, this will find the jar 
-#RUN grep version /build/app/target/maven-archiver/pom.properties | cut -d '=' -f2 >.env-version 
-#RUN grep artifactId /build/app/target/maven-archiver/pom.properties | cut -d '=' -f2 >.env-id
-#RUN mv /build/app/target/$(cat .env-id)-$(cat .env-version).jar /build/app/target/phlat-backend.jar
+# Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
 FROM openjdk:17-jdk
