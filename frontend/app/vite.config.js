@@ -4,12 +4,6 @@ import { defineConfig, loadEnv } from 'vite';
 import eslintPlugin from 'vite-plugin-eslint';
 import vuetify from 'vite-plugin-vuetify';
 
-const proxyObject = {
-  target: 'http://localhost:8088/',
-  // ws: false,
-  changeOrigin: true,
-};
-
 // https://vitejs.dev/config/
 // eslint-disable-next-line no-unused-vars
 export default defineConfig(({ command, mode }) => {
@@ -18,20 +12,6 @@ export default defineConfig(({ command, mode }) => {
     base: env.VITE_FRONTEND_BASEPATH ? env.VITE_FRONTEND_BASEPATH : '/app',
     server: {
       base: env.VITE_FRONTEND_BASEPATH ? env.VITE_FRONTEND_BASEPATH : '/app',
-      proxy: {
-        // '^/pr-*/api': proxyObject,
-        // '^/pr-*/config': proxyObject,
-        // '^/app/api': proxyObject,
-        // '^/app/config': proxyObject,
-        '/app/api': {
-          target: env.VITE_BACKEND_API_URL ? env.VITE_BACKEND_API_URL : 'https://phlatapi-dev.vytep.com',
-          changeOrigin: false,
-          rewrite: (path) => path.replace(/^\/app\/api/, ''),
-          // configure: (proxy, options) => {
-          //   // proxy will be an instance of 'http-proxy'
-          // },
-        },
-      },
     },
     plugins: [Vue(), vuetify(), eslintPlugin()],
     resolve: {

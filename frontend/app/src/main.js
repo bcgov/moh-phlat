@@ -100,7 +100,7 @@ async function loadConfig() {
     keycloak: {
       clientId: 'chefs-frontend',
       realm: 'chefs',
-      serverUrl: 'http://localhost:8084',
+      serverUrl: `${import.meta.env.VITE_KEYCLOAK_URL}`,
     },
     uploads: {
       enabled: 'true',

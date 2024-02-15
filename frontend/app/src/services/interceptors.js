@@ -12,9 +12,8 @@ export function appAxios(timeout = 10000) {
   const appStore = useAppStore();
   const axiosOptions = { timeout: timeout };
   if (appStore.config) {
-    axiosOptions.baseURL = `${appStore.config.basePath}/${appStore.config.apiPath}`;
+    axiosOptions.baseURL = `${import.meta.env.VITE_BACKEND_API_URL}`;
   }
-
   const instance = axios.create(axiosOptions);
 
   const authStore = useAuthStore();
