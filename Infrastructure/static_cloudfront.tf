@@ -7,12 +7,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
-#data "aws_acm_certificate" "phlat_certificate" {
-#  provider    = aws.us-east-1
-#  domain      = var.application_url
-#  statuses    = ["ISSUED"]
-#  most_recent = true
-#}
+data "aws_acm_certificate" "phlat_certificate" {
+  provider    = aws.us-east-1
+  domain      = var.application_url
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
 
 data "aws_cloudfront_cache_policy" "Managed-CachingOptimized" {
   name = "Managed-CachingOptimized"
@@ -47,10 +47,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
     cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
     compress               = true
-    #function_association {
-    #  event_type   = "viewer-request"
-    #  function_arn = aws_cloudfront_function.redirect.arn
-    #}
     min_ttl     = 0
     default_ttl = 3600
     max_ttl     = 86400
@@ -64,10 +60,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
     cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
     compress               = true
-    #function_association {
-    #  event_type   = "viewer-request"
-    #  function_arn = aws_cloudfront_function.redirect.arn
-    #}
   }
 
   price_class = "PriceClass_100"
@@ -85,9 +77,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   viewer_certificate {
      cloudfront_default_certificate = true
-  #  acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
-  #  minimum_protocol_version = "TLSv1.2_2021"
-  #  ssl_support_method       = "sni-only"
+     acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
+     minimum_protocol_version = "TLSv1.2_2021"
+     ssl_support_method       = "sni-only"
   }
 }
 
