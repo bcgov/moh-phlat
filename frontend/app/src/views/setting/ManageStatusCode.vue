@@ -31,7 +31,7 @@ export default {
         sortable: false,
         key: 'id',
       },
-      { title: 'Code', key: 'code' },
+      { title: 'Code', key: 'code', removable: true },
       { title: 'Description', key: 'description' },
       { title: 'Type', key: 'type' },
       { title: 'Actions', key: 'actions', sortable: false },
@@ -157,6 +157,10 @@ export default {
       this.showColumnsDialog = true;
     },
 
+    // remove(key) {
+    //   const headersToKeep = this.headers.filter((header) => header.key !== key);
+    //   this.updateFilter(headersToKeep);
+    // },
     async updateFilter(data) {
       this.showColumnsDialog = false;
       this.filterData = data;
@@ -352,8 +356,8 @@ export default {
     <div>
       <div></div>
       <v-data-table
-        :loading="loading"
         key="forceTableRefresh"
+        :loading="loading"
         :headers="HEADERS"
         :items="FILTER_DELETED_DATA"
         :items-length="desserts.length"
@@ -363,6 +367,28 @@ export default {
         :search="search"
       >
         <template #top>
+          <!--<template
+          v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }"
+        >
+          <tr>
+            <template v-for="column in columns" :key="column.key">
+              <td>
+                <span
+                  class="mr-2 cursor-pointer"
+                  @click="() => toggleSort(column)"
+                  >{{ column.title }}</span
+                >
+                <template v-if="isSorted(column)">
+                  <v-icon :icon="getSortIcon(column)"></v-icon>
+                </template>
+                <v-icon
+                  v-if="column.removable"
+                  icon="$close"
+                  @click="() => remove(column.key)"
+                ></v-icon>
+              </td>
+            </template>
+          </tr> -->
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5"

@@ -37,7 +37,6 @@ export const useProcessDataStore = defineStore('processdata', {
       const notificationStore = useNotificationStore();
       try {
         const { data } = await processDataService.servicePutLoadToPlrl(id);
-        console.log('updateLoadToPlrl data-', data);
         if (data.statusCode === 200) {
           notificationStore.addNotification({
             text: data.data || 'Data loading to PLR successfully started.',
