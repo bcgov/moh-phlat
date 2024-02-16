@@ -21,6 +21,7 @@ export default {
     deleteSingleItem: {},
     editSingleItem: {},
     filterData: [],
+    search: null,
     filterIgnore: [],
     headers: [
       {
@@ -291,9 +292,10 @@ export default {
       <!-- search input -->
       <div class="submissions-search">
         <v-text-field
+          v-model="search"
           density="compact"
           variant="underlined"
-          label="Search Coming Soon..."
+          label="Search"
           append-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -346,6 +348,7 @@ export default {
         density="compact"
         :sort-by="[{ key: 'calories', order: 'asc' }]"
         class="submissions-table"
+        :search="search"
       >
         <template #top>
           <v-dialog v-model="dialogDelete" max-width="500px">

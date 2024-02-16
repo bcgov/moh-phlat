@@ -20,6 +20,7 @@ export default {
   data: () => ({
     fileName: 'Loading...',
     dialog: false,
+    search: null,
     dialogDelete: false,
     showColumnsDialog: false,
     deleteSingleItem: {},
@@ -269,9 +270,10 @@ export default {
       <!-- search input -->
       <div class="submissions-search">
         <v-text-field
+          v-model="search"
           density="compact"
           variant="underlined"
-          label="Search Coming Soon..."
+          label="Search"
           append-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -324,6 +326,7 @@ export default {
         :items="inputSrcData"
         :items-length="inputSrcData.length"
         density="compact"
+        :search="search"
         :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
       >

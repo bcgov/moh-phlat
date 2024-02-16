@@ -13,6 +13,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     showColumnsDialog: false,
+    search: null,
     deleteSingleItem: {},
     editSingleItem: {},
     filterData: [],
@@ -269,9 +270,10 @@ export default {
       <!-- search input -->
       <div class="submissions-search">
         <v-text-field
+          v-model="search"
           density="compact"
           variant="underlined"
-          label="Search Coming Soon..."
+          label="Search"
           append-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -308,6 +310,7 @@ export default {
         density="compact"
         :sort-by="[{ key: 'calories', order: 'asc' }]"
         class="submissions-table"
+        :search="search"
       >
         <template #item.fileExtractedDate="{ item }">
           {{ $filters.formatDate(item.raw.fileExtractedDate) }} -
