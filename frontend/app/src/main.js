@@ -83,41 +83,17 @@ function initializeApp(kcSuccess = false, basePath = '/') {
  */
 async function loadConfig() {
   // App publicPath is ./ - so use relative path here, will hit the backend server using relative path to root.
-  // const configUrl =
-  //   import.meta.env.MODE === 'production'
-  //     ? 'config'
-  //     : `${import.meta.env.BASE_URL}/config`;
+  const configUrl = `${import.meta.env.VITE_BACKEND_API_URL}config`;
   const storageKey = 'config';
-
   /**
    * Setting up hard coded config untill we dont have functional keycloak
    */
 
-  const configSession = {
-    adminDashboardUrl: '',
-    apiPath: 'api',
-    basePath: '/app',
-    keycloak: {
-      clientId: 'chefs-frontend',
-      realm: 'chefs',
-      serverUrl: `${import.meta.env.VITE_KEYCLOAK_URL}`,
-    },
-    uploads: {
-      enabled: 'true',
-      fileCount: '1',
-      fileKey: 'files',
-      fileMaxSize: '25MB',
-      fileMaxSizeBytes: '25000000',
-      fileMinSize: '0KB',
-      path: 'files',
-    },
-  };
-
   try {
     // Get configuration if it isn't already in session storage
     if (sessionStorage.getItem(storageKey) === null) {
-      // const { data } = await axios.get(configUrl);
-      sessionStorage.setItem(storageKey, JSON.stringify(configSession)); //configSession should be replaced by data once we have functional BE
+      const { data } = await axios.get(configUrl);
+      sessionStorage.setItem(storageKey, JSON.stringify(data));
     }
 
     // Mount the configuration as a prototype for easier access from Vue
@@ -151,7 +127,7 @@ async function loadConfig() {
 function loadKeycloak(config) {
   const defaultParams = {
     config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
-    init: { onLoad: 'login-required' },
+    //init: { onLoad: 'login-required' },
   };
 
   const options = Object.assign({}, defaultParams, {
@@ -167,6 +143,7 @@ function loadKeycloak(config) {
     onInitError: (error) => {
       console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
       console.error(error); // eslint-disable-line no-console
+      initializeApp(true, config.basePath); //Even Keycloak not initialized or having issues let's bypass it for now.
     },
   });
 
@@ -213,6 +190,6 @@ function loadKeycloak(config) {
       });
     })
     .catch((err) => {
-      console.log(err); // eslint-disable-line no-console
+      console.log('eee-', err); // eslint-disable-line no-console
     });
 }
