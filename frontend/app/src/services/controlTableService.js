@@ -5,6 +5,9 @@ export default {
   async serviceUpdateControlTable(id, data) {
     return appAxios().put(`/controltable/update/${id}`, data);
   },
+  async serviceUpdateApproveControlTable(id, data) {
+    return appAxios().put(`/controltable/approve/${id}`, data);
+  },
   async serviceAddControlTable(data) {
     return appAxios().post(`controltable/add`, data);
   },

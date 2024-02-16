@@ -149,10 +149,16 @@ export default {
     ...mapActions(useControlTableDataStore, [
       'fetchGetAllControlTable',
       'fetchDeleteControlTableById',
+      'fetchUpdateApproveControlTable',
     ]),
     ...mapActions(useProcessDataStore, ['updateLoadToPlrl']),
     async loadToPlr(controlId) {
       await this.updateLoadToPlrl(controlId);
+    },
+    async approveControlTable(controlId, item) {
+      await this.fetchUpdateApproveControlTable(controlId, item);
+      const i = this.desserts.findIndex((x) => x.id === controlId);
+      this.desserts[i] = this.singleControlTableData;
     },
     async populateControlTable() {
       // Get the submissions for this form
@@ -307,7 +313,7 @@ export default {
           {{ $filters.formatDate(item.raw.fileExtractedDate) }} -
           {{ item.raw.createdBy }}
         </template>
-        <template #item.statusCode="{ item }">
+        <!-- <template #item.statusCode="{ item }">
           <span v-if="item.raw.statusCode === 'PRE-VALIDATION_COMPLETED'">
             <v-btn color="primary" @click="loadToPlr(item.raw.id)">
               Upload to PLR
@@ -316,7 +322,7 @@ export default {
           <span v-else>
             {{ item.raw.statusCode }}
           </span>
-        </template>
+        </template> -->
         <template #item.loadTypeFacility="{ item }">
           <v-checkbox readonly :model-value="item.raw.loadTypeFacility" />
         </template>
@@ -355,6 +361,42 @@ export default {
               </v-icon>
             </template>
             <span>View Control Data</span>
+          </v-tooltip>
+
+          <v-tooltip
+            v-if="item.raw.statusCode === 'APPROVED'"
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <v-icon
+                v-bind="props"
+                size="small"
+                class="me-2"
+                label="VIEW"
+                @click="loadToPlr(item.raw.id)"
+              >
+                mdi-cloud-upload
+              </v-icon>
+            </template>
+            <span>Upload to PLR</span>
+          </v-tooltip>
+
+          <v-tooltip
+            v-if="item.raw.statusCode === 'PRE-VALIDATION_COMPLETED'"
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <v-icon
+                v-bind="props"
+                size="small"
+                class="me-2"
+                label="VIEW"
+                @click="approveControlTable(item.raw.id, item.raw)"
+              >
+                mdi-tag-check
+              </v-icon>
+            </template>
+            <span>Approved</span>
           </v-tooltip>
 
           <v-tooltip location="bottom">
