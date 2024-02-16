@@ -33,17 +33,10 @@ export default function getRouter(basePath = '/') {
       {
         path: '/',
         name: 'Home',
-        component: () => import('~/views/Home.vue'),
-        meta: {
-          hasLogin: true,
-        },
-      },
-      {
-        path: '/data',
         component: () => import('~/views/File.vue'),
         children: [
           {
-            path: 'task-management',
+            path: '/',
             name: 'TaskManagement',
             component: () => import('~/views/source-data/TaskManagement.vue'),
             meta: {
