@@ -162,7 +162,6 @@ export default {
     //   this.updateFilter(headersToKeep);
     // },
     async updateFilter(data) {
-      console.log('updateFilter-', data);
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
