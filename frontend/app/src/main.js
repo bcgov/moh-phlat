@@ -53,6 +53,7 @@ if (!!window.MSInputMethodContext && !!document.documentMode) {
   NProgress.done();
 } else {
   loadConfig();
+  initializeApp(true, '/app'); //Remove this after keycloak setup
 }
 
 /**
@@ -138,12 +139,11 @@ function loadKeycloak(config) {
       url: config.keycloak.serverUrl,
     },
     onReady: () => {
-      initializeApp(true, config.basePath);
+      //initializeApp(true, config.basePath); //Uncomment this after keycloak setup
     },
     onInitError: (error) => {
       console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
       console.error(error); // eslint-disable-line no-console
-      initializeApp(true, config.basePath); //Even Keycloak not initialized or having issues let's bypass it for now.
     },
   });
 
