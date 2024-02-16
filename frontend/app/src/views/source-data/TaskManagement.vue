@@ -303,8 +303,8 @@ export default {
     <div>
       <div></div>
       <v-data-table
-        :loading="loading"
         key="forceTableRefresh"
+        :loading="loading"
         :headers="HEADERS"
         :items="desserts"
         :items-length="desserts.length"
