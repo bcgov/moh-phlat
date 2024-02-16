@@ -21,6 +21,7 @@ export default {
     fileName: 'Loading...',
     dialog: false,
     dialogDelete: false,
+    search: null,
     showColumnsDialog: false,
     deleteSingleItem: {},
     filterData: [],
@@ -277,9 +278,10 @@ export default {
       <!-- search input -->
       <div class="submissions-search">
         <v-text-field
+          v-model="search"
           density="compact"
           variant="underlined"
-          label="Search Coming Soon..."
+          label="Search"
           append-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -309,6 +311,7 @@ export default {
     <div>
       <div></div>
       <v-data-table
+        :loading="loading"
         key="forceTableRefresh"
         height="70vh"
         :headers="HEADERS"
@@ -318,6 +321,7 @@ export default {
         density="compact"
         :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
+        :search="search"
       >
         <template #top>
           <v-dialog v-model="dialogDelete" max-width="500px">

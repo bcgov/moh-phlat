@@ -21,6 +21,34 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         console.log('Something went wrong. (SJHSD#3226)', error); // eslint-disable-line no-console
       }
     },
+    async fetchUpdateApproveControlTable(id, payload) {
+      const notificationStore = useNotificationStore();
+      try {
+        const { data } =
+          await controlTableService.serviceUpdateApproveControlTable(
+            id,
+            payload
+          );
+        if (data.data) {
+          this.singleControlTableData = data.data;
+          notificationStore.addNotification({
+            text: data.message || 'Record approved successfully.',
+            type: data.status || 'warning',
+          });
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong. (PJHQD#3156)',
+            type: data.status || 'warning',
+          });
+        }
+      } catch (error) {
+        notificationStore.addNotification({
+          text: error.response.data.message || 'Something went wrong',
+          type: error.response.data.status != 200 ? 'error' : 'success',
+        });
+        console.log('Something went wrong. (SJHQD#3126)', error); // eslint-disable-line no-console
+      }
+    },
     async fetchAddControlTable(payload) {
       try {
         const { data } = await controlTableService.serviceAddControlTable(

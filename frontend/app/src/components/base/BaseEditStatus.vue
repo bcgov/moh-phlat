@@ -66,7 +66,18 @@ export default {
         @submit="checkForm"
       >
         <v-col v-for="(item, key) in FILTER_ITEMS" :key="key">
+          <v-select
+            v-if="key === 'type'"
+            v-model="selectedItemToEdit[key]"
+            :items="['USER', 'SYSTEM']"
+            label="Select Type"
+            density="compact"
+            solid
+            variant="outlined"
+            class="mr-2 pl-2"
+          ></v-select>
           <v-text-field
+            v-if="key !== 'type'"
             :key="key + `ITEM`"
             v-model="selectedItemToEdit[key]"
             :readonly="ignoreToEdit.some((item) => item.key === key)"

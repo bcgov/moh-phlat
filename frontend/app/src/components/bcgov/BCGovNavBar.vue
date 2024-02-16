@@ -29,11 +29,11 @@ export default {
   >
     <div class="nav-holder">
       <ul>
-        <li>
+        <!-- <li>
           <router-link data-cy="aboutLinks" :to="{ name: 'Home' }">
             {{ $t('trans.bCGovNavBar.home') }}
           </router-link>
-        </li>
+        </li> -->
         <li>
           <router-link data-cy="aboutLinks" :to="{ name: 'TaskManagement' }">
             File Task Management
