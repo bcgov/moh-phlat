@@ -50,9 +50,11 @@ export const useStatusDataStore = defineStore('statusdata', {
         console.log('Something went wrong. (STOSMDJ#2026)', error); // eslint-disable-line no-console
       }
     },
-    async fetchGetAllStatus() {
+    async fetchGetAllStatus(includeDeleted = false) {
       try {
-        const { data } = await statusService.serviceGetAllStatus();
+        const { data } = await statusService.serviceGetAllStatus(
+          includeDeleted
+        );
         this.allStatusData = data.data;
       } catch (error) {
         const notificationStore = useNotificationStore();

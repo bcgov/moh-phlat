@@ -1,7 +1,7 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
-import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
-import BaseAddRecord from '../../components/base/BaseAddRecord.vue';
+import BaseEditStatus from '../../components/base/BaseEditStatus.vue';
+import BaseAddStatus from '../../components/base/BaseAddStatus.vue';
 import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
@@ -9,12 +9,13 @@ import { useNotificationStore } from '~/store/notification';
 export default {
   components: {
     BaseFilter,
-    BaseEditRecord,
-    BaseAddRecord,
+    BaseEditStatus,
+    BaseAddStatus,
   },
   data: () => ({
     loading: true,
     dialogNewItem: false,
+    includeDeleted: false,
     dialog: false,
     dialogDelete: false,
     showColumnsDialog: false,
@@ -122,9 +123,16 @@ export default {
       'fetchUpdateStatus',
       'fetchAddStatus',
     ]),
+    async populateStatusWithDeleted() {
+      this.loading = true;
+      setTimeout(() => {
+        this.populateStatus();
+        this.loading = false;
+      }, 500);
+    },
     async populateStatus() {
       // Get the submissions for this form
-      await this.fetchGetAllStatus();
+      await this.fetchGetAllStatus(this.includeDeleted);
       const tableRows = this.allStatusData.map((s) => {
         return s;
       });
@@ -181,16 +189,6 @@ export default {
       this.dialogDelete = true;
       this.deleteSingleItem = item;
     },
-    redirectToView(id) {
-      this.loading = true;
-      this.$router.push({
-        name: 'SourceControlView',
-        query: {
-          id: id,
-        },
-      });
-    },
-
     async deleteItemConfirm() {
       await this.fetchDeleteStatusById(this.deleteSingleItem.key);
       if (this.deletedStatusData.statusCode === 200) {
@@ -299,8 +297,21 @@ export default {
           append-inner-icon="mdi-magnify"
           single-line
           hide-details
-          class="pb-5"
         ></v-text-field>
+      </div>
+      <div>
+        <span>
+          <v-checkbox
+            v-model="includeDeleted"
+            @click="populateStatusWithDeleted"
+          >
+            <template #label>
+              <span :class="{ 'mr-2': isRTL }" :lang="lang">
+                Show deleted
+              </span>
+            </template>
+          </v-checkbox>
+        </span>
       </div>
       <div>
         <span>
@@ -341,6 +352,7 @@ export default {
     <div>
       <div></div>
       <v-data-table
+        :loading="loading"
         key="forceTableRefresh"
         :headers="HEADERS"
         :items="FILTER_DELETED_DATA"
@@ -372,7 +384,7 @@ export default {
             </v-card>
           </v-dialog>
         </template>
-        <template #item.actions="{ item }">
+        <template v-if="includeDeleted === false" #item.actions="{ item }">
           <v-icon size="small" class="me-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
@@ -398,7 +410,7 @@ export default {
       </v-dialog>
 
       <v-dialog v-model="dialog" width="900">
-        <BaseEditRecord
+        <BaseEditStatus
           :item-to-edit="editedItem.selectable"
           :ignore-to-edit="ignoreToEdit"
           :is-loading="loading"
@@ -407,7 +419,7 @@ export default {
       </v-dialog>
 
       <v-dialog v-model="dialogNewItem" width="900">
-        <BaseAddRecord
+        <BaseAddStatus
           :item-to-add="{ code: '', description: '', type: 'USER' }"
           :is-loading="loading"
           @handle-record-add="handleRecordAdd"

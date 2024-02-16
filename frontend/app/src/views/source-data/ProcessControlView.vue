@@ -319,6 +319,7 @@ export default {
     <div>
       <div></div>
       <v-data-table
+        :loading="loading"
         key="forceTableRefresh"
         height="70vh"
         :headers="HEADERS"

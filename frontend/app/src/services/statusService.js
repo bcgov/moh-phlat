@@ -2,8 +2,8 @@ import { appAxios } from '~/services/interceptors';
 // import { ApiRoutes } from '~/utils/constants';
 
 export default {
-  async serviceGetAllStatus() {
-    return appAxios().get(`status/view/all?isDeleted=false`);
+  async serviceGetAllStatus(includeDeleted = false) {
+    return appAxios().get(`status/view/all?isDeleted=` + includeDeleted);
   },
   async serviceGetStatusById(id) {
     return appAxios().get(`status/view/${id}`);
