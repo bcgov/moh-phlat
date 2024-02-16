@@ -127,7 +127,7 @@ async function loadConfig() {
 function loadKeycloak(config) {
   const defaultParams = {
     config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
-    //init: { onLoad: 'login-required' },
+    init: { onLoad: 'login-required' },
   };
 
   const options = Object.assign({}, defaultParams, {
@@ -190,6 +190,6 @@ function loadKeycloak(config) {
       });
     })
     .catch((err) => {
-      console.log('eee-', err); // eslint-disable-line no-console
+      console.log(err); // eslint-disable-line no-console
     });
 }
