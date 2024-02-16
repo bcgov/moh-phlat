@@ -33,6 +33,53 @@ export const useProcessDataStore = defineStore('processdata', {
         });
       }
     },
+    async updateLoadToPlrl(id) {
+      const notificationStore = useNotificationStore();
+      try {
+        const { data } = await processDataService.servicePutLoadToPlrl(id);
+        console.log('updateLoadToPlrl data-', data);
+        if (data.statusCode === 200) {
+          notificationStore.addNotification({
+            text: data.data || 'Data loading to PLR successfully started.',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong. (DWOQUI#304)',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
+        }
+      } catch (error) {
+        console.log('Something went wrong. (DWOHUU#301)', error); // eslint-disable-line no-console
+        notificationStore.addNotification({
+          text: error.response.data.message || 'Something went wrong',
+          type: error.response.data.status != 200 ? 'error' : 'success',
+        });
+      }
+    },
+    async updateValidateAll(id) {
+      const notificationStore = useNotificationStore();
+      try {
+        const { data } = await processDataService.servicePutValidateAll(id);
+        if (data.statusCode === 200) {
+          notificationStore.addNotification({
+            text: data.data || 'Validation initiated successfully.',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong. (DWOSUI#394)',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
+        }
+      } catch (error) {
+        console.log('Something went wrong. (DWOSUU#391)', error); // eslint-disable-line no-console
+        notificationStore.addNotification({
+          text: error.response.data.message || 'Something went wrong',
+          type: error.response.data.status != 200 ? 'error' : 'success',
+        });
+      }
+    },
     async fetchFormFieldHeaders() {
       try {
         const { data } =

@@ -20,12 +20,6 @@ export default {
       loading: this.isLoading,
       idToEdit: this.itemToEdit.id,
       selectedItemToEdit: Object.assign({}, this.itemToEdit),
-      requiredField: [
-        (value) => {
-          if (value) return true;
-          return 'This field is required.';
-        },
-      ],
     };
   },
   computed: {
@@ -62,9 +56,7 @@ export default {
 
 <template>
   <v-card>
-    <v-card-title class="text-h5 pb-0"
-      >Edit record #{{ selectedItemToEdit.id }}</v-card-title
-    >
+    <v-card-title class="text-h5 pb-0">Edit record</v-card-title>
     <v-card-text>
       <hr />
       <v-form
@@ -79,7 +71,6 @@ export default {
             v-model="selectedItemToEdit[key]"
             :readonly="ignoreToEdit.some((item) => item.key === key)"
             density="compact"
-            :rules="requiredField"
             :required="true"
             variant="outlined"
             :label="

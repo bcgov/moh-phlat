@@ -14,4 +14,10 @@ export default {
   async servicePutProcessDataById(id, data) {
     return appAxios().put(`processdata/update/${id}`, data);
   },
+  async servicePutValidateAll(id) {
+    return appAxios().put(`processdata/validateallbycontroltableid/${id}`);
+  },
+  async servicePutLoadToPlrl(id) {
+    return appAxios().put(`processdata/plrload/${id}`);
+  },
 };

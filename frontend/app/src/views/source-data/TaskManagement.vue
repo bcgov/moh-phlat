@@ -2,6 +2,7 @@
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
+import { useProcessDataStore } from '~/store/processData';
 export default {
   components: {
     BaseFilter,
@@ -149,6 +150,10 @@ export default {
       'fetchGetAllControlTable',
       'fetchDeleteControlTableById',
     ]),
+    ...mapActions(useProcessDataStore, ['updateLoadToPlrl']),
+    async loadToPlr(controlId) {
+      await this.updateLoadToPlrl(controlId);
+    },
     async populateControlTable() {
       // Get the submissions for this form
       await this.fetchGetAllControlTable();
@@ -199,12 +204,6 @@ export default {
       this.editSingleItem = item;
     },
 
-    async deleteItem(item) {
-      // If deleted then go ahead
-      this.editedIndex = this.desserts.indexOf(item);
-      this.dialogDelete = true;
-      this.deleteSingleItem = item;
-    },
     redirectToProcessView(id) {
       this.loading = true;
       this.$router.push({
@@ -222,15 +221,6 @@ export default {
           id: id,
         },
       });
-    },
-
-    async deleteItemConfirm() {
-      await this.fetchDeleteControlTableById(this.deleteSingleItem.key);
-      if (this.deletedControlTableData.status === 200) {
-        this.desserts.splice(this.editedIndex, 1);
-      }
-      this.closeDelete();
-      this.deleteSingleItem = {};
     },
 
     close() {
@@ -317,6 +307,16 @@ export default {
           {{ $filters.formatDate(item.raw.fileExtractedDate) }} -
           {{ item.raw.createdBy }}
         </template>
+        <template #item.statusCode="{ item }">
+          <span v-if="item.raw.statusCode === 'PRE-VALIDATION_COMPLETED'">
+            <v-btn color="primary" @click="loadToPlr(item.raw.id)">
+              Upload to PLR
+            </v-btn>
+          </span>
+          <span v-else>
+            {{ item.raw.statusCode }}
+          </span>
+        </template>
         <template #item.loadTypeFacility="{ item }">
           <v-checkbox readonly :model-value="item.raw.loadTypeFacility" />
         </template>
@@ -341,46 +341,36 @@ export default {
         <template #item.loadTypeWPIXref="{ item }">
           <v-checkbox readonly :model-value="item.raw.loadTypeWPIXref" />
         </template>
-        <template #top>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5"
-                >Are you sure you want to delete this item?</v-card-title
-              >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
-                  >Cancel</v-btn
-                >
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="deleteItemConfirm"
-                  >OK</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
         <template #item.actions="{ item }">
-          <v-icon
-            size="small"
-            class="me-2"
-            label="VIEW"
-            @click="redirectToView(item.key)"
-          >
-            mdi-format-list-bulleted
-          </v-icon>
-          <v-icon
-            size="small"
-            class="me-2"
-            label="EDIT"
-            @click="redirectToProcessView(item.key)"
-          >
-            mdi-pencil
-          </v-icon>
-          <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-icon
+                v-bind="props"
+                size="small"
+                class="me-2"
+                label="VIEW"
+                @click="redirectToView(item.key)"
+              >
+                mdi-format-list-bulleted
+              </v-icon>
+            </template>
+            <span>View Control Data</span>
+          </v-tooltip>
+
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-icon
+                v-bind="props"
+                size="small"
+                class="me-2"
+                label="EDIT"
+                @click="redirectToProcessView(item.key)"
+              >
+                mdi-pencil
+              </v-icon>
+            </template>
+            <span>View Process Data</span>
+          </v-tooltip>
         </template>
         <!-- <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
