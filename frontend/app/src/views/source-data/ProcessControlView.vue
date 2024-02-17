@@ -210,7 +210,6 @@ export default {
     },
 
     editStatus(item) {
-      console.log('item-', item);
       this.editStatusItem = item.raw;
       this.editStatusNewItem = item.raw.rowstatusCode;
     },
@@ -239,7 +238,6 @@ export default {
           });
         }
       } catch (error) {
-        console.log('error-', error);
         this.addNotification({
           text: error.message || 'Something went wrong',
           type: 'error',
