@@ -5,6 +5,7 @@ import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
+import { useStatusDataStore } from '~/store/statusdata';
 
 export default {
   components: {
@@ -20,6 +21,7 @@ export default {
   data: () => ({
     fileName: 'Loading...',
     dialog: false,
+    isHovering: false,
     search: null,
     dialogDelete: false,
     showColumnsDialog: false,
@@ -45,6 +47,7 @@ export default {
       { key: 'userId' },
       { key: 'statusCode' },
       { key: 'controlTableId' },
+      { key: 'rowstatusCode' },
     ],
     headers: [
       {
@@ -60,6 +63,9 @@ export default {
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
+    editStatusItem: {},
+    editStatusNewItem: '',
+    statusCodes: [],
   }),
 
   computed: {
@@ -69,6 +75,7 @@ export default {
       'deleteProcessDataById',
       'updatedProcessData',
     ]),
+    ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -129,11 +136,21 @@ export default {
       'updateValidateAll',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
+    ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
+    async populateStatus() {
+      // Get the submissions for this form
+      await this.fetchGetAllStatus();
+      const tableRows = this.allStatusData.map((s) => {
+        return s.code;
+      });
+      this.statusCodes = tableRows;
+    },
     initialize() {
       this.loading = true;
       this.populateControlTable();
       this.populateHeaders();
       this.populateInputSource();
+      this.populateStatus();
       this.loading = false;
     },
     async populateControlTable() {
@@ -192,6 +209,48 @@ export default {
       this.dialog = true;
     },
 
+    editStatus(item) {
+      console.log('item-', item);
+      this.editStatusItem = item.raw;
+      this.editStatusNewItem = item.raw.rowstatusCode;
+    },
+    async saveNewStatus() {
+      this.loading = true;
+      try {
+        await this.updateSingleProcessRecord(this.editStatusItem.id, {
+          rowstatusCode: this.editStatusNewItem,
+        });
+        const data = this.updatedProcessData;
+
+        if (data.status === 'success') {
+          this.addNotification({
+            text: 'Status successfully updated.',
+            type: 'success',
+          });
+
+          const i = this.inputSrcData.findIndex(
+            (x) => x.id === this.editStatusItem.id
+          );
+          this.inputSrcData[i] = data.data;
+        } else {
+          this.addNotification({
+            text: data.message || 'Something went wrong.',
+            type: 'error',
+          });
+        }
+      } catch (error) {
+        console.log('error-', error);
+        this.addNotification({
+          text: error.message || 'Something went wrong',
+          type: 'error',
+        });
+      }
+
+      this.loading = false;
+      this.close();
+      this.editStatusItem = {};
+      this.editStatusNewItem = '';
+    },
     close() {
       this.deleteSingleItem = {};
       this.editedItem = {};
@@ -331,6 +390,66 @@ export default {
         :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
       >
+        <template v-slot:item.rowstatusCode="{ item }">
+          <div>
+            <div
+              v-if="editStatusItem.id === item.raw.id"
+              class="d-flex align-center"
+            >
+              <v-select
+                :items="statusCodes"
+                v-model="editStatusNewItem"
+                label="Status"
+                density="compact"
+                solid
+                variant="outlined"
+                class="d-flex align-center"
+              ></v-select>
+              <v-tooltip location="right">
+                <template #activator="{ on }">
+                  <v-icon
+                    v-on="on"
+                    size="small"
+                    class="me-2"
+                    @click="saveNewStatus()"
+                  >
+                    mdi-floppy
+                  </v-icon>
+                </template>
+                <span>Save</span>
+              </v-tooltip>
+            </div>
+
+            <div
+              v-else
+              @mouseenter="isHovering = item.raw.id"
+              @mouseleave="isHovering = false"
+              class="d-flex align-center"
+            >
+              <span class="d-flex align-center">
+                {{ item.raw.rowstatusCode }}
+              </span>
+              <v-tooltip
+                v-if="isHovering === item.raw.id"
+                location="right"
+                :open-on-hover="isHovering === item.raw.id"
+              >
+                <template #activator="{ on }">
+                  <v-icon
+                    v-on="on"
+                    size="small"
+                    class="me-2"
+                    @click="editStatus(item)"
+                  >
+                    mdi-pencil
+                  </v-icon>
+                </template>
+                <span>Update Status</span>
+              </v-tooltip>
+            </div>
+          </div>
+        </template>
+
         <template #item.actions="{ item }">
           <v-tooltip location="bottom">
             <template #activator="{ props }">
