@@ -388,15 +388,15 @@ export default {
         :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
       >
-        <template v-slot:item.rowstatusCode="{ item }">
+        <template #item.rowstatusCode="{ item }">
           <div>
             <div
               v-if="editStatusItem.id === item.raw.id"
               class="d-flex align-center"
             >
               <v-select
-                :items="statusCodes"
                 v-model="editStatusNewItem"
+                :items="statusCodes"
                 label="Status"
                 density="compact"
                 solid
@@ -406,9 +406,9 @@ export default {
               <v-tooltip location="right">
                 <template #activator="{ on }">
                   <v-icon
-                    v-on="on"
                     size="small"
                     class="me-2"
+                    v-on="on"
                     @click="saveNewStatus()"
                   >
                     mdi-floppy
@@ -420,9 +420,9 @@ export default {
 
             <div
               v-else
+              class="d-flex align-center"
               @mouseenter="isHovering = item.raw.id"
               @mouseleave="isHovering = false"
-              class="d-flex align-center"
             >
               <span class="d-flex align-center">
                 {{ item.raw.rowstatusCode }}
@@ -434,9 +434,9 @@ export default {
               >
                 <template #activator="{ on }">
                   <v-icon
-                    v-on="on"
                     size="small"
                     class="me-2"
+                    v-on="on"
                     @click="editStatus(item)"
                   >
                     mdi-pencil

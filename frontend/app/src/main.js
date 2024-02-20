@@ -3,7 +3,7 @@ import '@bcgov/bc-sans/css/BCSans.css';
 import '~/assets/scss/style.scss';
 
 import axios from 'axios';
-import Keycloak from 'keycloak-js';
+// import Keycloak from 'keycloak-js';
 import NProgress from 'nprogress';
 import { createPinia } from 'pinia';
 import { createApp, h } from 'vue';
@@ -15,9 +15,11 @@ import vuetify from '~/plugins/vuetify';
 import getRouter from '~/router';
 import { useAuthStore } from '~/store/auth';
 import { useAppStore } from '~/store/app';
-import { assertOptions, getConfig, sanitizeConfig } from '~/utils/keycloak';
+import { assertOptions, getConfig } from '~/utils/keycloak';
 
-let keycloak = null;
+import keycloak from '~/keycloak';
+
+// let keycloak = null;
 const pinia = createPinia();
 
 const app = createApp({
@@ -53,7 +55,7 @@ if (!!window.MSInputMethodContext && !!document.documentMode) {
   NProgress.done();
 } else {
   loadConfig();
-  initializeApp(true, '/app'); //Remove this after keycloak setup
+  //initializeApp(true, '/app'); //Remove this after keycloak setup
 }
 
 /**
@@ -84,40 +86,25 @@ function initializeApp(kcSuccess = false, basePath = '/') {
  */
 async function loadConfig() {
   // App publicPath is ./ - so use relative path here, will hit the backend server using relative path to root.
-  const configUrl = `${import.meta.env.VITE_BACKEND_API_URL}config`;
+  const configUrl = `${import.meta.env.VITE_FRONTEND_BASEPATH}/config.json`;
   const storageKey = 'config';
-  /**
-   * Setting up hard coded config untill we dont have functional keycloak
-   */
-
-  try {
-    // Get configuration if it isn't already in session storage
-    if (sessionStorage.getItem(storageKey) === null) {
-      const { data } = await axios.get(configUrl);
-      sessionStorage.setItem(storageKey, JSON.stringify(data));
+  keycloak.onAuthSuccess = async function () {
+    try {
+      if (sessionStorage.getItem(storageKey) === null) {
+        const { data } = await axios.get(configUrl);
+        sessionStorage.setItem(storageKey, JSON.stringify(data));
+      }
+    } catch (err) {
+      sessionStorage.removeItem(storageKey);
+      initializeApp(false); // Attempt to gracefully fail
+      throw new Error(`Failed to acquire configuration: ${err.message}`);
+    } finally {
+      const config = JSON.parse(sessionStorage.getItem(storageKey));
+      const appStore = useAppStore();
+      appStore.config = Object.freeze(config);
+      loadKeycloak(config);
     }
-
-    // Mount the configuration as a prototype for easier access from Vue
-    const config = JSON.parse(sessionStorage.getItem(storageKey));
-    const appStore = useAppStore();
-    appStore.config = Object.freeze(config);
-
-    if (
-      !config ||
-      !config.keycloak ||
-      !config.keycloak.clientId ||
-      !config.keycloak.realm ||
-      !config.keycloak.serverUrl
-    ) {
-      throw new Error('Keycloak is misconfigured');
-    }
-
-    loadKeycloak(config);
-  } catch (err) {
-    sessionStorage.removeItem(storageKey);
-    initializeApp(false); // Attempt to gracefully fail
-    throw new Error(`Failed to acquire configuration: ${err.message}`);
-  }
+  };
 }
 
 /**
@@ -126,6 +113,7 @@ async function loadConfig() {
  * @param {object} config A config object
  */
 function loadKeycloak(config) {
+  console.log('loadKeycloak-config-', config);
   const defaultParams = {
     config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
     init: { onLoad: 'login-required' },
@@ -134,12 +122,12 @@ function loadKeycloak(config) {
   const options = Object.assign({}, defaultParams, {
     init: { onLoad: 'check-sso' },
     config: {
-      clientId: config.keycloak.clientId,
-      realm: config.keycloak.realm,
-      url: config.keycloak.serverUrl,
+      clientId: config.resource, //'USER-MANAGEMENT',
+      realm: config.realm, //'moh_applications',
+      url: config['auth-server-url'], //'http://localhost:5173/app',
     },
     onReady: () => {
-      //initializeApp(true, config.basePath); //Uncomment this after keycloak setup
+      initializeApp(true, `${import.meta.env.VITE_FRONTEND_BASEPATH}`); //Uncomment this after keycloak setup
     },
     onInitError: (error) => {
       console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
@@ -151,12 +139,12 @@ function loadKeycloak(config) {
     throw new Error(`Invalid options given: ${assertOptions(options).error}`);
 
   getConfig(options.config)
-    .then((cfg) => {
-      const ctor = sanitizeConfig(cfg);
+    .then(() => {
+      // const ctor = sanitizeConfig(cfg);
 
       const authStore = useAuthStore();
 
-      keycloak = new Keycloak(ctor);
+      // keycloak = new Keycloak(ctor);
       keycloak.onReady = (authenticated) => {
         authStore.updateKeycloak(keycloak, authenticated);
         authStore.ready = true;
@@ -165,12 +153,13 @@ function loadKeycloak(config) {
       keycloak.onAuthSuccess = () => {
         // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
         // Refresh token if it's valid for less then 60 seconds
+        console.log('started interval');
         const updateTokenInterval = setInterval(
-          () =>
-            keycloak.updateToken(60).catch(() => {
-              keycloak.clearToken();
-            }),
-          10000
+          () => console.log('started interval in'),
+          keycloak.updateToken(60).catch(() => {
+            keycloak.clearToken();
+          }),
+          1000
         );
         authStore.logoutFn = () => {
           clearInterval(updateTokenInterval);
@@ -180,16 +169,20 @@ function loadKeycloak(config) {
         };
       };
       keycloak.onAuthRefreshSuccess = () => {
+        console.log('KC onAuthRefreshSuccess');
         authStore.updateKeycloak(keycloak, true);
       };
       keycloak.onAuthLogout = () => {
+        console.log('KC onAuthLogout');
         authStore.updateKeycloak(keycloak, false);
       };
       keycloak.init(options.init).catch((err) => {
+        console.log('KC catch((err))');
         typeof options.onInitError === 'function' && options.onInitError(err);
       });
     })
     .catch((err) => {
+      console.log('KC got error');
       console.log(err); // eslint-disable-line no-console
     });
 }
