@@ -204,6 +204,7 @@ public class ProcessDataController {
 	@PutMapping("/validateallbycontroltableid/{id}")
 	public ResponseEntity<ResponseMessage> validateAllProcessData(@PathVariable Long id) {
 
+		
 		List<ProcessData> _processDataList = processDataRepository.getAllProcessDataByControlTableId(id);
 		
 		if (_processDataList.isEmpty()) {
@@ -213,8 +214,10 @@ public class ProcessDataController {
 		dbUtilityService.setControlStatus(id, "PRE-VALIDATION_IN_PROGRESS");
 		// asynchronous operation
 		dbUtilityService.validateProcessDataByControlTableId(id);
+
+		Optional<Control> _control = controlRepository.findById(id);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "","Validation process started!"));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Validation process started!",_control));
 	}
 
 	@PutMapping("/plrload/{controlTableId}")
@@ -238,6 +241,6 @@ public class ProcessDataController {
 		// asynchronous operation
 		dbUtilityService.loadProcessDataToPlr(controlTableId);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "","PLR load process started!"));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!",_control));
 	}
 }
