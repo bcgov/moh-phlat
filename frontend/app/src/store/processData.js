@@ -60,7 +60,6 @@ export const useProcessDataStore = defineStore('processdata', {
       const notificationStore = useNotificationStore();
       try {
         const { data } = await processDataService.servicePutValidateAll(id);
-        console.log('data-', data);
         if (data.statusCode === 200) {
           notificationStore.addNotification({
             text: data.message || 'Validation initiated successfully.',
