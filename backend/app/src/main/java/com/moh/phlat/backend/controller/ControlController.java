@@ -98,7 +98,7 @@ public class ControlController {
 		}
 	}
 	
-	@GetMapping("/approve/{id}")
+	@PutMapping("/approve/{id}")
 	public ResponseEntity<ResponseMessage> approveToLoadToPLR(@PathVariable("id") long id) {
 		Optional<Control> controlTableData = controlRepository.findById(id);
 
