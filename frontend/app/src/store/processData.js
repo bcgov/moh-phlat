@@ -39,7 +39,7 @@ export const useProcessDataStore = defineStore('processdata', {
         const { data } = await processDataService.servicePutLoadToPlrl(id);
         if (data.statusCode === 200) {
           notificationStore.addNotification({
-            text: data.data || 'Data loading to PLR successfully started.',
+            text: data.message || 'Data loading to PLR successfully started.',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         } else {
@@ -60,9 +60,10 @@ export const useProcessDataStore = defineStore('processdata', {
       const notificationStore = useNotificationStore();
       try {
         const { data } = await processDataService.servicePutValidateAll(id);
+        console.log('data-', data);
         if (data.statusCode === 200) {
           notificationStore.addNotification({
-            text: data.data || 'Validation initiated successfully.',
+            text: data.message || 'Validation initiated successfully.',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         } else {
