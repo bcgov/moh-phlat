@@ -13,4 +13,7 @@ import com.moh.phlat.backend.response.ResponseMessage;
 @Repository
 public interface ProcessDataRepository extends CrudRepository<ProcessData, Long> {
 	public List<ProcessData> getAllProcessDataByControlTableId(Long controlTableId);
+
+	public List<ProcessData> findByControlTableIdAndRowstatusCode(Long controlTableId, String reqRowStatusCode);
+
 }
