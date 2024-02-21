@@ -20,7 +20,6 @@ keycloak.login = (options) => {
   if (process.env.NODE_ENV !== 'development') {
     options.idpHint = 'idir';
   }
-  console.log('options==options=', options);
   return kcLogin(options);
 };
 

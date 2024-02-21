@@ -59,28 +59,6 @@ if (!!window.MSInputMethodContext && !!document.documentMode) {
 }
 
 /**
- * @function initializeApp
- * Initializes and mounts the Vue instance
- * @param {boolean} [kcSuccess=false] is Keycloak initialized successfully?
- * @param {string} [basepath='/'] base server path
- */
-function initializeApp(kcSuccess = false, basePath = '/') {
-  if (!kcSuccess) return;
-
-  app.use(i18n);
-
-  const router = getRouter(basePath);
-  app.use(router);
-  router.app = app;
-
-  app.mount('#app');
-
-  axios.defaults.baseURL = import.meta.env.BASE_URL;
-
-  NProgress.done();
-}
-
-/**
  * @function loadConfig
  * Acquires the configuration state from the backend server
  */
@@ -114,6 +92,8 @@ async function loadConfig() {
  */
 function loadKeycloak(config) {
   console.log('loadKeycloak-config-', config);
+  // initializeApp(true, `${import.meta.env.VITE_FRONTEND_BASEPATH}`);
+  
   const defaultParams = {
     config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
     init: { onLoad: 'login-required' },
@@ -134,6 +114,7 @@ function loadKeycloak(config) {
       console.error(error); // eslint-disable-line no-console
     },
   });
+  console.log('options==', options);
 
   if (assertOptions(options).hasError)
     throw new Error(`Invalid options given: ${assertOptions(options).error}`);
@@ -185,4 +166,26 @@ function loadKeycloak(config) {
       console.log('KC got error');
       console.log(err); // eslint-disable-line no-console
     });
+}
+
+/**
+ * @function initializeApp
+ * Initializes and mounts the Vue instance
+ * @param {boolean} [kcSuccess=false] is Keycloak initialized successfully?
+ * @param {string} [basepath='/'] base server path
+ */
+function initializeApp(kcSuccess = false, basePath = '/') {
+  if (!kcSuccess) return;
+
+  app.use(i18n);
+
+  const router = getRouter(basePath);
+  app.use(router);
+  router.app = app;
+
+  app.mount('#app');
+
+  axios.defaults.baseURL = import.meta.env.BASE_URL;
+
+  NProgress.done();
 }
