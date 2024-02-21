@@ -98,9 +98,8 @@ public class ControlController {
 		}
 	}
 	
-	@PutMapping("/approve/{id}")
-	public ResponseEntity<ResponseMessage> approveToLoadToPLR(@PathVariable("id") long id,
-			@RequestBody Control requestControl) {
+	@GetMapping("/approve/{id}")
+	public ResponseEntity<ResponseMessage> approveToLoadToPLR(@PathVariable("id") long id) {
 		Optional<Control> controlTableData = controlRepository.findById(id);
 
 		if (controlTableData.isEmpty()) {
@@ -114,12 +113,12 @@ public class ControlController {
 
 			_controlTable.setStatusCode("APPROVED");
 
-			_controlTable.setUpdatedBy(requestControl.getUpdatedBy());
+			_controlTable.setUpdatedBy("SYSTEM");
 			_controlTable.setUpdatedAt(new Date());
 
 			controlRepository.save(_controlTable);
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _controlTable));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record approved successfully.", _controlTable));
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
