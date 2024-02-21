@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.moh.phlat.backend.model.Control;
@@ -48,7 +49,8 @@ public class ProcessDataController {
 	// get process data by control id
 	@GetMapping("/view/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-			@PathVariable Long controlTableId) {
+			@PathVariable Long controlTableId, @RequestParam(required =false) String filterStatus) {
+		
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
@@ -56,9 +58,14 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+		if (filterStatus == null) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
 				processDataRepository.getAllProcessDataByControlTableId(controlTableId)));
-
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+					processDataRepository.findByControlTableIdAndRowstatusCode(controlTableId, filterStatus)));
+		}
+		
 	}
 
 	// get specific row by id
@@ -75,8 +82,7 @@ public class ProcessDataController {
 
 	}
 
-
-	
+		
 	// update an existing record
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ResponseMessage> updateProcessDataById(@RequestBody @Valid ProcessData reqProcessData,
@@ -278,7 +284,7 @@ public class ProcessDataController {
 		try {
 			processDataRepository.save(processData);
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", processData));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record updated sucessfully.", processData));
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
