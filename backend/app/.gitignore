@@ -30,3 +30,4 @@ dist-ssr
 .vscode
 **/node_modules
 **/target
+/bin

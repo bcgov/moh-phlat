@@ -2,7 +2,6 @@
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
-import { useProcessDataStore } from '~/store/processData';
 export default {
   components: {
     BaseFilter,
@@ -151,13 +150,15 @@ export default {
       'fetchGetAllControlTable',
       'fetchDeleteControlTableById',
       'fetchUpdateApproveControlTable',
+      'updateLoadToPlrl',
     ]),
-    ...mapActions(useProcessDataStore, ['updateLoadToPlrl']),
     async loadToPlr(controlId) {
       await this.updateLoadToPlrl(controlId);
+      const i = this.desserts.findIndex((x) => x.id === controlId);
+      this.desserts[i] = this.singleControlTableData;
     },
-    async approveControlTable(controlId, item) {
-      await this.fetchUpdateApproveControlTable(controlId, item);
+    async approveControlTable(controlId) {
+      await this.fetchUpdateApproveControlTable(controlId);
       const i = this.desserts.findIndex((x) => x.id === controlId);
       this.desserts[i] = this.singleControlTableData;
     },
@@ -395,7 +396,7 @@ export default {
                 size="small"
                 class="me-2"
                 label="VIEW"
-                @click="approveControlTable(item.raw.id, item.raw)"
+                @click="approveControlTable(item.raw.id)"
               >
                 mdi-tag-check
               </v-icon>

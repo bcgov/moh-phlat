@@ -17,7 +17,4 @@ export default {
   async servicePutValidateAll(id) {
     return appAxios().put(`processdata/validateallbycontroltableid/${id}`);
   },
-  async servicePutLoadToPlrl(id) {
-    return appAxios().put(`processdata/plrload/${id}`);
-  },
 };

@@ -21,14 +21,35 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         console.log('Something went wrong. (SJHSD#3226)', error); // eslint-disable-line no-console
       }
     },
-    async fetchUpdateApproveControlTable(id, payload) {
+    async updateLoadToPlrl(id) {
+      const notificationStore = useNotificationStore();
+      try {
+        const { data } = await controlTableService.servicePutLoadToPlrl(id);
+        this.singleControlTableData = data.data;
+        if (data.statusCode === 200) {
+          notificationStore.addNotification({
+            text: data.message || 'Data loading to PLR successfully started.',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong. (DWOQUI#304)',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
+        }
+      } catch (error) {
+        console.log('Something went wrong. (DWOHUU#301)', error); // eslint-disable-line no-console
+        notificationStore.addNotification({
+          text: error.response.data.message || 'Something went wrong',
+          type: error.response.data.status != 200 ? 'error' : 'success',
+        });
+      }
+    },
+    async fetchUpdateApproveControlTable(id) {
       const notificationStore = useNotificationStore();
       try {
         const { data } =
-          await controlTableService.serviceUpdateApproveControlTable(
-            id,
-            payload
-          );
+          await controlTableService.serviceUpdateApproveControlTable(id, {});
         if (data.data) {
           this.singleControlTableData = data.data;
           notificationStore.addNotification({

@@ -23,4 +23,7 @@ export default {
   async serviceDeleteAllControlTable() {
     return appAxios().delete(`controltable/delete/all`);
   },
+  async servicePutLoadToPlrl(id) {
+    return appAxios().put(`processdata/plrload/${id}`);
+  },
 };

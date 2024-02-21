@@ -65,3 +65,4 @@ override.tf.json
 # App level ignores
 **/.env
 **/docker/imports/keycloak
+**/bin
