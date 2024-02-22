@@ -75,7 +75,6 @@ export const useProcessDataStore = defineStore('processdata', {
           id,
           payload
         );
-        console.log('data-', data);
         if (data.data) {
           this.updatedProcessData = data.data;
           notificationStore.addNotification({
