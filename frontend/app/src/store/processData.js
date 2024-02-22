@@ -20,9 +20,12 @@ export const useProcessDataStore = defineStore('processdata', {
         console.log('Something went wrong. (DJQSUU#396)', error); // eslint-disable-line no-console
       }
     },
-    async fetchProcessDataByControlId(id) {
+    async fetchProcessDataByControlId(id, filter = {}) {
       try {
-        const { data } = await processDataService.serviceGetProcessDataById(id);
+        const { data } = await processDataService.serviceGetProcessDataById(
+          id,
+          filter
+        );
         this.processData = data.data;
       } catch (error) {
         console.log('Something went wrong. (DISAD#316)', error); // eslint-disable-line no-console
@@ -66,12 +69,25 @@ export const useProcessDataStore = defineStore('processdata', {
       }
     },
     async updateSingleProcessRecord(id, payload) {
+      const notificationStore = useNotificationStore();
       try {
         const { data } = await processDataService.servicePutProcessDataById(
           id,
           payload
         );
-        this.updatedProcessData = data;
+        console.log('data-', data);
+        if (data.data) {
+          this.updatedProcessData = data.data;
+          notificationStore.addNotification({
+            text: data.message || 'Record updated successfully.nn',
+            type: data.status || 'warning',
+          });
+        } else {
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong. (PJHQD#3156)',
+            type: data.status || 'warning',
+          });
+        }
       } catch (error) {
         this.updatedProcessData = error;
         console.log('Something went wrong. (JHUJD#4657)', error); // eslint-disable-line no-console

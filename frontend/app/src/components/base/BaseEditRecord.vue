@@ -22,22 +22,6 @@ export default {
       selectedItemToEdit: Object.assign({}, this.itemToEdit),
     };
   },
-  computed: {
-    FILTER_ITEMS() {
-      this.ignoreToEdit.forEach((item) => {
-        const keyToRemove = item.key;
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this.selectedItemToEdit,
-            keyToRemove
-          )
-        ) {
-          delete this.selectedItemToEdit[keyToRemove];
-        }
-      });
-      return this.selectedItemToEdit;
-    },
-  },
   methods: {
     handleSave() {
       if (this.valid) {
@@ -65,7 +49,12 @@ export default {
         @submit.prevent="handleSave"
         @submit="checkForm"
       >
-        <v-col v-for="(item, key) in FILTER_ITEMS" :key="key">
+        <v-col
+          v-for="[key] in Object.entries(this.selectedItemToEdit).filter(
+            ([keyName, _]) => !ignoreToEdit.some((item) => item.key === keyName)
+          )"
+          :key="key"
+        >
           <v-text-field
             :key="key + `ITEM`"
             v-model="selectedItemToEdit[key]"
@@ -73,11 +62,7 @@ export default {
             density="compact"
             :required="true"
             variant="outlined"
-            :label="
-              ignoreToEdit.some((item) => item.key === key)
-                ? key + `(Read Only)`
-                : key
-            "
+            :label="key"
           ></v-text-field>
         </v-col>
         <v-card-actions class="justify-center">
