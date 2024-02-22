@@ -11,7 +11,7 @@ on:
         type: boolean
         required: true
       backend:
-        description: 'Deploy frontend'
+        description: 'Deploy backend'
         type: boolean
         required: true
       terraform:
