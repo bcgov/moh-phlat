@@ -23,6 +23,7 @@ export default {
     dialog: false,
     isHovering: false,
     search: null,
+    searchByStatus: null,
     dialogDelete: false,
     showColumnsDialog: false,
     deleteSingleItem: {},
@@ -168,8 +169,14 @@ export default {
     },
 
     async populateInputSource() {
-      // Get the submissions for this form
-      await this.fetchProcessDataByControlId(this.id);
+      if (this.searchByStatus === null) {
+        await this.fetchProcessDataByControlId(this.id, {});
+      } else {
+        await this.fetchProcessDataByControlId(this.id, {
+          filterStatus: this.searchByStatus,
+        });
+      }
+
       this.inputSrcData = this.processData;
     },
 
@@ -221,16 +228,11 @@ export default {
         });
         const data = this.updatedProcessData;
 
-        if (data.status === 'success') {
-          this.addNotification({
-            text: 'Status successfully updated.',
-            type: 'success',
-          });
-
+        if (data.id) {
           const i = this.inputSrcData.findIndex(
             (x) => x.id === this.editStatusItem.id
           );
-          this.inputSrcData[i] = data.data;
+          this.inputSrcData[i] = data;
         } else {
           this.addNotification({
             text: data.message || 'Something went wrong.',
@@ -286,11 +288,6 @@ export default {
         const data = this.updatedProcessData;
 
         if (data.id) {
-          this.addNotification({
-            text: 'Record successfully updated.',
-            type: 'success',
-          });
-
           const i = this.inputSrcData.findIndex(
             (x) => x.id === selectedItemToEdit.id
           );
@@ -336,6 +333,18 @@ export default {
           hide-details
           class="pb-5"
         ></v-text-field>
+      </div>
+      <div class="d-flex align-center width-select">
+        <v-select
+          :items="statusCodes"
+          v-model="searchByStatus"
+          :clearable="true"
+          label="Search By Status"
+          density="compact"
+          solid
+          variant="underlined"
+          @update:modelValue="this.populateInputSource"
+        ></v-select>
       </div>
       <div>
         <span>
@@ -495,6 +504,9 @@ export default {
 </template>
 
 <style scoped>
+.width-select {
+  width: 10em;
+}
 .submissions-search {
   width: 30em !important;
 }
