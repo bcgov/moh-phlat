@@ -6,8 +6,16 @@ on:
         description: 'Environment to deploy to'
         type: environment
         required: true
-      frontends:
-        description: 'Deploy frontends'
+      frontend:
+        description: 'Deploy frontend'
+        type: boolean
+        required: true
+      backend:
+        description: 'Deploy frontend'
+        type: boolean
+        required: true
+      terraform:
+        description: 'Process terraform templates'
         type: boolean
         required: true
       version:
@@ -38,8 +46,9 @@ permissions:
   contents: read  # This is required for actions/checkout
 
 jobs:
-  docker_push:
-    name: Docker Push
+  build_deploy_backend:
+    name: Build and deploy backend
+    if: inputs.backend == true
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
     steps:
@@ -81,9 +90,10 @@ jobs:
 
   terraform_apply:
     name: Terraform Apply
+    if: inputs.terraform == true
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    needs: docker_push
+    #needs: docker_push
     steps:
       - name: Set TF_VAR_TIMESTAMP
         run: echo "TF_VAR_TIMESTAMP=$(date --rfc-3339=seconds)" >> $GITHUB_ENV
@@ -117,12 +127,12 @@ jobs:
         run: |
             terragrunt run-all apply --terragrunt-non-interactive
 
-  build_jobs:
-    name: Build Jobs
-    if: inputs.frontends == true
+  build_deploy_frontend:
+    name: Build and deploy frontend
+    if: inputs.frontend == true
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    needs: terraform_apply
+    #needs: terraform_apply
     steps:
       - name: Checkout
         uses: actions/checkout@v3
