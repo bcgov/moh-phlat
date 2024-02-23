@@ -108,8 +108,16 @@ public class FileServiceImpl implements FileService {
 			}
 			logger.info("Loading process data table completed successfully.");
 
-		} catch (IOException e){
+		} catch (Exception e){
 			logger.error("Unexpected error: " + e.getMessage());
+			Optional<Control> _control = controlRepository.findById(controlTableId);
+			
+			Control control = _control.get();
+			control.setStatusCode("UPLOAD_ERROR");
+			control.setUpdatedBy("SYSTEM");
+			control.setUpdatedAt(new Date());
+		
+			controlRepository.save(control);
 		}
 
 	}
@@ -190,10 +198,17 @@ public class FileServiceImpl implements FileService {
 				sourceDatas.add(sourceData);
 			}
 			return sourceDatas;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("Unexpected error: " + e.getMessage());
-			//e.printStackTrace();
+			Optional<Control> _control = controlRepository.findById(controlTableId);
+			
+			Control control = _control.get();
+			control.setStatusCode("UPLOAD_ERROR");
+			control.setUpdatedBy("SYSTEM");
+			control.setUpdatedAt(new Date());
+		
+			controlRepository.save(control);
 		}
 		return null;
 	}
@@ -279,8 +294,6 @@ public class FileServiceImpl implements FileService {
 	        }
 	        
 	        processDataRepository.save(processData);
-
-
 
     	}
 
