@@ -27,3 +27,16 @@ export function formatDateLong(value) {
     return moment(String(value)).format('YYYY-MM-DD hh:mm:ss a');
   }
 }
+
+// Function to convert object to URL query parameters
+export function objectToQueryParams(obj) {
+  const queryParams = [];
+  for (const key in obj) {
+    if (Object.hasOwnProperty.call(obj, key)) {
+      queryParams.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`
+      );
+    }
+  }
+  return queryParams.join('&');
+}

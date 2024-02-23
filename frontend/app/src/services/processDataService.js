@@ -1,12 +1,14 @@
 import { appAxios } from '~/services/interceptors';
-// import { ApiRoutes } from '~/utils/constants';
+import { objectToQueryParams } from '~/utils/filters';
 
 export default {
   async serviceGetAllProcessData() {
     return appAxios().get(`processdata/view/all`);
   },
-  async serviceGetProcessDataById(id) {
-    return appAxios().get(`processdata/view/controltableid/${id}`);
+  async serviceGetProcessDataById(id, filter = {}) {
+    const queryString = objectToQueryParams(filter);
+    const makeQuery = queryString ? `?${queryString}` : '';
+    return appAxios().get(`processdata/view/controltableid/${id + makeQuery}`);
   },
   async serviceGetFormFieldsFromProcessData() {
     return appAxios().get(`processdata/getformfields/header`);

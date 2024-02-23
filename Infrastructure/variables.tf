@@ -36,7 +36,7 @@ variable "common_tags" {
 }
 
 variable "health_check_path" {
-  default = "/userrole/view/1"
+  default = "/config"
 }
 
 variable "alb_name" {
