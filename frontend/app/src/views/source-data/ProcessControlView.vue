@@ -336,14 +336,14 @@ export default {
       </div>
       <div class="d-flex align-center width-select">
         <v-select
-          :items="statusCodes"
           v-model="searchByStatus"
+          :items="statusCodes"
           :clearable="true"
           label="Search By Status"
           density="compact"
           solid
           variant="underlined"
-          @update:modelValue="this.populateInputSource"
+          @update:modelValue="populateInputSource"
         ></v-select>
       </div>
       <div>
