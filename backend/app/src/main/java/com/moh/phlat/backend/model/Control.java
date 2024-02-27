@@ -2,6 +2,11 @@ package com.moh.phlat.backend.model;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.*;
@@ -9,6 +14,11 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "CONTROL")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Control {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
