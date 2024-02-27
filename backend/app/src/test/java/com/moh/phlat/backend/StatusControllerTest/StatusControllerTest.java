@@ -1,5 +1,7 @@
-package com.moh.phlat.backend.controller;
+package com.moh.phlat.backend.StatusControllerTest;
 
+
+import com.moh.phlat.backend.controller.StatusController;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.SourceDataRepository;
 import org.junit.jupiter.api.*;
@@ -13,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(SourceDataController.class)
-public class SourceDataControllerTest {
+@WebMvcTest(StatusController.class)
+public class StatusControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
