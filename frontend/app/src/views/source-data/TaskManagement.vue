@@ -315,8 +315,7 @@ export default {
         :search="search"
       >
         <template #item.fileExtractedDate="{ item }">
-          {{ $filters.formatDate(item.raw.fileExtractedDate) }} -
-          {{ item.raw.createdBy }}
+          {{ $filters.formatDate(item.raw.fileExtractedDate) }}
         </template>
         <!-- <template #item.statusCode="{ item }">
           <span v-if="item.raw.statusCode === 'PRE-VALIDATION_COMPLETED'">
