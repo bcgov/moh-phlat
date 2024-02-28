@@ -60,7 +60,7 @@ public class ControlControllerTest {
 
         //checking contents of 1st control
         assertThat(documentContext.read("$.data[0].id", Long.class)).isEqualTo(1);
-        assertThat(documentContext.read("$.data[0].fileExtractedDate", String.class)).isEqualTo("2024-01-01T06:00:00.000+00:00");
+        assertThat(documentContext.read("$.data[0].fileExtractedDate", String.class)).isEqualTo("2024-01-01T00:00:00.000+00:00");
 
         assertThat(documentContext.read("$.data[0].userId", String.class)).isEqualTo("user1");
         assertThat(documentContext.read("$.data[0].fileName", String.class)).isEqualTo("File1.txt");
