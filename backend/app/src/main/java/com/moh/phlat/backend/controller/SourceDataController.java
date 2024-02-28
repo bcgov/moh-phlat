@@ -163,7 +163,7 @@ public class SourceDataController {
 			fileService.processAndSaveData(file, control.getId());
 
 			return ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseMessage("success", 200, "File loaded successfully", control.getId()));
+					.body(new ResponseMessage("success", 200, "File uploading started.", control.getId()));
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
 				new ResponseMessage("error", 400, "Please upload a non-empty CSV file with the standard format!", 0));
