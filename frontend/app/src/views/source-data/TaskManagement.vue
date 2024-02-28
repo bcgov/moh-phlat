@@ -365,7 +365,7 @@ export default {
                 mdi-format-list-bulleted
               </v-icon>
             </template>
-            <span>View Control Data</span>
+            <span>View source data</span>
           </v-tooltip>
 
           <v-tooltip
@@ -416,7 +416,7 @@ export default {
                 mdi-pencil
               </v-icon>
             </template>
-            <span>View Process Data</span>
+            <span>Edit data</span>
           </v-tooltip>
         </template>
         <!-- <template #no-data>
