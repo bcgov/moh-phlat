@@ -11,3 +11,22 @@ spring:
     # logging.level.root=DEBUG
     # logging.level.root=ERROR
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URL}
+          jwt-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+jwt:
+  auth:
+    converter:
+      resource-id: PHLAT
+      principle-attribute: preferred_username
+
+
+phlat:
+  roles:
+    reg-admin: REG_ADMIN
+    reg-user: REG_USER
+
