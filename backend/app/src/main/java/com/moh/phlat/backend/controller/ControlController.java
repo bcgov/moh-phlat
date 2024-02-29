@@ -102,7 +102,7 @@ public class ControlController {
 		}
 	}
 
-	@PreAuthorize("hasRole(@roleService.getAdminRole())")
+	@PreAuthorize("hasRole(@roleService.getRegAdminRole())")
 	@PutMapping("/approve/{id}")
 	public ResponseEntity<ResponseMessage> approveToLoadToPLR(@PathVariable("id") long id) {
 		Optional<Control> controlTableData = controlRepository.findById(id);

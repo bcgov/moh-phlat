@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     private SecurityFilterChain getFilterChain(HttpSecurity http) throws Exception {
         http.csrf(Customizer.withDefaults())
-            //only check token validity here. Role checks on controller methods
+            //only check token validity here. Role checks on controller methods as there is no general pattern of URLs
             .authorizeHttpRequests((authRequestMatcher) -> authRequestMatcher.anyRequest().authenticated())
             .oauth2ResourceServer((oauth2Resourceserver) -> oauth2Resourceserver.jwt(
                     (jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())

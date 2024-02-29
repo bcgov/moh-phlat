@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -13,18 +13,15 @@ public class RoleService {
 
     //return blank if key is not found
     @Value("${phlat.roles.reg-admin:}")
-    private String adminRole;
+    private String regAdminRole;
 
     //return blank if key is not found
     @Value("${phlat.roles.reg-user:}")
-    private String regUser;
+    private String regUserRole;
 
 
     public List<String> getAllRoles() {
-        List<String> roles = new ArrayList<>();
-        roles.add(adminRole);
-        roles.add(regUser);
-        return roles;
+        return Arrays.asList(regUserRole, regAdminRole);
 
     }
 }
