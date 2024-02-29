@@ -1,27 +1,29 @@
 package com.moh.phlat.backend.security;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Getter
-@Service
+/**
+ * As of now returning just constants as the roles are fixed, and it is made as
+ * bean, so it can be used in @PreAuthorize annotations on controller methods
+ */
+@Component
 public class RoleService {
+    private final String ROLE_REG_ADMIN = "REG_ADMIN";
+    private final String ROLE_REG_USER = "REG_USER";
 
-    //return blank if key is not found
-    @Value("${phlat.roles.reg-admin:}")
-    private String regAdminRole;
+    public String getRegAdminRole() {
+        return ROLE_REG_ADMIN;
+    }
 
-    //return blank if key is not found
-    @Value("${phlat.roles.reg-user:}")
-    private String regUserRole;
-
+    public String getRegUserRole() {
+        return ROLE_REG_USER;
+    }
 
     public List<String> getAllRoles() {
-        return Arrays.asList(regUserRole, regAdminRole);
+        return Arrays.asList(ROLE_REG_ADMIN, ROLE_REG_USER);
 
     }
 }

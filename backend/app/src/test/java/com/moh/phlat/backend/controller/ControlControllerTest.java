@@ -5,6 +5,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
+import com.moh.phlat.backend.testsupport.factories.UserRoles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ControlController.class)
@@ -41,12 +43,14 @@ public class ControlControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {UserRoles.ROLE_REG_USER}) //any role is needed to bypass security
     public void testGetAllControls() throws Exception {
 
 
-        // Performing the GET request and get result in json string
-        String jsonResponse = mockMvc.perform(get("/controltable/view/all"))
-                                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        //csrf() is needed to satisfy security
+        String jsonResponse = mockMvc.perform(get("/controltable/view/all")
+                                                      .with(csrf())
+                                                      .contentType(MediaType.APPLICATION_JSON))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
 
@@ -60,7 +64,8 @@ public class ControlControllerTest {
 
         //checking contents of 1st control
         assertThat(documentContext.read("$.data[0].id", Long.class)).isEqualTo(1);
-        assertThat(documentContext.read("$.data[0].fileExtractedDate", String.class)).isEqualTo("2024-01-01T00:00:00.000+00:00");
+        assertThat(documentContext.read("$.data[0].fileExtractedDate", String.class))
+                .isEqualTo("2024-01-01T00:00:00.000+00:00");
 
         assertThat(documentContext.read("$.data[0].userId", String.class)).isEqualTo("user1");
         assertThat(documentContext.read("$.data[0].fileName", String.class)).isEqualTo("File1.txt");
@@ -75,7 +80,7 @@ public class ControlControllerTest {
         assertThat(documentContext.read("$.data[2].id", Long.class)).isEqualTo(3);
         assertThat(documentContext.read("$.data[2].userId", String.class)).isEqualTo("user3");
         assertThat(documentContext.read("$.data[2].fileName", String.class)).isEqualTo("File3.txt");
-        assertThat(documentContext.read("$.data[2].fileExtractedDate",String.class)).isNull();
+        assertThat(documentContext.read("$.data[2].fileExtractedDate", String.class)).isNull();
 
         assertThat(documentContext.read("$.data[2].batchLabelName", String.class)).isEqualTo("Label3");
         assertThat(documentContext.read("$.data[2].loadTypeFacility", Boolean.class)).isEqualTo(Boolean.TRUE);
@@ -85,6 +90,5 @@ public class ControlControllerTest {
 
 
     }
-
 
 }
