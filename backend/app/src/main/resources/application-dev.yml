@@ -24,9 +24,3 @@ jwt:
       resource-id: PHLAT
       principle-attribute: preferred_username
 
-
-phlat:
-  roles:
-    reg-admin: REG_ADMIN
-    reg-user: REG_USER
-
