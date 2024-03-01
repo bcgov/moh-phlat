@@ -6,6 +6,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
+import com.moh.phlat.backend.testsupport.factories.UserRoles;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -24,11 +26,17 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+/**
+ * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
+ * and it shouldn't be assumed that they are used for authorization checks
+ */
 @WebMvcTest(ControlController.class)
 public class ControlControllerTest {
 
@@ -44,12 +52,13 @@ public class ControlControllerTest {
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
     @Test
+    @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllControls() throws Exception {
 
         Mockito.when(controlRepository.findAll()).thenReturn(controls);
 
         // Performing the GET request and get result in json string
-        String jsonResponse = mockMvc.perform(get("/controltable/view/all"))
+        String jsonResponse = mockMvc.perform(get("/controltable/view/all").with(csrf()))
                                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
@@ -66,11 +75,12 @@ public class ControlControllerTest {
 
 
     @Test
+    @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetControlById() throws Exception {
 
         Mockito.when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
 
-        String jsonResponse = mockMvc.perform(get("/controltable/view/1"))
+        String jsonResponse = mockMvc.perform(get("/controltable/view/1").with(csrf()))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
 
@@ -99,11 +109,12 @@ public class ControlControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetControlByFileName() throws Exception {
 
         Mockito.when(controlRepository.findByFileName(anyString())).thenReturn(controls);
 
-        String jsonResponse = mockMvc.perform(get("/controltable/view/filename/file1"))
+        String jsonResponse = mockMvc.perform(get("/controltable/view/filename/file1").with(csrf()))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
 
@@ -119,6 +130,7 @@ public class ControlControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testUpdateControl() throws Exception {
 
         Mockito.when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
@@ -130,9 +142,9 @@ public class ControlControllerTest {
         String jsonContent = objectMapper.writeValueAsString(controls.get(1));
 
 
-        String jsonResponse = mockMvc.perform(put("/controltable/update/1")
-                                                      .content(jsonContent)
-                                                      .contentType(MediaType.APPLICATION_JSON))
+        String jsonResponse = mockMvc.perform(put("/controltable/update/1").with(csrf())
+                                                                           .content(jsonContent)
+                                                                           .contentType(MediaType.APPLICATION_JSON))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
 
@@ -163,12 +175,13 @@ public class ControlControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {UserRoles.ROLE_REG_ADMIN})
     public void testApproveToLoadToPLR() throws Exception {
         Mockito.when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
         //save return is ignored in the code as of now.
         Mockito.when(controlRepository.save(Mockito.any(Control.class))).thenReturn(controls.get(0));
 
-        String jsonResponse = mockMvc.perform(put("/controltable/approve/1"))
+        String jsonResponse = mockMvc.perform(put("/controltable/approve/1").with(csrf()))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
 
