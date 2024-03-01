@@ -21,6 +21,6 @@ spring:
 jwt:
   auth:
     converter:
-      resource-id: PHLAT
+      resource-id: PHLAT-WEB
       principle-attribute: preferred_username
 
