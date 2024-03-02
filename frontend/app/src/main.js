@@ -18,6 +18,8 @@ import { assertOptions } from '~/utils/keycloak';
 
 import keycloak from '~/keycloak';
 
+import { canUserPerform } from '~/utils/permissions';
+
 const pinia = createPinia();
 
 const app = createApp({
@@ -30,6 +32,8 @@ app.config.globalProperties.$filters = {
 };
 
 app.config.globalProperties.$keycloak = keycloak;
+
+app.config.globalProperties.$permissions = { canUserPerform };
 
 /* import clipboard */
 import Clipboard from 'vue3-clipboard';

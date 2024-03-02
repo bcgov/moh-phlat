@@ -5,6 +5,7 @@ import BaseAddStatus from '../../components/base/BaseAddStatus.vue';
 import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
+import { useAuthStore } from '~/store/auth';
 
 export default {
   components: {
@@ -58,6 +59,7 @@ export default {
       'allStatusData',
       'deletedStatusData',
     ]),
+    ...mapState(useAuthStore, ['isAdmin', 'isUser']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -335,7 +337,16 @@ export default {
           </v-tooltip>
         </span>
         <span>
-          <v-tooltip location="bottom">
+          <v-tooltip
+            location="bottom"
+            v-if="
+              $permissions.canUserPerform(
+                'addNewStatus',
+                this.isAdmin,
+                this.isUser
+              )
+            "
+          >
             <template #activator="{ props }">
               <v-btn
                 class="mx-1"
@@ -410,7 +421,17 @@ export default {
             </v-card>
           </v-dialog>
         </template>
-        <template v-if="includeDeleted === false" #item.actions="{ item }">
+        <template
+          v-if="
+            includeDeleted === false &&
+            $permissions.canUserPerform(
+              'addEditStatus',
+              this.isAdmin,
+              this.isUser
+            )
+          "
+          #item.actions="{ item }"
+        >
           <v-icon size="small" class="me-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
