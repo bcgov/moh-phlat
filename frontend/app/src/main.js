@@ -62,27 +62,27 @@ if (!!window.MSInputMethodContext && !!document.documentMode) {
  * Acquires the configuration state from the backend server
  */
 async function loadConfig() {
-  // App publicPath is ./ - so use relative path here, will hit the backend server using relative path to root.
-  const configUrl = `${import.meta.env.VITE_FRONTEND_BASEPATH}/config.json`;
   const storageKey = 'config';
   try {
     // Get configuration if it isn't already in session storage
+    const data = {
+      realm: import.meta.env.VITE_KEYCLOAK_REALM_NAME,
+      providerAuthUrl: import.meta.env.VITE_KEYCLOAK_PROVIDER_AUTH_URL,
+      clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+      redirectUri: window.location.href,
+    };
+
     if (sessionStorage.getItem(storageKey) === null) {
-      const { data } = await axios.get(configUrl);
       sessionStorage.setItem(storageKey, JSON.stringify(data));
     }
 
     // Mount the configuration as a prototype for easier access from Vue
     const config = JSON.parse(sessionStorage.getItem(storageKey));
+
     const appStore = useAppStore();
     appStore.config = Object.freeze(config);
     app.config.globalProperties.$config = config;
-    if (
-      !config ||
-      !config.mspdirect_client ||
-      !config.realm ||
-      !config['auth-server-url']
-    ) {
+    if (!config || !config.realm || !config['providerAuthUrl']) {
       throw new Error('Keycloak is misconfigured');
     }
 
@@ -100,33 +100,29 @@ async function loadConfig() {
  * @param {object} config A config object
  */
 function loadKeycloak(config) {
-  const defaultParams = {
-    config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
-    init: { onLoad: 'check-sso' },
-  };
-
-  const options = Object.assign({}, defaultParams, {
-    init: {
-      responseMode: 'fragment',
-      flow: 'standard',
-      onLoad: 'check-sso', //'login-required',
-      pkceMethod: 'S256',
-      //checkLoginIframe: false,
-    },
-    config: {
-      clientId: keycloak.clientId, //config.resource, //'USER-MANAGEMENT',
-      realm: keycloak.realm, // config.realm, //'moh_applications',
-      url: keycloak.authServerUrl, //config['auth-server-url'], //'http://localhost:5173/app',
-    },
-    onReady: () => {
-      initializeApp(true, `${import.meta.env.VITE_FRONTEND_BASEPATH}`); //Uncomment this after keycloak setup
-    },
-    onInitError: (error) => {
-      console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
-      console.error(error); // eslint-disable-line no-console
-    },
-  });
-
+  const options = Object.assign(
+    {},
+    {
+      init: {
+        flow: 'standard',
+        onLoad: 'check-sso',
+        pkceMethod: 'S256',
+        // enableLogging: true,
+        redirectUri: window.location.href,
+        // checkLoginIframe: false,
+      },
+      config: {
+        ...config,
+      },
+      onReady: () => {
+        initializeApp(true, `${import.meta.env.VITE_FRONTEND_BASEPATH}`); //Uncomment this after keycloak setup
+      },
+      onInitError: (error) => {
+        console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
+        console.error(error); // eslint-disable-line no-console
+      },
+    }
+  );
   if (assertOptions(options).hasError)
     throw new Error(`Invalid options given: ${assertOptions(options).error}`);
 

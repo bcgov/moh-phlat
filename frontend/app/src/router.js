@@ -41,6 +41,7 @@ export default function getRouter(basePath = '/') {
             component: () => import('~/KeycloakDevTools.vue'),
             meta: {
               breadcrumbTitle: 'File Task management',
+              accessTo: ['REG_ADMIN', 'REG_USER'],
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
@@ -51,8 +52,9 @@ export default function getRouter(basePath = '/') {
             component: () => import('~/views/source-data/TaskManagement.vue'),
             meta: {
               breadcrumbTitle: 'File Task management',
-              requiresAuth: IdentityProviders.IDIR,
-              hasLogin: true,
+              accessTo: ['REG_ADMIN', 'REG_USER'],
+              // requiresAuth: IdentityProviders.IDIR,
+              // hasLogin: true,
             },
           },
           {
@@ -62,6 +64,7 @@ export default function getRouter(basePath = '/') {
               import('~/views/source-data/SourceControlView.vue'),
             meta: {
               breadcrumbTitle: 'File Control View',
+              accessTo: ['REG_ADMIN', 'REG_USER'],
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
@@ -79,6 +82,7 @@ export default function getRouter(basePath = '/') {
               import('~/views/source-data/ProcessControlView.vue'),
             meta: {
               breadcrumbTitle: 'File Control View',
+              accessTo: ['REG_ADMIN', 'REG_USER'],
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
@@ -94,6 +98,7 @@ export default function getRouter(basePath = '/') {
             name: 'SourceDataUpload',
             component: () => import('~/views/source-data/SourceDataUpload.vue'),
             meta: {
+              accessTo: ['REG_ADMIN', 'REG_USER'],
               breadcrumbTitle: 'File Control upload',
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
@@ -110,8 +115,9 @@ export default function getRouter(basePath = '/') {
             name: 'ManageStatusCode',
             component: () => import('~/views/setting/ManageStatusCode.vue'),
             meta: {
+              accessTo: ['REG_ADMIN', 'REG_USER'],
               breadcrumbTitle: 'Manage Status Code',
-              // requiresAuth: IdentityProviders.IDIR,
+              requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
           },

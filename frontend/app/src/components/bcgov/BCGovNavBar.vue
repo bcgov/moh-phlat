@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       items: ['french', 'english'],
+      isLocalhost: false,
     };
   },
   computed: {
@@ -18,6 +19,12 @@ export default {
     hasPrivileges() {
       return this.identityProvider === IdentityProviders.IDIR;
     },
+  },
+  mounted() {
+    // Check if application is running on localhost
+    this.isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
   },
 };
 </script>
@@ -35,25 +42,34 @@ export default {
           </router-link>
         </li> -->
         <li>
-          <router-link data-cy="aboutLinks" :to="{ name: 'TaskManagement' }">
+          <router-link
+            data-cy="TaskManagement"
+            :to="{ name: 'TaskManagement' }"
+          >
             File Task Management
           </router-link>
         </li>
         <li>
-          <router-link data-cy="aboutLinks" :to="{ name: 'SourceDataUpload' }">
+          <router-link
+            data-cy="SourceDataUpload"
+            :to="{ name: 'SourceDataUpload' }"
+          >
             File Control / Upload
           </router-link>
         </li>
         <li>
-          <router-link data-cy="aboutLinks" :to="{ name: 'ManageStatusCode' }">
+          <router-link
+            data-cy="ManageStatusCode"
+            :to="{ name: 'ManageStatusCode' }"
+          >
             Manage Status Code
           </router-link>
         </li>
-        <!-- <li>
-          <router-link data-cy="aboutLinks" :to="{ name: 'FileView' }">
-            View Demo File
+        <li v-if="isLocalhost">
+          <router-link data-cy="DevTools" :to="{ name: 'DevTools' }">
+            Dev Only
           </router-link>
-        </li> -->
+        </li>
       </ul>
     </div>
   </nav>

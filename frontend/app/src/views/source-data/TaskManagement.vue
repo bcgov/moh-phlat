@@ -2,6 +2,7 @@
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
+import { IdentityProviders } from '~/utils/constants';
 export default {
   components: {
     BaseFilter,
@@ -94,6 +95,7 @@ export default {
       'allControlTableData',
       'deletedControlTableData',
     ]),
+    IDP: () => IdentityProviders,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
