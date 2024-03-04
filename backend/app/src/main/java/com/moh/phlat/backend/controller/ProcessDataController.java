@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class ProcessDataController {
 	@Autowired
 	private DbUtilityService dbUtilityService;
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDatas() {
 		return ResponseEntity.status(HttpStatus.OK)
@@ -47,6 +49,7 @@ public class ProcessDataController {
 	}
 
 	// get process data by control id
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required =false) String filterStatus) {
@@ -69,6 +72,7 @@ public class ProcessDataController {
 	}
 
 	// get specific row by id
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getProcessDataById(@PathVariable Long id) {
 		Optional<ProcessData> processData = processDataRepository.findById(id);
@@ -84,6 +88,7 @@ public class ProcessDataController {
 
 		
 	// update an existing record
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ResponseMessage> updateProcessDataById(@RequestBody @Valid ProcessData reqProcessData,
 			@PathVariable Long id) {
@@ -292,7 +297,8 @@ public class ProcessDataController {
 		}
 	}
 
-	
+
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/getformfields/header")
 	public String getAllHeader() {
 		return dbUtilityService.getVariablesByTableNameSortedById("PROCESS_DATA");
@@ -330,6 +336,7 @@ public class ProcessDataController {
 				.body(new ResponseMessage("error", 404, "Control Id not found.", "[]"));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PutMapping("/validateallbycontroltableid/{id}")
 	public ResponseEntity<ResponseMessage> validateAllProcessData(@PathVariable Long id) {
 
@@ -349,6 +356,7 @@ public class ProcessDataController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Validation process started!",_control));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PutMapping("/plrload/{controlTableId}")
 	public ResponseEntity<ResponseMessage> plrLoad(@PathVariable Long controlTableId) {
 
