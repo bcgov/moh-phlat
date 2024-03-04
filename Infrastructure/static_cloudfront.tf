@@ -38,7 +38,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_root_object = "index.html"
   enabled             = true
   is_ipv6_enabled     = true
-  #aliases             = [var.application_url]
+  aliases             = [var.application_url]
 
   default_cache_behavior {
     target_origin_id       = local.s3_origin_id
@@ -65,8 +65,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   price_class = "PriceClass_100"
   custom_error_response {
     error_code         = 404
-    response_page_path = "/404.html"
-    response_code      = 404
+    response_page_path = "/app/index.html"
+    response_code      = 200
   }
   restrictions {
     geo_restriction {

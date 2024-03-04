@@ -339,7 +339,7 @@ export default {
           v-model="searchByStatus"
           :items="statusCodes"
           :clearable="true"
-          label="Search By Status"
+          label="Filter by status"
           density="compact"
           solid
           variant="underlined"

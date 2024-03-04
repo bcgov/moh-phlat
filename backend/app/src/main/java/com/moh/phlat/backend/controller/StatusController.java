@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class StatusController {
 	private StatusRepository statusRepository;
 
 	// create new status
+	@PreAuthorize("hasRole(@roleService.getRegAdminRole())")
 	@PostMapping("/add")
 	public ResponseEntity<ResponseMessage> addNewStatus(@RequestBody Status requestStatus) {
 		Status status = new Status();
@@ -59,6 +61,7 @@ public class StatusController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", status));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllStatus(
 			@RequestParam(required = false) Boolean isDeleted) {
@@ -80,6 +83,7 @@ public class StatusController {
 	}
 
 	// view status by id
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getStatusById(@PathVariable Long id) {
 		Optional<Status> status = statusRepository.findById(id);
@@ -93,7 +97,7 @@ public class StatusController {
 	}
 
 	// update an existing status
-
+	@PreAuthorize("hasRole(@roleService.getRegAdminRole())")
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ResponseMessage> updateStatusById(@RequestBody Status requestStatus,
 			@PathVariable Long id) {
@@ -117,6 +121,7 @@ public class StatusController {
 	}
 
 	// soft delete a status
+	@PreAuthorize("hasRole(@roleService.getRegAdminRole())")
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<ResponseMessage> deleteStatusById(@PathVariable("id") Long id) {
 		Optional<Status> status = statusRepository.findById(id);

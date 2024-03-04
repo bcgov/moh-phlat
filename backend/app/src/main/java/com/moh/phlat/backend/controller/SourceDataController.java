@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class SourceDataController {
 	@Autowired
 	private DbUtilityService dbUtilityService;
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDatas() {
 
@@ -53,6 +55,7 @@ public class SourceDataController {
 	}
 
 	// get specific row by id
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getSourceDataById(@PathVariable Long id) {
 
@@ -68,6 +71,7 @@ public class SourceDataController {
 	}
 
 	// get source data by control id
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId) {
@@ -84,6 +88,7 @@ public class SourceDataController {
 
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/getformfields/header")
 	public String getAllHeader() {
 		return dbUtilityService.getVariablesByTableNameSortedById("SOURCE_DATA");
@@ -163,7 +168,7 @@ public class SourceDataController {
 			fileService.processAndSaveData(file, control.getId());
 
 			return ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseMessage("success", 200, "File loaded successfully", control.getId()));
+					.body(new ResponseMessage("success", 200, "File uploading started.", control.getId()));
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
 				new ResponseMessage("error", 400, "Please upload a non-empty CSV file with the standard format!", 0));
