@@ -5,7 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import getRouter from '~/router';
 
 import { useAuthStore } from '~/store/auth';
-import { useFormStore } from '~/store/form';
 
 describe('auth actions', () => {
   let router = getRouter();
@@ -13,12 +12,10 @@ describe('auth actions', () => {
   const windowReplaceSpy = vi.spyOn(window.location, 'replace');
   setActivePinia(createPinia());
   const mockStore = useAuthStore();
-  const formStore = useFormStore();
 
   describe('login', () => {
     beforeEach(() => {
       mockStore.$reset();
-      formStore.$reset();
       mockStore.keycloak = {
         createLoginUrl: vi.fn(() => 'about:blank'),
         createLogoutUrl: vi.fn(() => 'about:blank'),
@@ -64,19 +61,6 @@ describe('auth actions', () => {
       expect(windowReplaceSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should navigate with pinia store idpHint', () => {
-      mockStore.ready = true;
-      mockStore.redirectUri = undefined;
-      formStore.form = { idps: ['test'] };
-
-      mockStore.login();
-
-      expect(replaceSpy).toHaveBeenCalledTimes(1);
-      expect(replaceSpy).toHaveBeenCalledWith({
-        name: 'Login',
-        query: { idpHint: ['idir', 'bceid-business', 'bceid-basic'] },
-      });
-    });
 
     // TODO: Figure out how to mock and intercept vue-router instantiation
     // it('should router navigate to login page without idpHint', () => {

@@ -95,7 +95,7 @@ describe('BaseAuthButton.vue', () => {
     expect(replace).toHaveBeenCalledTimes(1);
     expect(replace).toHaveBeenCalledWith({
       name: 'Login',
-      query: { idpHint: ['idir', 'bceid-business', 'bceid-basic'] },
+      query: { idpHint: ['idir'] },
     });
   });
 

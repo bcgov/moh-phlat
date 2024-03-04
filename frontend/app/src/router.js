@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import { useAuthStore } from '~/store/auth';
 import { IdentityProviders } from '~/utils/constants';
-// import { preFlightAuth } from '~/utils/permissionUtils';
 
 let isFirstTransition = true;
 let router = undefined;

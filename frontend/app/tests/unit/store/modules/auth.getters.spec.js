@@ -35,7 +35,7 @@ describe('auth getters', () => {
         preferred_username: 'johndoe',
         realm_access: {},
         resource_access: {
-          chefs: {
+          'PHLAT-WEB': {
             roles: roles,
           },
         },
@@ -121,7 +121,7 @@ describe('auth getters', () => {
     roles = [];
     store.keycloak.tokenParsed = {
       resource_access: {
-        chefs: {
+        'PHLAT-WEB': {
           roles: roles,
         },
       },
@@ -133,10 +133,10 @@ describe('auth getters', () => {
 
   it('isAdmin should return true if admin role', () => {
     store.authenticated = true;
-    roles = ['admin'];
+    roles = ['REG_ADMIN'];
     store.keycloak.tokenParsed = {
       resource_access: {
-        chefs: {
+        'PHLAT-WEB': {
           roles: roles,
         },
       },
@@ -156,10 +156,10 @@ describe('auth getters', () => {
 
   it('isUser should return true if user role', () => {
     store.authenticated = true;
-    roles = ['user'];
+    roles = ['REG_USER'];
     store.keycloak.tokenParsed = {
       resource_access: {
-        chefs: {
+        'PHLAT-WEB': {
           roles: roles,
         },
       },
