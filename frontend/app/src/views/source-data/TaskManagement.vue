@@ -96,7 +96,7 @@ export default {
       'allControlTableData',
       'deletedControlTableData',
     ]),
-    ...mapState(useAuthStore, ['isAdmin', 'isUser', 'userCurrentRoles']),
+    ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -377,8 +377,8 @@ export default {
               item.raw.statusCode === 'APPROVED' &&
               $permissions.canUserPerform(
                 'loadToPlr',
-                this.isAdmin,
-                this.isUser
+                this.isRegAdmin,
+                this.isRegUser
               )
             "
             location="bottom"
@@ -402,8 +402,8 @@ export default {
               item.raw.statusCode === 'PRE-VALIDATION_COMPLETED' &&
               $permissions.canUserPerform(
                 'approveControlTable',
-                this.isAdmin,
-                this.isUser
+                this.isRegAdmin,
+                this.isRegUser
               )
             "
             location="bottom"
@@ -424,8 +424,8 @@ export default {
               {{
                 $permissions.canUserPerform(
                   'approveControlTable',
-                  this.isAdmin,
-                  this.isUser
+                  this.isRegAdmin,
+                  this.isRegUser
                 )
               }}</span
             >

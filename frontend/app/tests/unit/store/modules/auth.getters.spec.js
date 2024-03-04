@@ -4,6 +4,8 @@ import { createApp } from 'vue';
 
 import { useAuthStore } from '~/store/auth';
 
+import { RegRoles } from '~/utils/constants';
+
 const zeroUuid = '00000000-0000-0000-0000-000000000000';
 const zeroGuid = '00000000000000000000000000000000';
 
@@ -116,7 +118,7 @@ describe('auth getters', () => {
     expect(typeof store.identityProvider).toBe('string');
   });
 
-  it('isAdmin should return false if no admin role', () => {
+  it('isRegAdmin should return false if no admin role', () => {
     store.authenticated = true;
     roles = [];
     store.keycloak.tokenParsed = {
@@ -128,12 +130,12 @@ describe('auth getters', () => {
     };
 
     expect(store.authenticated).toBeTruthy();
-    expect(store.isAdmin).toBeFalsy();
+    expect(store.isRegAdmin).toBeFalsy();
   });
 
-  it('isAdmin should return true if admin role', () => {
+  it('isRegAdmin should return true if admin role', () => {
     store.authenticated = true;
-    roles = ['REG_ADMIN'];
+    roles = [RegRoles.REG_ADMIN];
     store.keycloak.tokenParsed = {
       resource_access: {
         'PHLAT-WEB': {
@@ -143,20 +145,20 @@ describe('auth getters', () => {
     };
 
     expect(store.authenticated).toBeTruthy();
-    expect(store.isAdmin).toBeTruthy();
+    expect(store.isRegAdmin).toBeTruthy();
   });
 
-  it('isUser should return false if no user role', () => {
+  it('isRegUser should return false if no user role', () => {
     store.authenticated = true;
     roles = [];
 
     expect(store.authenticated).toBeTruthy();
-    expect(store.isUser).toBeFalsy();
+    expect(store.isRegUser).toBeFalsy();
   });
 
-  it('isUser should return true if user role', () => {
+  it('isRegUser should return true if user role', () => {
     store.authenticated = true;
-    roles = ['REG_USER'];
+    roles = [RegRoles.REG_USER];
     store.keycloak.tokenParsed = {
       resource_access: {
         'PHLAT-WEB': {
@@ -166,7 +168,7 @@ describe('auth getters', () => {
     };
 
     expect(store.authenticated).toBeTruthy();
-    expect(store.isUser).toBeTruthy();
+    expect(store.isRegUser).toBeTruthy();
   });
 
   it('ready should return a boolean', () => {

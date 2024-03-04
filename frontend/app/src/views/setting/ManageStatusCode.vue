@@ -59,7 +59,7 @@ export default {
       'allStatusData',
       'deletedStatusData',
     ]),
-    ...mapState(useAuthStore, ['isAdmin', 'isUser']),
+    ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -342,8 +342,8 @@ export default {
             v-if="
               $permissions.canUserPerform(
                 'addNewStatus',
-                this.isAdmin,
-                this.isUser
+                this.isRegAdmin,
+                this.isRegUser
               )
             "
           >
@@ -426,8 +426,8 @@ export default {
             includeDeleted === false &&
             $permissions.canUserPerform(
               'addEditStatus',
-              this.isAdmin,
-              this.isUser
+              this.isRegAdmin,
+              this.isRegUser
             )
           "
           #item.actions="{ item }"

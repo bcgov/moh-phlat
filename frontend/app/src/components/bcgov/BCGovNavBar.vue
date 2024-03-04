@@ -11,7 +11,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(useAuthStore, ['authenticated', 'isAdmin', 'identityProvider']),
+    ...mapState(useAuthStore, [
+      'authenticated',
+      'isRegAdmin',
+      'identityProvider',
+    ]),
     hideNavBar() {
       // hide nav bar if user is on form submitter page
       return this.$route && this.$route.meta && this.$route.meta.formSubmitMode;

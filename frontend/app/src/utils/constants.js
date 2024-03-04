@@ -55,3 +55,9 @@ export const NotificationTypes = Object.freeze({
     icon: '$warning',
   },
 });
+
+/** Roles defined in Keycloak */
+export const RegRoles = Object.freeze({
+  REG_USER: 'REG_USER',
+  REG_ADMIN: 'REG_ADMIN',
+});

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import getRouter from '~/router';
-
+import { RegRoles } from '~/utils/constants';
 /**
  * @function hasRoles
  * Checks if all elements in `roles` array exists in `tokenRoles` array
@@ -48,8 +48,10 @@ export const useAuthStore = defineStore('auth', {
       state.keycloak.tokenParsed
         ? state.keycloak.tokenParsed.identity_provider
         : null,
-    isAdmin: (state) => state.hasResourceRoles('PHLAT-WEB', ['REG_ADMIN']),
-    isUser: (state) => state.hasResourceRoles('PHLAT-WEB', ['REG_USER']),
+    isRegAdmin: (state) =>
+      state.hasResourceRoles('PHLAT-WEB', [RegRoles.REG_ADMIN]),
+    isRegUser: (state) =>
+      state.hasResourceRoles('PHLAT-WEB', [RegRoles.REG_USER]),
     userCurrentRoles: (state) =>
       state &&
       state.resourceAccess &&

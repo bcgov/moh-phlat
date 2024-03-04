@@ -10,6 +10,8 @@ import BCGovNavBar from '~/components/bcgov/BCGovNavBar.vue';
 import getRouter from '~/router';
 import { useAuthStore } from '~/store/auth';
 
+import { RegRoles } from '~/utils/constants';
+
 describe('BCGovNavBar.vue', () => {
   const pinia = createPinia();
   setActivePinia(pinia);
@@ -53,7 +55,7 @@ describe('BCGovNavBar.vue', () => {
         identity_provider: 'idir',
         resource_access: {
           phlatWeb: {
-            roles: ['REG_ADMIN'],
+            roles: [RegRoles.REG_ADMIN],
           },
         },
       },

@@ -5,7 +5,12 @@ import { useAuthStore } from '~/store/auth';
 
 export default {
   computed: {
-    ...mapState(useAuthStore, ['authenticated', 'isAdmin', 'isUser', 'ready']),
+    ...mapState(useAuthStore, [
+      'authenticated',
+      'isRegAdmin',
+      'isRegUser',
+      'ready',
+    ]),
     hasLogin() {
       return useRoute()?.meta?.hasLogin;
     },

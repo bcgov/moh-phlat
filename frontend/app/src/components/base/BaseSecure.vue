@@ -13,8 +13,8 @@ export default {
     ...mapState(useAuthStore, [
       'authenticated',
       'userCurrentRoles',
-      'isAdmin',
-      'isUser',
+      'isRegAdmin',
+      'isRegUser',
       'ready',
     ]),
   },

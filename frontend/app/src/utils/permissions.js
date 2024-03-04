@@ -1,5 +1,9 @@
-export function canUserPerform(action = null, isAdmin = false, isUser = false) {
-  const REG_USER_ACTIONS = ['canDoThis', 'canDoThat'];
+export function canUserPerform(
+  action = null,
+  isRegAdmin = false,
+  isRegUser = false
+) {
+  const REG_USER_ACTIONS = ['loadToPlr'];
   const REG_ADMIN_ACTIONS = [
     'approveControlTable',
     'loadToPlr',
@@ -11,9 +15,9 @@ export function canUserPerform(action = null, isAdmin = false, isUser = false) {
   if (action === null) {
     return false;
   }
-  if (isAdmin) {
+  if (isRegAdmin) {
     canUserPerformAction = REG_ADMIN_ACTIONS.includes(action);
-  } else if (isUser) {
+  } else if (isRegUser) {
     canUserPerformAction = REG_USER_ACTIONS.includes(action);
   } else {
     canUserPerformAction = false;
