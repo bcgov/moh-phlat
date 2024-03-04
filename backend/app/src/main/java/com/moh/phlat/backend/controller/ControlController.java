@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ public class ControlController {
 
 	@Autowired
 	private ControlRepository controlRepository;
-
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
 		return ResponseEntity.status(HttpStatus.OK)
@@ -36,6 +37,7 @@ public class ControlController {
 	}
 
 	// view specific file control
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getControlById(@PathVariable Long id) {
 		Optional<Control> controlTable = controlRepository.findById(id);
@@ -48,6 +50,7 @@ public class ControlController {
 				.body(new ResponseMessage("success", 200, "", controlRepository.findById(id)));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/filename/{fileName}")
 	public ResponseEntity<ResponseMessage> getControlByFileName(@PathVariable String fileName) {
 		return ResponseEntity.status(HttpStatus.OK)
@@ -55,6 +58,7 @@ public class ControlController {
 
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ResponseMessage> updateControl(@PathVariable("id") long id,
 			@RequestBody Control requestControl) {
@@ -97,7 +101,8 @@ public class ControlController {
 					"Internal error encountered while updating Control table with id: " + id, "[]"));
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(@roleService.getRegAdminRole())")
 	@PutMapping("/approve/{id}")
 	public ResponseEntity<ResponseMessage> approveToLoadToPLR(@PathVariable("id") long id) {
 		Optional<Control> controlTableData = controlRepository.findById(id);

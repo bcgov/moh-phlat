@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class MessageDetailController {
 	private MessageDetailRepository messageDetailRepository;
 
 	// create new status
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/add")
 	public ResponseEntity<ResponseMessage> addNessageDetail(@RequestBody MessageDetail reqMessageDetail) {
 		MessageDetail messageDetail = new MessageDetail();
@@ -50,13 +52,15 @@ public class MessageDetailController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", messageDetail));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllMessageDetails() {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage("success", 200, "", messageDetailRepository.findAll()));
 	}
-	
-	
+
+
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getMessageDetailById(@PathVariable Long id) {
 		Optional<MessageDetail> messageDetail = messageDetailRepository.findById(id);
