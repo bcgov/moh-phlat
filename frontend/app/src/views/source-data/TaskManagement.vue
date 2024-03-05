@@ -2,6 +2,8 @@
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
+import { useAuthStore } from '~/store/auth';
+import { IdentityProviders } from '~/utils/constants';
 export default {
   components: {
     BaseFilter,
@@ -94,6 +96,8 @@ export default {
       'allControlTableData',
       'deletedControlTableData',
     ]),
+    ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
+    IDP: () => IdentityProviders,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -369,7 +373,14 @@ export default {
           </v-tooltip>
 
           <v-tooltip
-            v-if="item.raw.statusCode === 'APPROVED'"
+            v-if="
+              item.raw.statusCode === 'APPROVED' &&
+              $permissions.canUserPerform(
+                'loadToPlr',
+                this.isRegAdmin,
+                this.isRegUser
+              )
+            "
             location="bottom"
           >
             <template #activator="{ props }">
@@ -387,7 +398,14 @@ export default {
           </v-tooltip>
 
           <v-tooltip
-            v-if="item.raw.statusCode === 'PRE-VALIDATION_COMPLETED'"
+            v-if="
+              item.raw.statusCode === 'PRE-VALIDATION_COMPLETED' &&
+              $permissions.canUserPerform(
+                'approveControlTable',
+                this.isRegAdmin,
+                this.isRegUser
+              )
+            "
             location="bottom"
           >
             <template #activator="{ props }">
@@ -401,7 +419,16 @@ export default {
                 mdi-tag-check
               </v-icon>
             </template>
-            <span>Approved</span>
+            <span
+              >Approved -
+              {{
+                $permissions.canUserPerform(
+                  'approveControlTable',
+                  this.isRegAdmin,
+                  this.isRegUser
+                )
+              }}</span
+            >
           </v-tooltip>
 
           <v-tooltip location="bottom">

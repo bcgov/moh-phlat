@@ -5,7 +5,12 @@ import { useAuthStore } from '~/store/auth';
 
 export default {
   computed: {
-    ...mapState(useAuthStore, ['authenticated', 'ready']),
+    ...mapState(useAuthStore, [
+      'authenticated',
+      'isRegAdmin',
+      'isRegUser',
+      'ready',
+    ]),
     hasLogin() {
       return useRoute()?.meta?.hasLogin;
     },
@@ -15,7 +20,6 @@ export default {
   },
 };
 </script>
-
 <template>
   <div v-if="ready" class="d-print-none">
     <v-btn

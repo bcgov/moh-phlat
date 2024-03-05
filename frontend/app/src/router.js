@@ -2,8 +2,7 @@ import NProgress from 'nprogress';
 import { createRouter, createWebHistory } from 'vue-router';
 
 import { useAuthStore } from '~/store/auth';
-// import { IdentityProviders } from '~/utils/constants';
-// import { preFlightAuth } from '~/utils/permissionUtils';
+import { IdentityProviders, RegRoles } from '~/utils/constants';
 
 let isFirstTransition = true;
 let router = undefined;
@@ -36,13 +35,25 @@ export default function getRouter(basePath = '/') {
         component: () => import('~/views/File.vue'),
         children: [
           {
+            path: '/dev',
+            name: 'DevTools',
+            component: () => import('~/KeycloakDevTools.vue'),
+            meta: {
+              breadcrumbTitle: 'File Task management',
+              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
+              requiresAuth: IdentityProviders.IDIR,
+              hasLogin: true,
+            },
+          },
+          {
             path: '/',
             name: 'TaskManagement',
             component: () => import('~/views/source-data/TaskManagement.vue'),
             meta: {
               breadcrumbTitle: 'File Task management',
+              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
               // requiresAuth: IdentityProviders.IDIR,
-              hasLogin: true,
+              // hasLogin: true,
             },
           },
           {
@@ -52,7 +63,8 @@ export default function getRouter(basePath = '/') {
               import('~/views/source-data/SourceControlView.vue'),
             meta: {
               breadcrumbTitle: 'File Control View',
-              // requiresAuth: IdentityProviders.IDIR,
+              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
+              requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
             props: (route) => {
@@ -69,7 +81,8 @@ export default function getRouter(basePath = '/') {
               import('~/views/source-data/ProcessControlView.vue'),
             meta: {
               breadcrumbTitle: 'File Control View',
-              // requiresAuth: IdentityProviders.IDIR,
+              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
+              requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
             props: (route) => {
@@ -84,8 +97,9 @@ export default function getRouter(basePath = '/') {
             name: 'SourceDataUpload',
             component: () => import('~/views/source-data/SourceDataUpload.vue'),
             meta: {
+              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
               breadcrumbTitle: 'File Control upload',
-              // requiresAuth: IdentityProviders.IDIR,
+              requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
           },
@@ -100,8 +114,9 @@ export default function getRouter(basePath = '/') {
             name: 'ManageStatusCode',
             component: () => import('~/views/setting/ManageStatusCode.vue'),
             meta: {
+              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
               breadcrumbTitle: 'Manage Status Code',
-              // requiresAuth: IdentityProviders.IDIR,
+              requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
           },

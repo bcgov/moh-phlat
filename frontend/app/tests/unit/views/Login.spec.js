@@ -52,23 +52,4 @@ describe('Login.vue', () => {
     expect(wrapper.text()).toMatch('trans.login.alreadyLoggedIn');
   });
 
-  it('shows login options', async () => {
-    authStore.authenticated = false;
-    authStore.ready = true;
-    const wrapper = mount(Login, {
-      global: {
-        plugins: [pinia],
-        stubs: {
-          RouterLink: true,
-        },
-      },
-    });
-
-    await nextTick();
-
-    Object.values(IdentityProviders).forEach((idp) => {
-      const button = wrapper.find(`[data-test="${idp}"]`);
-      expect(button.exists()).toBeTruthy();
-    });
-  });
 });

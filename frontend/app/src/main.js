@@ -3,7 +3,6 @@ import '@bcgov/bc-sans/css/BCSans.css';
 import '~/assets/scss/style.scss';
 
 import axios from 'axios';
-import Keycloak from 'keycloak-js';
 import NProgress from 'nprogress';
 import { createPinia } from 'pinia';
 import { createApp, h } from 'vue';
@@ -15,9 +14,12 @@ import vuetify from '~/plugins/vuetify';
 import getRouter from '~/router';
 import { useAuthStore } from '~/store/auth';
 import { useAppStore } from '~/store/app';
-import { assertOptions, getConfig, sanitizeConfig } from '~/utils/keycloak';
+import { assertOptions } from '~/utils/keycloak';
 
-let keycloak = null;
+import keycloak from '~/keycloak';
+
+import { canUserPerform } from '~/utils/permissions';
+
 const pinia = createPinia();
 
 const app = createApp({
@@ -28,6 +30,10 @@ app.config.globalProperties.$filters = {
   formatDate,
   formatDateLong,
 };
+
+app.config.globalProperties.$keycloak = keycloak;
+
+app.config.globalProperties.$permissions = { canUserPerform };
 
 /* import clipboard */
 import Clipboard from 'vue3-clipboard';
@@ -53,7 +59,109 @@ if (!!window.MSInputMethodContext && !!document.documentMode) {
   NProgress.done();
 } else {
   loadConfig();
-  initializeApp(true, '/app'); //Remove this after keycloak setup
+}
+
+/**
+ * @function loadConfig
+ * Acquires the configuration state from the backend server
+ */
+async function loadConfig() {
+  const storageKey = 'config';
+  try {
+    // Get configuration if it isn't already in session storage
+    const data = {
+      realm: import.meta.env.VITE_KEYCLOAK_REALM_NAME,
+      providerAuthUrl: import.meta.env.VITE_KEYCLOAK_PROVIDER_AUTH_URL,
+      clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+      redirectUri: window.location.href,
+    };
+
+    if (sessionStorage.getItem(storageKey) === null) {
+      sessionStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    // Mount the configuration as a prototype for easier access from Vue
+    const config = JSON.parse(sessionStorage.getItem(storageKey));
+
+    const appStore = useAppStore();
+    appStore.config = Object.freeze(config);
+    app.config.globalProperties.$config = config;
+    if (!config || !config.realm || !config['providerAuthUrl']) {
+      throw new Error('Keycloak is misconfigured');
+    }
+
+    loadKeycloak(config);
+  } catch (err) {
+    sessionStorage.removeItem(storageKey);
+    initializeApp(false); // Attempt to gracefully fail
+    throw new Error(`Failed to acquire configuration: ${err.message}`);
+  }
+}
+
+/**
+ * @function loadKeycloak
+ * Applies Keycloak authentication capabilities
+ * @param {object} config A config object
+ */
+function loadKeycloak(config) {
+  const options = Object.assign(
+    {},
+    {
+      init: {
+        flow: 'standard',
+        onLoad: 'check-sso',
+        pkceMethod: 'S256',
+        // enableLogging: true,
+        redirectUri: window.location.href,
+        // checkLoginIframe: false,
+      },
+      config: {
+        ...config,
+      },
+      onReady: () => {
+        initializeApp(true, `${import.meta.env.VITE_FRONTEND_BASEPATH}`); //Uncomment this after keycloak setup
+      },
+      onInitError: (error) => {
+        console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
+        console.error(error); // eslint-disable-line no-console
+      },
+    }
+  );
+  if (assertOptions(options).hasError)
+    throw new Error(`Invalid options given: ${assertOptions(options).error}`);
+
+  const authStore = useAuthStore();
+  keycloak.onReady = (authenticated) => {
+    authStore.updateKeycloak(keycloak, authenticated);
+    authStore.ready = true;
+    typeof options.onReady === 'function' && options.onReady();
+  };
+  keycloak.onAuthSuccess = () => {
+    // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
+    // Refresh token if it's valid for less then 60 seconds
+    const updateTokenInterval = setInterval(
+      () =>
+        keycloak.updateToken(60).catch(() => {
+          keycloak.clearToken();
+        }),
+      10000
+    );
+    authStore.logoutFn = () => {
+      clearInterval(updateTokenInterval);
+      keycloak.logout(
+        options.logout || { redirectUri: config['logoutRedirectUri'] }
+      );
+    };
+  };
+  keycloak.onAuthRefreshSuccess = () => {
+    authStore.updateKeycloak(keycloak, true);
+  };
+  keycloak.onAuthLogout = () => {
+    authStore.updateKeycloak(keycloak, false);
+  };
+  keycloak.init(options.init).catch((err) => {
+    typeof options.onInitError === 'function' && options.onInitError(err);
+  });
 }
 
 /**
@@ -76,120 +184,4 @@ function initializeApp(kcSuccess = false, basePath = '/') {
   axios.defaults.baseURL = import.meta.env.BASE_URL;
 
   NProgress.done();
-}
-
-/**
- * @function loadConfig
- * Acquires the configuration state from the backend server
- */
-async function loadConfig() {
-  // App publicPath is ./ - so use relative path here, will hit the backend server using relative path to root.
-  const configUrl = `${import.meta.env.VITE_BACKEND_API_URL}config`;
-  const storageKey = 'config';
-  /**
-   * Setting up hard coded config untill we dont have functional keycloak
-   */
-
-  try {
-    // Get configuration if it isn't already in session storage
-    if (sessionStorage.getItem(storageKey) === null) {
-      const { data } = await axios.get(configUrl);
-      sessionStorage.setItem(storageKey, JSON.stringify(data));
-    }
-
-    // Mount the configuration as a prototype for easier access from Vue
-    const config = JSON.parse(sessionStorage.getItem(storageKey));
-    const appStore = useAppStore();
-    appStore.config = Object.freeze(config);
-
-    if (
-      !config ||
-      !config.keycloak ||
-      !config.keycloak.clientId ||
-      !config.keycloak.realm ||
-      !config.keycloak.serverUrl
-    ) {
-      throw new Error('Keycloak is misconfigured');
-    }
-
-    loadKeycloak(config);
-  } catch (err) {
-    sessionStorage.removeItem(storageKey);
-    initializeApp(false); // Attempt to gracefully fail
-    throw new Error(`Failed to acquire configuration: ${err.message}`);
-  }
-}
-
-/**
- * @function loadKeycloak
- * Applies Keycloak authentication capabilities
- * @param {object} config A config object
- */
-function loadKeycloak(config) {
-  const defaultParams = {
-    config: window.__BASEURL__ ? `${window.__BASEURL__}/config` : '/config',
-    init: { onLoad: 'login-required' },
-  };
-
-  const options = Object.assign({}, defaultParams, {
-    init: { onLoad: 'check-sso' },
-    config: {
-      clientId: config.keycloak.clientId,
-      realm: config.keycloak.realm,
-      url: config.keycloak.serverUrl,
-    },
-    onReady: () => {
-      //initializeApp(true, config.basePath); //Uncomment this after keycloak setup
-    },
-    onInitError: (error) => {
-      console.error('Keycloak failed to initialize'); // eslint-disable-line no-console
-      console.error(error); // eslint-disable-line no-console
-    },
-  });
-
-  if (assertOptions(options).hasError)
-    throw new Error(`Invalid options given: ${assertOptions(options).error}`);
-
-  getConfig(options.config)
-    .then((cfg) => {
-      const ctor = sanitizeConfig(cfg);
-
-      const authStore = useAuthStore();
-
-      keycloak = new Keycloak(ctor);
-      keycloak.onReady = (authenticated) => {
-        authStore.updateKeycloak(keycloak, authenticated);
-        authStore.ready = true;
-        typeof options.onReady === 'function' && options.onReady();
-      };
-      keycloak.onAuthSuccess = () => {
-        // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
-        // Refresh token if it's valid for less then 60 seconds
-        const updateTokenInterval = setInterval(
-          () =>
-            keycloak.updateToken(60).catch(() => {
-              keycloak.clearToken();
-            }),
-          10000
-        );
-        authStore.logoutFn = () => {
-          clearInterval(updateTokenInterval);
-          keycloak.logout(
-            options.logout || { redirectUri: config['logoutRedirectUri'] }
-          );
-        };
-      };
-      keycloak.onAuthRefreshSuccess = () => {
-        authStore.updateKeycloak(keycloak, true);
-      };
-      keycloak.onAuthLogout = () => {
-        authStore.updateKeycloak(keycloak, false);
-      };
-      keycloak.init(options.init).catch((err) => {
-        typeof options.onInitError === 'function' && options.onInitError(err);
-      });
-    })
-    .catch((err) => {
-      console.log(err); // eslint-disable-line no-console
-    });
 }

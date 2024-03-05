@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import getRouter from '~/router';
-
+import { RegRoles } from '~/utils/constants';
 /**
  * @function hasRoles
  * Checks if all elements in `roles` array exists in `tokenRoles` array
@@ -48,13 +48,26 @@ export const useAuthStore = defineStore('auth', {
       state.keycloak.tokenParsed
         ? state.keycloak.tokenParsed.identity_provider
         : null,
-    isAdmin: (state) => state.hasResourceRoles('chefs', ['admin']),
-    isUser: (state) => state.hasResourceRoles('chefs', ['user']),
+    isRegAdmin: (state) =>
+      state.hasResourceRoles('PHLAT-WEB', [RegRoles.REG_ADMIN]),
+    isRegUser: (state) =>
+      state.hasResourceRoles('PHLAT-WEB', [RegRoles.REG_USER]),
+    userCurrentRoles: (state) =>
+      state &&
+      state.resourceAccess &&
+      state.resourceAccess['PHLAT-WEB'] &&
+      state.resourceAccess['PHLAT-WEB'].roles.length
+        ? state.resourceAccess['PHLAT-WEB'].roles
+        : [],
     keycloakSubject: (state) => state.keycloak.subject,
     identityProviderIdentity: (state) => state.keycloak.tokenParsed.idp_userid,
     moduleLoaded: (state) => !!state.keycloak,
     realmAccess: (state) => state.keycloak.tokenParsed.realm_access,
-    resourceAccess: (state) => state.keycloak.tokenParsed.resource_access,
+    resourceAccess: (state) =>
+      state &&
+      state.keycloak &&
+      state.keycloak.tokenParsed &&
+      state.keycloak.tokenParsed.resource_access,
     token: (state) => state.keycloak.token,
     tokenParsed: (state) => state.keycloak.tokenParsed,
     userName: (state) => state.keycloak.tokenParsed.preferred_username,
@@ -108,7 +121,8 @@ export const useAuthStore = defineStore('auth', {
           const router = getRouter();
           router.replace({
             name: 'Login',
-            query: { idpHint: ['idir', 'bceid-business', 'bceid-basic'] },
+            query: { idpHint: ['idir'] },
+            // query: { idpHint: ['idir', 'bceid-business', 'bceid-basic'] },
           });
         }
       }

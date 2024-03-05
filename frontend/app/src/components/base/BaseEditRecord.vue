@@ -50,7 +50,7 @@ export default {
         @submit="checkForm"
       >
         <v-col
-          v-for="[key] in Object.entries(this.selectedItemToEdit).filter(
+          v-for="[key] in Object.entries(selectedItemToEdit).filter(
             ([keyName, _]) => !ignoreToEdit.some((item) => item.key === keyName)
           )"
           :key="key"
