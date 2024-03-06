@@ -35,13 +35,14 @@ public class SecurityConfig {
     private SecurityFilterChain getFilterChain(HttpSecurity http) throws Exception {
         http.csrf(Customizer.withDefaults())
             //only check token validity here. Role checks on controller methods as there is no general pattern of URLs
-            //config is for health check as of now, hence no security.
-            .authorizeHttpRequests((authRequestMatcher) -> authRequestMatcher.requestMatchers("/config")
-                                                                             .permitAll()
-                                                                             .anyRequest().authenticated())
-            .oauth2ResourceServer((oauth2Resourceserver) -> oauth2Resourceserver.jwt(
-                    (jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                                                   .jwtAuthenticationConverter(jwtAuthConverter))));
+            //excluding health check and swagger urls from authentication.
+            .authorizeHttpRequests(
+                    (authRequestMatcher) -> authRequestMatcher.requestMatchers("/config", "/swagger-ui/**", "/v3/**")
+                                                              .permitAll().anyRequest().authenticated())
+            .oauth2ResourceServer(
+                    (oauth2Resourceserver) -> oauth2Resourceserver
+                            .jwt((jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                                                                .jwtAuthenticationConverter(jwtAuthConverter))));
 
         return http.build();
     }
