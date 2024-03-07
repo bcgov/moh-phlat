@@ -27,7 +27,7 @@ export default {
     <div v-if="userCurrentRoles.some((role) => rolesCanAccess.includes(role))">
       <slot />
     </div>
-    <!-- TODO: Figure out better way to alert when user lacks chefs user role -->
+    <!-- TODO: Figure out better way to alert when user lacks any user role -->
     <div v-else class="text-center">
       <h1 class="my-8">401 UnAuthorized</h1>
       <p>

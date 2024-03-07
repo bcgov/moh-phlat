@@ -69,11 +69,6 @@ export default {
             Manage Status Code
           </router-link>
         </li>
-        <li v-if="isLocalhost">
-          <router-link data-cy="DevTools" :to="{ name: 'DevTools' }">
-            Dev Only
-          </router-link>
-        </li>
       </ul>
     </div>
   </nav>

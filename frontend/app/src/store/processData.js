@@ -9,6 +9,7 @@ export const useProcessDataStore = defineStore('processdata', {
     deletedProcessData: undefined,
     formFieldHeaders: [],
     fileUploadStatus: undefined,
+    validateAllStatus: undefined,
   }),
   getters: {},
   actions: {
@@ -41,6 +42,7 @@ export const useProcessDataStore = defineStore('processdata', {
       try {
         const { data } = await processDataService.servicePutValidateAll(id);
         if (data.statusCode === 200) {
+          this.validateAllStatus = data;
           notificationStore.addNotification({
             text: data.message || 'Validation initiated successfully.',
             type: data.statusCode != 200 ? 'warning' : 'success',

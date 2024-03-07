@@ -2,6 +2,8 @@
 import { mapActions, mapState } from 'pinia';
 import { useInputSourceDataStore } from '~/store/inputsourcedata';
 import { useNotificationStore } from '~/store/notification';
+import { useAuthStore } from '~/store/auth';
+import { RunTypes } from '~/utils/constants';
 
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
@@ -23,46 +25,11 @@ function initialState() {
     uploadedFiles: [],
     uploadError: null,
     currentStatus: null,
-    runTypes: [
-      { name: 'Facility', id: 'loadTypeFacility', selected: false },
-      { name: 'HDS', id: 'loadTypeHds', selected: false },
-      { name: 'Organization', id: 'loadTypeOrg', selected: false },
-      {
-        name: 'O-F Relationships',
-        id: 'loadTypeOFRelationship',
-        selected: false,
-      },
-      {
-        name: 'O-O Relationships',
-        id: 'loadTypeOORelationship',
-        selected: false,
-      },
-      {
-        name: 'I-O Relationships including Medical Director Relationships',
-        id: 'loadTypeIORelationship',
-        selected: false,
-      },
-      {
-        name: 'Wk Location Organization Identifier cross reference',
-        id: 'loadTypeWOXref',
-        selected: false,
-      },
-      {
-        name: 'Wk Location Practitioner Identifier cross reference',
-        id: 'loadTypeWPIXref',
-        selected: false,
-      },
-    ],
+    valid: false,
   };
 }
 export default {
   components: {},
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
       ...initialState(),
@@ -121,6 +88,8 @@ export default {
   },
   computed: {
     ...mapState(useInputSourceDataStore, ['fileUploadStatus']),
+    ...mapState(useAuthStore, ['userName']),
+
     isInitial() {
       return this.currentStatus === STATUS_INITIAL;
     },
@@ -132,6 +101,15 @@ export default {
     },
     isFailed() {
       return this.currentStatus === STATUS_FAILED;
+    },
+    runTypes: () => {
+      return Object.entries(RunTypes).map(([key, val]) => {
+        return {
+          name: val,
+          id: key,
+          selected: false,
+        };
+      });
     },
   },
   methods: {
@@ -215,7 +193,7 @@ export default {
           formData.append('fileExtractedDate', this.fileExtractedDate);
           // formData.append('processStartDate', '2024-01-15T21:45:15.842Z');
           // formData.append('processEndDate', '2024-01-15T21:45:15.842Z');
-          formData.append('userId', 'PTUGGER');
+          formData.append('userId', this.userName);
           this.runTypes.forEach((element) => {
             formData.append(element.id, element.selected);
           });
@@ -245,122 +223,117 @@ export default {
       </div>
     </div>
 
-    <div>
-      <div class="file-upload">
-        <v-form
-          ref="settingsForm"
-          v-model="valid"
-          enctype="multipart/form-data"
-          @submit.prevent="handleUpload"
-          @submit="checkForm"
-        >
-          <v-container>
-            <h4 class="">Select 1 or more run types*</h4>
-            <div
-              v-if="runTypeHasError"
-              class="v-messages__message v-messages err-msg"
+    <div class="file-upload">
+      <v-form
+        ref="settingsForm"
+        v-model="valid"
+        enctype="multipart/form-data"
+        @submit.prevent="handleUpload"
+        @submit="checkForm"
+      >
+        <div>
+          <h4 class="">Select 1 or more run types*</h4>
+          <div
+            v-if="runTypeHasError"
+            class="v-messages__message v-messages err-msg"
+          >
+            Please select atleast one run type.
+          </div>
+          <v-col key="1" class="runTypes">
+            <v-checkbox
+              v-for="item in runTypes"
+              :key="item.id"
+              ref="runTypeSelection"
+              class="ma-0 pa-0"
+              :label="item.name"
+              density="compact"
+              :v-model="item.selected"
+              @update:modelValue="item.selected = $event"
+              @click="runTypeHasError = false"
             >
-              Please select atleast one run type.
-            </div>
-            <v-row no-gutters>
-              <v-col key="1" cols="12" sm="6" class="runTypes">
-                <v-checkbox
-                  v-for="(item, index) in runTypes"
-                  :key="item.id"
-                  ref="runTypeSelection"
-                  class="ma-0 pa-0"
-                  :hide-details="index"
-                  :label="item.name"
-                  density="compact"
-                  :v-model="item.selected"
-                  @update:modelValue="item.selected = $event"
-                  @click="runTypeHasError = false"
-                >
-                  <template #label>
-                    <span v-html="item.name"></span>
-                  </template>
-                </v-checkbox>
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-container>
-            <h4>Trusted file details</h4>
-            <v-row no-gutters>
-              <v-col key="1" cols="12" sm="3" class="pl-0 pr-0 pb-0">
-                <v-text-field
-                  density="compact"
-                  solid
-                  variant="outlined"
-                  label="File name"
-                  data-test="text-description"
-                  :rules="fileNameRules"
-                  counter="30"
-                  :model-value="fileName"
-                  @update:modelValue="fileName = $event"
-                />
-              </v-col>
-              <v-col key="1" cols="12" sm="6" class="pl-5 pr-0 pb-0">
-                <v-text-field
-                  density="compact"
-                  solid
-                  variant="outlined"
-                  label="Stakeholder / Batch Label Name*"
-                  data-test="text-name"
-                  :rules="batchNameRules"
-                  required
-                  counter="30"
-                  def
-                  :model-value="batchLabelName"
-                  @update:modelValue="batchLabelName = $event"
-                />
-              </v-col>
-              <v-col key="1" cols="12" sm="3" class="pl-5 pr-0 pb-0">
-                <v-text-field
-                  type="date"
-                  :placeholder="fileExtractedDate"
-                  label="Extracted date*"
-                  density="compact"
-                  variant="outlined"
-                  :rules="fileExtractedDateRules"
-                  required
-                  :model-value="fileExtractedDate"
-                  @update:modelValue="fileExtractedDate = $event"
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-container>
-            <h4>Upload TRUSTED File</h4>
-            <v-file-input
-              ref="fileupload"
-              label="File input*"
-              clearable="true"
-              variant="outlined"
-              multiple="false"
-              name="file"
-              accept=".csv"
-              :rules="fileUploadRules"
-              required
-              @change="setFile($event)"
-            ></v-file-input>
-          </v-container>
-          <v-container>
-            <v-btn
-              :disabled="loading"
-              :loading="loading"
-              block
-              class="text-none mb-4 text-primary"
-              color="indigo-darken-3"
-              size="x-large"
-              variant="outlined"
-              type="submit"
-            >
-              Upload
-            </v-btn>
-          </v-container>
-        </v-form>
-      </div>
+              <template #label>
+                <span v-html="item.name"></span>
+              </template>
+            </v-checkbox>
+          </v-col>
+        </div>
+        <div>
+          <h4>Trusted file details</h4>
+          <v-row no-gutters>
+            <v-col key="1" cols="12" sm="3" class="pl-0 pr-0 pb-0">
+              <v-text-field
+                density="compact"
+                solid
+                variant="outlined"
+                label="File name"
+                data-test="text-description"
+                :rules="fileNameRules"
+                counter="30"
+                :model-value="fileName"
+                @update:modelValue="fileName = $event"
+              />
+            </v-col>
+            <v-col key="1" cols="12" sm="6" class="pl-5 pr-0 pb-0">
+              <v-text-field
+                density="compact"
+                solid
+                variant="outlined"
+                label="Stakeholder / Batch Label Name*"
+                data-test="text-name"
+                :rules="batchNameRules"
+                required
+                counter="30"
+                def
+                :model-value="batchLabelName"
+                @update:modelValue="batchLabelName = $event"
+              />
+            </v-col>
+            <v-col key="1" cols="12" sm="3" class="pl-5 pr-0 pb-0">
+              <v-text-field
+                type="date"
+                :placeholder="fileExtractedDate"
+                label="Extracted date*"
+                density="compact"
+                variant="outlined"
+                :rules="fileExtractedDateRules"
+                required
+                :model-value="fileExtractedDate"
+                @update:modelValue="fileExtractedDate = $event"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </div>
+        <div>
+          <h4>Upload TRUSTED File</h4>
+          <v-file-input
+            ref="fileupload"
+            label="File input*"
+            :clearable="true"
+            variant="outlined"
+            :multiple="false"
+            name="file"
+            accept=".csv"
+            :rules="fileUploadRules"
+            required
+            @change="setFile($event)"
+          ></v-file-input>
+        </div>
+        <div>
+          <v-btn
+            :disabled="loading"
+            :loading="loading"
+            block
+            class="text-none mb-4 text-primary"
+            color="indigo-darken-3"
+            size="x-large"
+            variant="outlined"
+            type="submit"
+          >
+            Upload
+          </v-btn>
+        </div>
+      </v-form>
     </div>
   </div>
 </template>
@@ -382,7 +355,7 @@ export default {
 }
 
 .runTypes {
-  column-count: 2 !important;
+  column-count: 3 !important;
 }
 .file-upload {
   position: relative;

@@ -88,7 +88,7 @@ export default {
           data-test="filter-search"
           :label="inputFilterLabel"
           :placeholder="inputFilterPlaceholder"
-          clearable
+          :clearable="true"
           color="primary"
           prepend-inner-icon="search"
           variant="filled"

@@ -14,7 +14,7 @@ export default {
 </script>
 <template>
   <BaseSecure :roles-can-access="accessTo">
-    <v-container>
+    <v-container fluid class="w-80">
       <router-view v-slot="{ Component }">
         <transition name="component-fade" mode="out-in">
           <component :is="Component"></component>
@@ -23,3 +23,9 @@ export default {
     </v-container>
   </BaseSecure>
 </template>
+
+<style lang="scss">
+.w-80 {
+  width: 93%;
+}
+</style>

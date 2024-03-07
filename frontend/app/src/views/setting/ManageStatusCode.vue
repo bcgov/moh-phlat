@@ -6,6 +6,7 @@ import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
 import { useAuthStore } from '~/store/auth';
+import { PerformActions } from '~/utils/constants';
 
 export default {
   components: {
@@ -60,6 +61,7 @@ export default {
       'deletedStatusData',
     ]),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
+    PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -302,7 +304,6 @@ export default {
           label="Search"
           append-inner-icon="mdi-magnify"
           single-line
-          hide-details
         ></v-text-field>
       </div>
       <div>
@@ -312,9 +313,7 @@ export default {
             @click="populateStatusWithDeleted"
           >
             <template #label>
-              <span :class="{ 'mr-2': isRTL }" :lang="lang">
-                Show deleted
-              </span>
+              <span> Show deleted </span>
             </template>
           </v-checkbox>
         </span>
@@ -338,14 +337,14 @@ export default {
         </span>
         <span>
           <v-tooltip
-            location="bottom"
             v-if="
               $permissions.canUserPerform(
-                'addNewStatus',
-                this.isRegAdmin,
-                this.isRegUser
+                PerformActions.ADDNEWSTATUS,
+                isRegAdmin,
+                isRegUser
               )
             "
+            location="bottom"
           >
             <template #activator="{ props }">
               <v-btn
@@ -425,9 +424,9 @@ export default {
           v-if="
             includeDeleted === false &&
             $permissions.canUserPerform(
-              'addEditStatus',
-              this.isRegAdmin,
-              this.isRegUser
+              PerformActions.ADDEDITSTATUS,
+              isRegAdmin,
+              isRegUser
             )
           "
           #item.actions="{ item }"

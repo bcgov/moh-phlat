@@ -34,17 +34,17 @@ export default function getRouter(basePath = '/') {
         name: 'Home',
         component: () => import('~/views/File.vue'),
         children: [
-          {
-            path: '/dev',
-            name: 'DevTools',
-            component: () => import('~/KeycloakDevTools.vue'),
-            meta: {
-              breadcrumbTitle: 'File Task management',
-              accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
-              requiresAuth: IdentityProviders.IDIR,
-              hasLogin: true,
-            },
-          },
+          // { //Used for dev Testing
+          //   path: '/dev',
+          //   name: 'DevTools',
+          //   component: () => import('~/KeycloakDevTools.vue'),
+          //   meta: {
+          //     breadcrumbTitle: 'File Task management',
+          //     accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
+          //     requiresAuth: IdentityProviders.IDIR,
+          //     hasLogin: true,
+          //   },
+          // },
           {
             path: '/',
             name: 'TaskManagement',

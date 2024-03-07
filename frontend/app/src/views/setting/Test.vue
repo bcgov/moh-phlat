@@ -215,7 +215,6 @@ export default {
           label="Search Coming Soon..."
           append-inner-icon="mdi-magnify"
           single-line
-          hide-details
           class="pb-5"
         ></v-text-field>
       </div>

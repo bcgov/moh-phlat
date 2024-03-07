@@ -49,15 +49,19 @@ export const useAuthStore = defineStore('auth', {
         ? state.keycloak.tokenParsed.identity_provider
         : null,
     isRegAdmin: (state) =>
-      state.hasResourceRoles('PHLAT-WEB', [RegRoles.REG_ADMIN]),
+      state.hasResourceRoles(import.meta.env.VITE_KEYCLOAK_CLIENT_ID, [
+        RegRoles.REG_ADMIN,
+      ]),
     isRegUser: (state) =>
-      state.hasResourceRoles('PHLAT-WEB', [RegRoles.REG_USER]),
+      state.hasResourceRoles(import.meta.env.VITE_KEYCLOAK_CLIENT_ID, [
+        RegRoles.REG_USER,
+      ]),
     userCurrentRoles: (state) =>
       state &&
       state.resourceAccess &&
-      state.resourceAccess['PHLAT-WEB'] &&
-      state.resourceAccess['PHLAT-WEB'].roles.length
-        ? state.resourceAccess['PHLAT-WEB'].roles
+      state.resourceAccess[import.meta.env.VITE_KEYCLOAK_CLIENT_ID] &&
+      state.resourceAccess[import.meta.env.VITE_KEYCLOAK_CLIENT_ID].roles.length
+        ? state.resourceAccess[import.meta.env.VITE_KEYCLOAK_CLIENT_ID].roles
         : [],
     keycloakSubject: (state) => state.keycloak.subject,
     identityProviderIdentity: (state) => state.keycloak.tokenParsed.idp_userid,
