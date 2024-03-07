@@ -3,7 +3,12 @@ import BaseFilter from '../../components/base/BaseFilter.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useAuthStore } from '~/store/auth';
-import { IdentityProviders, RunTypes } from '~/utils/constants';
+import {
+  IdentityProviders,
+  RunTypes,
+  StatusCode,
+  PerformActions,
+} from '~/utils/constants';
 export default {
   components: {
     BaseFilter,
@@ -71,6 +76,8 @@ export default {
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
     RunTypes: () => RunTypes,
+    StatusCode: () => StatusCode,
+    PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -320,7 +327,7 @@ export default {
           </v-chip>
         </template>
         <template #item.actions="{ item }">
-          <slot v-if="item.raw.statusCode === 'UPLOAD_IN_PROGRESS'">
+          <slot v-if="item.raw.statusCode === StatusCode.UPLOADINPROGRESS">
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon v-bind="props" size="small" class="me-2" label="WAIT">
@@ -330,7 +337,7 @@ export default {
               <span>Please wait...</span>
             </v-tooltip>
           </slot>
-          <slot v-if="item.raw.statusCode === 'UPLOAD_ERROR'">
+          <slot v-if="item.raw.statusCode === StatusCode.UPLOADERROR">
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon v-bind="props" size="small" class="me-2" label="WAIT">
@@ -340,7 +347,7 @@ export default {
               <span>Upload error</span>
             </v-tooltip>
           </slot>
-          <slot v-if="item.raw.statusCode !== 'UPLOAD_IN_PROGRESS'">
+          <slot v-if="item.raw.statusCode !== StatusCode.UPLOADINPROGRESS">
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon
@@ -358,8 +365,12 @@ export default {
 
             <v-tooltip
               v-if="
-                item.raw.statusCode === 'APPROVED' &&
-                $permissions.canUserPerform('loadToPlr', isRegAdmin, isRegUser)
+                item.raw.statusCode === StatusCode.APPROVED &&
+                $permissions.canUserPerform(
+                  PerformActions.LOADTOPLR,
+                  isRegAdmin,
+                  isRegUser
+                )
               "
               location="bottom"
             >
@@ -379,7 +390,7 @@ export default {
 
             <v-tooltip
               v-if="
-                item.raw.statusCode === 'PRE-VALIDATION_COMPLETED' &&
+                item.raw.statusCode === StatusCode.PREVALIDATIONCOMPLETED &&
                 $permissions.canUserPerform(
                   'approveControlTable',
                   isRegAdmin,

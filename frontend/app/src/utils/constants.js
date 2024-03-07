@@ -74,3 +74,18 @@ export const RunTypes = Object.freeze({
   loadTypeWOXref: 'Wk Location Organization Identifier Cross Reference',
   loadTypeWPIXref: 'Wk Location Practitioner Identifier Cross Reference',
 });
+
+/** Status Codes */
+export const StatusCode = Object.freeze({
+  UPLOADINPROGRESS: 'UPLOAD_IN_PROGRESS',
+  UPLOADERROR: 'UPLOAD_ERROR',
+  PREVALIDATIONCOMPLETED: 'PRE-VALIDATION_COMPLETED',
+  APPROVED: 'APPROVED',
+});
+
+/** Status Codes */
+export const PerformActions = Object.freeze({
+  ADDNEWSTATUS: 'addNewStatus',
+  ADDEDITSTATUS: 'addEditStatus',
+  LOADTOPLR: 'loadToPlr',
+});

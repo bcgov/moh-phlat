@@ -6,6 +6,7 @@ import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
 import { useAuthStore } from '~/store/auth';
+import { PerformActions } from '~/utils/constants';
 
 export default {
   components: {
@@ -60,6 +61,7 @@ export default {
       'deletedStatusData',
     ]),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
+    PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -336,7 +338,11 @@ export default {
         <span>
           <v-tooltip
             v-if="
-              $permissions.canUserPerform('addNewStatus', isRegAdmin, isRegUser)
+              $permissions.canUserPerform(
+                PerformActions.ADDNEWSTATUS,
+                isRegAdmin,
+                isRegUser
+              )
             "
             location="bottom"
           >
@@ -417,7 +423,11 @@ export default {
         <template
           v-if="
             includeDeleted === false &&
-            $permissions.canUserPerform('addEditStatus', isRegAdmin, isRegUser)
+            $permissions.canUserPerform(
+              PerformActions.ADDEDITSTATUS,
+              isRegAdmin,
+              isRegUser
+            )
           "
           #item.actions="{ item }"
         >
