@@ -130,7 +130,7 @@ public class ControlControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
+    @WithMockUser(value="dummy@idir",roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testUpdateControl() throws Exception {
 
         Mockito.when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
@@ -159,14 +159,15 @@ public class ControlControllerTest {
         assertThat(documentContext.read("$.data.fileExtractedDate", String.class)).isEqualTo(
                 "2024-02-01T00:00:00.000+00:00");
 
-        assertThat(documentContext.read("$.data.userId", String.class)).isEqualTo("user2");
+        assertThat(documentContext.read("$.data.userId", String.class)).isEqualTo("dummy@idir");
         assertThat(documentContext.read("$.data.fileName", String.class)).isEqualTo("File2.txt");
         assertThat(documentContext.read("$.data.batchLabelName", String.class)).isEqualTo("Label2");
         assertThat(documentContext.read("$.data.loadTypeFacility", Boolean.class)).isEqualTo(Boolean.FALSE);
         assertThat(documentContext.read("$.data.loadTypeHds", Boolean.class)).isEqualTo(Boolean.TRUE);
         assertThat(documentContext.read("$.data.loadTypeOrg", Boolean.class)).isEqualTo(Boolean.FALSE);
         assertThat(documentContext.read("$.data.createdBy", String.class)).isEqualTo("Admin1");
-        assertThat(documentContext.read("$.data.updatedBy", String.class)).isEqualTo("Admin2");
+        //Spring returns this authenticated user id as mentioned in annotation.
+        assertThat(documentContext.read("$.data.updatedBy", String.class)).isEqualTo("dummy@idir");
 
         //verifying the behaviour
         verify(controlRepository, times(1)).findById(anyLong());
@@ -175,7 +176,7 @@ public class ControlControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {UserRoles.ROLE_REG_ADMIN})
+    @WithMockUser(value="dummy@idir",roles = {UserRoles.ROLE_REG_ADMIN})
     public void testApproveToLoadToPLR() throws Exception {
         Mockito.when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
         //save return is ignored in the code as of now.
@@ -205,7 +206,8 @@ public class ControlControllerTest {
 
         //these are the values updated for approving in Control entity
         assertThat(documentContext.read("$.data.statusCode", String.class)).isEqualTo("APPROVED");
-        assertThat(documentContext.read("$.data.updatedBy", String.class)).isEqualTo("SYSTEM");
+        //Spring returns this authenticated user id as mentioned in annotation.
+        assertThat(documentContext.read("$.data.updatedBy", String.class)).isEqualTo("dummy@idir");
         assertThat(documentContext.read("$.message", String.class)).isEqualTo("Record approved successfully.");
 
 

@@ -1,7 +1,6 @@
 package com.moh.phlat.backend.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,22 +8,17 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.moh.phlat.backend.exception.HandleNotFoundException;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.MessageDetail;
 import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.MessageDetailRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
-import com.moh.phlat.backend.response.ResponseMessage;
 
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
@@ -100,7 +94,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	}
 
 	@Override
-	public void setProcessDataStatus(Long processDataId, String rowstatusCode) {
+	public void setProcessDataStatus(Long processDataId, String rowstatusCode, String authenticatedUserId) {
 
 		Optional<ProcessData> _processData = processDataRepository.findById(processDataId);
 		try {
@@ -108,7 +102,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				ProcessData processData1 = _processData.get();
 
 				processData1.setRowstatusCode(rowstatusCode);
-				processData1.setUpdatedBy("SYSTEM");
+				processData1.setUpdatedBy(authenticatedUserId);
 				processDataRepository.save(processData1);
 			}
 		} catch (Exception e) {
@@ -116,14 +110,14 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		}
 	}
 
-	public void setControlStatus(Long controlId, String statusCode) {
+	public void setControlStatus(Long controlId, String statusCode, String authenticatedUserId) {
 		Optional<Control> _control = controlRepository.findById(controlId);
 		try {
 			if (_control.isPresent()) {
 				Control control1 = _control.get();
 
 				control1.setStatusCode(statusCode);
-				control1.setUpdatedBy("SYSTEM");
+				control1.setUpdatedBy(authenticatedUserId);
 				controlRepository.save(control1);
 			}
 
@@ -149,7 +143,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		}
 	}
 
-	public void validateProcessData(Control control, ProcessData processData) {
+	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
 		Boolean isValid = true;
 		
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
@@ -167,9 +161,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			
 			
 			if (isValid) { 
-				setProcessDataStatus(processData.getId(), "VALID");
+				setProcessDataStatus(processData.getId(), "VALID",authenticatedUserId);
 			} else {
-				setProcessDataStatus(processData.getId(), "INVALID");
+				setProcessDataStatus(processData.getId(), "INVALID", authenticatedUserId);
 			}
 			
 		}
@@ -177,7 +171,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Async
 	@Override
-	public void validateProcessDataByControlTableId(Long controlTableId) {
+	public void validateProcessDataByControlTableId(Long controlTableId, String authenticatedUserId) {
 		logger.info("START VALIDATE ASYNC");
 
 		Optional<Control> _control = controlRepository.findById(controlTableId);
@@ -195,12 +189,13 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					logger.info("validate process data with id: " + s.getId());
 
 					// run asyn process
-					validateProcessData(control, s);
+					validateProcessData(control, s, authenticatedUserId);
 				} else {
 					logger.info("skip validating process data with id: " + s.getId());
 				}
 			}
-			setControlStatus(control.getId(), "PRE-VALIDATION_COMPLETED");
+			setControlStatus(control.getId(), "PRE-VALIDATION_COMPLETED",
+							 authenticatedUserId);
 			logger.info("PRE-VALIDATION COMPLETED");
 		}
 	}
@@ -208,7 +203,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	
 	@Async
 	@Override
-	public void loadProcessDataToPlr(Long controlTableId) {
+	public void loadProcessDataToPlr(Long controlTableId, String authenticatedUserId) {
 		logger.info("START PLR LOAD IN ASYNC MODE");
 
 		Optional<Control> _control = controlRepository.findById(controlTableId);
@@ -228,7 +223,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					// loadPlrViaEsb(control, s);
 				}
 			}
-			setControlStatus(control.getId(), "PLR_LOAD_COMPLETED");
+			setControlStatus(control.getId(), "PLR_LOAD_COMPLETED", authenticatedUserId);
 			logger.info("PLR_LOAD COMPLETED");
 		}
 	}

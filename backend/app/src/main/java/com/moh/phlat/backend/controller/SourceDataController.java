@@ -102,10 +102,11 @@ public class SourceDataController {
 		Boolean isFound = false;
 
 		if (fileService.hasCsvFormat(file, "SOURCE_DATA")) {
+			String authenticateUserId=AuthenticationUtils.getAuthenticatedUserId();
 			logger.info("File is valid");
 			Control control = new Control();
 			control.setFileName(newControlTable.getFileName());
-			control.setUserId(newControlTable.getUserId());
+			control.setUserId(authenticateUserId);
 			control.setFileExtractedDate(newControlTable.getFileExtractedDate());
 			control.setBatchLabelName(newControlTable.getBatchLabelName());
 			control.setLoadTypeFacility(newControlTable.getLoadTypeFacility());
@@ -118,7 +119,7 @@ public class SourceDataController {
 			control.setLoadTypeWPIXref(newControlTable.getLoadTypeWPIXref());
 			control.setProcessStartDate(new Date());
 			control.setStatusCode("UPLOAD_IN_PROGRESS");
-			control.setCreatedBy("SYSTEM");
+			control.setCreatedBy(authenticateUserId);
 			control.setCreatedAt(new Date());
 
 			// check mandatory fields: FileName, UserId, BatchLabelName
@@ -165,7 +166,7 @@ public class SourceDataController {
 			controlRepository.save(control);
 
 			// Async process
-			fileService.processAndSaveData(file, control.getId());
+			fileService.processAndSaveData(file, control.getId(),authenticateUserId);
 
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage("success", 200, "File uploading started.", control.getId()));

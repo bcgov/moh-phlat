@@ -74,7 +74,7 @@ public class ControlController {
 			Control _controlTable = controlTableData.get();
 
 			_controlTable.setFileName(requestControl.getFileName());
-			_controlTable.setUserId(requestControl.getUserId());
+			_controlTable.setUserId(AuthenticationUtils.getAuthenticatedUserId());
 			_controlTable.setFileExtractedDate(requestControl.getFileExtractedDate());
 			_controlTable.setBatchLabelName(requestControl.getBatchLabelName());
 
@@ -88,7 +88,7 @@ public class ControlController {
 			_controlTable.setLoadTypeWPIXref(requestControl.getLoadTypeWPIXref());
 			_controlTable.setStatusCode(requestControl.getStatusCode());
 
-			_controlTable.setUpdatedBy(requestControl.getUpdatedBy());
+			_controlTable.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 			_controlTable.setUpdatedAt(new Date());
 
 			controlRepository.save(_controlTable);
@@ -118,7 +118,7 @@ public class ControlController {
 
 			_controlTable.setStatusCode("APPROVED");
 
-			_controlTable.setUpdatedBy("SYSTEM");
+			_controlTable.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 			_controlTable.setUpdatedAt(new Date());
 
 			controlRepository.save(_controlTable);
