@@ -75,6 +75,7 @@ export default {
       'formFieldHeaders',
       'deleteProcessDataById',
       'updatedProcessData',
+      'validateAllStatus',
     ]),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
@@ -182,6 +183,14 @@ export default {
 
     async requestValidateAll() {
       await this.updateValidateAll(this.id);
+      if (
+        this.validateAllStatus &&
+        this.validateAllStatus.status === 'success'
+      ) {
+        this.$router.push({
+          name: 'TaskManagement',
+        });
+      }
     },
 
     validateAll() {
@@ -330,7 +339,6 @@ export default {
           label="Search"
           append-inner-icon="mdi-magnify"
           single-line
-          hide-details
           class="pb-5"
         ></v-text-field>
       </div>

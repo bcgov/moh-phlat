@@ -3,7 +3,7 @@ import BaseFilter from '../../components/base/BaseFilter.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useAuthStore } from '~/store/auth';
-import { IdentityProviders } from '~/utils/constants';
+import { IdentityProviders, RunTypes } from '~/utils/constants';
 export default {
   components: {
     BaseFilter,
@@ -46,36 +46,8 @@ export default {
         key: 'statusCode',
       },
       {
-        title: 'Is Facility?',
-        key: 'loadTypeFacility',
-      },
-      {
-        title: 'Is HDS?',
-        key: 'loadTypeHds',
-      },
-      {
-        title: 'Is Organization?',
-        key: 'loadTypeOrg',
-      },
-      {
-        title: 'Is O-F Relationships?',
-        key: 'loadTypeOFRelationship',
-      },
-      {
-        title: 'Is O-O Relationships?',
-        key: 'loadTypeOORelationship',
-      },
-      {
-        title: 'Is I-O Relationships?',
-        key: 'loadTypeIORelationship',
-      },
-      {
-        title: 'Is Wk Location Organization?',
-        key: 'loadTypeWOXref',
-      },
-      {
-        title: 'Is Wk Location Practitioner?',
-        key: 'loadTypeWPIXref',
+        title: 'Run Type(s)',
+        key: 'runTypes',
       },
       {
         title: 'Actions',
@@ -98,6 +70,7 @@ export default {
     ]),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
+    RunTypes: () => RunTypes,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
@@ -281,7 +254,6 @@ export default {
           label="Search"
           append-inner-icon="mdi-magnify"
           single-line
-          hide-details
           class="pb-5"
         ></v-text-field>
       </div>
@@ -319,132 +291,132 @@ export default {
         :search="search"
       >
         <template #item.fileExtractedDate="{ item }">
-          {{ $filters.formatDate(item.raw.fileExtractedDate) }} -
-          {{ item.raw.createdBy }}
+          {{ $filters.formatDate(item.raw.fileExtractedDate) }}
         </template>
-        <!-- <template #item.statusCode="{ item }">
-          <span v-if="item.raw.statusCode === 'PRE-VALIDATION_COMPLETED'">
-            <v-btn color="primary" @click="loadToPlr(item.raw.id)">
-              Upload to PLR
-            </v-btn>
-          </span>
-          <span v-else>
-            {{ item.raw.statusCode }}
-          </span>
-        </template> -->
-        <template #item.loadTypeFacility="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeFacility" />
-        </template>
-        <template #item.loadTypeHds="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeHds" />
-        </template>
-        <template #item.loadTypeOrg="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeOrg" />
-        </template>
-        <template #item.loadTypeOFRelationship="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeOFRelationship" />
-        </template>
-        <template #item.loadTypeOORelationship="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeOORelationship" />
-        </template>
-        <template #item.loadTypeIORelationship="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeIORelationship" />
-        </template>
-        <template #item.loadTypeWOXref="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeWOXref" />
-        </template>
-        <template #item.loadTypeWPIXref="{ item }">
-          <v-checkbox readonly :model-value="item.raw.loadTypeWPIXref" />
+        <template #item.runTypes="{ item }">
+          <v-chip v-if="item.raw.loadTypeFacility" variant="elevated">
+            {{ RunTypes.loadTypeFacility }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeHds" variant="elevated">
+            {{ RunTypes.loadTypeHds }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeOrg" variant="elevated">
+            {{ RunTypes.loadTypeOrg }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeOFRelationship" variant="elevated">
+            {{ RunTypes.loadTypeOFRelationship }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeOORelationship" variant="elevated">
+            {{ RunTypes.loadTypeOORelationship }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeIORelationship" variant="elevated">
+            {{ RunTypes.loadTypeIORelationship }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeWOXref" variant="elevated">
+            {{ RunTypes.loadTypeWOXref }}
+          </v-chip>
+          <v-chip v-if="item.raw.loadTypeWPIXref" variant="elevated">
+            {{ RunTypes.loadTypeWPIXref }}
+          </v-chip>
         </template>
         <template #item.actions="{ item }">
-          <v-tooltip location="bottom">
-            <template #activator="{ props }">
-              <v-icon
-                v-bind="props"
-                size="small"
-                class="me-2"
-                label="VIEW"
-                @click="redirectToView(item.key)"
-              >
-                mdi-format-list-bulleted
-              </v-icon>
-            </template>
-            <span>View source data</span>
-          </v-tooltip>
+          <slot v-if="item.raw.statusCode === 'UPLOAD_IN_PROGRESS'">
+            <v-tooltip location="bottom">
+              <template #activator="{ props }">
+                <v-icon v-bind="props" size="small" class="me-2" label="WAIT">
+                  mdi-alarm
+                </v-icon>
+              </template>
+              <span>Please wait...</span>
+            </v-tooltip>
+          </slot>
+          <slot v-if="item.raw.statusCode === 'UPLOAD_ERROR'">
+            <v-tooltip location="bottom">
+              <template #activator="{ props }">
+                <v-icon v-bind="props" size="small" class="me-2" label="WAIT">
+                  mdi-alert-circle
+                </v-icon>
+              </template>
+              <span>Upload error</span>
+            </v-tooltip>
+          </slot>
+          <slot v-if="item.raw.statusCode !== 'UPLOAD_IN_PROGRESS'">
+            <v-tooltip location="bottom">
+              <template #activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  size="small"
+                  class="me-2"
+                  label="VIEW"
+                  @click="redirectToView(item.key)"
+                >
+                  mdi-format-list-bulleted
+                </v-icon>
+              </template>
+              <span>View source data</span>
+            </v-tooltip>
 
-          <v-tooltip
-            v-if="
-              item.raw.statusCode === 'APPROVED' &&
-              $permissions.canUserPerform(
-                'loadToPlr',
-                this.isRegAdmin,
-                this.isRegUser
-              )
-            "
-            location="bottom"
-          >
-            <template #activator="{ props }">
-              <v-icon
-                v-bind="props"
-                size="small"
-                class="me-2"
-                label="VIEW"
-                @click="loadToPlr(item.raw.id)"
-              >
-                mdi-cloud-upload
-              </v-icon>
-            </template>
-            <span>Upload to PLR</span>
-          </v-tooltip>
+            <v-tooltip
+              v-if="
+                item.raw.statusCode === 'APPROVED' &&
+                $permissions.canUserPerform('loadToPlr', isRegAdmin, isRegUser)
+              "
+              location="bottom"
+            >
+              <template #activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  size="small"
+                  class="me-2"
+                  label="VIEW"
+                  @click="loadToPlr(item.raw.id)"
+                >
+                  mdi-cloud-upload
+                </v-icon>
+              </template>
+              <span>Upload to PLR</span>
+            </v-tooltip>
 
-          <v-tooltip
-            v-if="
-              item.raw.statusCode === 'PRE-VALIDATION_COMPLETED' &&
-              $permissions.canUserPerform(
-                'approveControlTable',
-                this.isRegAdmin,
-                this.isRegUser
-              )
-            "
-            location="bottom"
-          >
-            <template #activator="{ props }">
-              <v-icon
-                v-bind="props"
-                size="small"
-                class="me-2"
-                label="VIEW"
-                @click="approveControlTable(item.raw.id)"
-              >
-                mdi-tag-check
-              </v-icon>
-            </template>
-            <span
-              >Approved -
-              {{
+            <v-tooltip
+              v-if="
+                item.raw.statusCode === 'PRE-VALIDATION_COMPLETED' &&
                 $permissions.canUserPerform(
                   'approveControlTable',
-                  this.isRegAdmin,
-                  this.isRegUser
+                  isRegAdmin,
+                  isRegUser
                 )
-              }}</span
+              "
+              location="bottom"
             >
-          </v-tooltip>
+              <template #activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  size="small"
+                  class="me-2"
+                  label="VIEW"
+                  @click="approveControlTable(item.raw.id)"
+                >
+                  mdi-tag-check
+                </v-icon>
+              </template>
+              <span>Approve</span>
+            </v-tooltip>
 
-          <v-tooltip location="bottom">
-            <template #activator="{ props }">
-              <v-icon
-                v-bind="props"
-                size="small"
-                class="me-2"
-                label="EDIT"
-                @click="redirectToProcessView(item.key)"
-              >
-                mdi-pencil
-              </v-icon>
-            </template>
-            <span>Edit data</span>
-          </v-tooltip>
+            <v-tooltip location="bottom">
+              <template #activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  size="small"
+                  class="me-2"
+                  label="EDIT"
+                  @click="redirectToProcessView(item.key)"
+                >
+                  mdi-pencil
+                </v-icon>
+              </template>
+              <span>Edit data</span>
+            </v-tooltip></slot
+          >
         </template>
         <!-- <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
@@ -497,5 +469,8 @@ export default {
   font-weight: normal;
   color: #003366 !important;
   font-size: 1.1em;
+}
+.v-chip {
+  height: auto;
 }
 </style>

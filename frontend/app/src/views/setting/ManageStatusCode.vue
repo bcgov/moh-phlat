@@ -302,7 +302,6 @@ export default {
           label="Search"
           append-inner-icon="mdi-magnify"
           single-line
-          hide-details
         ></v-text-field>
       </div>
       <div>
@@ -312,9 +311,7 @@ export default {
             @click="populateStatusWithDeleted"
           >
             <template #label>
-              <span :class="{ 'mr-2': isRTL }" :lang="lang">
-                Show deleted
-              </span>
+              <span> Show deleted </span>
             </template>
           </v-checkbox>
         </span>
@@ -338,14 +335,10 @@ export default {
         </span>
         <span>
           <v-tooltip
-            location="bottom"
             v-if="
-              $permissions.canUserPerform(
-                'addNewStatus',
-                this.isRegAdmin,
-                this.isRegUser
-              )
+              $permissions.canUserPerform('addNewStatus', isRegAdmin, isRegUser)
             "
+            location="bottom"
           >
             <template #activator="{ props }">
               <v-btn
@@ -424,11 +417,7 @@ export default {
         <template
           v-if="
             includeDeleted === false &&
-            $permissions.canUserPerform(
-              'addEditStatus',
-              this.isRegAdmin,
-              this.isRegUser
-            )
+            $permissions.canUserPerform('addEditStatus', isRegAdmin, isRegUser)
           "
           #item.actions="{ item }"
         >

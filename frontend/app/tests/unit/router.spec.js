@@ -9,6 +9,6 @@ describe('router', () => {
     expect(router.hasRoute('SourceDataUpload')).toBeTruthy();
     expect(router.hasRoute('ManageStatusCode')).toBeTruthy();
 
-    expect(router.getRoutes().length).toBe(11);
+    expect(router.getRoutes().length).toBe(10);
   });
 });

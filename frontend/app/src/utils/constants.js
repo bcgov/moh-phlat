@@ -61,3 +61,16 @@ export const RegRoles = Object.freeze({
   REG_USER: 'REG_USER',
   REG_ADMIN: 'REG_ADMIN',
 });
+
+/** Type of RunTypes */
+export const RunTypes = Object.freeze({
+  loadTypeFacility: 'Facility',
+  loadTypeHds: 'Organization, Type HDS',
+  loadTypeOrg: 'Organization, Type Business',
+  loadTypeOFRelationship: 'O-F Relationships',
+  loadTypeOORelationship: 'O-O Relationships',
+  loadTypeIORelationship:
+    'I-O Relationships including Medical Director Relationships',
+  loadTypeWOXref: 'Wk Location Organization Identifier Cross Reference',
+  loadTypeWPIXref: 'Wk Location Practitioner Identifier Cross Reference',
+});
