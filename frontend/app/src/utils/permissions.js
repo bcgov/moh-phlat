@@ -1,14 +1,17 @@
+import { PerformActions } from '~/utils/constants';
+
 export function canUserPerform(
   action = null,
   isRegAdmin = false,
   isRegUser = false
 ) {
-  const REG_USER_ACTIONS = ['loadToPlr'];
+  const REG_USER_ACTIONS = [PerformActions.LOADTOPLR];
   const REG_ADMIN_ACTIONS = [
-    'approveControlTable',
-    'loadToPlr',
-    'addNewStatus',
-    'addEditStatus',
+    PerformActions.APPROVECONTROLTABLE,
+    PerformActions.LOADTOPLR,
+    PerformActions.ADDNEWSTATUS,
+    PerformActions.ADDEDITSTATUS,
+    PerformActions.CANACCESSPAGEMANAGESTATUS,
   ];
 
   let canUserPerformAction = false;
