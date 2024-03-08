@@ -8,7 +8,11 @@ export default {
   props: {
     idpHint: {
       type: Array,
-      default: () => [IdentityProviders.IDIR],
+      default: () => [
+        IdentityProviders.IDIR,
+        IdentityProviders.BCEIDBUSINESS,
+        IdentityProviders.BCEIDBASIC,
+      ],
     },
   },
   computed: {
