@@ -69,8 +69,7 @@ export const RunTypes = Object.freeze({
   loadTypeOrg: 'Organization, Type Business',
   loadTypeOFRelationship: 'O-F Relationships',
   loadTypeOORelationship: 'O-O Relationships',
-  loadTypeIORelationship:
-    'I-O Relationships including Medical Director Relationships',
+  loadTypeIORelationship: 'I-O Relationships',
   loadTypeWOXref: 'Wk Location Organization Identifier Cross Reference',
   loadTypeWPIXref: 'Wk Location Practitioner Identifier Cross Reference',
 });
