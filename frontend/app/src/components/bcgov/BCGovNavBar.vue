@@ -1,7 +1,8 @@
 <script>
 import { mapState } from 'pinia';
 import { useAuthStore } from '~/store/auth';
-import { IdentityProviders } from '~/utils/constants';
+import { IdentityProviders, PerformActions } from '~/utils/constants';
+import { canUserPerform } from '~/utils/permissions';
 
 export default {
   data() {
@@ -15,7 +16,10 @@ export default {
       'authenticated',
       'isRegAdmin',
       'identityProvider',
+      'isRegUser',
     ]),
+    canUserPerform: () => canUserPerform,
+    PerformActions: () => PerformActions,
     hideNavBar() {
       // hide nav bar if user is on form submitter page
       return this.$route && this.$route.meta && this.$route.meta.formSubmitMode;
@@ -61,7 +65,15 @@ export default {
             File Control / Upload
           </router-link>
         </li>
-        <li>
+        <li
+          v-if="
+            canUserPerform(
+              PerformActions.CANACCESSPAGEMANAGESTATUS,
+              isRegAdmin,
+              isRegUser
+            )
+          "
+        >
           <router-link
             data-cy="ManageStatusCode"
             :to="{ name: 'ManageStatusCode' }"

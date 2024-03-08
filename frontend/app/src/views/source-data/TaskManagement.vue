@@ -327,7 +327,16 @@ export default {
           </v-chip>
         </template>
         <template #item.actions="{ item }">
-          <slot v-if="item.raw.statusCode === StatusCode.UPLOADINPROGRESS">
+          <!-- Wait -->
+          <slot
+            v-if="
+              [
+                StatusCode.UPLOADINPROGRESS,
+                StatusCode.PREVALIDATIONINPROGRESS,
+                StatusCode.PLRLOADINPROGRESS,
+              ].includes(item.raw.statusCode)
+            "
+          >
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon v-bind="props" size="small" class="me-2" label="WAIT">
@@ -337,6 +346,7 @@ export default {
               <span>Please wait...</span>
             </v-tooltip>
           </slot>
+          <!-- Error -->
           <slot v-if="item.raw.statusCode === StatusCode.UPLOADERROR">
             <v-tooltip location="bottom">
               <template #activator="{ props }">
@@ -347,7 +357,14 @@ export default {
               <span>Upload error</span>
             </v-tooltip>
           </slot>
-          <slot v-if="item.raw.statusCode !== StatusCode.UPLOADINPROGRESS">
+          <slot
+            v-if="
+              ![StatusCode.UPLOADINPROGRESS, StatusCode.UPLOADERROR].includes(
+                item.raw.statusCode
+              )
+            "
+          >
+            <!-- View SRC Data -->
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon
@@ -362,7 +379,30 @@ export default {
               </template>
               <span>View source data</span>
             </v-tooltip>
-
+            <!-- Edit Process Data -->
+            <v-tooltip
+              v-if="
+                ![
+                  StatusCode.PREVALIDATIONINPROGRESS,
+                  StatusCode.PLRLOADINPROGRESS,
+                ].includes(item.raw.statusCode)
+              "
+              location="bottom"
+            >
+              <template #activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  size="small"
+                  class="me-2"
+                  label="EDIT"
+                  @click="redirectToProcessView(item.key)"
+                >
+                  mdi-pencil
+                </v-icon>
+              </template>
+              <span>Edit process data</span>
+            </v-tooltip>
+            <!-- Upload to PLR -->
             <v-tooltip
               v-if="
                 item.raw.statusCode === StatusCode.APPROVED &&
@@ -387,12 +427,12 @@ export default {
               </template>
               <span>Upload to PLR</span>
             </v-tooltip>
-
+            <!-- Approve -->
             <v-tooltip
               v-if="
                 item.raw.statusCode === StatusCode.PREVALIDATIONCOMPLETED &&
                 $permissions.canUserPerform(
-                  'approveControlTable',
+                  PerformActions.APPROVECONTROLTABLE,
                   isRegAdmin,
                   isRegUser
                 )
@@ -412,22 +452,7 @@ export default {
               </template>
               <span>Approve</span>
             </v-tooltip>
-
-            <v-tooltip location="bottom">
-              <template #activator="{ props }">
-                <v-icon
-                  v-bind="props"
-                  size="small"
-                  class="me-2"
-                  label="EDIT"
-                  @click="redirectToProcessView(item.key)"
-                >
-                  mdi-pencil
-                </v-icon>
-              </template>
-              <span>Edit process data</span>
-            </v-tooltip></slot
-          >
+          </slot>
         </template>
         <!-- <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
