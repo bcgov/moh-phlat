@@ -25,7 +25,6 @@ import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.exception.HandleNotFoundException;
 import com.moh.phlat.backend.model.ProcessData;
 @Service
 public class FileServiceImpl implements FileService {
@@ -84,10 +83,10 @@ public class FileServiceImpl implements FileService {
 
 	@Override
     @Async
-	public void processAndSaveData(MultipartFile file, Long controlTableId) {
+	public void processAndSaveData(MultipartFile file, Long controlTableId, String authenticateUserId) {
 		try {
 			logger.info("Parsing CSV file starts...");
-			List<SourceData> sourceData = csvToSourceData(file.getInputStream(), controlTableId);
+			List<SourceData> sourceData = csvToSourceData(file.getInputStream(), controlTableId,authenticateUserId);
 
 			sourceDataRepository.saveAll(sourceData);
 
@@ -98,13 +97,13 @@ public class FileServiceImpl implements FileService {
 				Control control = _control.get();
 				
 				control.setStatusCode("UPLOAD_COMPLETED");
-				control.setUpdatedBy("SYSTEM");
+				control.setUpdatedBy(authenticateUserId);
 				control.setUpdatedAt(new Date());
 			
 				controlRepository.save(control);
 
 				logger.info("Loading process data table starts...");
-				copyInputSourceDataToProcessData(controlTableId);
+				copyInputSourceDataToProcessData(controlTableId,authenticateUserId);
 			}
 			logger.info("Loading process data table completed successfully.");
 
@@ -114,7 +113,7 @@ public class FileServiceImpl implements FileService {
 			
 			Control control = _control.get();
 			control.setStatusCode("UPLOAD_ERROR");
-			control.setUpdatedBy("SYSTEM");
+			control.setUpdatedBy(authenticateUserId);
 			control.setUpdatedAt(new Date());
 		
 			controlRepository.save(control);
@@ -122,7 +121,7 @@ public class FileServiceImpl implements FileService {
 
 	}
 
-	private List<SourceData> csvToSourceData(InputStream inputStream, Long controlTableId) {
+	private List<SourceData> csvToSourceData(InputStream inputStream, Long controlTableId, String authenticateUserId) {
 		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 				CSVParser csvParser = new CSVParser(fileReader,
 						CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
@@ -191,7 +190,7 @@ public class FileServiceImpl implements FileService {
 						csvRecords.get("MAIL_COUNTRY"),
 						csvRecords.get("MAIL_ADDR_IS_PRIVATE"),							
 						new Date(), // created_at
-						"SYSTEM", // created_by
+						authenticateUserId,
 						null, // updated_at
 						null // updated_by
 						);
@@ -205,7 +204,7 @@ public class FileServiceImpl implements FileService {
 			
 			Control control = _control.get();
 			control.setStatusCode("UPLOAD_ERROR");
-			control.setUpdatedBy("SYSTEM");
+			control.setUpdatedBy(authenticateUserId);
 			control.setUpdatedAt(new Date());
 		
 			controlRepository.save(control);
@@ -214,7 +213,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
     
-	private void copyInputSourceDataToProcessData(Long controlTableId) {
+	private void copyInputSourceDataToProcessData(Long controlTableId, String authenticateUserId) {
 
    	
 		// processDataRepository.deleteById(controlTableId);
@@ -285,7 +284,7 @@ public class FileServiceImpl implements FileService {
 	        processData.setMailCountry(s.getMailCountry());     
 	        processData.setMailAddrIsPrivate(s.getMailAddrIsPrivate());  	        
 	        processData.setCreatedAt(s.getCreatedAt());
-	        processData.setCreatedBy(s.getCreatedBy());
+	        processData.setCreatedBy(authenticateUserId);
 	        
 	        if (s.getDoNotLoad().equals("Y")) {
 		        processData.setRowstatusCode("DO_NOT_LOAD"); 

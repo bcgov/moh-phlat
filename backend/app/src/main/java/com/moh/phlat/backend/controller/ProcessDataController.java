@@ -283,7 +283,7 @@ public class ProcessDataController {
 		if (reqProcessData.getRowstatusCode() != null)
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode());
 
-		processData.setUpdatedBy(reqProcessData.getUpdatedBy());
+		processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 		processData.setUpdatedAt(new Date());
 
 		try {
@@ -309,6 +309,7 @@ public class ProcessDataController {
 	public ResponseEntity<ResponseMessage> validateProcessDataById(@PathVariable Long id) {
 
 		Optional<ProcessData> _processData = processDataRepository.findById(id);
+		String authenticatedUserId=AuthenticationUtils.getAuthenticatedUserId();
 		if (_processData.isPresent()) {
 			ProcessData processData = _processData.get();
 
@@ -316,17 +317,18 @@ public class ProcessDataController {
 			if (_control.isPresent()) {
 				Control control = _control.get();
 				
-				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_IN_PROGRESS");
+				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_IN_PROGRESS",authenticatedUserId );
 				
 				if ((!processData.getDoNotLoad().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals("COMPLETE"))) {
 					logger.info("validate process data with id: " + id);
 				    // run asyn process
-					dbUtilityService.validateProcessData(control, processData);
+					dbUtilityService.validateProcessData(control, processData,authenticatedUserId);
 				} else {
 					logger.info("skip validating process data with id: " + id);
 				}
 
-				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_COMPLETED");
+				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_COMPLETED",
+												  authenticatedUserId);
 				
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
 						controlRepository.findById(processData.getControlTableId())));
@@ -347,9 +349,11 @@ public class ProcessDataController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Nothing to validate.", "[]"));
 			
 		}
-		dbUtilityService.setControlStatus(id, "PRE-VALIDATION_IN_PROGRESS");
+		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
+		dbUtilityService.setControlStatus(id, "PRE-VALIDATION_IN_PROGRESS",
+										  authenticatedUserId);
 		// asynchronous operation
-		dbUtilityService.validateProcessDataByControlTableId(id);
+		dbUtilityService.validateProcessDataByControlTableId(id,authenticatedUserId);
 
 		Optional<Control> _control = controlRepository.findById(id);
 		
@@ -367,16 +371,18 @@ public class ProcessDataController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Missing approval from Reg Admin to load to PLR.", "[]"));
 			}
 		}
-		
+
 		List<ProcessData> _processDataList = processDataRepository.getAllProcessDataByControlTableId(controlTableId);
 		
 		if (_processDataList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Nothing to load to PLR.", "[]"));
 			
 		}
-		dbUtilityService.setControlStatus(controlTableId, "PLR_LOAD_IN_PROGRESS");
+		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
+		dbUtilityService.setControlStatus(controlTableId, "PLR_LOAD_IN_PROGRESS",
+										  authenticatedUserId);
 		// asynchronous operation
-		dbUtilityService.loadProcessDataToPlr(controlTableId);
+		dbUtilityService.loadProcessDataToPlr(controlTableId,authenticatedUserId);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!",_control));
 	}
