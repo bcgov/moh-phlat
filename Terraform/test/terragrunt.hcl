@@ -13,7 +13,7 @@ generate "test_tfvars" {
   fam_console_idp_name = "TEST-IDIR"
   application = "phlat"
   application_url = "phlat-test.hlth.gov.bc.ca"
-  api_url = "phlat-test.api.hlth.gov.bc.ca"
+  api_url = "phlatapi-test.hlth.gov.bc.ca"
   aurora_acu_min = 0.5
   aurora_acu_max = 3
   EOF
