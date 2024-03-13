@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.moh.phlat.backend.repository.SourceDataRepository;
@@ -46,38 +47,39 @@ public class FileServiceImpl implements FileService {
 	private DbUtilityService dbUtilityService;
     
 	@Override
-	public boolean hasCsvFormat(MultipartFile file,String tableName) {
-		String expectedHeaderLine = dbUtilityService.getHeadersByTableNameSortedById(tableName.toUpperCase()).trim();
-		
-		String type = "text/csv";
-		if (!type.equals(file.getContentType()))
+	public boolean hasCsvFormat(MultipartFile file, String tableName) {
+		// Check if the file is of type CSV
+		if (!"text/csv".equals(file.getContentType())) {
+			logger.warn("Content Type is not text/csv. Returning false...");
 			return false;
+		}
 
-		InputStream stream = null;
-		try {
-			stream = file.getInputStream();
+		// Get expected header line from DB
+		String expectedHeaderLine = dbUtilityService.getHeadersByTableNameSortedById(tableName.toUpperCase()).trim();
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+			// Read the header line from the file
+			String headerLine = reader.readLine();
+			// Check if the file is empty
+			if (!StringUtils.hasText(headerLine)) {
+				logger.warn("The file appears to be empty as no header is present. Returnig false...");
+				return false;
+			}
+
+			//check that length of file header and one received from DB matches.
+			if (!expectedHeaderLine.equals(headerLine.trim())) {
+				logger.warn(
+						"Returning false. The header length of the uploaded file does not match the length obtained from the database.");
+				logger.warn("Uploaded file header length: {}, Database file header length: {}", headerLine.length(),
+							expectedHeaderLine.length());
+
+				return false;
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error:", e);
+			return false;
 		}
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		String headerLine = null;
-		try {
-			headerLine = reader.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (Objects.isNull(headerLine))
-			return false; // empty file
-		
-		if (!expectedHeaderLine.trim().equals(headerLine.trim())) {
-			logger.info("act:" + headerLine + "(" + expectedHeaderLine.length() + ")");
-			logger.info("exp:" + expectedHeaderLine + "(" + expectedHeaderLine.length() + ")");
-			return false; // headers not match expected values
-		}
-		
-		logger.info("HEADER CHECKED SUCCESFFUL");
+		logger.info("Header check succesfful ...");
 		return true;
 	}
 
@@ -89,6 +91,7 @@ public class FileServiceImpl implements FileService {
 			List<SourceData> sourceData = csvToSourceData(file.getInputStream(), controlTableId,authenticateUserId);
 
 			sourceDataRepository.saveAll(sourceData);
+			logger.info("Data saved in source table");
 
 
 			Optional<Control> _control = controlRepository.findById(controlTableId);
@@ -102,10 +105,10 @@ public class FileServiceImpl implements FileService {
 			
 				controlRepository.save(control);
 
-				logger.info("Loading process data table starts...");
+				logger.info("starting copy of data from source to destination table...");
 				copyInputSourceDataToProcessData(controlTableId,authenticateUserId);
 			}
-			logger.info("Loading process data table completed successfully.");
+			logger.info("Loading of target table completed successfully");
 
 		} catch (Exception e){
 			logger.error("Error Encountered: ", e);
@@ -199,7 +202,7 @@ public class FileServiceImpl implements FileService {
 			return sourceDatas;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			logger.error("Unexpected error: " + e.getMessage());
+			logger.error("Unexpected error: ", e);
 			Optional<Control> _control = controlRepository.findById(controlTableId);
 			
 			Control control = _control.get();
