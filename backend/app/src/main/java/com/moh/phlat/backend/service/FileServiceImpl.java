@@ -108,7 +108,7 @@ public class FileServiceImpl implements FileService {
 			logger.info("Loading process data table completed successfully.");
 
 		} catch (Exception e){
-			logger.error("Unexpected error: " + e.getMessage());
+			logger.error("Error Encountered: ", e);
 			Optional<Control> _control = controlRepository.findById(controlTableId);
 			
 			Control control = _control.get();
