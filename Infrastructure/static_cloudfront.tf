@@ -38,7 +38,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   default_root_object = "index.html"
   enabled             = true
   is_ipv6_enabled     = true
-  aliases             = [var.application_url]
+  #aliases             = [var.application_url]
 
   default_cache_behavior {
     target_origin_id       = local.s3_origin_id
@@ -75,12 +75,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-#  viewer_certificate {
-#     cloudfront_default_certificate = true
+  viewer_certificate {
+     cloudfront_default_certificate = true
 #     acm_certificate_arn      = data.aws_acm_certificate.phlat_certificate.arn
 #     minimum_protocol_version = "TLSv1.2_2021"
 #     ssl_support_method       = "sni-only"
-#  }
+  }
 }
 
 # to get the Cloud front URL if doamin/alias is not configured
