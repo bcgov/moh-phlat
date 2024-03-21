@@ -5,9 +5,15 @@ import java.util.Date;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "PROCESS_DATA")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProcessData {
 	@Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
