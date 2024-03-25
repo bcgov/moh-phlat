@@ -9,7 +9,7 @@ generate "test_tfvars" {
   contents          = <<-EOF
   fargate_cpu = 512
   fargate_memory = 1024
-  app_port = 4000
+  app_port = 8088
   fam_console_idp_name = "TEST-IDIR"
   application = "phlat"
   application_url = "phlat-test.hlth.gov.bc.ca"

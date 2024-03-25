@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class ControlTableFactory {
+public class ControlTableFactory extends BaseFactory {
 
     public static List<Control> createControlList() {
         List<Control> controlList = new ArrayList<>();
@@ -70,14 +70,6 @@ public class ControlTableFactory {
                       .build();
 
 
-    }
-
-    private static Date createDate(int year, int month, int dayOfMonth) {
-
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.clear();
-        calendar.set(year, month, dayOfMonth);
-        return calendar.getTime();
     }
 
 }
