@@ -6,6 +6,8 @@ import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
+import { usePreferenceDataStore } from '~/store/userPreference';
+import { ColumnTypes } from '~/utils/constants';
 
 export default {
   components: {
@@ -77,6 +79,7 @@ export default {
       'updatedProcessData',
       'validateAllStatus',
     ]),
+    ...mapState(usePreferenceDataStore, ['userPreferenceData']),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
@@ -137,8 +140,19 @@ export default {
       'updateSingleProcessRecord',
       'updateValidateAll',
     ]),
+    ...mapActions(usePreferenceDataStore, [
+      'updateUserPreference',
+      'fetchUserPreferenceByColumnType',
+    ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
+    async populateColumns() {
+      // Get the headers from user preferences
+      await this.fetchUserPreferenceByColumnType(ColumnTypes.PROCESSVIEW);
+      if (this.userPreferenceData.length) {
+        this.onlyShowColumns = this.userPreferenceData;
+      }
+    },
     async populateStatus() {
       // Get the submissions for this form
       await this.fetchGetAllStatus();
@@ -151,6 +165,7 @@ export default {
       this.loading = true;
       this.populateControlTable();
       this.populateHeaders();
+      this.populateColumns();
       this.populateInputSource();
       this.populateStatus();
       this.loading = false;
@@ -206,7 +221,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data) {
+    async updateFilter(data, changeColumns = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -216,6 +231,11 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
+      changeColumns &&
+        (await this.updateUserPreference(
+          ColumnTypes.PROCESSVIEW,
+          preferences.columns
+        ));
       await this.populateInputSource();
     },
 

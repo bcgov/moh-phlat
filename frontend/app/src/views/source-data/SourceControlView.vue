@@ -5,6 +5,8 @@ import { mapActions, mapState } from 'pinia';
 import { useInputSourceDataStore } from '~/store/inputsourcedata';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
+import { usePreferenceDataStore } from '~/store/userPreference';
+import { ColumnTypes } from '~/utils/constants';
 
 export default {
   components: {
@@ -69,6 +71,7 @@ export default {
       'deleteInputSourceDataById',
       'updatedInputSourceData',
     ]),
+    ...mapState(usePreferenceDataStore, ['userPreferenceData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -127,13 +130,25 @@ export default {
       'fetchFormFieldHeaders',
       'updateSingleSourceRecord',
     ]),
+    ...mapActions(usePreferenceDataStore, [
+      'updateUserPreference',
+      'fetchUserPreferenceByColumnType',
+    ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     initialize() {
       this.loading = true;
       this.populateControlTable();
       this.populateHeaders();
+      this.populateColumns();
       this.populateInputSource();
       this.loading = false;
+    },
+    async populateColumns() {
+      // Get the headers from user preferences
+      await this.fetchUserPreferenceByColumnType(ColumnTypes.SOURCEVIEW);
+      if (this.userPreferenceData.length) {
+        this.onlyShowColumns = this.userPreferenceData;
+      }
     },
     async populateControlTable() {
       await this.fetchGetControlTableById(this.id);
@@ -165,7 +180,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data) {
+    async updateFilter(data, changeColumns = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -175,6 +190,11 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
+      changeColumns &&
+        (await this.updateUserPreference(
+          ColumnTypes.SOURCEVIEW,
+          preferences.columns
+        ));
       await this.populateInputSource();
     },
 
