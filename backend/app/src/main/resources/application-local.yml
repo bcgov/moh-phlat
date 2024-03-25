@@ -1,10 +1,21 @@
-# this is default profile that is active for all environments. Any changes in properties values based on env should your env variables
+# to activate this file start the application with system property -Dspring.profiles.active=local
+# or use env property SPRING_PROFILES_ACTIVE=local
 server:
   port: 8088
 
-# -------------- spring related config starts ---------------------------
-
+# ----------------- spring related configuration starts ----------------------------
 spring:
+  config:
+    activate:
+      on-profile: local
+
+
+  docker:
+    compose:
+      # other values are none, start-only,
+      lifecycle-management: start_and_stop
+
+
 
   jpa:
     # default is false
@@ -16,16 +27,15 @@ spring:
     show-sql: false
     # default is false
     defer-datasource-initialization: false
-
-  datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    hikari:
-      # default is 30000, 30 secs
-      connectionTimeout: 20000
-      #default is 10
-      maximumPoolSize: 5
+    datasource:
+      url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      hikari:
+        # default is 30000, 30 secs
+        connectionTimeout: 20000
+        #default is 10
+        maximumPoolSize: 5
 
   sql:
     init:
@@ -46,7 +56,8 @@ spring:
           issuer-uri: https://common-logon-test.hlth.gov.bc.ca/auth/realms/moh_applications
           jwt-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
-# -------------- spring related config ends ---------------------------
+# ----------------- spring related configuration ends ----------------------------
+
 
 jwt:
   auth:
