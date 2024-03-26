@@ -50,7 +50,7 @@ spring:
       # upload file size limit
       max-file-size: 24MB
       # above this size, tomcat will save it to temp dir.
-      file-size-threshold: 22MB
+      file-size-threshold: 25MB
       enabled: true
 
   security:
