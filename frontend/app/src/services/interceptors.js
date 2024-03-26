@@ -8,13 +8,11 @@ import { useAppStore } from '~/store/app';
  * @param {integer} [timeout=10000] Number of milliseconds before timing out the request
  * @returns {object} An axios instance
  */
-export function appAxios(timeout = 10000, isMocked = false) {
+export function appAxios(timeout = 10000) {
   const appStore = useAppStore();
   const axiosOptions = { timeout: timeout };
   if (appStore.config) {
-    axiosOptions.baseURL = isMocked
-      ? `${import.meta.env.VITE_BACKEND_API_URL_MOCK}`
-      : `${import.meta.env.VITE_BACKEND_API_URL}`;
+    axiosOptions.baseURL = `${import.meta.env.VITE_BACKEND_API_URL}`;
   }
   const instance = axios.create(axiosOptions);
 

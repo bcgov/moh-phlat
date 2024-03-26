@@ -1,6 +1,7 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
+import BaseMessageDialog from '../../components/base/BaseMessageDialog.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
@@ -13,6 +14,7 @@ export default {
   components: {
     BaseFilter,
     BaseEditRecord,
+    BaseMessageDialog,
   },
   props: {
     id: {
@@ -28,6 +30,8 @@ export default {
     searchByStatus: null,
     dialogDelete: false,
     showColumnsDialog: false,
+    showMessageDialog: false,
+    showMessageDialogData: {},
     deleteSingleItem: {},
     filterData: [],
     filterIgnore: [
@@ -337,6 +341,29 @@ export default {
         });
       }
     },
+    handleMessageDialog(type, msgObject) {
+      this.showMessageDialog = true;
+      this.showMessageDialogData = {
+        type,
+        messages: msgObject,
+      };
+    },
+    closeMessageDialog() {
+      this.showMessageDialog = false;
+      this.showMessageDialogData = {};
+    },
+    getChipProps(type) {
+      switch (type) {
+        case 'error':
+          return { color: 'red', icon: 'mdi-close-circle' };
+        case 'warning':
+          return { color: 'yellow', icon: 'mdi-alert' };
+        case 'info':
+          return { color: 'success', icon: 'mdi-message-alert' };
+        default:
+          return { color: 'primary', icon: 'mdi-information' };
+      }
+    },
   },
 };
 </script>
@@ -485,6 +512,20 @@ export default {
           </div>
         </template>
 
+        <template #item.errorMsg="{ item }">
+          <v-chip
+            v-for="(messages, type) in JSON.parse(item.raw.errorMsg)"
+            :key="type"
+            :color="getChipProps(type).color"
+            :prepend-icon="getChipProps(type).icon"
+            class="ma-2"
+            variant="flat"
+            @click="handleMessageDialog(type, messages)"
+          >
+            {{ messages.length }} {{ type }}(s)
+          </v-chip>
+        </template>
+
         <template #item.actions="{ item }">
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -526,6 +567,16 @@ export default {
           :is-loading="loading"
           @handle-record-save="handleRecordSave"
         />
+      </v-dialog>
+
+      <v-dialog v-model="showMessageDialog" width="700">
+        <BaseMessageDialog
+          :type="showMessageDialogData.type"
+          :messages="showMessageDialogData.messages"
+          @close-dialog="closeMessageDialog"
+        >
+          <template #filter-title><span> Error Messages </span></template>
+        </BaseMessageDialog>
       </v-dialog>
     </div>
   </div>

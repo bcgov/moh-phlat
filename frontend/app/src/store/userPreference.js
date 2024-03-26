@@ -40,7 +40,6 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
         const { data } = await userPreferenceService.serviceGetManageColumns(
           columnType
         );
-        console.log('dattta-', data);
         this.userPreferenceData = data.data;
       } catch (error) {
         console.log('Something went wrong. (STO1MDJ#2026)', error); // eslint-disable-line no-console
