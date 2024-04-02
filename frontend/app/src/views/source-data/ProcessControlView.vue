@@ -101,7 +101,8 @@ export default {
       return headers;
     },
     HEADERS() {
-      let headers = this.BASE_HEADERS.filter(
+      let headers;
+      headers = this.BASE_HEADERS.filter(
         (h) => !this.filterIgnore.some((fd) => fd.key === h.key)
       );
       if (this.onlyShowColumns.length) {
@@ -109,7 +110,6 @@ export default {
           this.onlyShowColumns.some((fd) => fd === h.key)
         );
       }
-
       return headers;
     },
     PRESELECTED_DATA() {
@@ -150,26 +150,10 @@ export default {
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
-    async populateColumns() {
-      // Get the headers from user preferences
-      await this.fetchUserPreferenceByColumnType(ColumnTypes.PROCESSVIEW);
-      if (this.userPreferenceData.length) {
-        this.onlyShowColumns = this.userPreferenceData;
-      }
-    },
-    async populateStatus() {
-      // Get the submissions for this form
-      await this.fetchGetAllStatus();
-      const tableRows = this.allStatusData.map((s) => {
-        return s.code;
-      });
-      this.statusCodes = tableRows;
-    },
     initialize() {
       this.loading = true;
       this.populateControlTable();
       this.populateHeaders();
-      this.populateColumns();
       this.populateInputSource();
       this.populateStatus();
       this.loading = false;
@@ -182,6 +166,11 @@ export default {
     async populateHeaders() {
       // Get the header for this table
       await this.fetchFormFieldHeaders();
+      // Get the headers from user preferences
+      await this.fetchUserPreferenceByColumnType(ColumnTypes.PROCESSVIEW);
+      if (this.userPreferenceData.length) {
+        this.onlyShowColumns = this.userPreferenceData;
+      }
       const tableHeaders = this.formFieldHeaders.map((h) => {
         return { title: h, key: h };
       });
@@ -198,6 +187,15 @@ export default {
       }
 
       this.inputSrcData = this.processData;
+    },
+
+    async populateStatus() {
+      // Get the submissions for this form
+      await this.fetchGetAllStatus();
+      const tableRows = this.allStatusData.map((s) => {
+        return s.code;
+      });
+      this.statusCodes = tableRows;
     },
 
     async requestValidateAll() {
