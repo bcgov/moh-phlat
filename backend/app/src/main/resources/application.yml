@@ -57,3 +57,7 @@ jwt:
     converter:
       resource-id: PHLAT-WEB
       principle-attribute: preferred_username
+
+# application specific configuration
+columns-display-preference:
+  allowed-viewNames: file-task-management,process_data_management,source-data-management,status-codes-management
