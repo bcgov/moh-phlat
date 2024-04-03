@@ -3,6 +3,7 @@ package com.moh.phlat.backend.controller;
 import com.moh.phlat.backend.model.ColumnsDisplayPreference;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.ColumnsDisplayPreferenceService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,7 +49,10 @@ public class ColumnsDisplayPreferenceController {
     private ColumnsDisplayPreferenceService preferencesService;
 
 
-    @PutMapping("/{viewName}")
+    @Operation(description = "Creates or updates the user preference for column display on a specified view. Supported views include:" +
+            " file-task-management, process-data-management, source-data-management, and status-codes-management")
+    @PutMapping(value = "/{viewName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+
     public ResponseEntity<ResponseMessage> saveOrupdatePreferences(@PathVariable("viewName") String viewName,
                                                                    @Valid @RequestBody ColumnsDisplayPreference columnsDisplayPreference) {
 
@@ -84,7 +89,9 @@ public class ColumnsDisplayPreferenceController {
     }
 
 
-    @GetMapping("/{viewName}")
+    @Operation(description = "Returns the user preference for column display on a specified view. Supported views include:" +
+            " file-task-management, process-data-management, source-data-management, and status-codes-management")
+    @GetMapping(value = "/{viewName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseMessage> getPreferences(@PathVariable String viewName) {
         String userId = AuthenticationUtils.getAuthenticatedUserId();
         ColumnsDisplayPreference columnsDisplayPreference = preferencesService.getPreferences(userId, viewName);
