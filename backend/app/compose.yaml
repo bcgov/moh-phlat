@@ -3,15 +3,13 @@ version: '3.7'
 volumes:
   postgres:
   pgadmin:
-  keycloak_data:
-    driver: local
 networks:
   common-network:
     driver: bridge
 services:
   postgres:
     container_name: phlat_postgres
-    image: 'postgres:latest'
+    image: 'postgres:13.8'
     environment:
       POSTGRES_DB: phlat
       POSTGRES_PASSWORD: password
@@ -19,7 +17,7 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - '5432'
+      - '5432:5432'
     restart: unless-stopped
 
   pgadmin:

@@ -39,14 +39,18 @@ spring:
 
   sql:
     init:
-      # default is always for in-memory db. Other value is embedded. Causes auto execution of db scripts.
+      # default is always for in-memory db. Other value is embedded, never. Causes auto execution of db scripts.
       # To be used only for local dev.
       mode: never
 
   servlet:
     multipart:
-      max-request-size: 20MB
-      max-file-size: 10MB
+      # total request size limit
+      max-request-size: 25MB
+      # upload file size limit
+      max-file-size: 24MB
+      # above this size, tomcat will save it to temp dir.
+      file-size-threshold: 25MB
       enabled: true
 
   security:
