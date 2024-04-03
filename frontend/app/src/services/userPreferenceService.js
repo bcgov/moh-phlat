@@ -1,15 +1,12 @@
-// import { appAxios } from '~/services/interceptors';
+import { appAxios } from '~/services/interceptors';
 
 export default {
-  async serviceGetManageColumns() {
+  async serviceGetManageColumns(columnType) {
     //Params needed columnType
-    //return appAxios().get(`/userPreference/manageColumns?type=${columnType}`); Coming soon
+    return appAxios().get(`/columns-display-preference/${columnType}`);
   },
-  async servicePutManageColumns() {
+  async servicePutManageColumns(columnType, data) {
     //Params needed columnType, data
-    //return appAxios().put(
-    //   `/userPreference/manageColumns?type=${columnType}`,
-    //   data
-    // );
+    return appAxios().put(`/columns-display-preference/${columnType}`, data);
   },
 };

@@ -13,21 +13,23 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
       try {
         const { data } = await userPreferenceService.servicePutManageColumns(
           columnType,
-          payload
+          { displayColumns: payload }
         );
         if (data.statusCode === 200) {
-          this.userPreferenceData = data.data;
+          this.userPreferenceData = data.data.displayColumns || [];
           notificationStore.addNotification({
             text: data.message || 'Column preference saved successfully.',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         } else {
+          this.userPreferenceData = [];
           notificationStore.addNotification({
             text: data.message || 'Something went wrong',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         }
       } catch (error) {
+        this.userPreferenceData = [];
         notificationStore.addNotification({
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
@@ -40,9 +42,19 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
         const { data } = await userPreferenceService.serviceGetManageColumns(
           columnType
         );
-        this.userPreferenceData = data.data;
+        if (
+          data &&
+          data.data &&
+          Array.isArray(data.data.displayColumns) &&
+          data.data.displayColumns.length
+        ) {
+          this.userPreferenceData = data.data.displayColumns || [];
+        } else {
+          this.userPreferenceData = [];
+        }
       } catch (error) {
-        console.log('Something went wrong. (STO1MDJ#2026)', error); // eslint-disable-line no-console
+        this.userPreferenceData = [];
+        console.log('Something went wrong. (STO1MDJ#20d261)', error); // eslint-disable-line no-console
       }
     },
   },
