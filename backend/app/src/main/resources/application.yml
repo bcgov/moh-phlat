@@ -60,4 +60,4 @@ jwt:
 
 # application specific configuration
 columns-display-preference:
-  allowed-viewNames: file-task-management,process_data_management,source-data-management,status-codes-management
+  allowed-viewNames: file-task-management,process-data-management,source-data-management,status-codes-management

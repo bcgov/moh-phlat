@@ -3,6 +3,7 @@ package com.moh.phlat.backend.controller;
 import com.moh.phlat.backend.model.ColumnsDisplayPreference;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.ColumnsDisplayPreferenceService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,8 @@ public class ColumnsDisplayPreferenceController {
     private ColumnsDisplayPreferenceService preferencesService;
 
 
+    @Operation(description = "Creates or updates the user preference for column display on a specified view. Supported views include:" +
+            " file-task-management, process-data-management, source-data-management, and status-codes-management")
     @PutMapping("/{viewName}")
     public ResponseEntity<ResponseMessage> saveOrupdatePreferences(@PathVariable("viewName") String viewName,
                                                                    @Valid @RequestBody ColumnsDisplayPreference columnsDisplayPreference) {
