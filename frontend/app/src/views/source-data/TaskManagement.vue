@@ -10,7 +10,7 @@ import {
   PerformActions,
   ColumnTypes,
 } from '~/utils/constants';
-import { usePreferenceDataStore } from '~/store/userPreference';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 export default {
   components: {
     BaseFilter,
@@ -75,7 +75,7 @@ export default {
       'allControlTableData',
       'deletedControlTableData',
     ]),
-    ...mapState(usePreferenceDataStore, ['userPreferenceData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
     RunTypes: () => RunTypes,
@@ -140,14 +140,14 @@ export default {
       'updateLoadToPlrl',
     ]),
     ...mapActions(usePreferenceDataStore, [
-      'updateUserPreference',
-      'fetchUserPreferenceByColumnType',
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreferenceByViewName',
     ]),
     async populateHeaders() {
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByColumnType(ColumnTypes.TASKMANAGEMENT);
-      if (this.userPreferenceData.length) {
-        this.onlyShowColumns = this.userPreferenceData;
+      await this.fetchUserPreferenceByViewName(ColumnTypes.TASKMANAGEMENT);
+      if (this.displayColumnsData.length) {
+        this.onlyShowColumns = this.displayColumnsData;
       }
     },
     async loadToPlr(controlId) {
@@ -185,7 +185,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data, changeColumns = true) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -195,8 +195,8 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      changeColumns &&
-        (await this.updateUserPreference(
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
           ColumnTypes.TASKMANAGEMENT,
           preferences.columns
         ));

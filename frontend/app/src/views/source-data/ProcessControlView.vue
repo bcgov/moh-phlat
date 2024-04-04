@@ -7,7 +7,7 @@ import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
-import { usePreferenceDataStore } from '~/store/userPreference';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 import { ColumnTypes } from '~/utils/constants';
 
 export default {
@@ -83,7 +83,7 @@ export default {
       'updatedProcessData',
       'validateAllStatus',
     ]),
-    ...mapState(usePreferenceDataStore, ['userPreferenceData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
@@ -145,8 +145,8 @@ export default {
       'updateValidateAll',
     ]),
     ...mapActions(usePreferenceDataStore, [
-      'updateUserPreference',
-      'fetchUserPreferenceByColumnType',
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreferenceByViewName',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
@@ -167,9 +167,9 @@ export default {
       // Get the header for this table
       await this.fetchFormFieldHeaders();
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByColumnType(ColumnTypes.PROCESSVIEW);
-      if (this.userPreferenceData.length) {
-        this.onlyShowColumns = this.userPreferenceData;
+      await this.fetchUserPreferenceByViewName(ColumnTypes.PROCESSVIEW);
+      if (this.displayColumnsData.length) {
+        this.onlyShowColumns = this.displayColumnsData;
       }
       const tableHeaders = this.formFieldHeaders.map((h) => {
         return { title: h, key: h };
@@ -223,7 +223,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data, changeColumns = true) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -233,8 +233,8 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      changeColumns &&
-        (await this.updateUserPreference(
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
           ColumnTypes.PROCESSVIEW,
           preferences.columns
         ));

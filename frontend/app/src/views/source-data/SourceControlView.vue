@@ -5,7 +5,7 @@ import { mapActions, mapState } from 'pinia';
 import { useInputSourceDataStore } from '~/store/inputsourcedata';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
-import { usePreferenceDataStore } from '~/store/userPreference';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 import { ColumnTypes } from '~/utils/constants';
 
 export default {
@@ -71,7 +71,7 @@ export default {
       'deleteInputSourceDataById',
       'updatedInputSourceData',
     ]),
-    ...mapState(usePreferenceDataStore, ['userPreferenceData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -131,8 +131,8 @@ export default {
       'updateSingleSourceRecord',
     ]),
     ...mapActions(usePreferenceDataStore, [
-      'updateUserPreference',
-      'fetchUserPreferenceByColumnType',
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreferenceByViewName',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     initialize() {
@@ -145,9 +145,9 @@ export default {
     },
     async populateColumns() {
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByColumnType(ColumnTypes.SOURCEVIEW);
-      if (this.userPreferenceData.length) {
-        this.onlyShowColumns = this.userPreferenceData;
+      await this.fetchUserPreferenceByViewName(ColumnTypes.SOURCEVIEW);
+      if (this.displayColumnsData.length) {
+        this.onlyShowColumns = this.displayColumnsData;
       }
     },
     async populateControlTable() {
@@ -180,7 +180,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data, changeColumns = true) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -190,8 +190,8 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      changeColumns &&
-        (await this.updateUserPreference(
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
           ColumnTypes.SOURCEVIEW,
           preferences.columns
         ));

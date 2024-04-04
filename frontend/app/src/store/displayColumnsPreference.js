@@ -4,32 +4,32 @@ import { useNotificationStore } from '~/store/notification';
 
 export const usePreferenceDataStore = defineStore('preferencedata', {
   state: () => ({
-    userPreferenceData: [],
+    displayColumnsData: [],
   }),
   getters: {},
   actions: {
-    async updateUserPreference(columnType, payload) {
+    async updateUserColumnsDisplayPreference(viewName, payload) {
       const notificationStore = useNotificationStore();
       try {
-        const { data } = await userPreferenceService.servicePutManageColumns(
-          columnType,
-          { displayColumns: payload }
-        );
+        const { data } =
+          await userPreferenceService.updateColumnsDisplayPreference(viewName, {
+            displayColumns: payload,
+          });
         if (data.statusCode === 200) {
-          this.userPreferenceData = data.data.displayColumns || [];
+          this.displayColumnsData = data.data.displayColumns || [];
           notificationStore.addNotification({
-            text: data.message || 'Column preference saved successfully.',
+            text: data.message || 'Display columns saved successfully.',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         } else {
-          this.userPreferenceData = [];
+          this.displayColumnsData = [];
           notificationStore.addNotification({
             text: data.message || 'Something went wrong',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         }
       } catch (error) {
-        this.userPreferenceData = [];
+        this.displayColumnsData = [];
         notificationStore.addNotification({
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
@@ -37,23 +37,22 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
         console.log('Something went wrong. (STJ6SLL#2426)', error); // eslint-disable-line no-console
       }
     },
-    async fetchUserPreferenceByColumnType(columnType) {
+    async fetchUserPreferenceByViewName(viewName) {
       try {
-        const { data } = await userPreferenceService.serviceGetManageColumns(
-          columnType
-        );
+        const { data } =
+          await userPreferenceService.fetchColumnsDisplayPreference(viewName);
         if (
           data &&
           data.data &&
           Array.isArray(data.data.displayColumns) &&
           data.data.displayColumns.length
         ) {
-          this.userPreferenceData = data.data.displayColumns || [];
+          this.displayColumnsData = data.data.displayColumns || [];
         } else {
-          this.userPreferenceData = [];
+          this.displayColumnsData = [];
         }
       } catch (error) {
-        this.userPreferenceData = [];
+        this.displayColumnsData = [];
         console.log('Something went wrong. (STO1MDJ#20d261)', error); // eslint-disable-line no-console
       }
     },

@@ -6,7 +6,7 @@ import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
 import { useAuthStore } from '~/store/auth';
-import { usePreferenceDataStore } from '~/store/userPreference';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 import { PerformActions, ColumnTypes } from '~/utils/constants';
 
 export default {
@@ -62,7 +62,7 @@ export default {
       'deletedStatusData',
     ]),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
-    ...mapState(usePreferenceDataStore, ['userPreferenceData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
     PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -130,8 +130,8 @@ export default {
       'fetchAddStatus',
     ]),
     ...mapActions(usePreferenceDataStore, [
-      'updateUserPreference',
-      'fetchUserPreferenceByColumnType',
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreferenceByViewName',
     ]),
     async populateStatusWithDeleted() {
       this.loading = true;
@@ -150,9 +150,9 @@ export default {
     },
     async populateHeaders() {
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByColumnType(ColumnTypes.STATUSCODE);
-      if (this.userPreferenceData.length) {
-        this.onlyShowColumns = this.userPreferenceData;
+      await this.fetchUserPreferenceByViewName(ColumnTypes.STATUSCODE);
+      if (this.displayColumnsData.length) {
+        this.onlyShowColumns = this.displayColumnsData;
       }
     },
     initialize() {
@@ -179,7 +179,7 @@ export default {
     //   const headersToKeep = this.headers.filter((header) => header.key !== key);
     //   this.updateFilter(headersToKeep);
     // },
-    async updateFilter(data, changeColumns = true) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -189,8 +189,8 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      changeColumns &&
-        (await this.updateUserPreference(
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
           ColumnTypes.STATUSCODE,
           preferences.columns
         ));
