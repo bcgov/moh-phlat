@@ -6,7 +6,7 @@ import { useInputSourceDataStore } from '~/store/inputsourcedata';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { ColumnTypes } from '~/utils/constants';
+import { ViewNames } from '~/utils/constants';
 
 export default {
   components: {
@@ -71,7 +71,7 @@ export default {
       'deleteInputSourceDataById',
       'updatedInputSourceData',
     ]),
-    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -132,7 +132,7 @@ export default {
     ]),
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
-      'fetchUserPreferenceByViewName',
+      'fetchUserPreference',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     initialize() {
@@ -145,9 +145,9 @@ export default {
     },
     async populateColumns() {
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByViewName(ColumnTypes.SOURCEVIEW);
-      if (this.displayColumnsData.length) {
-        this.onlyShowColumns = this.displayColumnsData;
+      await this.fetchUserPreference(ViewNames.SOURCEVIEW);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
     },
     async populateControlTable() {
@@ -192,7 +192,7 @@ export default {
       this.onlyShowColumns = preferences.columns;
       changeDisplayColumnsPreference &&
         (await this.updateUserColumnsDisplayPreference(
-          ColumnTypes.SOURCEVIEW,
+          ViewNames.SOURCEVIEW,
           preferences.columns
         ));
       await this.populateInputSource();

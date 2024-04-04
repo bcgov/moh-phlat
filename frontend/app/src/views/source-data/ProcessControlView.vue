@@ -8,7 +8,7 @@ import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { ColumnTypes } from '~/utils/constants';
+import { ViewNames } from '~/utils/constants';
 
 export default {
   components: {
@@ -83,7 +83,7 @@ export default {
       'updatedProcessData',
       'validateAllStatus',
     ]),
-    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
@@ -146,7 +146,7 @@ export default {
     ]),
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
-      'fetchUserPreferenceByViewName',
+      'fetchUserPreference',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
@@ -167,9 +167,9 @@ export default {
       // Get the header for this table
       await this.fetchFormFieldHeaders();
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByViewName(ColumnTypes.PROCESSVIEW);
-      if (this.displayColumnsData.length) {
-        this.onlyShowColumns = this.displayColumnsData;
+      await this.fetchUserPreference(ViewNames.PROCESSVIEW);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
       const tableHeaders = this.formFieldHeaders.map((h) => {
         return { title: h, key: h };
@@ -235,7 +235,7 @@ export default {
       this.onlyShowColumns = preferences.columns;
       changeDisplayColumnsPreference &&
         (await this.updateUserColumnsDisplayPreference(
-          ColumnTypes.PROCESSVIEW,
+          ViewNames.PROCESSVIEW,
           preferences.columns
         ));
       await this.populateInputSource();

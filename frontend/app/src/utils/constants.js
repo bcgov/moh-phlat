@@ -111,7 +111,7 @@ export const PerformActions = Object.freeze({
 });
 
 /** Column types are the names used for Column preferences by users */
-export const ColumnTypes = Object.freeze({
+export const ViewNames = Object.freeze({
   TASKMANAGEMENT: 'file-task-management',
   PROCESSVIEW: 'process-data-management',
   SOURCEVIEW: 'source-data-management',

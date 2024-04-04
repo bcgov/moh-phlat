@@ -8,7 +8,7 @@ import {
   RunTypes,
   StatusCode,
   PerformActions,
-  ColumnTypes,
+  ViewNames,
 } from '~/utils/constants';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 export default {
@@ -75,7 +75,7 @@ export default {
       'allControlTableData',
       'deletedControlTableData',
     ]),
-    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
     RunTypes: () => RunTypes,
@@ -141,13 +141,13 @@ export default {
     ]),
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
-      'fetchUserPreferenceByViewName',
+      'fetchUserPreference',
     ]),
     async populateHeaders() {
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByViewName(ColumnTypes.TASKMANAGEMENT);
-      if (this.displayColumnsData.length) {
-        this.onlyShowColumns = this.displayColumnsData;
+      await this.fetchUserPreference(ViewNames.TASKMANAGEMENT);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
     },
     async loadToPlr(controlId) {
@@ -197,7 +197,7 @@ export default {
       this.onlyShowColumns = preferences.columns;
       changeDisplayColumnsPreference &&
         (await this.updateUserColumnsDisplayPreference(
-          ColumnTypes.TASKMANAGEMENT,
+          ViewNames.TASKMANAGEMENT,
           preferences.columns
         ));
     },

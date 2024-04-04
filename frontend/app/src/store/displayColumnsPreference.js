@@ -4,7 +4,7 @@ import { useNotificationStore } from '~/store/notification';
 
 export const usePreferenceDataStore = defineStore('preferencedata', {
   state: () => ({
-    displayColumnsData: [],
+    displayColumnsPreferenceData: [],
   }),
   getters: {},
   actions: {
@@ -16,20 +16,20 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
             displayColumns: payload,
           });
         if (data.statusCode === 200) {
-          this.displayColumnsData = data.data.displayColumns || [];
+          this.displayColumnsPreferenceData = data.data.displayColumns || [];
           notificationStore.addNotification({
             text: data.message || 'Display columns saved successfully.',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         } else {
-          this.displayColumnsData = [];
+          this.displayColumnsPreferenceData = [];
           notificationStore.addNotification({
             text: data.message || 'Something went wrong',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         }
       } catch (error) {
-        this.displayColumnsData = [];
+        this.displayColumnsPreferenceData = [];
         notificationStore.addNotification({
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
@@ -37,7 +37,7 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
         console.log('Something went wrong. (STJ6SLL#2426)', error); // eslint-disable-line no-console
       }
     },
-    async fetchUserPreferenceByViewName(viewName) {
+    async fetchUserPreference(viewName) {
       try {
         const { data } =
           await userPreferenceService.fetchColumnsDisplayPreference(viewName);
@@ -47,12 +47,12 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
           Array.isArray(data.data.displayColumns) &&
           data.data.displayColumns.length
         ) {
-          this.displayColumnsData = data.data.displayColumns || [];
+          this.displayColumnsPreferenceData = data.data.displayColumns || [];
         } else {
-          this.displayColumnsData = [];
+          this.displayColumnsPreferenceData = [];
         }
       } catch (error) {
-        this.displayColumnsData = [];
+        this.displayColumnsPreferenceData = [];
         console.log('Something went wrong. (STO1MDJ#20d261)', error); // eslint-disable-line no-console
       }
     },

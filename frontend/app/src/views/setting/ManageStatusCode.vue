@@ -7,7 +7,7 @@ import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
 import { useAuthStore } from '~/store/auth';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { PerformActions, ColumnTypes } from '~/utils/constants';
+import { PerformActions, ViewNames } from '~/utils/constants';
 
 export default {
   components: {
@@ -62,7 +62,7 @@ export default {
       'deletedStatusData',
     ]),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
-    ...mapState(usePreferenceDataStore, ['displayColumnsData']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -131,7 +131,7 @@ export default {
     ]),
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
-      'fetchUserPreferenceByViewName',
+      'fetchUserPreference',
     ]),
     async populateStatusWithDeleted() {
       this.loading = true;
@@ -150,9 +150,9 @@ export default {
     },
     async populateHeaders() {
       // Get the headers from user preferences
-      await this.fetchUserPreferenceByViewName(ColumnTypes.STATUSCODE);
-      if (this.displayColumnsData.length) {
-        this.onlyShowColumns = this.displayColumnsData;
+      await this.fetchUserPreference(ViewNames.STATUSCODE);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
     },
     initialize() {
@@ -191,7 +191,7 @@ export default {
       this.onlyShowColumns = preferences.columns;
       changeDisplayColumnsPreference &&
         (await this.updateUserColumnsDisplayPreference(
-          ColumnTypes.STATUSCODE,
+          ViewNames.STATUSCODE,
           preferences.columns
         ));
     },
