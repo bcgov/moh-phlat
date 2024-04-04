@@ -39,7 +39,7 @@ spring:
 
   sql:
     init:
-      # default is always for in-memory db. Other value is embedded. Causes auto execution of db scripts.
+      # default is always for in-memory db. Other value is embedded, never. Causes auto execution of db scripts.
       # To be used only for local dev.
       mode: never
 
