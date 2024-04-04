@@ -18,7 +18,7 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
         if (data.statusCode === 200) {
           this.displayColumnsPreferenceData = data.data.displayColumns || [];
           notificationStore.addNotification({
-            text: data.message || 'Display columns saved successfully.',
+            text: data.message || 'Display columns preference saved successfully.',
             type: data.statusCode != 200 ? 'warning' : 'success',
           });
         } else {
