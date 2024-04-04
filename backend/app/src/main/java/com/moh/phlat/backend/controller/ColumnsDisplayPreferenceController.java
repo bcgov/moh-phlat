@@ -32,9 +32,7 @@ import java.util.List;
 public class ColumnsDisplayPreferenceController {
 
     private static final Logger logger = LoggerFactory.getLogger(ColumnsDisplayPreferenceController.class);
-    private static final String MESSAGE_KEY_PREFERENCE_MODIFICATION_DENIED = "columns.displayPreference.modificationDenied";
     private static final String MESSAGE_KEY_PREFERENCE_INVALID_VIEW_NAME = "columns.displayPreference.invalidViewName";
-
     private final String MESSAGE_KEY_PREFERENCE_NOT_FOUND = "columns.displayPreference.not.found";
 
 
@@ -69,14 +67,6 @@ public class ColumnsDisplayPreferenceController {
 
         if (existingDisplayPreference != null) {
             logger.info("Preference record found...");
-            if (!isOwner(existingDisplayPreference, userId)) {
-                logger.info("The requesting user does not have permission to modify the preferences of another user...");
-                return forbiddenResponse(messageSource.getMessage(
-                        MESSAGE_KEY_PREFERENCE_MODIFICATION_DENIED,
-                        null,
-                        LocaleContextHolder.getLocale()));
-            }
-
             ColumnsDisplayPreference savedPreference = updateDisplayColumns(existingDisplayPreference, columnsDisplayPreference, userId);
             logger.info("Updated Preference record ...");
             return okResponse(savedPreference);
