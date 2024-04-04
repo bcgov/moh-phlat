@@ -14,6 +14,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +33,7 @@ import java.util.List;
 public class ColumnsDisplayPreferenceController {
 
     private static final Logger logger = LoggerFactory.getLogger(ColumnsDisplayPreferenceController.class);
-    private static final String MESSAGE_KEY_PREFERENCE_MODIFICATION_DENIED = "columns.displayPreference.modificationDenied";
     private static final String MESSAGE_KEY_PREFERENCE_INVALID_VIEW_NAME = "columns.displayPreference.invalidViewName";
-
     private final String MESSAGE_KEY_PREFERENCE_NOT_FOUND = "columns.displayPreference.not.found";
 
 
@@ -52,7 +51,7 @@ public class ColumnsDisplayPreferenceController {
     @Operation(description = "Creates or updates the user preference for column display on a specified view. Supported views include:" +
             " file-task-management, process-data-management, source-data-management, and status-codes-management")
     @PutMapping(value = "/{viewName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-
+    @PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
     public ResponseEntity<ResponseMessage> saveOrupdatePreferences(@PathVariable("viewName") String viewName,
                                                                    @Valid @RequestBody ColumnsDisplayPreference columnsDisplayPreference) {
 
@@ -69,14 +68,6 @@ public class ColumnsDisplayPreferenceController {
 
         if (existingDisplayPreference != null) {
             logger.info("Preference record found...");
-            if (!isOwner(existingDisplayPreference, userId)) {
-                logger.info("The requesting user does not have permission to modify the preferences of another user...");
-                return forbiddenResponse(messageSource.getMessage(
-                        MESSAGE_KEY_PREFERENCE_MODIFICATION_DENIED,
-                        null,
-                        LocaleContextHolder.getLocale()));
-            }
-
             ColumnsDisplayPreference savedPreference = updateDisplayColumns(existingDisplayPreference, columnsDisplayPreference, userId);
             logger.info("Updated Preference record ...");
             return okResponse(savedPreference);
@@ -92,6 +83,7 @@ public class ColumnsDisplayPreferenceController {
     @Operation(description = "Returns the user preference for column display on a specified view. Supported views include:" +
             " file-task-management, process-data-management, source-data-management, and status-codes-management")
     @GetMapping(value = "/{viewName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
     public ResponseEntity<ResponseMessage> getPreferences(@PathVariable String viewName) {
         String userId = AuthenticationUtils.getAuthenticatedUserId();
         ColumnsDisplayPreference columnsDisplayPreference = preferencesService.getPreferences(userId, viewName);
