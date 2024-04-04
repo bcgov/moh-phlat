@@ -1,16 +1,20 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
+import BaseMessageDialog from '../../components/base/BaseMessageDialog.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
+import { ViewNames } from '~/utils/constants';
 
 export default {
   components: {
     BaseFilter,
     BaseEditRecord,
+    BaseMessageDialog,
   },
   props: {
     id: {
@@ -26,6 +30,8 @@ export default {
     searchByStatus: null,
     dialogDelete: false,
     showColumnsDialog: false,
+    showMessageDialog: false,
+    showMessageDialogData: {},
     deleteSingleItem: {},
     filterData: [],
     filterIgnore: [
@@ -77,6 +83,7 @@ export default {
       'updatedProcessData',
       'validateAllStatus',
     ]),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
@@ -94,7 +101,8 @@ export default {
       return headers;
     },
     HEADERS() {
-      let headers = this.BASE_HEADERS.filter(
+      let headers;
+      headers = this.BASE_HEADERS.filter(
         (h) => !this.filterIgnore.some((fd) => fd.key === h.key)
       );
       if (this.onlyShowColumns.length) {
@@ -102,7 +110,6 @@ export default {
           this.onlyShowColumns.some((fd) => fd === h.key)
         );
       }
-
       return headers;
     },
     PRESELECTED_DATA() {
@@ -137,16 +144,12 @@ export default {
       'updateSingleProcessRecord',
       'updateValidateAll',
     ]),
+    ...mapActions(usePreferenceDataStore, [
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreference',
+    ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
-    async populateStatus() {
-      // Get the submissions for this form
-      await this.fetchGetAllStatus();
-      const tableRows = this.allStatusData.map((s) => {
-        return s.code;
-      });
-      this.statusCodes = tableRows;
-    },
     initialize() {
       this.loading = true;
       this.populateControlTable();
@@ -163,6 +166,11 @@ export default {
     async populateHeaders() {
       // Get the header for this table
       await this.fetchFormFieldHeaders();
+      // Get the headers from user preferences
+      await this.fetchUserPreference(ViewNames.PROCESSVIEW);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
+      }
       const tableHeaders = this.formFieldHeaders.map((h) => {
         return { title: h, key: h };
       });
@@ -179,6 +187,15 @@ export default {
       }
 
       this.inputSrcData = this.processData;
+    },
+
+    async populateStatus() {
+      // Get the submissions for this form
+      await this.fetchGetAllStatus();
+      const tableRows = this.allStatusData.map((s) => {
+        return s.code;
+      });
+      this.statusCodes = tableRows;
     },
 
     async requestValidateAll() {
@@ -206,7 +223,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -216,6 +233,11 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
+          ViewNames.PROCESSVIEW,
+          preferences.columns
+        ));
       await this.populateInputSource();
     },
 
@@ -315,6 +337,29 @@ export default {
           text: error.message || 'Something went wrong',
           type: 'error',
         });
+      }
+    },
+    handleMessageDialog(type, msgObject) {
+      this.showMessageDialog = true;
+      this.showMessageDialogData = {
+        type,
+        messages: msgObject,
+      };
+    },
+    closeMessageDialog() {
+      this.showMessageDialog = false;
+      this.showMessageDialogData = {};
+    },
+    getChipProps(type) {
+      switch (type) {
+        case 'error':
+          return { color: 'red', icon: 'mdi-close-circle' };
+        case 'warning':
+          return { color: 'yellow', icon: 'mdi-alert' };
+        case 'info':
+          return { color: 'success', icon: 'mdi-message-alert' };
+        default:
+          return { color: 'primary', icon: 'mdi-information' };
       }
     },
   },
@@ -465,6 +510,20 @@ export default {
           </div>
         </template>
 
+        <template #item.errorMsg="{ item }">
+          <v-chip
+            v-for="(messages, type) in JSON.parse(item.raw.errorMsg)"
+            :key="type"
+            :color="getChipProps(type).color"
+            :prepend-icon="getChipProps(type).icon"
+            class="ma-2"
+            variant="flat"
+            @click="handleMessageDialog(type, messages)"
+          >
+            {{ messages.length }} {{ type }}(s)
+          </v-chip>
+        </template>
+
         <template #item.actions="{ item }">
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -506,6 +565,16 @@ export default {
           :is-loading="loading"
           @handle-record-save="handleRecordSave"
         />
+      </v-dialog>
+
+      <v-dialog v-model="showMessageDialog" width="700">
+        <BaseMessageDialog
+          :type="showMessageDialogData.type"
+          :messages="showMessageDialogData.messages"
+          @close-dialog="closeMessageDialog"
+        >
+          <template #filter-title><span> Error Messages </span></template>
+        </BaseMessageDialog>
       </v-dialog>
     </div>
   </div>

@@ -109,3 +109,11 @@ export const PerformActions = Object.freeze({
   CANACCESSPAGEMANAGESTATUS: 'canAccessPageManageStatus',
   APPROVECONTROLTABLE: 'approveControlTable',
 });
+
+/** Column types are the names used for Column preferences by users */
+export const ViewNames = Object.freeze({
+  TASKMANAGEMENT: 'file-task-management',
+  PROCESSVIEW: 'process-data-management',
+  SOURCEVIEW: 'source-data-management',
+  STATUSCODE: 'status-codes-management',
+});

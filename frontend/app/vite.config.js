@@ -4,6 +4,12 @@ import { defineConfig, loadEnv } from 'vite';
 import eslintPlugin from 'vite-plugin-eslint';
 import vuetify from 'vite-plugin-vuetify';
 
+/* 
+* Uncomment this code to change 127.0.0.1 to localhost
+* Need node version v17 at least
+* // import dns from 'dns'; 
+* // dns.setDefaultResultOrder('verbatim');
+*/
 // https://vitejs.dev/config/
 // eslint-disable-next-line no-unused-vars
 export default defineConfig(({ command, mode }) => {

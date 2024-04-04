@@ -6,7 +6,8 @@ import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
 import { useNotificationStore } from '~/store/notification';
 import { useAuthStore } from '~/store/auth';
-import { PerformActions } from '~/utils/constants';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
+import { PerformActions, ViewNames } from '~/utils/constants';
 
 export default {
   components: {
@@ -61,6 +62,7 @@ export default {
       'deletedStatusData',
     ]),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -127,6 +129,10 @@ export default {
       'fetchUpdateStatus',
       'fetchAddStatus',
     ]),
+    ...mapActions(usePreferenceDataStore, [
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreference',
+    ]),
     async populateStatusWithDeleted() {
       this.loading = true;
       setTimeout(() => {
@@ -142,8 +148,16 @@ export default {
       });
       this.desserts = tableRows;
     },
+    async populateHeaders() {
+      // Get the headers from user preferences
+      await this.fetchUserPreference(ViewNames.STATUSCODE);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
+      }
+    },
     initialize() {
       this.loading = true;
+      this.populateHeaders();
       this.populateStatus();
       this.loading = false;
     },
@@ -165,7 +179,7 @@ export default {
     //   const headersToKeep = this.headers.filter((header) => header.key !== key);
     //   this.updateFilter(headersToKeep);
     // },
-    async updateFilter(data) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -175,14 +189,11 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      //   this.filterIgnore = [...thisfilterIgnore, ...this.filterIgnore];
-      //   this.headers = headers;
-
-      //   await this.updateFormPreferencesForCurrentUser({
-      //     formId: this.form.id,
-      //     preferences: preferences,
-      //   });
-      //   await this.populateSubmissionsTable();
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
+          ViewNames.STATUSCODE,
+          preferences.columns
+        ));
     },
 
     editItem(item) {

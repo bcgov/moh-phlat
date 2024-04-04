@@ -8,7 +8,9 @@ import {
   RunTypes,
   StatusCode,
   PerformActions,
+  ViewNames,
 } from '~/utils/constants';
+import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 export default {
   components: {
     BaseFilter,
@@ -73,6 +75,7 @@ export default {
       'allControlTableData',
       'deletedControlTableData',
     ]),
+    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
     RunTypes: () => RunTypes,
@@ -136,6 +139,17 @@ export default {
       'fetchUpdateApproveControlTable',
       'updateLoadToPlrl',
     ]),
+    ...mapActions(usePreferenceDataStore, [
+      'updateUserColumnsDisplayPreference',
+      'fetchUserPreference',
+    ]),
+    async populateHeaders() {
+      // Get the headers from user preferences
+      await this.fetchUserPreference(ViewNames.TASKMANAGEMENT);
+      if (this.displayColumnsPreferenceData.length) {
+        this.onlyShowColumns = this.displayColumnsPreferenceData;
+      }
+    },
     async loadToPlr(controlId) {
       await this.updateLoadToPlrl(controlId);
       const i = this.desserts.findIndex((x) => x.id === controlId);
@@ -156,6 +170,7 @@ export default {
     },
     initialize() {
       this.loading = true;
+      this.populateHeaders();
       this.populateControlTable();
       this.loading = false;
     },
@@ -170,7 +185,7 @@ export default {
       this.showColumnsDialog = true;
     },
 
-    async updateFilter(data) {
+    async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
       let preferences = {
@@ -180,14 +195,11 @@ export default {
         preferences.columns.push(d.key);
       });
       this.onlyShowColumns = preferences.columns;
-      //   this.filterIgnore = [...thisfilterIgnore, ...this.filterIgnore];
-      //   this.headers = headers;
-
-      //   await this.updateFormPreferencesForCurrentUser({
-      //     formId: this.form.id,
-      //     preferences: preferences,
-      //   });
-      //   await this.populateSubmissionsTable();
+      changeDisplayColumnsPreference &&
+        (await this.updateUserColumnsDisplayPreference(
+          ViewNames.TASKMANAGEMENT,
+          preferences.columns
+        ));
     },
 
     editItem(item) {
