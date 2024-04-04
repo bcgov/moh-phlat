@@ -22,15 +22,15 @@ resource "aws_ecs_task_definition" "phlat_td" {
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
   tags                     = local.common_tags
-  container_definitions = jsonencode([
+  container_definitions    = jsonencode([
     {
-      essential = true
-      name      = "${var.application}-${var.target_env}-definition"
+      essential    = true
+      name = "${var.application}-${var.target_env}-definition"
       #change to variable to env. for GH Actions
-      image       = "${data.aws_caller_identity.current.account_id}.dkr.ecr.ca-central-1.amazonaws.com/phlat:latest"
-      cpu         = var.fargate_cpu
-      memory      = var.fargate_memory
-      networkMode = "awsvpc"
+      image        = "${data.aws_caller_identity.current.account_id}.dkr.ecr.ca-central-1.amazonaws.com/phlat:latest"
+      cpu          = var.fargate_cpu
+      memory       = var.fargate_memory
+      networkMode  = "awsvpc"
       portMappings = [
         {
           protocol      = "tcp"
@@ -39,28 +39,53 @@ resource "aws_ecs_task_definition" "phlat_td" {
         }
       ]
       secrets = [
-        { name = "DB_USERNAME",
-        valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:username::" },
-        { name = "DB_PASSWORD"
-        valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:password::" },
-        { name = "DB_HOST"
-        valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:host::" },
-        { name = "DB_PORT"
-        valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:port::" },
-        { name = "DB_DATABASE"
-        valueFrom = aws_secretsmanager_secret_version.phlat_db_database.arn },
-        { name = "KEYCLOAK_PROVIDER_URL"
-        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_provider_url.arn },
-        { name = "KEYCLOAK_CLIENT_ID"
-        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_id.arn },
-        { name = "KEYCLOAK_CLIENT_SECRET"
-        valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_secret.arn },
-        { name = "PLR_API_HOST"
-        valueFrom = aws_secretsmanager_secret_version.phlat_plr_api_host.arn },
+        {
+          name      = "DB_USERNAME",
+          valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:username::"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:password::"
+        },
+        {
+          name      = "DB_HOST"
+          valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:host::"
+        },
+        {
+          name      = "DB_PORT"
+          valueFrom = "${aws_secretsmanager_secret_version.rds_credentials.arn}:port::"
+        },
+        {
+          name      = "DB_DATABASE"
+          valueFrom = aws_secretsmanager_secret_version.phlat_db_database.arn
+        },
+        {
+          name      = "KEYCLOAK_PROVIDER_URL"
+          valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_provider_url.arn
+        },
+        {
+          name      = "KEYCLOAK_CLIENT_ID"
+          valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_id.arn
+        },
+        {
+          name      = "KEYCLOAK_CLIENT_SECRET"
+          valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_secret.arn
+        },
+        {
+          name      = "KEYCLOAK_CLIENT_ID_WEB"
+          valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_id_web.arn
+        },
+
+        {
+          name      = "PLR_API_HOST"
+          valueFrom = aws_secretsmanager_secret_version.phlat_plr_api_host.arn
+        },
       ]
       environment = [
-        { name = "TZ"
-        value = var.timezone },
+        {
+          name  = "TZ"
+          value = var.timezone
+        },
       ]
       #change awslog group
       logConfiguration = {
