@@ -75,11 +75,6 @@ resource "aws_ecs_task_definition" "phlat_td" {
           name      = "KEYCLOAK_CLIENT_ID_WEB"
           valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_id_web.arn
         },
-
-        {
-          name      = "KEYCLOAK_CLIENT_ID_WEB_SECRET"
-          valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_id_web_secret.arn
-        },
         {
           name      = "PLR_API_HOST"
           valueFrom = aws_secretsmanager_secret_version.phlat_plr_api_host.arn
