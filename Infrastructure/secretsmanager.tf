@@ -18,6 +18,10 @@ resource "aws_secretsmanager_secret" "phlat_keycloak_client_secret" {
   name = "${var.application}_keycloak_client_secret"
 }
 
+resource "aws_secretsmanager_secret" "phlat_keycloak_client_id_web" {
+  name = "${var.application}_keycloak_client_id_web"
+}
+
 resource "aws_secretsmanager_secret" "phlat_plr_api_host" {
   name = "${var.application}_plr_api_host"
 }
@@ -39,6 +43,11 @@ resource "aws_secretsmanager_secret_version" "phlat_keycloak_client_id" {
 
 resource "aws_secretsmanager_secret_version" "phlat_keycloak_client_secret" {
   secret_id     = aws_secretsmanager_secret.phlat_keycloak_client_secret.id
+  secret_string = "changeme"
+}
+
+resource "aws_secretsmanager_secret_version" "phlat_keycloak_client_id_web" {
+  secret_id     = aws_secretsmanager_secret.phlat_keycloak_client_id_web.id
   secret_string = "changeme"
 }
 
