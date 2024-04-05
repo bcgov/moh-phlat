@@ -1,5 +1,7 @@
-# to activate this file start the application with system property -Dspring.profiles.active=local
-# or use env property SPRING_PROFILES_ACTIVE=local
+# To activate this file, begin the application with the system property -Dspring.profiles.active=local.
+# Alternatively, utilize the environment property SPRING_PROFILES_ACTIVE=local.
+# If the local profile is active and a property is present in both YAML files, the one specified here will override the other.
+# Any property not present here will default to the application.yml file if utilized by the application.
 server:
   port: 8088
 
@@ -14,8 +16,7 @@ spring:
     compose:
       # other values are none, start-only,
       lifecycle-management: start_and_stop
-
-
+      file: "./backend/app/compose.yaml"
 
   jpa:
     # default is false
@@ -43,28 +44,4 @@ spring:
       # To be used only for local dev.
       mode: never
 
-  servlet:
-    multipart:
-      # total request size limit
-      max-request-size: 25MB
-      # upload file size limit
-      max-file-size: 24MB
-      # above this size, tomcat will save it to temp dir.
-      file-size-threshold: 25MB
-      enabled: true
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://common-logon-test.hlth.gov.bc.ca/auth/realms/moh_applications
-          jwt-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
-
 # ----------------- spring related configuration ends ----------------------------
-
-
-jwt:
-  auth:
-    converter:
-      resource-id: PHLAT-WEB
-      principle-attribute: preferred_username

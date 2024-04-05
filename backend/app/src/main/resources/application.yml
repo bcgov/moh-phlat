@@ -1,4 +1,4 @@
-# this is default profile that is active for all environments. Any changes in properties values based on env should your env variables
+# this is default profile that is active for all environments.
 server:
   port: 8088
 
@@ -47,7 +47,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://common-logon-test.hlth.gov.bc.ca/auth/realms/moh_applications
+          issuer-uri: ${KEYCLOAK_PROVIDER_URL}
           jwt-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 # -------------- spring related config ends ---------------------------
@@ -55,7 +55,7 @@ spring:
 jwt:
   auth:
     converter:
-      resource-id: PHLAT-WEB
+      resource-id: ${KEYCLOAK_CLIENT_ID_WEB}
       principle-attribute: preferred_username
 
 # application specific configuration
