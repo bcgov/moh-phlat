@@ -1,0 +1,67 @@
+# Configuration used by tests if needed.
+# Since tests run in docker where we are not providing any env variables, we can hard code them.
+
+server:
+  port: 8088
+
+# -------------- spring related config starts ---------------------------
+
+spring:
+
+  jpa:
+    # default is false
+    generate-ddl: false
+    hibernate:
+      # default is none
+      ddl-auto: none
+    # default is false
+    show-sql: false
+    # default is false
+    defer-datasource-initialization: false
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      # default is 30000, 30 secs
+      connectionTimeout: 20000
+      #default is 10
+      maximumPoolSize: 5
+
+  sql:
+    init:
+      # default is always for in-memory db. Other value is embedded. Causes auto execution of db scripts.
+      # To be used only for local dev.
+      mode: never
+
+  servlet:
+    multipart:
+      # total request size limit
+      max-request-size: 25MB
+      # upload file size limit
+      max-file-size: 24MB
+      # above this size, tomcat will save it to temp dir.
+      file-size-threshold: 25MB
+      enabled: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # dummy values for running tests and avoid configuration error
+          issuer-uri: dummy
+          jwt-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+# -------------- spring related config ends ---------------------------
+
+jwt:
+  auth:
+    converter:
+      # dummy values for running tests and avoid configuration error
+      resource-id: dummy
+      principle-attribute: preferred_username
+
+# application specific configuration
+columns-display-preference:
+  allowed-viewNames: file-task-management,process-data-management,source-data-management,status-codes-management
