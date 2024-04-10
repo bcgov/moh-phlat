@@ -14,7 +14,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['handle-record-save'],
+  emits: ['handle-record-save', 'cancel-filter-data'],
   data() {
     return {
       loading: this.isLoading,
@@ -30,6 +30,10 @@ export default {
           id: this.idToEdit,
         });
       }
+    },
+    cancelFilterData() {
+      // (this.selectedData = this.preselectedData),
+      this.$emit('cancel-filter-data');
     },
     checkForm: function (e) {
       e.preventDefault();
@@ -65,20 +69,25 @@ export default {
             :label="key"
           ></v-text-field>
         </v-col>
-        <v-card-actions class="justify-center">
-          <v-btn
-            :disabled="loading"
-            :loading="loading"
-            block
-            class="text-none mb-4 text-primary"
-            color="indigo-darken-3"
-            size="x-large"
-            variant="outlined"
-            type="submit"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
+        <v-btn
+          :disabled="loading"
+          :loading="loading"
+          block
+          class="bg-primary"
+          size="x-large"
+          type="submit"
+        >
+          Save
+        </v-btn>
+        <v-btn
+          data-test="cancel-btn"
+          class="mt-3 text-primary"
+          size="x-large"
+          block
+          variant="outlined"
+          @click="cancelFilterData"
+          >Cancel</v-btn
+        >
       </v-form>
     </v-card-text>
   </v-card>
