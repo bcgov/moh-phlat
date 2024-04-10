@@ -33,6 +33,9 @@ spring:
       # To be used only for local dev.
       mode: never
 
+  liquibase:
+    change-log: db/changlog/changelog.yml
+
   servlet:
     multipart:
       # total request size limit
@@ -61,3 +64,8 @@ jwt:
 # application specific configuration
 columns-display-preference:
   allowed-viewNames: file-task-management,process-data-management,source-data-management,status-codes-management
+
+
+logging:
+  level:
+    liquibase: INFO

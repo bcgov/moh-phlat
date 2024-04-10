@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: 1_initial_ddl_script.yml
+      relativeToChangelogFile: true
+
