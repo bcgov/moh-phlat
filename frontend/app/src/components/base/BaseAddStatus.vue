@@ -14,7 +14,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['handle-record-add'],
+  emits: ['handle-record-add', 'cancel-filter-data'],
   data() {
     return {
       loading: this.isLoading,
@@ -25,6 +25,10 @@ export default {
   methods: {
     handleSave() {
       this.$emit('handle-record-add', this.selectedItemToAdd);
+    },
+    cancelFilterData() {
+      // (this.selectedData = this.preselectedData),
+      this.$emit('cancel-filter-data');
     },
   },
 };
@@ -44,7 +48,6 @@ export default {
           density="compact"
           solid
           variant="outlined"
-          class="mr-2 pl-2"
         ></v-select>
         <v-text-field
           v-if="index !== 'type'"
@@ -55,20 +58,25 @@ export default {
           :label="index"
         ></v-text-field>
       </v-col>
-      <v-card-actions class="justify-center">
-        <v-btn
-          :disabled="loading"
-          :loading="loading"
-          block
-          class="text-none mb-4 text-primary"
-          color="indigo-darken-3"
-          size="x-large"
-          variant="outlined"
-          @click="handleSave"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
+      <v-btn
+        :disabled="loading"
+        :loading="loading"
+        block
+        class="bg-primary"
+        size="x-large"
+        @click="handleSave"
+      >
+        Save
+      </v-btn>
+      <v-btn
+        data-test="cancel-btn"
+        class="mt-3 text-primary"
+        size="x-large"
+        block
+        variant="outlined"
+        @click="cancelFilterData"
+        >Cancel</v-btn
+      >
     </v-card-text>
   </v-card>
 </template>
