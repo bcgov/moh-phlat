@@ -23,4 +23,4 @@ jobs:
       - name: ZAP API Scan
         uses: zaproxy/action-api-scan@v0.7.0
         with:
-          target: ${{ vars.VITE_BACKEND_API_URL }}/v3/api-docs
+          target: ${{ vars.VITE_BACKEND_API_URL }}v3/api-docs
