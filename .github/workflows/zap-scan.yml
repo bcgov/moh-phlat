@@ -6,8 +6,15 @@ on:
         description: 'Environment to ZAP Scan'
         type: environment
         required: true
-
+      api-token:
+        description: 'JWT Token for ZAP API scan'
+        required: true
+        
 concurrency: ${{ github.event.inputs.environment }}
+
+env:
+  ZAP_AUTH_HEADER: 'Bearer'
+  ZAP_AUTH_HEADER_VALUE: ${{ inputs.api-token }}
 
 jobs:
   zap_scan:
