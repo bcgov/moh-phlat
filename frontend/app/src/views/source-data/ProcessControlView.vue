@@ -157,6 +157,15 @@ export default {
       this.populateStatus();
       this.loading = false;
     },
+    havingIssueOrWarning(data) {
+      if (!Array.isArray(data)) {
+        console.error('data is not an array:', data);
+        return false;
+      }
+      return data.some(
+        (item) => item.messageType === 'WARNING' || item.messageType === 'ERROR'
+      );
+    },
     async populateControlTable() {
       await this.fetchGetControlTableById(this.id);
       const controlTableData = this.singleControlTableData;
@@ -499,7 +508,10 @@ export default {
           <BaseChips :messages="parseErrorMsg(item.raw.errorMsg)" />
         </template>
         <template #item.actions="{ item }">
-          <v-tooltip location="bottom">
+          <v-tooltip
+            v-if="havingIssueOrWarning(parseErrorMsg(item.raw.errorMsg))"
+            location="bottom"
+          >
             <template #activator="{ props }">
               <v-icon
                 v-bind="props"
