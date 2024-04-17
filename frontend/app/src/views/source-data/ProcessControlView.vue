@@ -1,7 +1,6 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
-import BaseMessageDialog from '../../components/base/BaseMessageDialog.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
@@ -9,12 +8,13 @@ import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 import { ViewNames } from '~/utils/constants';
+import BaseChips from '../../components/base/BaseChips.vue';
 
 export default {
   components: {
     BaseFilter,
     BaseEditRecord,
-    BaseMessageDialog,
+    BaseChips,
   },
   props: {
     id: {
@@ -30,8 +30,6 @@ export default {
     searchByStatus: null,
     dialogDelete: false,
     showColumnsDialog: false,
-    showMessageDialog: false,
-    showMessageDialogData: {},
     deleteSingleItem: {},
     filterData: [],
     filterIgnore: [
@@ -158,6 +156,15 @@ export default {
       this.populateInputSource();
       this.populateStatus();
       this.loading = false;
+    },
+    havingIssueOrWarning(data) {
+      if (!Array.isArray(data)) {
+        console.error('data is not an array:', data);
+        return false;
+      }
+      return data.some(
+        (item) => item.messageType === 'WARNING' || item.messageType === 'ERROR'
+      );
     },
     async populateControlTable() {
       await this.fetchGetControlTableById(this.id);
@@ -340,27 +347,14 @@ export default {
         });
       }
     },
-    handleMessageDialog(type, msgObject) {
-      this.showMessageDialog = true;
-      this.showMessageDialogData = {
-        type,
-        messages: msgObject,
-      };
-    },
-    closeMessageDialog() {
-      this.showMessageDialog = false;
-      this.showMessageDialogData = {};
-    },
-    getChipProps(type) {
-      switch (type) {
-        case 'error':
-          return { color: 'red', icon: 'mdi-close-circle' };
-        case 'warning':
-          return { color: 'yellow', icon: 'mdi-alert' };
-        case 'info':
-          return { color: 'success', icon: 'mdi-message-alert' };
-        default:
-          return { color: 'primary', icon: 'mdi-information' };
+    parseErrorMsg(errorMsg) {
+      if (!errorMsg) {
+        return [];
+      }
+      try {
+        return JSON.parse(errorMsg);
+      } catch (error) {
+        return [];
       }
     },
   },
@@ -510,23 +504,14 @@ export default {
             </div>
           </div>
         </template>
-
         <template #item.errorMsg="{ item }">
-          <v-chip
-            v-for="(messages, type) in JSON.parse(item.raw.errorMsg)"
-            :key="type"
-            :color="getChipProps(type).color"
-            :prepend-icon="getChipProps(type).icon"
-            class="ma-2"
-            variant="flat"
-            @click="handleMessageDialog(type, messages)"
-          >
-            {{ messages.length }} {{ type }}(s)
-          </v-chip>
+          <BaseChips :messages="parseErrorMsg(item.raw.errorMsg)" />
         </template>
-
         <template #item.actions="{ item }">
-          <v-tooltip location="bottom">
+          <v-tooltip
+            v-if="havingIssueOrWarning(parseErrorMsg(item.raw.errorMsg))"
+            location="bottom"
+          >
             <template #activator="{ props }">
               <v-icon
                 v-bind="props"
@@ -567,16 +552,6 @@ export default {
           @handle-record-save="handleRecordSave"
           @cancel-filter-data="dialog = false"
         />
-      </v-dialog>
-
-      <v-dialog v-model="showMessageDialog" width="700">
-        <BaseMessageDialog
-          :type="showMessageDialogData.type"
-          :messages="showMessageDialogData.messages"
-          @close-dialog="closeMessageDialog"
-        >
-          <template #filter-title><span> Error Messages </span></template>
-        </BaseMessageDialog>
       </v-dialog>
     </div>
   </div>
