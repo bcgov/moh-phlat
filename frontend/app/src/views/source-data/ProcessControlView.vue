@@ -159,7 +159,6 @@ export default {
     },
     havingIssueOrWarning(data) {
       if (!Array.isArray(data)) {
-        console.error('data is not an array:', data);
         return false;
       }
       return data.some(
