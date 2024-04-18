@@ -21,7 +21,7 @@ on:
 concurrency: ${{ github.event.inputs.environment }}
 
 env:
-  ZAP_AUTH_HEADER: 'Bearer'
+  ZAP_AUTH_HEADER: 'Authorization'
   ZAP_AUTH_HEADER_VALUE: ${{ inputs.api-token }}
 
 jobs:
