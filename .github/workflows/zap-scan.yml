@@ -6,6 +6,14 @@ on:
         description: 'Environment to ZAP Scan'
         type: environment
         required: true
+      run_fe_scan:
+        description: 'Execute the scan for the frontend'
+        type: boolean
+        required: true
+      run_api_scan:
+        description: 'Execute the scan for the API'
+        type: boolean
+        required: true
       api-token:
         description: 'JWT Token for ZAP API scan'
         required: true
@@ -13,21 +21,29 @@ on:
 concurrency: ${{ github.event.inputs.environment }}
 
 env:
-  ZAP_AUTH_HEADER: 'Bearer'
+  ZAP_AUTH_HEADER: 'Authorization'
   ZAP_AUTH_HEADER_VALUE: ${{ inputs.api-token }}
 
 jobs:
-  zap_scan:
-    name: Run ZAP Scan
+  zap_scan_fe:
+    name: Run Frontend ZAP Scan
+    if: inputs.run_fe_scan == true
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: ZAP Baseline Scan
+      - name: ZAP Frontend Scan
         uses: zaproxy/action-baseline@v0.9.0
         with:
           target: ${{ vars.APPLICATION_URL }}
           artifact_name: zap_fe_scan
+  zap_scan_api:
+    name: Run API ZAP Scan
+    if: inputs.run_api_scan == true
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
       - name: ZAP API Scan
         uses: zaproxy/action-api-scan@v0.7.0
         with:
