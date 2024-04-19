@@ -14,7 +14,7 @@ spring:
 
   docker:
     compose:
-      # other values are none, start-only,
+      # possible valus are none, start-only, start_and_stop
       lifecycle-management: start_and_stop
       file: "./backend/app/compose.yaml"
 
