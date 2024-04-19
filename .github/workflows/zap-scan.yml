@@ -35,7 +35,7 @@ jobs:
       - name: ZAP Frontend Scan
         uses: zaproxy/action-baseline@v0.9.0
         with:
-          target: ${{ vars.APPLICATION_URL }}
+          target: ${{ vars.APPLICATION_URL }}/app/index.html
           artifact_name: zap_fe_scan
   zap_scan_api:
     name: Run API ZAP Scan
