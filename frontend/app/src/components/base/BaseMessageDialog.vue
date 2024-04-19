@@ -2,16 +2,24 @@
   <v-card>
     <v-card-title class="text-h5 pb-0">{{ type }}(s)</v-card-title>
     <hr />
-    <v-list
-      :key="index + `ITEM`"
-      :items="localMessages"
-      class="no-top-margin"
-    ></v-list>
-
+    <v-list lines="two">
+      <v-list-item
+        v-for="{ messageId, messageDetails, messageType } in localMessages"
+        :key="messageId"
+        :subtitle="messageType + ' ID #' + messageId"
+        :title="messageDetails"
+      ></v-list-item>
+    </v-list>
     <v-card-actions>
-      <v-spacer></v-spacer>
-
-      <v-btn @click="closeDialauge">Close</v-btn>
+      <v-btn
+        data-test="cancel-btn"
+        class="mt-3 text-primary"
+        size="x-large"
+        block
+        variant="outlined"
+        @click="closeDialauge"
+        >Close</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>
