@@ -472,6 +472,7 @@ export default {
           :ignore-to-edit="ignoreToEdit"
           :is-loading="loading"
           @handle-record-save="handleRecordSave"
+          @cancel-filter-data="dialog = false"
         />
       </v-dialog>
 
@@ -480,6 +481,7 @@ export default {
           :item-to-add="{ code: '', description: '', type: 'USER' }"
           :is-loading="loading"
           @handle-record-add="handleRecordAdd"
+          @cancel-filter-data="dialogNewItem = false"
         />
       </v-dialog>
     </div>

@@ -134,14 +134,18 @@ export default {
       </v-data-table>
       <v-btn
         data-test="save-btn"
-        class="bg-primary mt-3"
+        block
+        class="bg-primary"
+        size="x-large"
         @click="savingFilterData"
       >
         {{ inputSaveButtonText }}
       </v-btn>
       <v-btn
         data-test="cancel-btn"
-        class="mt-3 ml-3 text-primary"
+        class="mt-3 text-primary"
+        size="x-large"
+        block
         variant="outlined"
         @click="cancelFilterData"
         >Cancel</v-btn
