@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.moh.phlat.backend.esb.boundary.PlrEsbBoundary;
+import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.MessageDetail;
 import com.moh.phlat.backend.model.ProcessData;
@@ -35,6 +37,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Autowired
 	private ProcessDataRepository processDataRepository;
+	
+	@Autowired
+	private PlrEsbBoundary esbBoundary;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -213,18 +218,22 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
-
-			for (ProcessData s : processDataList) {
-				// skip record marked as DO_NOT_LOAD and only VALID records
-				if (!s.getDoNotLoad().equals("Y") && s.getRowstatusCode().equals("VALID")) {
-					logger.info("loading process data with id: " + s.getId() + " to PLR.");
-
-					// TO-DO call to PLR via ESB here
-					// loadPlrViaEsb(control, s);
+			
+			if (esbBoundary.isReadyToConnect()) {
+				for (ProcessData s : processDataList) {
+					// skip record marked as DO_NOT_LOAD and only VALID records
+					if (!s.getDoNotLoad().equals("Y") && s.getRowstatusCode().equals("VALID")) {
+						logger.info("loading process data with id: " + s.getId() + " to PLR.");
+	
+						MaintainFacilityResponse result = esbBoundary.loadPlrViaEsb(control, s);
+					}
 				}
+				setControlStatus(control.getId(), "PLR_LOAD_COMPLETED", authenticatedUserId);
+				logger.info("PLR_LOAD COMPLETED");
+			} else {
+				setControlStatus(control.getId(), "PLR_LOAD_FAILED_TO_START", authenticatedUserId);
+				logger.error("PLR_LOAD FAILED TO START");
 			}
-			setControlStatus(control.getId(), "PLR_LOAD_COMPLETED", authenticatedUserId);
-			logger.info("PLR_LOAD COMPLETED");
 		}
 	}
 
