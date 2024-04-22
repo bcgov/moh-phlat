@@ -43,6 +43,11 @@ spring:
       file-size-threshold: 25MB
       enabled: true
 
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+
+
   security:
     oauth2:
       resourceserver:
@@ -58,6 +63,9 @@ jwt:
       resource-id: ${KEYCLOAK_CLIENT_ID_WEB}
       principle-attribute: preferred_username
 
+
+
 # application specific configuration
 columns-display-preference:
   allowed-viewNames: file-task-management,process-data-management,source-data-management,status-codes-management
+
