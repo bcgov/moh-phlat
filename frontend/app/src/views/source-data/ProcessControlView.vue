@@ -7,7 +7,7 @@ import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { ViewNames } from '~/utils/constants';
+import { ViewNames, StatusCode } from '~/utils/constants';
 import BaseChips from '../../components/base/BaseChips.vue';
 
 export default {
@@ -94,6 +94,7 @@ export default {
       );
       return headers;
     },
+    StatusCode: () => StatusCode,
     BASE_HEADERS() {
       let headers = [...this.headers];
 
@@ -156,6 +157,29 @@ export default {
       this.populateInputSource();
       this.populateStatus();
       this.loading = false;
+    },
+    FETCH_STATUS_CODES_AVAILABLE_TO_SWITCH(thiseditStatusNewItem) {
+      switch (thiseditStatusNewItem) {
+        case StatusCode.ON_HOLD:
+          return [StatusCode.DO_NOT_LOAD, StatusCode.INITIAL];
+        case StatusCode.DO_NOT_LOAD:
+          return [StatusCode.ON_HOLD, StatusCode.INITIAL];
+        case StatusCode.VALID:
+          return [StatusCode.DO_NOT_LOAD, StatusCode.ON_HOLD];
+        case StatusCode.INVALID:
+          return [StatusCode.DO_NOT_LOAD, StatusCode.ON_HOLD];
+        case StatusCode.WARNING:
+          return [
+            StatusCode.VALID,
+            StatusCode.DO_NOT_LOAD,
+            StatusCode.ON_HOLD,
+            StatusCode.POTENTIAL_DUPLICATE,
+          ];
+        case StatusCode.POTENTIAL_DUPLICATE:
+          return [StatusCode.VALID, StatusCode.DO_NOT_LOAD];
+        default:
+          return [];
+      }
     },
     havingIssueOrWarning(data) {
       if (!Array.isArray(data)) {
@@ -452,7 +476,11 @@ export default {
             >
               <v-select
                 v-model="editStatusNewItem"
-                :items="statusCodes"
+                :items="
+                  this.FETCH_STATUS_CODES_AVAILABLE_TO_SWITCH(
+                    item.raw.rowstatusCode
+                  )
+                "
                 label="Status"
                 density="compact"
                 solid
@@ -484,7 +512,12 @@ export default {
                 {{ item.raw.rowstatusCode }}
               </span>
               <v-tooltip
-                v-if="isHovering === item.raw.id"
+                v-if="
+                  isHovering === item.raw.id &&
+                  this.FETCH_STATUS_CODES_AVAILABLE_TO_SWITCH(
+                    item.raw.rowstatusCode
+                  ).length
+                "
                 location="right"
                 :open-on-hover="isHovering === item.raw.id"
               >
