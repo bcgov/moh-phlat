@@ -75,7 +75,7 @@ export const RunTypes = Object.freeze({
 });
 
 /** Status Codes */
-export const StatusCode = Object.freeze({
+export const RowStatusCode = Object.freeze({
   ON_HOLD: 'ON_HOLD',
   INITIAL: 'INITIAL',
   WARNING: 'WARNING',

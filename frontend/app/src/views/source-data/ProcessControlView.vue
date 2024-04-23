@@ -7,7 +7,7 @@ import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { ViewNames, StatusCode } from '~/utils/constants';
+import { ViewNames, RowStatusCode } from '~/utils/constants';
 import BaseChips from '../../components/base/BaseChips.vue';
 
 export default {
@@ -94,7 +94,7 @@ export default {
       );
       return headers;
     },
-    StatusCode: () => StatusCode,
+    RowStatusCode: () => RowStatusCode,
     BASE_HEADERS() {
       let headers = [...this.headers];
 
@@ -158,25 +158,25 @@ export default {
       this.populateStatus();
       this.loading = false;
     },
-    FETCH_STATUS_CODES_AVAILABLE_TO_SWITCH(thiseditStatusNewItem) {
+    fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
       switch (thiseditStatusNewItem) {
-        case StatusCode.ON_HOLD:
-          return [StatusCode.DO_NOT_LOAD, StatusCode.INITIAL];
-        case StatusCode.DO_NOT_LOAD:
-          return [StatusCode.ON_HOLD, StatusCode.INITIAL];
-        case StatusCode.VALID:
-          return [StatusCode.DO_NOT_LOAD, StatusCode.ON_HOLD];
-        case StatusCode.INVALID:
-          return [StatusCode.DO_NOT_LOAD, StatusCode.ON_HOLD];
-        case StatusCode.WARNING:
+        case RowStatusCode.ON_HOLD:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.INITIAL];
+        case RowStatusCode.DO_NOT_LOAD:
+          return [RowStatusCode.ON_HOLD, RowStatusCode.INITIAL];
+        case RowStatusCode.VALID:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.ON_HOLD];
+        case RowStatusCode.INVALID:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.ON_HOLD];
+        case RowStatusCode.WARNING:
           return [
-            StatusCode.VALID,
-            StatusCode.DO_NOT_LOAD,
-            StatusCode.ON_HOLD,
-            StatusCode.POTENTIAL_DUPLICATE,
+            RowStatusCode.VALID,
+            RowStatusCode.DO_NOT_LOAD,
+            RowStatusCode.ON_HOLD,
+            RowStatusCode.POTENTIAL_DUPLICATE,
           ];
-        case StatusCode.POTENTIAL_DUPLICATE:
-          return [StatusCode.VALID, StatusCode.DO_NOT_LOAD];
+        case RowStatusCode.POTENTIAL_DUPLICATE:
+          return [RowStatusCode.VALID, RowStatusCode.DO_NOT_LOAD];
         default:
           return [];
       }
@@ -477,7 +477,7 @@ export default {
               <v-select
                 v-model="editStatusNewItem"
                 :items="
-                  this.FETCH_STATUS_CODES_AVAILABLE_TO_SWITCH(
+                  this.fetchRowStatusCodesAvailableToSwitch(
                     item.raw.rowstatusCode
                   )
                 "
@@ -514,7 +514,7 @@ export default {
               <v-tooltip
                 v-if="
                   isHovering === item.raw.id &&
-                  this.FETCH_STATUS_CODES_AVAILABLE_TO_SWITCH(
+                  this.fetchRowStatusCodesAvailableToSwitch(
                     item.raw.rowstatusCode
                   ).length
                 "
