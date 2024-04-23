@@ -477,9 +477,7 @@ export default {
               <v-select
                 v-model="editStatusNewItem"
                 :items="
-                  this.fetchRowStatusCodesAvailableToSwitch(
-                    item.raw.rowstatusCode
-                  )
+                  fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
                 "
                 label="Status"
                 density="compact"
@@ -514,9 +512,8 @@ export default {
               <v-tooltip
                 v-if="
                   isHovering === item.raw.id &&
-                  this.fetchRowStatusCodesAvailableToSwitch(
-                    item.raw.rowstatusCode
-                  ).length
+                  fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
+                    .length
                 "
                 location="right"
                 :open-on-hover="isHovering === item.raw.id"

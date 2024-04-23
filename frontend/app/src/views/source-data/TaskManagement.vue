@@ -371,9 +371,10 @@ export default {
           </slot>
           <slot
             v-if="
-              ![RowStatusCode.UPLOADINPROGRESS, RowStatusCode.UPLOADERROR].includes(
-                item.raw.statusCode
-              )
+              ![
+                RowStatusCode.UPLOADINPROGRESS,
+                RowStatusCode.UPLOADERROR,
+              ].includes(item.raw.statusCode)
             "
           >
             <!-- View SRC Data -->
