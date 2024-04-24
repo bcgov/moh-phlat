@@ -6,9 +6,10 @@ import { useAuthStore } from '~/store/auth';
 import {
   IdentityProviders,
   RunTypes,
-  StatusCode,
+  RowStatusCode,
   PerformActions,
   ViewNames,
+  ControlStatusCode,
 } from '~/utils/constants';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 export default {
@@ -79,7 +80,8 @@ export default {
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
     IDP: () => IdentityProviders,
     RunTypes: () => RunTypes,
-    StatusCode: () => StatusCode,
+    RowStatusCode: () => RowStatusCode,
+    ControlStatusCode: () => ControlStatusCode,
     PerformActions: () => PerformActions,
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -343,9 +345,9 @@ export default {
           <slot
             v-if="
               [
-                StatusCode.UPLOADINPROGRESS,
-                StatusCode.PREVALIDATIONINPROGRESS,
-                StatusCode.PLRLOADINPROGRESS,
+                ControlStatusCode.UPLOADINPROGRESS,
+                ControlStatusCode.PREVALIDATIONINPROGRESS,
+                RowStatusCode.PLRLOADINPROGRESS,
               ].includes(item.raw.statusCode)
             "
           >
@@ -359,7 +361,7 @@ export default {
             </v-tooltip>
           </slot>
           <!-- Error -->
-          <slot v-if="item.raw.statusCode === StatusCode.UPLOADERROR">
+          <slot v-if="item.raw.statusCode === ControlStatusCode.UPLOADERROR">
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon v-bind="props" size="small" class="me-2" label="WAIT">
@@ -371,9 +373,10 @@ export default {
           </slot>
           <slot
             v-if="
-              ![StatusCode.UPLOADINPROGRESS, StatusCode.UPLOADERROR].includes(
-                item.raw.statusCode
-              )
+              ![
+                ControlStatusCode.UPLOADINPROGRESS,
+                ControlStatusCode.UPLOADERROR,
+              ].includes(item.raw.statusCode)
             "
           >
             <!-- View SRC Data -->
@@ -395,8 +398,8 @@ export default {
             <v-tooltip
               v-if="
                 ![
-                  StatusCode.PREVALIDATIONINPROGRESS,
-                  StatusCode.PLRLOADINPROGRESS,
+                  ControlStatusCode.PREVALIDATIONINPROGRESS,
+                  RowStatusCode.PLRLOADINPROGRESS,
                 ].includes(item.raw.statusCode)
               "
               location="bottom"
@@ -417,7 +420,7 @@ export default {
             <!-- Upload to PLR -->
             <v-tooltip
               v-if="
-                item.raw.statusCode === StatusCode.APPROVED &&
+                item.raw.statusCode === ControlStatusCode.APPROVED &&
                 $permissions.canUserPerform(
                   PerformActions.LOADTOPLR,
                   isRegAdmin,
@@ -442,7 +445,8 @@ export default {
             <!-- Approve -->
             <v-tooltip
               v-if="
-                item.raw.statusCode === StatusCode.PREVALIDATIONCOMPLETED &&
+                item.raw.statusCode ===
+                  ControlStatusCode.PREVALIDATIONCOMPLETED &&
                 $permissions.canUserPerform(
                   PerformActions.APPROVECONTROLTABLE,
                   isRegAdmin,
