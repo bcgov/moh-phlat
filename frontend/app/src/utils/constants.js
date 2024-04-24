@@ -74,20 +74,25 @@ export const RunTypes = Object.freeze({
   loadTypeWPIXref: 'Wk Location Practitioner Identifier Cross Reference',
 });
 
-/** Status Codes */
-export const RowStatusCode = Object.freeze({
-  ON_HOLD: 'ON_HOLD',
-  INITIAL: 'INITIAL',
-  WARNING: 'WARNING',
-  POTENTIAL_DUPLICATE: 'POTENTIAL_DUPLICATE',
+/** Status Codes for Control (File Upload) */
+export const ControlStatusCode = Object.freeze({
   UPLOADINPROGRESS: 'UPLOAD_IN_PROGRESS',
   UPLOADERROR: 'UPLOAD_ERROR',
   PREVALIDATIONCOMPLETED: 'PRE-VALIDATION_COMPLETED',
   PREVALIDATIONINPROGRESS: 'PRE-VALIDATION_IN_PROGRESS',
   APPROVED: 'APPROVED',
   UPLOADCOMPLETED: 'UPLOAD_COMPLETED',
-  LOADERROR: 'LOAD_ERROR',
   COMPLETE: 'COMPLETE',
+});
+
+/** Status Codes for ROWS */
+export const RowStatusCode = Object.freeze({
+  ON_HOLD: 'ON_HOLD',
+  INITIAL: 'INITIAL',
+  WARNING: 'WARNING',
+  POTENTIAL_DUPLICATE: 'POTENTIAL_DUPLICATE',
+  APPROVED: 'APPROVED',
+  LOADERROR: 'LOAD_ERROR',
   INVALID: 'INVALID',
   VALID: 'VALID',
   FACILITYNONSURVIVOR: 'FACILITY_NON_SURVIVOR',
