@@ -1,10 +1,7 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
-import BaseEditStatus from '../../components/base/BaseEditStatus.vue';
-import BaseAddStatus from '../../components/base/BaseAddStatus.vue';
 import { mapActions, mapState } from 'pinia';
 import { useStatusDataStore } from '~/store/statusdata';
-import { useNotificationStore } from '~/store/notification';
 import { useAuthStore } from '~/store/auth';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 import { PerformActions, ViewNames } from '~/utils/constants';
@@ -12,20 +9,13 @@ import { PerformActions, ViewNames } from '~/utils/constants';
 export default {
   components: {
     BaseFilter,
-    BaseEditStatus,
-    BaseAddStatus,
   },
+  props: {},
   data: () => ({
     loading: true,
-    dialogNewItem: false,
-    includeDeleted: false,
-    dialog: false,
-    dialogDelete: false,
-    showColumnsDialog: false,
-    deleteSingleItem: {},
-    editSingleItem: {},
     filterData: [],
     search: null,
+    showColumnsDialog: false,
     filterIgnore: [],
     headers: [
       {
@@ -36,37 +26,16 @@ export default {
       },
       { title: 'Code', key: 'code', removable: true },
       { title: 'Description', key: 'description' },
-      { title: 'Type', key: 'type' },
-      { title: 'Actions', key: 'actions', sortable: false },
-    ],
-    ignoreToEdit: [
-      { key: 'id' },
-      { key: 'isDeleted' },
-      { key: 'createBy' },
-      { key: 'createdAt' },
-      { key: 'updatedAt' },
-      { key: 'updatedBy' },
     ],
     onlyShowColumns: [],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {},
-    defaultItem: {},
-    showDeleted: false,
+    dataItems: [],
   }),
 
   computed: {
-    ...mapState(useStatusDataStore, [
-      'singleStatusData',
-      'allStatusData',
-      'deletedStatusData',
-    ]),
+    ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     PerformActions: () => PerformActions,
-    formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
-    },
     BASE_FILTER_HEADERS() {
       let headers = this.BASE_HEADERS.filter(
         (h) => !this.filterIgnore.some((fd) => fd.key === h.key)
@@ -101,18 +70,12 @@ export default {
       return headers;
     },
     FILTER_DELETED_DATA() {
-      return this.desserts /*.filter(({ isDeleted }) => isDeleted === false)*/;
+      return this.dataItems /*.filter(({ isDeleted }) => isDeleted === false)*/;
     },
   },
 
   watch: {
     dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-    dialogNewItem(val) {
       val || this.close();
     },
   },
@@ -122,31 +85,18 @@ export default {
   },
 
   methods: {
-    ...mapActions(useNotificationStore, ['addNotification']),
-    ...mapActions(useStatusDataStore, [
-      'fetchGetAllStatus',
-      'fetchDeleteStatusById',
-      'fetchUpdateStatus',
-      'fetchAddStatus',
-    ]),
+    ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
       'fetchUserPreference',
     ]),
-    async populateStatusWithDeleted() {
-      this.loading = true;
-      setTimeout(() => {
-        this.populateStatus();
-        this.loading = false;
-      }, 500);
-    },
     async populateStatus() {
       // Get the submissions for this form
       await this.fetchGetAllStatus(this.includeDeleted);
       const tableRows = this.allStatusData.map((s) => {
         return s;
       });
-      this.desserts = tableRows;
+      this.dataItems = tableRows;
     },
     async populateHeaders() {
       // Get the headers from user preferences
@@ -161,10 +111,6 @@ export default {
       this.populateStatus();
       this.loading = false;
     },
-
-    onShowAddItemDialog() {
-      this.dialogNewItem = true;
-    },
     onShowColumnDialog() {
       this.BASE_FILTER_HEADERS.sort(
         (a, b) =>
@@ -174,11 +120,6 @@ export default {
 
       this.showColumnsDialog = true;
     },
-
-    // remove(key) {
-    //   const headersToKeep = this.headers.filter((header) => header.key !== key);
-    //   this.updateFilter(headersToKeep);
-    // },
     async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
       this.filterData = data;
@@ -195,28 +136,6 @@ export default {
           preferences.columns
         ));
     },
-
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    async deleteItem(item) {
-      // If deleted then go ahead
-      this.editedIndex = item.index;
-      this.dialogDelete = true;
-      this.deleteSingleItem = item;
-    },
-    async deleteItemConfirm() {
-      await this.fetchDeleteStatusById(this.deleteSingleItem.key);
-      if (this.deletedStatusData.statusCode === 200) {
-        this.desserts.splice(this.editedIndex, 1);
-      }
-      this.closeDelete();
-      this.deleteSingleItem = {};
-    },
-
     close() {
       this.deleteSingleItem = {};
       this.dialog = false;
@@ -224,74 +143,13 @@ export default {
         this.editedIndex = -1;
       });
     },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.deleteSingleItem = {};
-      this.$nextTick(() => {
-        this.editedIndex = -1;
-      });
-    },
-
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex]);
+        Object.assign(this.dataItems[this.editedIndex]);
       } else {
-        this.desserts.push();
+        this.dataItems.push();
       }
       this.close();
-    },
-
-    async handleRecordAdd(newRecord) {
-      this.loading = true;
-      try {
-        await this.fetchAddStatus(newRecord);
-        const data = this.singleStatusData;
-        if (data.id) {
-          this.desserts = [...this.desserts, data];
-          this.loading = false;
-          this.dialogNewItem = false;
-          this.close();
-        } else {
-          this.loading = false;
-          this.dialogNewItem = false;
-        }
-      } catch (error) {
-        this.loading = false;
-        this.dialogNewItem = false;
-      }
-    },
-    async handleRecordSave(selectedItemToEdit) {
-      this.loading = true;
-      try {
-        await this.fetchUpdateStatus(selectedItemToEdit.id, selectedItemToEdit);
-        // const data = this.updatedInputSourceData;
-
-        // if (data.id) {
-        this.addNotification({
-          text: 'Record successfully updated.',
-          type: 'success',
-        });
-
-        const i = this.desserts.findIndex(
-          (x) => x.id === selectedItemToEdit.id
-        );
-        this.desserts[i] = selectedItemToEdit;
-
-        this.loading = false;
-        this.close();
-        // } else {
-        //   this.addNotification({
-        //     text: data.message || 'Something went wrong.',
-        //     type: 'error',
-        //   });
-        // }
-      } catch (error) {
-        this.addNotification({
-          text: error.message || 'Something went wrong',
-          type: 'error',
-        });
-      }
     },
   },
 };
@@ -303,7 +161,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1>Manage Status Codes</h1>
+        <h1>Status Codes</h1>
       </div>
 
       <!-- search input -->
@@ -316,18 +174,6 @@ export default {
           append-inner-icon="mdi-magnify"
           single-line
         ></v-text-field>
-      </div>
-      <div>
-        <span>
-          <v-checkbox
-            v-model="includeDeleted"
-            @click="populateStatusWithDeleted"
-          >
-            <template #label>
-              <span> Show deleted </span>
-            </template>
-          </v-checkbox>
-        </span>
       </div>
       <div>
         <span>
@@ -346,31 +192,6 @@ export default {
             <span>Manage Columns</span>
           </v-tooltip>
         </span>
-        <span>
-          <v-tooltip
-            v-if="
-              $permissions.canUserPerform(
-                PerformActions.ADDNEWSTATUS,
-                isRegAdmin,
-                isRegUser
-              )
-            "
-            location="bottom"
-          >
-            <template #activator="{ props }">
-              <v-btn
-                class="mx-1"
-                color="primary"
-                v-bind="props"
-                size="x-small"
-                density="default"
-                icon="mdi:mdi-plus"
-                @click="onShowAddItemDialog"
-              />
-            </template>
-            <span>Add new item</span>
-          </v-tooltip>
-        </span>
       </div>
     </div>
 
@@ -381,75 +202,12 @@ export default {
         :loading="loading"
         :headers="HEADERS"
         :items="FILTER_DELETED_DATA"
-        :items-length="desserts.length"
+        :items-length="dataItems.length"
         density="compact"
         :sort-by="[{ key: 'calories', order: 'asc' }]"
         class="submissions-table"
         :search="search"
       >
-        <template #top>
-          <!--<template
-          v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }"
-        >
-          <tr>
-            <template v-for="column in columns" :key="column.key">
-              <td>
-                <span
-                  class="mr-2 cursor-pointer"
-                  @click="() => toggleSort(column)"
-                  >{{ column.title }}</span
-                >
-                <template v-if="isSorted(column)">
-                  <v-icon :icon="getSortIcon(column)"></v-icon>
-                </template>
-                <v-icon
-                  v-if="column.removable"
-                  icon="$close"
-                  @click="() => remove(column.key)"
-                ></v-icon>
-              </td>
-            </template>
-          </tr> -->
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5"
-                >Are you sure you want to delete this item?</v-card-title
-              >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
-                  >Cancel</v-btn
-                >
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="deleteItemConfirm"
-                  >OK</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
-        <template
-          v-if="
-            includeDeleted === false &&
-            $permissions.canUserPerform(
-              PerformActions.ADDEDITSTATUS,
-              isRegAdmin,
-              isRegUser
-            )
-          "
-          #item.actions="{ item }"
-        >
-          <v-icon size="small" class="me-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
-        </template>
-        <!-- <template #no-data>
-          <v-btn color="primary" @click="initialize"> Reset </v-btn>
-        </template> -->
       </v-data-table>
 
       <v-dialog v-model="showColumnsDialog" width="700">
@@ -464,25 +222,6 @@ export default {
         >
           <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
-      </v-dialog>
-
-      <v-dialog v-model="dialog" width="900">
-        <BaseEditStatus
-          :item-to-edit="editedItem.selectable"
-          :ignore-to-edit="ignoreToEdit"
-          :is-loading="loading"
-          @handle-record-save="handleRecordSave"
-          @cancel-filter-data="dialog = false"
-        />
-      </v-dialog>
-
-      <v-dialog v-model="dialogNewItem" width="900">
-        <BaseAddStatus
-          :item-to-add="{ code: '', description: '', type: 'USER' }"
-          :is-loading="loading"
-          @handle-record-add="handleRecordAdd"
-          @cancel-filter-data="dialogNewItem = false"
-        />
       </v-dialog>
     </div>
   </div>

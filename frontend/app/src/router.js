@@ -115,7 +115,7 @@ export default function getRouter(basePath = '/') {
             component: () => import('~/views/setting/ManageStatusCode.vue'),
             meta: {
               accessTo: [RegRoles.REG_ADMIN],
-              breadcrumbTitle: 'Manage Status Code',
+              breadcrumbTitle: 'View Record ROWSTATUS Codes',
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
             },
