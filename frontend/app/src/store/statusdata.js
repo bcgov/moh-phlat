@@ -10,14 +10,6 @@ export const useStatusDataStore = defineStore('statusdata', {
   }),
   getters: {},
   actions: {
-    async fetchGetStatusById(id) {
-      try {
-        const { data } = await statusService.serviceGetStatusById(id);
-        this.singleStatusData = data;
-      } catch (error) {
-        console.log('Something went wrong. (STOSMDJ#2026)', error); // eslint-disable-line no-console
-      }
-    },
     async fetchGetAllStatus(includeDeleted = false) {
       try {
         const { data } = await statusService.serviceGetAllStatus(
