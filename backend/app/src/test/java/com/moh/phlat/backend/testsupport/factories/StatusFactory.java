@@ -9,11 +9,11 @@ public class StatusFactory {
     public static List<Status> createTwoStatuses() {
         List<Status> statusList = new ArrayList<>();
 
-        Status status1 = createStatus(1L, "System", "INITIAL",
+        Status status1 = createStatus(1L, "INITIAL",
                                       "Set status for all records when the record is initially loaded into the phat table"
         );
 
-        Status status2 = createStatus(2L, "UserDefined", "DO_NOT_LOAD",
+        Status status2 = createStatus(2L, "DO_NOT_LOAD",
                                       "Set status if do not load flag is set to y"
         );
         statusList.add(status1);
@@ -22,12 +22,11 @@ public class StatusFactory {
         return statusList;
     }
 
-    private static Status createStatus(Long id, String type, String code, String desc) {
+    private static Status createStatus(Long id, String code, String desc) {
         return Status.builder()
                      .id(id)
                      .code(code)
                      .description(desc)
-                     .type(type)
                      .isDeleted(false)
                      .build();
 
