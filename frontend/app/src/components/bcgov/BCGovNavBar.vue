@@ -78,7 +78,7 @@ export default {
             data-cy="ManageStatusCode"
             :to="{ name: 'ManageStatusCode' }"
           >
-            Manage Status Code
+            View Record ROWSTATUS Codes
           </router-link>
         </li>
       </ul>
