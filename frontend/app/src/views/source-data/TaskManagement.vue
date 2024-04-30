@@ -37,6 +37,14 @@ export default {
       //   key: 'event',
       // },
     ],
+    filterIgnoreColumns: [
+      {
+        key: 'id',
+      },
+      {
+        key: 'actions',
+      },
+    ],
     headers: [
       {
         title: '#',
@@ -89,6 +97,12 @@ export default {
     BASE_FILTER_HEADERS() {
       let headers = this.BASE_HEADERS.filter(
         (h) => !this.filterIgnore.some((fd) => fd.key === h.key)
+      );
+      return headers;
+    },
+    BASE_FILTER_HEADERS_FOR_MANAGE_COLUMNS() {
+      let headers = this.BASE_FILTER_HEADERS.filter(
+        (h) => !this.filterIgnoreColumns.some((fd) => fd.key === h.key)
       );
       return headers;
     },
@@ -479,7 +493,7 @@ export default {
         <BaseFilter
           input-filter-placeholder="Search Columns"
           input-save-button-text="Save"
-          :input-data="BASE_FILTER_HEADERS"
+          :input-data="BASE_FILTER_HEADERS_FOR_MANAGE_COLUMNS"
           :preselected-data="PRESELECTED_DATA"
           :reset-data="RESET_HEADERS"
           @saving-filter-data="updateFilter"
