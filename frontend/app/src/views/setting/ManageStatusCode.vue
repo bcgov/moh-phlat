@@ -18,12 +18,6 @@ export default {
     showColumnsDialog: false,
     filterIgnore: [],
     headers: [
-      {
-        title: '#',
-        align: 'start',
-        sortable: false,
-        key: 'id',
-      },
       { title: 'Code', key: 'code', removable: true },
       { title: 'Description', key: 'description' },
     ],
