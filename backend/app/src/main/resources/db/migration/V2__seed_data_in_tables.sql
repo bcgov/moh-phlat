@@ -1,63 +1,13 @@
--- this file is include only if you need to pre populate the tables in local env.
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','INITIAL','SET STATUS FOR ALL RECORDS WHEN THE RECORD IS INITIALLY LOADED INTO THE PHAT TABLE.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','PHYS_ADDR_MANDATORY','SET STATUS IF PHYS_ADDR1 OR PHYS_ADDR_CITY IS MISSING.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','HDS_NAME_MANDATORY','SET STATUS IF HDS_NAME IS MISSING.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','AD_PHYS_ADDR_INVALID','SET STATUS IF PHYS_ADDR_MAILABILITY_SCORE < 3.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','AD_MAIL_ADDR_INVALID','SET STATUS IF MAIL_ADDR_MAILABILITY_SCORE < 3.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','DATABC_CIVIC_ADDR_INVALID','SET STATUS IF DATABC_SCORE < 96 OR DATABC_PRECISION_POINT < 99.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','OOP_ADDRESS','SET STATUS IF AD_PHYS_ADDR_PROVINCE_CODE <> ‘BC’ OR  AD_PHYS_ADDR_COUNTRY <> ‘CA’.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','DUPLICATE_HIGH_CONF_INTERNAL','SET STATUS IF ???');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','DO_NOT_LOAD','SET STATUS IF DO NOT LOAD FLAG IS SET TO ‘Y’.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','HDS_NON_SURVIVOR','SET STATUS IF INTERNAL_ID <> HDS_SURV_INTERNAL_ID.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','FACILITY_NON_SURVIVOR','SET STATUS IF INTERNAL_ID <> FACILITY_SURV_INTERNAL_ID.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','VALID','SET STATUS IF RECORD HAS BEEN VALIDATED AND RECORD IS READY TO LOAD INTO THE PLR.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','INVALID','SET STATUS IF RECORD REQUIRED THE USER TO DO SOMETHING.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','COMPLETE','SET STATUS IF RECORD HAS BEEN SUCCESSFULLY LOADED INTO THE PLR.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','LOAD_ERROR','SET STATUS IF RECORD LOAD INTO THE PLR WAS UNSUCCESSFUL.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','APPROVED','SET STATUS IF RECORD IS APPROVED TO BE LOADED INTO THE PLR.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','UPLOAD_IN_PROGRESS','UPLOAD IN PROGRESS.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','UPLOAD_COMPLETED','UPLOAD COMPLETED.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','PRE-VALIDATION_IN_PROGRESS','PREVALIDATION IN PROGRESS.');
-
-INSERT INTO STATUS(TYPE,CODE,DESCRIPTION) VALUES
-('SYSTEM','PRE-VALIDATION_COMPLETED','PREVALIDATION COMPLETED.');
+INSERT INTO row_status (code, description) VALUES
+('INITIAL', 'The Source file upload has completed. The PHLAT Tool assigns a starting row status for each record in the PHLAT Process File.'),
+('DO_NOT_LOAD', 'Indicates a user has excluded the record from loading into PLR. This status may be either set by the PHLAT Tool or PHLAT User.'),
+('ON_HOLD', 'Implies deferred loading of the record into PLR. The record is not to be loaded at this time.'),
+('VALID', 'Indicates the PHLAT Tool Source file validation has completed with no errors. The record is ready to be loaded into PLR. This is the only record ROWSTATUS value that allows loading into PLR.'),
+('INVALID', 'Outcomes of record validations indicates one or more errors that require user correction.'),
+('WARNING', 'Outcomes of record validations indicates one or more warnings that require user review to identify any invalid information. The record must be either updated and re-validated or the user may override the record status and manually change the status to either VALID, ON_HOLD, DO_NOT_LOAD, or POTENTIAL_DUPLICATE.'),
+('POTENTIAL_DUPLICATE', 'Outcomes of record validations indicates potential duplicate record and requires user review to verify duplicate entity. If the record has 1 or more potential duplicate validation codes and no associated Error Codes, the ROWSTATUS is set to POTENTIAL_DUPLICATE. Records flagged as Potential Duplicate must have 2 or more potential duplicate records and may have one or more WARNING codes assigned to it. The user may override the record status and manually change the status to either VALID, ON_HOLD, DO_NOT_LOAD.'),
+('COMPLETED', 'The System has completed the data load into PLR. This status can not be manually altered.'),
+('LOAD_ERROR', 'Data load into PLR was not able to complete. The user may override the record status and manually change the status to either ON_HOLD, or DO_NOT_LOAD.');
 
 -- seeded data for table and column info
 -- this table stores the column header name used for uploading and the variable names used for UI Hide and Show feature
