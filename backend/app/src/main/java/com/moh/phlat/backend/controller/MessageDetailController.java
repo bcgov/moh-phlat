@@ -44,7 +44,7 @@ public class MessageDetailController {
 		try {
 			messageDetailRepository.save(messageDetail);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 						.body(new ResponseMessage("error", 500, "Cannot add new message detail.", "[]"));
 
