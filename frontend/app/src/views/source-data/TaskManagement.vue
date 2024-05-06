@@ -347,12 +347,12 @@ export default {
           <v-chip v-if="item.raw.loadTypeIORelationship" variant="elevated">
             {{ RunTypes.loadTypeIORelationship }}
           </v-chip>
-          <v-chip v-if="item.raw.loadTypeWOXref" variant="elevated">
+          <!-- <v-chip v-if="item.raw.loadTypeWOXref" variant="elevated">
             {{ RunTypes.loadTypeWOXref }}
           </v-chip>
           <v-chip v-if="item.raw.loadTypeWPIXref" variant="elevated">
             {{ RunTypes.loadTypeWPIXref }}
-          </v-chip>
+          </v-chip> -->
         </template>
         <template #item.actions="{ item }">
           <!-- Wait -->
