@@ -25,7 +25,7 @@ import com.moh.phlat.backend.response.ResponseMessage;
 @RequestMapping("/messagedetail")
 @CrossOrigin(origins = "*")
 public class MessageDetailController {
-	private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MessageDetailController.class);
 
 	@Autowired
 	private MessageDetailRepository messageDetailRepository;

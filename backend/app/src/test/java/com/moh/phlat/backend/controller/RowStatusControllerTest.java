@@ -2,9 +2,9 @@ package com.moh.phlat.backend.controller;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.moh.phlat.backend.model.Status;
-import com.moh.phlat.backend.repository.StatusRepository;
-import com.moh.phlat.backend.testsupport.factories.StatusFactory;
+import com.moh.phlat.backend.model.RowStatus;
+import com.moh.phlat.backend.service.RowStatusService;
+import com.moh.phlat.backend.testsupport.factories.RowStatusFactory;
 import com.moh.phlat.backend.testsupport.factories.UserRoles;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,28 +33,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
  * and it shouldn't be assumed that they are used for authorization checks
  */
-@WebMvcTest(StatusController.class)
-public class StatusControllerTest {
+@WebMvcTest(RowStatusController.class)
+public class RowStatusControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private StatusRepository statusRepository;
+    private RowStatusService rowStatusService;
 
     @InjectMocks
-    private StatusController statusController;
+    private RowStatusController statusController;
 
-    List<Status> statuses = Collections.unmodifiableList(StatusFactory.createTwoStatuses());
+    List<RowStatus> statuses = Collections.unmodifiableList(RowStatusFactory.createTwoRowStatuses());
 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllStatus() throws Exception {
 
-        when(statusRepository.findAll()).thenReturn(statuses);
+        when(rowStatusService.getRowStatuses(nullable(Boolean.class))).thenReturn(statuses);
 
         // Performing the GET request and get result in json string
-        String jsonResponse = mockMvc.perform(get("/statuses").with(csrf()))
+        String jsonResponse = mockMvc.perform(get("/row-statuses").with(csrf()))
                                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                                      .andExpect(status().isOk())
                                      .andReturn().getResponse().getContentAsString();
@@ -73,7 +74,7 @@ public class StatusControllerTest {
         assertThat(documentContext.read("$.data[0].isDeleted", Boolean.class)).isEqualTo(Boolean.FALSE);
 
         //check mocked method calls
-        verify(statusRepository, times(1)).findAll();
+        verify(rowStatusService, times(1)).getRowStatuses(nullable(Boolean.class));
 
     }
 
