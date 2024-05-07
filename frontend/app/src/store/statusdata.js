@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { statusService } from '~/services';
+import { rowStatusService } from '~/services';
 import { useNotificationStore } from '~/store/notification';
 
 export const useStatusDataStore = defineStore('statusdata', {
@@ -12,7 +12,7 @@ export const useStatusDataStore = defineStore('statusdata', {
   actions: {
     async fetchGetAllStatus(includeDeleted = false) {
       try {
-        const { data } = await statusService.serviceGetAllStatus(
+        const { data } = await rowStatusService.serviceGetAllStatus(
           includeDeleted
         );
         this.allStatusData = data.data;
