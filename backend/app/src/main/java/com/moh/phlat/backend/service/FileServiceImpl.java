@@ -76,7 +76,7 @@ public class FileServiceImpl implements FileService {
 				return false;
 			}
 		} catch (IOException e) {
-			logger.error("Error occurred:", e.getMessage(), e);
+			logger.error("Error occurred: {}", e.getMessage(), e);
 			return false;
 		}
 		logger.info("Header check succesfful ...");
