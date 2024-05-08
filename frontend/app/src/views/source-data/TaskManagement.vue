@@ -49,7 +49,7 @@ export default {
       {
         title: '#',
         align: 'start',
-        sortable: false,
+        sortable: true,
         key: 'id',
         // fixed: true,
       },
@@ -321,7 +321,7 @@ export default {
         :items="desserts"
         :items-length="desserts.length"
         density="compact"
-        :sort-by="[{ key: 'calories', order: 'asc' }]"
+        :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
         :search="search"
       >

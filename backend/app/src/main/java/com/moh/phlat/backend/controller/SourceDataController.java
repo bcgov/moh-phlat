@@ -131,7 +131,7 @@ public class SourceDataController {
 			}
 
 			if (control.getBatchLabelName().trim().isEmpty()) {
-				logger.info(_newFileName + " Batch Label Name is required.");
+				logger.info("{} Batch Label Name is required.", _newFileName);
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 						.body(new ResponseMessage("error", 400, "Batch Label Name is required.", 0));
@@ -156,7 +156,7 @@ public class SourceDataController {
 			}
 
 			if (isFound) {
-				logger.error(_newFileName + " file has already been uploaded before.");
+				logger.error("{} file has already been uploaded before.", _newFileName);
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 400,
 						_newFileName + " file has already been uploaded before. Please upload a different data file.",

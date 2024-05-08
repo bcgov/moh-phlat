@@ -12,10 +12,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.Message;
+import com.moh.phlat.backend.model.MessageDetail;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.MessageDetailRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 
@@ -23,7 +24,9 @@ import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 public class DbUtilityServiceImpl implements DbUtilityService {
 	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
-
+	@Autowired
+	private MessageDetailRepository messageDetailRepository;
+	
 	@Autowired
 	private ControlRepository controlRepository;
 
@@ -103,7 +106,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				processDataRepository.save(processData1);
 			}
 		} catch (Exception e) {
-			logger.error("Unexpected exception: " + e.getMessage());
+			logger.error("Error occured: {}", e.getMessage(), e);
 		}
 	}
 
@@ -119,11 +122,26 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 		} catch (Exception e) {
-			logger.error("Unexpected exception: " + e.getMessage());
+			logger.error("Error occured: {}", e.getMessage(), e);
 		}
 	}
 	
+	public void addMessageDetail(Long processDataId, String rowstatusCode, Integer errorCode, String errorType, String errorMsg) {
 
+		MessageDetail messageDetail = new MessageDetail();
+		
+		messageDetail.setProcessDataId(processDataId);
+		messageDetail.setRowstatusCode(rowstatusCode);
+		messageDetail.setErrorCode(errorCode);
+		messageDetail.setErrorType(errorType);
+		messageDetail.setErrorMsg(errorMsg);
+		
+		try {
+			messageDetailRepository.save(messageDetail);
+		} catch (Exception e) {
+			logger.error("Error occured: {}", e.getMessage(), e);
+		}
+	}
 
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
 		Boolean isValid = true;
@@ -136,9 +154,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			// required checks
 			if (processData.getHdsName().isEmpty()) {
 				isValid = false;
-				logger.info("Required check failed on process data id: " + processData.getId());
-				//TODO to be discussed after change to message class
-				//addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
 			}
 			// error detection
 			
@@ -169,12 +186,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				// skip if the rowstatus is COMPLETE or marked as DO_NOT_LOAD
 				if (!s.getDoNotLoad().equals("Y") && (!s.getRowstatusCode().equals("DO_NOT_LOAD"))
 						&& (!s.getRowstatusCode().equals("COMPLETE"))) {
-					logger.info("validate process data with id: " + s.getId());
+					logger.info("validate process data with id: {}", s.getId());
 
 					// run asyn process
 					validateProcessData(control, s, authenticatedUserId);
 				} else {
-					logger.info("skip validating process data with id: " + s.getId());
+					logger.info("skip validating process data with id: {}", s.getId());
 				}
 			}
 			setControlStatus(control.getId(), "PRE-VALIDATION_COMPLETED",
@@ -200,7 +217,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			for (ProcessData s : processDataList) {
 				// skip record marked as DO_NOT_LOAD and only VALID records
 				if (!s.getDoNotLoad().equals("Y") && s.getRowstatusCode().equals("VALID")) {
-					logger.info("loading process data with id: " + s.getId() + " to PLR.");
+					logger.info("loading process data with id: {} to PLR.", s.getId());
 
 					// TO-DO call to PLR via ESB here
 					// loadPlrViaEsb(control, s);

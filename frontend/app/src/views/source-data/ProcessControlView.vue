@@ -9,6 +9,7 @@ import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 import { ViewNames, RowStatusCode } from '~/utils/constants';
 import BaseChips from '../../components/base/BaseChips.vue';
+import _ from 'lodash';
 
 export default {
   components: {
@@ -36,6 +37,9 @@ export default {
     filterIgnoreColumns: [
       {
         key: 'id',
+      },
+      {
+        key: 'controlTableId',
       },
       {
         key: 'actions',
@@ -120,6 +124,14 @@ export default {
           this.onlyShowColumns.some((fd) => fd === h.key)
         );
       }
+
+      const order = ['id', 'actions', 'rowstatusCode', 'errorMsg'];
+
+      headers = _.sortBy(headers, function (o) {
+        let index = order.indexOf(o.key);
+        return index === -1 ? Infinity : index;
+      });
+
       return headers;
     },
     PRESELECTED_DATA() {
@@ -215,7 +227,10 @@ export default {
       const tableHeaders = this.formFieldHeaders.map((h) => {
         return { title: h, key: h };
       });
-      this.headers = [...tableHeaders, ...this.headers];
+
+      this.headers = [...tableHeaders, ...this.headers].filter(
+        ({ key }) => key !== 'controlTableId'
+      );
     },
 
     async populateInputSource() {

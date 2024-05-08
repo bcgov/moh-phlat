@@ -76,7 +76,7 @@ public class FileServiceImpl implements FileService {
 				return false;
 			}
 		} catch (IOException e) {
-			logger.error("Error:", e);
+			logger.error("Error occurred: {}", e.getMessage(), e);
 			return false;
 		}
 		logger.info("Header check succesfful ...");
@@ -111,7 +111,7 @@ public class FileServiceImpl implements FileService {
 			logger.info("Loading of target table completed successfully");
 
 		} catch (Exception e){
-			logger.error("Error Encountered: ", e);
+			logger.error("Error Encountered: {}", e.getMessage(), e);
 			Optional<Control> _control = controlRepository.findById(controlTableId);
 			
 			Control control = _control.get();
@@ -202,7 +202,7 @@ public class FileServiceImpl implements FileService {
 			return sourceDatas;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			logger.error("Unexpected error: ", e);
+			logger.error("Unexpected error: {}", e.getMessage(), e);
 			Optional<Control> _control = controlRepository.findById(controlTableId);
 			
 			Control control = _control.get();

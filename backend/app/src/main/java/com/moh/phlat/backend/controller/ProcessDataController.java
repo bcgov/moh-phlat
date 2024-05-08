@@ -294,7 +294,7 @@ public class ProcessDataController {
 
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record updated sucessfully.", processData));
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
 					"Internal error encountered while updating Process Data with id: " + id, "[]"));
 		}
@@ -323,11 +323,11 @@ public class ProcessDataController {
 				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_IN_PROGRESS",authenticatedUserId );
 				
 				if ((!processData.getDoNotLoad().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals("COMPLETE"))) {
-					logger.info("validate process data with id: " + id);
+					logger.info("validate process data with id: {}", id);
 				    // run asyn process
 					dbUtilityService.validateProcessData(control, processData,authenticatedUserId);
 				} else {
-					logger.info("skip validating process data with id: " + id);
+					logger.info("skip validating process data with id: {}", id);
 				}
 
 				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_COMPLETED",
