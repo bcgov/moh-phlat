@@ -96,7 +96,7 @@ public class ControlController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _controlTable));
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
 					"Internal error encountered while updating Control table with id: " + id, "[]"));
 		}
@@ -126,7 +126,7 @@ public class ControlController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record approved successfully.", _controlTable));
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
 					"Internal error encountered while approving constrol table with id: " + id, "[]"));
 		}
