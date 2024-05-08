@@ -6,6 +6,7 @@ import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
 import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
 import com.moh.phlat.backend.testsupport.factories.UserRoles;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,6 +56,9 @@ public class ProcessDataControllerTest {
 
     @MockBean
     private ControlRepository controlRepository;
+
+    @MockBean
+    private ProcessDataService processDataService;
 
     @MockBean
     private DbUtilityService dbUtilityService;
@@ -98,10 +103,10 @@ public class ProcessDataControllerTest {
     public void testGetAllProcessDataByControlTableId() throws Exception {
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataRepository.getAllProcessDataByControlTableId(anyLong())).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class))).thenReturn(processDataList);
 
         // Perform GET request and validate response
-        ResultActions resultActions = mockMvc.perform(get("/processdata/view/controltableid/1")
+        ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")
                                                               .with(csrf()).contentType(MediaType.APPLICATION_JSON));
         resultActions.andExpect(status().isOk())
                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -118,7 +123,7 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(processDataRepository, times(1)).getAllProcessDataByControlTableId(anyLong());
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class));
 
     }
 
@@ -396,7 +401,6 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath(baseJasonPath + "mailAddrIsPrivate").value(processData.getMailAddrIsPrivate()))
                      .andExpect(jsonPath(baseJasonPath + "facility_id").value(processData.getFacility_id().intValue()))
                      .andExpect(jsonPath(baseJasonPath + "rowstatusCode").value(processData.getRowstatusCode()))
-                     .andExpect(jsonPath(baseJasonPath + "errorMsg").value(processData.getErrorMsg()))
                      .andExpect(jsonPath(baseJasonPath + "createdBy").value(processData.getCreatedBy()))
                      .andExpect(jsonPath(baseJasonPath + "updatedBy").value(processData.getUpdatedBy()));
 

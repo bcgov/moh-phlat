@@ -12,11 +12,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.MessageDetail;
+import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.MessageDetailRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 
@@ -24,9 +23,7 @@ import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 public class DbUtilityServiceImpl implements DbUtilityService {
 	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
-	@Autowired
-	private MessageDetailRepository messageDetailRepository;
-	
+
 	@Autowired
 	private ControlRepository controlRepository;
 
@@ -126,22 +123,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		}
 	}
 	
-	public void addMessageDetail(Long processDataId, String rowstatusCode, Integer errorCode, String errorType, String errorMsg) {
 
-		MessageDetail messageDetail = new MessageDetail();
-		
-		messageDetail.setProcessDataId(processDataId);
-		messageDetail.setRowstatusCode(rowstatusCode);
-		messageDetail.setErrorCode(errorCode);
-		messageDetail.setErrorType(errorType);
-		messageDetail.setErrorMsg(errorMsg);
-		
-		try {
-			messageDetailRepository.save(messageDetail);
-		} catch (Exception e) {
-			logger.error("Unexpected exception: " + e.getMessage());
-		}
-	}
 
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
 		Boolean isValid = true;
@@ -155,7 +137,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			if (processData.getHdsName().isEmpty()) {
 				isValid = false;
 				logger.info("Required check failed on process data id: " + processData.getId());
-				addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
+				//TODO to be discussed after change to message class
+				//addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
 			}
 			// error detection
 			

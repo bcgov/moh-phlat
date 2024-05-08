@@ -30,7 +30,7 @@ public class ProcessDataFactory extends BaseFactory {
                                           "Y", "Mailing 1", "Mailing 2", "Mailing 3",
                                           "Mailing 4", "Mail City", "BC", "Mailing Pcode",
                                           "Mailing Country", "Y", 100L, "ACTIVE",
-                                          "Error message", createDate(2024, Calendar.JANUARY, 1), "Admin1",
+                                           createDate(2024, Calendar.JANUARY, 1), "Admin1",
                                           createDate(2024, Calendar.JANUARY, 2), "Admin2"));
 
 
@@ -51,7 +51,7 @@ public class ProcessDataFactory extends BaseFactory {
                                           "Province2", "Pcode2", "Country2", "N",
                                           "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
                                           "Mail City2", "BC2", "Mailing Pcode2", "Mailing Country2",
-                                          "N", 200L, "INACTIVE", "Error message2",
+                                          "N", 200L, "INACTIVE",
                                           createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
                                           createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
         return processData;
@@ -86,7 +86,7 @@ public class ProcessDataFactory extends BaseFactory {
                                                  String physAddrIsPrivate, String mailAddr1, String mailAddr2,
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailBc,
                                                  String mailPcode, String mailCountry, String mailAddrIsPrivate,
-                                                 Long facility_id, String rowstatusCode, String errorMsg,
+                                                 Long facility_id, String rowstatusCode,
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
 
         return ProcessData.builder()
@@ -154,7 +154,6 @@ public class ProcessDataFactory extends BaseFactory {
                           .mailAddrIsPrivate(mailAddrIsPrivate)
                           .facility_id(facility_id)
                           .rowstatusCode(rowstatusCode)
-                          .errorMsg(errorMsg)
                           .createdAt(createdAt)
                           .createdBy(createdBy)
                           .updatedAt(updatedAt)
