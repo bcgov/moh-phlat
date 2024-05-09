@@ -143,7 +143,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 									 .messageType("ERROR")
 									 .messageCode("101")
 									 .messageDesc("HDS Name cannot be empty")
-									 .sourceSystemName("PHLAT")
+									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
