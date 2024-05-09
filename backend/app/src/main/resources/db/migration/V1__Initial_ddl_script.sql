@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS messages (
   source_system_name VARCHAR(25) NOT NULL,
   source_system_message_code VARCHAR(25),
   source_system_message_type VARCHAR(25),
-  source_system_message_desc  TEXT
+  source_system_message_desc  TEXT,
   created_at TIMESTAMPTZ,
   created_by VARCHAR(30),
 
