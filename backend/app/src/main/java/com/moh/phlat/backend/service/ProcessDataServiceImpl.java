@@ -18,11 +18,10 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     public List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus) {
 
         if (StringUtils.hasText(rowStatus)) {
-            return processDataRepository.getProcessDataWithMessages(controlTableId);
-        } else {
             return processDataRepository.getProcessDataWithMessages(controlTableId, rowStatus);
+        } else {
+            return processDataRepository.getProcessDataWithMessages(controlTableId);
         }
-
 
     }
 }

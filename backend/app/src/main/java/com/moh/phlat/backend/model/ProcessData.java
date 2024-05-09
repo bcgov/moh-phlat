@@ -4,7 +4,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@NamedEntityGraph(name="ProcessData.withMessageDetails",attributeNodes = @NamedAttributeNode(value = "messages"))
 public class ProcessData {
 	@Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -220,10 +222,7 @@ public class ProcessData {
     @Column(name="rowstatus_code")
     private String rowstatusCode;  
     
-    @Column(name="error_msg")
-    private String errorMsg;  
-    
- 	@Column(name="created_at")
+    @Column(name="created_at")
     private Date createdAt;
 
 	@Column(name="created_by")
@@ -235,8 +234,7 @@ public class ProcessData {
 	@Column(name="updated_by")
     private String updatedBy;
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name="process_data_id", referencedColumnName="id", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
     private List<Message> messages;
 
 
