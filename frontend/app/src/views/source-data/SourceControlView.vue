@@ -50,6 +50,28 @@ export default {
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
+    sortOrder: 'default',
+    sortOrderCriteria: [{ key: 'id', order: 'asc' }],
+    sortOrderTypes: [
+      {
+        text: 'Row ID#',
+        value: 'default',
+        criteria: [{ key: 'id', order: 'asc' }],
+      },
+      {
+        text: 'Civic Address + HDS Name',
+        value: 'civicAddressPlusHDSName',
+        criteria: [
+          { key: 'hdsName', order: 'asc' },
+          { key: 'civicAddress', order: 'asc' },
+        ],
+      },
+      {
+        text: 'HDS Name (only)',
+        value: 'HDSNameOnly',
+        criteria: [{ key: 'hdsName', order: 'asc' }],
+      },
+    ],
   }),
 
   computed: {
@@ -233,6 +255,15 @@ export default {
       });
     },
 
+    async sortOrderHandle() {
+      this.loading = true;
+      const criteria = this.sortOrderTypes.find(
+        (s) => s.value === this.sortOrder
+      ).criteria;
+      this.sortOrderCriteria = criteria;
+      this.loading = false;
+    },
+
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.inputSrcData[this.editedIndex], this.editedItem);
@@ -301,6 +332,18 @@ export default {
           class="pb-5"
         ></v-text-field>
       </div>
+      <div class="d-flex align-center width-select">
+        <v-select
+          v-model="sortOrder"
+          :items="sortOrderTypes"
+          label="Sort orders"
+          item-title="text"
+          density="compact"
+          solid
+          variant="underlined"
+          @update:modelValue="sortOrderHandle"
+        ></v-select>
+      </div>
       <div>
         <span>
           <v-tooltip location="bottom">
@@ -332,9 +375,10 @@ export default {
         :items="inputSrcData"
         :items-length="inputSrcData.length"
         density="compact"
-        :sort-by="[{ key: 'id', order: 'asc' }]"
+        :sort-by="sortOrderCriteria"
         class="submissions-table"
         :search="search"
+        multi-sort
       >
         <template #top>
           <v-dialog v-model="dialogDelete" max-width="500px">
