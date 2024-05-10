@@ -113,16 +113,13 @@ public class MaintainFacilityRequest implements PlrRequest {
 	
 	private List<FacilityNameDto> createFacilityNameDtos(ProcessData input) {
 		
-		if (!StringUtils.hasText(input.getFacBuildingName() + input.getHdsName())) {
+		FacilityNameDto fnd = new FacilityNameDto();
+		if (StringUtils.hasText(input.getFacBuildingName())) {
+			fnd.setName(input.getFacBuildingName());
+		} else {
 			return null;
 		}
 		
-		FacilityNameDto fnd = new FacilityNameDto();
-		if (StringUtils.hasText(input.getHdsName())) {
-			fnd.setName(input.getHdsName());
-		} else if (StringUtils.hasText(input.getFacBuildingName())) {
-			fnd.setName(input.getFacBuildingName());
-		}
 		fnd.setCreatedDate(input.getCreatedAt());
 		fnd.setEffectiveStartDate(input.getCreatedAt());
 		
