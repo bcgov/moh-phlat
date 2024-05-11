@@ -51,6 +51,7 @@ public class Message {
     @Column(name = "source_system_message_desc")
     private String sourceSystemMessageDesc;
 
+    //json ignore is to avoid recursive loop between process data entity and message entity while serializing to json
     @JsonIgnore
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="process_data_id", referencedColumnName="id", nullable = false)
