@@ -45,7 +45,7 @@ export default {
 <template>
   <v-card>
     <v-card-title class="text-h5 pb-0"
-      >Edit record #{{ this.idToEdit }}</v-card-title
+      >Edit record #{{ idToEdit }}</v-card-title
     >
     <v-card-text>
       <hr />

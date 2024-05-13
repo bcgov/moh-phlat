@@ -4,10 +4,10 @@
     <hr />
     <v-list lines="two">
       <v-list-item
-        v-for="{ messageId, messageDetails, messageType } in localMessages"
-        :key="messageId"
-        :subtitle="messageType + ' ID #' + messageId"
-        :title="messageDetails"
+        v-for="{ id, messageDesc, messageType } in localMessages"
+        :key="id"
+        :subtitle="messageType + ' ID #' + id"
+        :title="messageDesc"
       ></v-list-item>
     </v-list>
     <v-card-actions>
