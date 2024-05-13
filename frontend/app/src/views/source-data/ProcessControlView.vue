@@ -45,7 +45,7 @@ export default {
         key: 'actions',
       },
       {
-        key: 'errorMsg',
+        key: 'messages',
       },
       {
         key: 'rowstatusCode',
@@ -61,7 +61,7 @@ export default {
       { key: 'statusCode' },
       { key: 'controlTableId' },
       { key: 'rowstatusCode' },
-      { key: 'errorMsg' },
+      { key: 'messages' },
     ],
     headers: [
       {
@@ -80,28 +80,6 @@ export default {
     editStatusItem: {},
     editStatusNewItem: '',
     statusCodes: [],
-    sortOrder: 'default',
-    sortOrderCriteria: [{ key: 'id', order: 'asc' }],
-    sortOrderTypes: [
-      {
-        text: 'Row ID#',
-        value: 'default',
-        criteria: [{ key: 'id', order: 'asc' }],
-      },
-      {
-        text: 'Civic Address + HDS Name',
-        value: 'civicAddressPlusHDSName',
-        criteria: [
-          { key: 'hdsName', order: 'asc' },
-          { key: 'civicAddress', order: 'asc' },
-        ],
-      },
-      {
-        text: 'HDS Name (only)',
-        value: 'HDSNameOnly',
-        criteria: [{ key: 'hdsName', order: 'asc' }],
-      },
-    ],
   }),
 
   computed: {
@@ -147,7 +125,7 @@ export default {
         );
       }
 
-      const order = ['id', 'actions', 'rowstatusCode', 'errorMsg'];
+      const order = ['id', 'actions', 'rowstatusCode', 'messages'];
 
       headers = _.sortBy(headers, function (o) {
         let index = order.indexOf(o.key);
@@ -265,15 +243,6 @@ export default {
       }
 
       this.inputSrcData = this.processData;
-    },
-
-    async sortOrderHandle() {
-      this.loading = true;
-      const criteria = this.sortOrderTypes.find(
-        (s) => s.value === this.sortOrder
-      ).criteria;
-      this.sortOrderCriteria = criteria;
-      this.loading = false;
     },
 
     async populateStatus() {
@@ -426,12 +395,12 @@ export default {
         });
       }
     },
-    parseErrorMsg(errorMsg) {
-      if (!errorMsg) {
+    parseMessages(messages) {
+      if (Object.keys(messages).length === 0) {
         return [];
       }
       try {
-        return JSON.parse(errorMsg);
+        return messages;
       } catch (error) {
         return [];
       }
@@ -471,18 +440,6 @@ export default {
           solid
           variant="underlined"
           @update:modelValue="populateInputSource"
-        ></v-select>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="sortOrder"
-          :items="sortOrderTypes"
-          label="Sort orders"
-          item-title="text"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="sortOrderHandle"
         ></v-select>
       </div>
       <div>
@@ -533,9 +490,8 @@ export default {
         :items-length="inputSrcData.length"
         density="compact"
         :search="search"
-        :sort-by="sortOrderCriteria"
+        :sort-by="[{ key: 'id', order: 'asc' }]"
         class="submissions-table"
-        multi-sort
       >
         <template #item.rowstatusCode="{ item }">
           <div>
@@ -602,12 +558,12 @@ export default {
             </div>
           </div>
         </template>
-        <template #item.errorMsg="{ item }">
-          <BaseChips :messages="parseErrorMsg(item.raw.errorMsg)" />
+        <template #item.messages="{ item }">
+          <BaseChips :messages="parseMessages(item.raw.messages)" />
         </template>
         <template #item.actions="{ item }">
           <v-tooltip
-            v-if="havingIssueOrWarning(parseErrorMsg(item.raw.errorMsg))"
+            v-if="havingIssueOrWarning(parseMessages(item.raw.messages))"
             location="bottom"
           >
             <template #activator="{ props }">
