@@ -3,6 +3,8 @@ package com.moh.phlat.backend.controller;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import com.moh.phlat.backend.service.ProcessDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class ProcessDataController {
 	@Autowired
 	private DbUtilityService dbUtilityService;
 
+	@Autowired
+	private ProcessDataService processDataService;
+
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDatas() {
@@ -48,12 +53,14 @@ public class ProcessDataController {
 				.body(new ResponseMessage("success", 200, "", processDataRepository.findAll()));
 	}
 
+
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/view/controltableid/{controlTableId}")
+	@GetMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-			@PathVariable Long controlTableId, @RequestParam(required =false) String filterStatus) {
-		
+			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
+
+		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
@@ -61,14 +68,10 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		if (filterStatus == null) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				processDataRepository.getAllProcessDataByControlTableId(controlTableId)));
-		} else {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-					processDataRepository.findByControlTableIdAndRowstatusCode(controlTableId, filterStatus)));
-		}
-		
+		List<ProcessData> processData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus);
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success",
+																			 200, "",
+																			 processData));
 	}
 
 	// get specific row by id

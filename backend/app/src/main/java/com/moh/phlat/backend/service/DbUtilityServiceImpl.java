@@ -1,31 +1,30 @@
 package com.moh.phlat.backend.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.Message;
+import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.TableColumnInfo;
+import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.MessageDetail;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.model.TableColumnInfo;
-import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.MessageDetailRepository;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.repository.TableColumnInfoRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
 	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
 	@Autowired
-	private MessageDetailRepository messageDetailRepository;
+	private MessageService messageService;
 	
 	@Autowired
 	private ControlRepository controlRepository;
@@ -126,22 +125,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		}
 	}
 	
-	public void addMessageDetail(Long processDataId, String rowstatusCode, Integer errorCode, String errorType, String errorMsg) {
 
-		MessageDetail messageDetail = new MessageDetail();
-		
-		messageDetail.setProcessDataId(processDataId);
-		messageDetail.setRowstatusCode(rowstatusCode);
-		messageDetail.setErrorCode(errorCode);
-		messageDetail.setErrorType(errorType);
-		messageDetail.setErrorMsg(errorMsg);
-		
-		try {
-			messageDetailRepository.save(messageDetail);
-		} catch (Exception e) {
-			logger.error("Error occured: {}", e.getMessage(), e);
-		}
-	}
 
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
 		Boolean isValid = true;
@@ -152,10 +136,18 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			// auto fix
 
 			// required checks
-			if (processData.getHdsName().isEmpty()) {
+			if (!StringUtils.hasText(processData.getHdsName())) {
 				isValid = false;
 				logger.info("Required check failed on process data id: {}", processData.getId());
-				addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
+				Message msg = Message.builder()
+									 .messageType("ERROR")
+									 .messageCode("101")
+									 .messageDesc("HDS Name cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+
 			}
 			// error detection
 			

@@ -1,19 +1,26 @@
 package com.moh.phlat.backend.repository;
 
+import com.moh.phlat.backend.model.ProcessData;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.response.ResponseMessage;
-
 @Repository
-public interface ProcessDataRepository extends CrudRepository<ProcessData, Long> {
-	public List<ProcessData> getAllProcessDataByControlTableId(Long controlTableId);
+public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> {
+    List<ProcessData> getAllProcessDataByControlTableId(Long controlTableId);
 
-	public List<ProcessData> findByControlTableIdAndRowstatusCode(Long controlTableId, String reqRowStatusCode);
+    List<ProcessData> findByControlTableIdAndRowstatusCode(Long controlTableId, String reqRowStatusCode);
+
+    @Query("SELECT pd from ProcessData pd LEFT JOIN pd.messages md WHERE pd.controlTableId = :controlTableId")
+    @EntityGraph(value = "ProcessData.withMessageDetails", type = EntityGraph.EntityGraphType.FETCH)
+    List<ProcessData> getProcessDataWithMessages(Long controlTableId);
+
+
+    @Query("SELECT pd from ProcessData pd LEFT JOIN pd.messages md WHERE pd.controlTableId = :controlTableId AND pd.rowstatusCode = :rowStatus")
+    @EntityGraph(value = "ProcessData.withMessageDetails", type = EntityGraph.EntityGraphType.FETCH)
+    List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus);
 
 }
