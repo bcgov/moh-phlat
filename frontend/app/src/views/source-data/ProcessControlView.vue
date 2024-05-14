@@ -80,6 +80,28 @@ export default {
     editStatusItem: {},
     editStatusNewItem: '',
     statusCodes: [],
+    sortOrder: 'default',
+    sortOrderCriteria: [{ key: 'id', order: 'asc' }],
+    sortOrderTypes: [
+      {
+        text: 'Row ID#',
+        value: 'default',
+        criteria: [{ key: 'id', order: 'asc' }],
+      },
+      {
+        text: 'Civic Address + HDS Name',
+        value: 'civicAddressPlusHDSName',
+        criteria: [
+          { key: 'hdsName', order: 'asc' },
+          { key: 'civicAddress', order: 'asc' },
+        ],
+      },
+      {
+        text: 'HDS Name (only)',
+        value: 'HDSNameOnly',
+        criteria: [{ key: 'hdsName', order: 'asc' }],
+      },
+    ],
   }),
 
   computed: {
@@ -245,6 +267,15 @@ export default {
       this.inputSrcData = this.processData;
     },
 
+    async sortOrderHandle() {
+      this.loading = true;
+      const criteria = this.sortOrderTypes.find(
+        (s) => s.value === this.sortOrder
+      ).criteria;
+      this.sortOrderCriteria = criteria;
+      this.loading = false;
+    },
+
     async populateStatus() {
       // Get the submissions for this form
       await this.fetchGetAllStatus();
@@ -395,12 +426,12 @@ export default {
         });
       }
     },
-    parseMessages(messages) {
-      if (Object.keys(messages).length === 0) {
+    parseMessages(errorMsg) {
+      if (!errorMsg) {
         return [];
       }
       try {
-        return messages;
+        return JSON.parse(errorMsg);
       } catch (error) {
         return [];
       }
@@ -440,6 +471,18 @@ export default {
           solid
           variant="underlined"
           @update:modelValue="populateInputSource"
+        ></v-select>
+      </div>
+      <div class="d-flex align-center width-select">
+        <v-select
+          v-model="sortOrder"
+          :items="sortOrderTypes"
+          label="Sort orders"
+          item-title="text"
+          density="compact"
+          solid
+          variant="underlined"
+          @update:modelValue="sortOrderHandle"
         ></v-select>
       </div>
       <div>
@@ -490,7 +533,7 @@ export default {
         :items-length="inputSrcData.length"
         density="compact"
         :search="search"
-        :sort-by="[{ key: 'id', order: 'asc' }]"
+        :sort-by="sortOrderCriteria"
         class="submissions-table"
       >
         <template #item.rowstatusCode="{ item }">

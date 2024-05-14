@@ -378,7 +378,6 @@ export default {
         :sort-by="sortOrderCriteria"
         class="submissions-table"
         :search="search"
-        multi-sort
       >
         <template #top>
           <v-dialog v-model="dialogDelete" max-width="500px">
