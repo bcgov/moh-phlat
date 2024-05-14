@@ -431,7 +431,7 @@ export default {
         return [];
       }
       try {
-        return JSON.parse(errorMsg);
+        return errorMsg;
       } catch (error) {
         return [];
       }
