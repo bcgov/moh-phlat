@@ -260,7 +260,7 @@ export default {
         await this.fetchProcessDataByControlId(this.id, {});
       } else {
         await this.fetchProcessDataByControlId(this.id, {
-          filterStatus: this.searchByStatus,
+          rowStatus: this.searchByStatus,
         });
       }
 
