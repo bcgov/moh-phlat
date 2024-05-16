@@ -30,9 +30,9 @@ import java.util.UUID;
 
 import org.springframework.util.StringUtils;
 
-public class MaintainFacilityRequest implements PlrRequest {
+public class MaintainHdsRequest implements PlrRequest {
 	
-	public MaintainFacilityRequest(Control control) {
+	public MaintainHdsRequest(Control control) {
 		
 	}
 	

@@ -72,6 +72,8 @@ public class FileServiceImpl implements FileService {
 						"Returning false. The header length of the uploaded file does not match the length obtained from the database.");
 				logger.warn("Uploaded file header length: {}, Database file header length: {}", headerLine.length(),
 							expectedHeaderLine.length());
+				logger.warn(expectedHeaderLine);	
+				logger.warn(headerLine);			
 
 				return false;
 			}
@@ -89,10 +91,10 @@ public class FileServiceImpl implements FileService {
 		try {
 			logger.info("Parsing CSV file starts...");
 			List<SourceData> sourceData = csvToSourceData(file.getInputStream(), controlTableId,authenticateUserId);
-
+				
 			sourceDataRepository.saveAll(sourceData);
+		
 			logger.info("Data saved in source table");
-
 
 			Optional<Control> _control = controlRepository.findById(controlTableId);
 
@@ -132,8 +134,9 @@ public class FileServiceImpl implements FileService {
 			List<CSVRecord> records = csvParser.getRecords();
 			for (CSVRecord csvRecords : records) {
 				SourceData sourceData = new SourceData(controlTableId, 
-						csvRecords.get("DO_NOT_LOAD"), 
+						csvRecords.get("DO_NOT_LOAD_FLAG"), 
 						csvRecords.get("STAKEHOLDER"),
+						csvRecords.get("STAKEHOLDER_ID"),
 						csvRecords.get("HDS_IPC_ID"),	
 						csvRecords.get("HDS_CPN_ID"),
 						csvRecords.get("HDS_PROVIDER_IDENTIFIER1"),
@@ -142,10 +145,10 @@ public class FileServiceImpl implements FileService {
 						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE1"),
 						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE2"),
 						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE3"),
-						csvRecords.get("HDS_HIBC_FACILITY_ID"),
+						csvRecords.get("HDS_MSP_FACILITY_NUMBER"),
 						csvRecords.get("HDS_TYPE"),
+						csvRecords.get("HDS_SUB_TYPE"),
 						csvRecords.get("HDS_NAME"),												
-						csvRecords.get("HDS_NAME_ALIAS"),	
 						csvRecords.get("HDS_PREFERRED_NAME_FLAG"),							
 						csvRecords.get("HDS_EMAIL"),	
 						csvRecords.get("HDS_WEBSITE"),	
@@ -156,24 +159,44 @@ public class FileServiceImpl implements FileService {
 						csvRecords.get("HDS_CELL_NUMBER"),
 						csvRecords.get("HDS_FAX_AREA_CODE"),
 						csvRecords.get("HDS_FAX_NUMBER"),
-						csvRecords.get("HDS_SERVICE_DELIVERY_TYPE"),
+						csvRecords.get("PCN_SERVICE_DELIVERY_TYPE"),
 						csvRecords.get("PCN_CLINIC_TYPE"),
 						csvRecords.get("PCN_PCI_FLAG"),
-						csvRecords.get("HDS_HOURS_OF_OPERATION"),						
-						csvRecords.get("HDS_CONTACT_NAME"),
-						csvRecords.get("HDS_IS_FOR_PROFIT_FLAG"),	
-						csvRecords.get("SOURCE_STATUS"),							
-						csvRecords.get("HDS_PARENT_IPC_ID"),	
-						csvRecords.get("BUS_IPC_ID"),							
-						csvRecords.get("BUS_CPN_ID"),	
-						csvRecords.get("BUS_NAME"),							
-						csvRecords.get("BUS_LEGAL_NAME"),							
-						csvRecords.get("BUS_PAYEE_NUMBER"),
-						csvRecords.get("BUS_OWNER_NAME"),
-						csvRecords.get("BUS_OWNER_TYPE"),
-						csvRecords.get("BUS_OWNER_TYPE_OTHER"),
-						csvRecords.get("FAC_BUILDING_NAME"),	
-						csvRecords.get("FACILITY_HDS_DETAILS_ADDITIONAL_INFO"),			
+						csvRecords.get("SOURCE_STATUS"),	
+						csvRecords.get("PCN_CLINIC_STATUS"),	
+						csvRecords.get("HDS_EFFECTIVE_START_DATE"),							
+						csvRecords.get("HDS_EFFECTIVE_END_DATE"),							
+						csvRecords.get("UNIT_BY_CIVIC_ADDRESS"),	
+						csvRecords.get("CIVIC_ADDRESS"),							
+						csvRecords.get("FAC_RELN_TYPE"),							
+						csvRecords.get("FAC_TYPE_CODE"),
+						csvRecords.get("FAC_ADDRESS_UNIT"),
+						csvRecords.get("FAC_BUILDING_NAME"),
+						csvRecords.get("FAC_FULL_ADDRESS"),
+						csvRecords.get("FAC_LATITUDE"),	
+						csvRecords.get("FAC_LONGITUDE"),
+						csvRecords.get("FAC_STREET_DIRECTION"),
+						csvRecords.get("STREET_DIRECTION_PREFIX"),
+						csvRecords.get("STREET_TYPE_PREFIX"),
+						csvRecords.get("FAC_CIVIC_NUMBER"),						
+						csvRecords.get("FAC_STREET_NAME"),	
+						csvRecords.get("FAC_STREET_TYPE"),	
+						csvRecords.get("FAC_LOCALITY_NAME"),							
+						csvRecords.get("FAC_PROVINCE_CODE"),
+						csvRecords.get("FAC_SITE_ID"),
+						csvRecords.get("FAC_SCORE"),	
+						csvRecords.get("FAC_MATCH_PRECISION"),
+						csvRecords.get("FAC_PRECISION_POINTS"),
+						csvRecords.get("FAC_HSDA_NAME"),
+						csvRecords.get("FAC_DATABC_RESULTS"),						
+						csvRecords.get("FAC_PCN_CODE"),
+						csvRecords.get("FAC_PCN_NAME"),
+						csvRecords.get("FAC_CHSA_STATUS"),
+						csvRecords.get("FAC_PCN_STATUS"),	
+						csvRecords.get("FAC_CHSA_CODE"),
+						csvRecords.get("FAC_CHSA_NAME"),
+						csvRecords.get("FAC_LHA_NAME"),
+						csvRecords.get("FAC_HA_NAME"),
 						csvRecords.get("PHYSICAL_ADDR1"),
 						csvRecords.get("PHYSICAL_ADDR2"),
 						csvRecords.get("PHYSICAL_ADDR3"),
@@ -182,7 +205,8 @@ public class FileServiceImpl implements FileService {
 						csvRecords.get("PHYSICAL_PROVINCE"),
 						csvRecords.get("PHYSICAL_PCODE"),
 						csvRecords.get("PHYSICAL_COUNTRY"),
-						csvRecords.get("PHYS_ADDR_IS_PRIVATE"),	
+						csvRecords.get("PHYSICAL_ADDR_PRPS_TYPE_CD"),	
+						csvRecords.get("PHYSICAL_ADDRESS_VALIDATION_STATUS"),	
 						csvRecords.get("MAIL_ADDR1"),
 						csvRecords.get("MAIL_ADDR2"),
 						csvRecords.get("MAIL_ADDR3"),
@@ -191,7 +215,7 @@ public class FileServiceImpl implements FileService {
 						csvRecords.get("MAIL_BC"),
 						csvRecords.get("MAIL_PCODE"),
 						csvRecords.get("MAIL_COUNTRY"),
-						csvRecords.get("MAIL_ADDR_IS_PRIVATE"),							
+						csvRecords.get("MAIL_ADDRESS_VALIDATION_STATUS"),							
 						new Date(), // created_at
 						authenticateUserId,
 						null, // updated_at
@@ -227,8 +251,9 @@ public class FileServiceImpl implements FileService {
 	        ProcessData processData = new ProcessData();
 	        processData.setId(s.getId());
 	        processData.setControlTableId(s.getControlTableId());
-	        processData.setDoNotLoad(s.getDoNotLoad());
+	        processData.setDoNotLoadFlag(s.getDoNotLoadFlag());
 	        processData.setStakeholder(s.getStakeholder());
+	        processData.setStakeholderId(s.getStakeholderId());
 	        processData.setHdsIpcId(s.getHdsIpcId());
 	        processData.setHdsCpnId(s.getHdsCpnId());
 	        processData.setHdsProviderIdentifier1(s.getHdsProviderIdentifier1());
@@ -237,9 +262,10 @@ public class FileServiceImpl implements FileService {
 	        processData.setHdsProviderIdentifierType1(s.getHdsProviderIdentifierType1());
 	        processData.setHdsProviderIdentifierType2(s.getHdsProviderIdentifierType2());	        
 	        processData.setHdsProviderIdentifierType3(s.getHdsProviderIdentifierType3());
+	        processData.setHdsMspFacilityNumber(s.getHdsMspFacilityNumber());
 	        processData.setHdsType(s.getHdsType());
+	        processData.setHdsSubType(s.getHdsSubType());
 	        processData.setHdsName(s.getHdsName());        
-	        processData.setHdsNameAlias(s.getHdsNameAlias());    
 	        processData.setHdsPreferredNameFlag(s.getHdsPreferredNameFlag());    
 	        processData.setHdsEmail(s.getHdsEmail());  
 	        processData.setHdsWebsite(s.getHdsWebsite());  
@@ -250,24 +276,44 @@ public class FileServiceImpl implements FileService {
 	        processData.setHdsCellNumber(s.getHdsCellNumber());          
 	        processData.setHdsFaxAreaCode(s.getHdsFaxAreaCode());  	
 	        processData.setHdsFaxNumber(s.getHdsFaxNumber());   
-	        processData.setHdsServiceDeliveryType(s.getHdsServiceDeliveryType());  
+	        processData.setPcnServiceDeliveryType(s.getPcnServiceDeliveryType());  
 	        processData.setPcnClinicType(s.getPcnClinicType());
-	        processData.setPcnPciFlag(s.getPcnPciFlag());
-	        processData.setHdsHoursOfOperation(s.getHdsHoursOfOperation());
-	        processData.setHdsContactName(s.getHdsContactName()); 
-	        processData.setHdsIsForProfitFlag(s.getHdsIsForProfitFlag());    
+	        processData.setPcnPciFlag(s.getPcnPciFlag()); 
 		    processData.setSourceStatus(s.getSourceStatus());   
-	        processData.setHdsParentIpcId(s.getHdsParentIpcId());        
-	        processData.setBusIpcId(s.getBusIpcId());
-	        processData.setBusCpnId(s.getBusCpnId());
-		    processData.setBusName(s.getBusName()); 
-		    processData.setBusLegalName(s.getBusLegalName()); 
-		    processData.setBusPayeeNumber(s.getBusPayeeNumber()); 
-		    processData.setBusOwnerName(s.getBusOwnerName()); 
-		    processData.setBusOwnerType(s.getBusOwnerType()); 
-		    processData.setBusOwnerTypeOther(s.getBusOwnerTypeOther()); 		    
-		    processData.setFacBuildingName(s.getFacBuildingName()); 		    
-	        processData.setFacilityHdsDetailsAdditionalInfo(s.getFacilityHdsDetailsAdditionalInfo());
+	        processData.setPcnClinicStatus(s.getPcnClinicStatus());        
+	        processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());
+	        processData.setHdsEffectiveEndDate(s.getHdsEffectiveEndDate());
+	        processData.setUnitByCivicAddress(s.getUnitByCivicAddress());
+		    processData.setCivicAddress(s.getCivicAddress()); 
+		    processData.setFacRelnType(s.getFacRelnType()); 
+		    processData.setFacTypeCode(s.getFacTypeCode()); 
+		    processData.setFacAddressUnit(s.getFacAddressUnit()); 
+		    processData.setFacBuildingName(s.getFacBuildingName()); 
+		    processData.setFacFullAddress(s.getFacFullAddress()); 		    
+	        processData.setFacLatitude(s.getFacLatitude());
+	        processData.setFacLongitude(s.getFacLongitude());
+	        processData.setFacStreetDirection(s.getFacStreetDirection());
+	        processData.setStreetDirectionPrefix(s.getStreetDirectionPrefix());	        
+	        processData.setStreetTypePrefix(s.getStreetTypePrefix());
+	        processData.setFacCivicNumber(s.getFacCivicNumber());	        
+	        processData.setFacStreetName(s.getFacStreetName());
+	        processData.setFacStreetType(s.getFacStreetType());	     
+	        processData.setFacLocalityName(s.getFacLocalityName());		   
+	        processData.setFacProvinceCode(s.getFacProvinceCode());			        
+	        processData.setFacSiteId(s.getFacSiteId());		
+	        processData.setFacScore(s.getFacScore());		
+	        processData.setFacMatchPrecision(s.getFacMatchPrecision());		
+	        processData.setFacPrecisionPoints(s.getFacPrecisionPoints());
+	        processData.setFacHsdaName(s.getFacHsdaName());	 
+	        processData.setFacDatabcResults(s.getFacDatabcResults());	 
+	        processData.setFacPcnCode(s.getFacPcnCode());
+	        processData.setFacPcnName(s.getFacPcnName());	  
+	        processData.setFacChsaStatus(s.getFacChsaStatus());
+	        processData.setFacPcnStatus(s.getFacPcnStatus());
+	        processData.setFacChsaCode(s.getFacChsaCode());
+	        processData.setFacChsaName(s.getFacChsaName());	        
+	        processData.setFacLhaName(s.getFacLhaName());	     	        
+	        processData.setFacHaName(s.getFacHaName());	        
 	        processData.setPhysicalAddr1(s.getPhysicalAddr1());
 	        processData.setPhysicalAddr2(s.getPhysicalAddr2());	  
 	        processData.setPhysicalAddr3(s.getPhysicalAddr3());
@@ -276,7 +322,8 @@ public class FileServiceImpl implements FileService {
 	        processData.setPhysicalProvince(s.getPhysicalProvince());      
 	        processData.setPhysicalPcode(s.getPhysicalPcode());      
 	        processData.setPhysicalCountry(s.getPhysicalCountry());     
-	        processData.setPhysAddrIsPrivate(s.getPhysAddrIsPrivate());    	        
+	        processData.setPhysicalAddrPrpsTypeCd(s.getPhysicalAddrPrpsTypeCd());    
+	        processData.setPhysicalAddressValidationStatus(s.getPhysicalAddressValidationStatus());   
 	        processData.setMailAddr1(s.getMailAddr1());
 	        processData.setMailAddr2(s.getMailAddr2());	        
 	        processData.setMailAddr3(s.getMailAddr3());
@@ -285,21 +332,25 @@ public class FileServiceImpl implements FileService {
 	        processData.setMailBc(s.getMailBc());      
 	        processData.setMailPcode(s.getMailPcode());      
 	        processData.setMailCountry(s.getMailCountry());     
-	        processData.setMailAddrIsPrivate(s.getMailAddrIsPrivate());  	        
+	        processData.setMailAddressValidationStatus(s.getMailAddressValidationStatus());           
 	        processData.setCreatedAt(s.getCreatedAt());
 	        processData.setCreatedBy(authenticateUserId);
+	        //processData.setPlrFacilityId("");
 	        
-	        if (s.getDoNotLoad().equals("Y")) {
+	        if (s.getDoNotLoadFlag().equals("Y")) {
 		        processData.setRowstatusCode("DO_NOT_LOAD"); 
 	        } else {;
 	        	processData.setRowstatusCode("INITIAL"); 
 	        }
-	        
-	        processDataRepository.save(processData);
-
-    	}
-
-		
+			try {
+				processDataRepository.save(processData);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("copyInputSourceDataToProcessData");
+				logger.error("Unexpected error: ", e);
+			}
+    	}	
 	}
 
 }

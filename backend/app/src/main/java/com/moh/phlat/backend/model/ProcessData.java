@@ -24,12 +24,15 @@ public class ProcessData {
     private Long controlTableId;    
     
     
-    @Column(name="do_not_load")
-    private String doNotLoad;
+    @Column(name="do_not_load_flag")
+    private String doNotLoadFlag;
 
 
     @Column(name="stakeholder")
     private String stakeholder;
+
+    @Column(name="stakeholder_id")
+    private String stakeholderId;
     
     @Column(name="hds_ipc_id")
     private String hdsIpcId;
@@ -55,18 +58,18 @@ public class ProcessData {
     @Column(name="hds_provider_identifier_type3")
     private String hdsProviderIdentifierType3;
     
-    @Column(name="hds_hibc_facility_id")
-    private String hdsHibcFacilityId;
+    @Column(name="hds_msp_facility_number")
+    private String hdsMspFacilityNumber;
 
     @Column(name="hds_type")
     private String hdsType;
 
+    @Column(name="hds_sub_type")
+    private String hdsSubType;
+
     @Column(name="hds_name")
     private String hdsName;
 
-    @Column(name="hds_name_alias")
-    private String hdsNameAlias;
-    
     @Column(name="hds_preferred_name_flag")
     private String hdsPreferredNameFlag;
     
@@ -97,8 +100,8 @@ public class ProcessData {
     @Column(name="hds_fax_number")
     private String hdsFaxNumber;   
     
-    @Column(name="hds_service_delivery_type")
-    private String hdsServiceDeliveryType;   
+    @Column(name="pcn_service_delivery_type")
+    private String pcnServiceDeliveryType;   
     
     @Column(name="pcn_clinic_type")
     private String pcnClinicType;  
@@ -106,51 +109,111 @@ public class ProcessData {
     @Column(name="pcn_pci_flag")
     private String pcnPciFlag;  
     
-    @Column(name="hds_hours_of_operation")
-    private String hdsHoursOfOperation;  
-
-    @Column(name="hds_contact_name")
-    private String hdsContactName;  
-    
-    @Column(name="hds_is_for_profit_flag")
-    private String hdsIsForProfitFlag;  
-    
     @Column(name="source_status")
     private String sourceStatus;  
+
+    @Column(name="pcn_clinic_status")
+    private String pcnClinicStatus;  
+
+    @Column(name="hds_effective_start_date")
+    private String hdsEffectiveStartDate;  
+
+    @Column(name="hds_effective_end_date")
+    private String hdsEffectiveEndDate;  
+
+    @Column(name="unit_by_civic_address")
+    private String unitByCivicAddress;  
     
-    @Column(name="hds_parent_ipc_id")
-    private String hdsParentIpcId;  
+    @Column(name="civic_address")
+    private String civicAddress;  
     
-    @Column(name="bus_ipc_id")
-    private String busIpcId;  
+    @Column(name="fac_reln_type")
+    private String facRelnType;  
     
-    @Column(name="bus_cpn_id")
-    private String busCpnId;  
+    @Column(name="fac_type_code")
+    private String facTypeCode;  
     
-    @Column(name="bus_name")
-    private String busName;
-    
-    @Column(name="bus_legal_name")
-    private String busLegalName;
-    
-    @Column(name="bus_payee_number")
-    private String busPayeeNumber;
-    
-    @Column(name="bus_owner_name")
-    private String busOwnerName;
-    
-    @Column(name="bus_owner_type")
-    private String busOwnerType;
-    
-    @Column(name="bus_owner_type_other")
-    private String busOwnerTypeOther;
+    @Column(name="fac_address_unit")
+    private String facAddressUnit;  
     
     @Column(name="fac_building_name")
     private String facBuildingName;
     
-    @Column(name="facility_hds_details_additional_info")
-    private String facilityHdsDetailsAdditionalInfo;
+    @Column(name="fac_full_address")
+    private String facFullAddress;
     
+    @Column(name="fac_latitude")
+    private String facLatitude;
+    
+    @Column(name="fac_longitude")
+    private String facLongitude;
+    
+    @Column(name="fac_street_direction")
+    private String facStreetDirection;
+    
+    @Column(name="street_direction_prefix")
+    private String streetDirectionPrefix;
+    
+    @Column(name="street_type_prefix")
+    private String streetTypePrefix;
+    
+    @Column(name="fac_civic_number")
+    private String facCivicNumber;
+
+    @Column(name="fac_street_name")
+    private String facStreetName;
+    
+    @Column(name="fac_street_type")
+    private String facStreetType;
+
+    @Column(name="fac_locality_name")
+    private String facLocalityName;
+
+    @Column(name="fac_province_code")
+    private String facProvinceCode;
+
+    @Column(name="fac_site_id")
+    private String facSiteId;
+
+    @Column(name="fac_score")
+    private String facScore;
+
+    @Column(name="fac_match_precision")
+    private String facMatchPrecision;
+
+    @Column(name="fac_precisionPoints")
+    private String facPrecisionPoints;
+    
+    @Column(name="fac_hsda_name")
+    private String facHsdaName;
+
+    @Column(name="fac_databc_results")
+    private String facDatabcResults;
+
+    @Column(name="fac_pcn_code")
+    private String facPcnCode;
+
+    @Column(name="fac_pcn_name")
+    private String facPcnName;
+
+    @Column(name="fac_chsa_status")
+    private String facChsaStatus;
+
+    @Column(name="fac_pcn_status")
+    private String facPcnStatus;
+
+    @Column(name="fac_chsa_code")
+    private String facChsaCode;
+
+    @Column(name="fac_chsa_name")
+    private String facChsaName;
+
+    @Column(name="fac_lha_name")
+    private String facLhaName;
+
+    @Column(name="fac_ha_name")
+    private String facHaName;
+
     @Column(name="physical_addr1")
     private String physicalAddr1;  
     
@@ -175,9 +238,12 @@ public class ProcessData {
     @Column(name="physical_country")
     private String physicalCountry;  
     
-    @Column(name="phys_addr_is_private")
-    private String physAddrIsPrivate;  
+    @Column(name="physical_addr_prps_type_cd")
+    private String physicalAddrPrpsTypeCd;  
     
+    @Column(name="physical_address_validation_status")
+    private String physicalAddressValidationStatus;  
+
     @Column(name="mail_addr1")
     private String mailAddr1;  
     
@@ -202,11 +268,12 @@ public class ProcessData {
     @Column(name="mail_country")
     private String mailCountry;  
     
-    @Column(name="mail_addr_is_private")
-    private String mailAddrIsPrivate;  
+    @Column(name="mail_adderss_validation_status")
+    private String mailAddressValidationStatus;  
     
-    @Column(name="facility_id")
-    private Long facility_id;
+
+    @Column(name="plr_facility_id")
+    private String plrFacilityId;
     
     @Column(name="rowstatus_code")
     private String rowstatusCode;  
@@ -242,12 +309,12 @@ public class ProcessData {
 		this.controlTableId = controlTableId;
 	}
 
-	public String getDoNotLoad() {
-		return doNotLoad;
+	public String getDoNotLoadFlag() {
+		return doNotLoadFlag;
 	}
 
-	public void setDoNotLoad(String doNotLoad) {
-		this.doNotLoad = doNotLoad;
+	public void setDoNotLoadFlag(String doNotLoadFlag) {
+		this.doNotLoadFlag = doNotLoadFlag;
 	}
 
 	public String getStakeholder() {
@@ -256,6 +323,14 @@ public class ProcessData {
 
 	public void setStakeholder(String stakeholder) {
 		this.stakeholder = stakeholder;
+	}
+
+	public String getStakeholderId() {
+		return stakeholderId;
+	}
+
+	public void setStakeholderId(String stakeholderId) {
+		this.stakeholderId = stakeholderId;
 	}
 
 	public String getHdsIpcId() {
@@ -322,12 +397,12 @@ public class ProcessData {
 		this.hdsProviderIdentifierType3 = hdsProviderIdentifierType3;
 	}
 
-	public String getHdsHibcFacilityId() {
-		return hdsHibcFacilityId;
+	public String getHdsMspFacilityNumber() {
+		return hdsMspFacilityNumber;
 	}
 
-	public void setHdsHibcFacilityId(String hdsHibcFacilityId) {
-		this.hdsHibcFacilityId = hdsHibcFacilityId;
+	public void setHdsMspFacilityNumber(String hdsMspFacilityNumber) {
+		this.hdsMspFacilityNumber = hdsMspFacilityNumber;
 	}
 
 	public String getHdsType() {
@@ -338,20 +413,20 @@ public class ProcessData {
 		this.hdsType = hdsType;
 	}
 
+	public String getHdsSubType() {
+		return hdsSubType;
+	}
+
+	public void setHdsSubType(String hdsSubType) {
+		this.hdsSubType = hdsSubType;
+	}
+
 	public String getHdsName() {
 		return hdsName;
 	}
 
 	public void setHdsName(String hdsName) {
 		this.hdsName = hdsName;
-	}
-
-	public String getHdsNameAlias() {
-		return hdsNameAlias;
-	}
-
-	public void setHdsNameAlias(String hdsNameAlias) {
-		this.hdsNameAlias = hdsNameAlias;
 	}
 
 	public String getHdsPreferredNameFlag() {
@@ -434,12 +509,12 @@ public class ProcessData {
 		this.hdsFaxNumber = hdsFaxNumber;
 	}
 
-	public String getHdsServiceDeliveryType() {
-		return hdsServiceDeliveryType;
+	public String getPcnServiceDeliveryType() {
+		return pcnServiceDeliveryType;
 	}
 
-	public void setHdsServiceDeliveryType(String hdsServiceDeliveryType) {
-		this.hdsServiceDeliveryType = hdsServiceDeliveryType;
+	public void setPcnServiceDeliveryType(String pcnServiceDeliveryType) {
+		this.pcnServiceDeliveryType = pcnServiceDeliveryType;
 	}
 
 	public String getPcnClinicType() {
@@ -458,30 +533,6 @@ public class ProcessData {
 		this.pcnPciFlag = pcnPciFlag;
 	}
 
-	public String getHdsHoursOfOperation() {
-		return hdsHoursOfOperation;
-	}
-
-	public void setHdsHoursOfOperation(String hdsHoursOfOperation) {
-		this.hdsHoursOfOperation = hdsHoursOfOperation;
-	}
-
-	public String getHdsContactName() {
-		return hdsContactName;
-	}
-
-	public void setHdsContactName(String hdsContactName) {
-		this.hdsContactName = hdsContactName;
-	}
-
-	public String getHdsIsForProfitFlag() {
-		return hdsIsForProfitFlag;
-	}
-
-	public void setHdsIsForProfitFlag(String hdsIsForProfitFlag) {
-		this.hdsIsForProfitFlag = hdsIsForProfitFlag;
-	}
-
 	public String getSourceStatus() {
 		return sourceStatus;
 	}
@@ -490,76 +541,68 @@ public class ProcessData {
 		this.sourceStatus = sourceStatus;
 	}
 
-	public String getHdsParentIpcId() {
-		return hdsParentIpcId;
+	public String getPcnClinicStatus() {
+		return pcnClinicStatus;
 	}
 
-	public void setHdsParentIpcId(String hdsParentIpcId) {
-		this.hdsParentIpcId = hdsParentIpcId;
+	public void setPcnClinicStatus(String pcnClinicStatus) {
+		this.pcnClinicStatus = pcnClinicStatus;
 	}
 
-	public String getBusIpcId() {
-		return busIpcId;
+	public String getHdsEffectiveStartDate() {
+		return hdsEffectiveStartDate;
 	}
 
-	public void setBusIpcId(String busIpcId) {
-		this.busIpcId = busIpcId;
+	public void setHdsEffectiveStartDate(String hdsEffectiveStartDate) {
+		this.hdsEffectiveStartDate = hdsEffectiveStartDate;
 	}
 
-	public String getBusCpnId() {
-		return busCpnId;
+	public String getHdsEffectiveEndDate() {
+		return hdsEffectiveEndDate;
 	}
 
-	public void setBusCpnId(String busCpnId) {
-		this.busCpnId = busCpnId;
+	public void setHdsEffectiveEndDate(String hdsEffectiveEndDate) {
+		this.hdsEffectiveEndDate = hdsEffectiveEndDate;
 	}
 
-	public String getBusName() {
-		return busName;
+	public String getUnitByCivicAddress() {
+		return unitByCivicAddress;
 	}
 
-	public void setBusName(String busName) {
-		this.busName = busName;
+	public void setUnitByCivicAddress(String unitByCivicAddress) {
+		this.unitByCivicAddress = unitByCivicAddress;
 	}
 
-	public String getBusLegalName() {
-		return busLegalName;
+	public String getCivicAddress() {
+		return civicAddress;
 	}
 
-	public void setBusLegalName(String busLegalName) {
-		this.busLegalName = busLegalName;
+	public void setCivicAddress(String civicAddress) {
+		this.civicAddress = civicAddress;
 	}
 
-	public String getBusPayeeNumber() {
-		return busPayeeNumber;
+	public String getFacRelnType() {
+		return facRelnType;
 	}
 
-	public void setBusPayeeNumber(String busPayeeNumber) {
-		this.busPayeeNumber = busPayeeNumber;
+	public void setFacRelnType(String facRelnType) {
+		this.facRelnType = facRelnType;
 	}
 
-	public String getBusOwnerName() {
-		return busOwnerName;
+	public String getFacTypeCode() {
+		return facTypeCode;
 	}
 
-	public void setBusOwnerName(String busOwnerName) {
-		this.busOwnerName = busOwnerName;
+	public void setFacTypeCode(String facTypeCode) {
+		this.facTypeCode = facTypeCode;
 	}
 
-	public String getBusOwnerType() {
-		return busOwnerType;
+	public String getFacAddressUnit() {
+		return facAddressUnit;
 	}
 
-	public void setBusOwnerType(String busOwnerType) {
-		this.busOwnerType = busOwnerType;
-	}
-
-	public String getBusOwnerTypeOther() {
-		return busOwnerTypeOther;
-	}
-
-	public void setBusOwnerTypeOther(String busOwnerTypeOther) {
-		this.busOwnerTypeOther = busOwnerTypeOther;
+	public void setFacAddressUnit(String facAddressUnit) {
+		this.facAddressUnit = facAddressUnit;
 	}
 
 	public String getFacBuildingName() {
@@ -570,12 +613,204 @@ public class ProcessData {
 		this.facBuildingName = facBuildingName;
 	}
 
-	public String getFacilityHdsDetailsAdditionalInfo() {
-		return facilityHdsDetailsAdditionalInfo;
+	public String getFacFullAddress() {
+		return facFullAddress;
 	}
 
-	public void setFacilityHdsDetailsAdditionalInfo(String facilityHdsDetailsAdditionalInfo) {
-		this.facilityHdsDetailsAdditionalInfo = facilityHdsDetailsAdditionalInfo;
+	public void setFacFullAddress(String facFullAddress) {
+		this.facFullAddress = facFullAddress;
+	}
+
+	public String getFacLatitude() {
+		return facLatitude;
+	}
+
+	public void setFacLatitude(String facLatitude) {
+		this.facLatitude = facLatitude;
+	}
+
+	public String getFacLongitude() {
+		return facLongitude;
+	}
+
+	public void setFacLongitude(String facLongitude) {
+		this.facLongitude = facLongitude;
+	}
+
+	public String getFacStreetDirection() {
+		return facStreetDirection;
+	}
+
+	public void setFacStreetDirection(String facStreetDirection) {
+		this.facStreetDirection = facStreetDirection;
+	}
+
+	public String getStreetDirectionPrefix() {
+		return streetDirectionPrefix;
+	}
+
+	public void setStreetDirectionPrefix(String streetDirectionPrefix) {
+		this.streetDirectionPrefix = streetDirectionPrefix;
+	}
+
+	public String getStreetTypePrefix() {
+		return streetTypePrefix;
+	}
+
+	public void setStreetTypePrefix(String streetTypePrefix) {
+		this.streetTypePrefix = streetTypePrefix;
+	}
+
+	public String getFacCivicNumber() {
+		return facCivicNumber;
+	}
+
+	public void setFacCivicNumber(String facCivicNumber) {
+		this.facCivicNumber = facCivicNumber;
+	}
+
+	public String getFacStreetName() {
+		return facStreetName;
+	}
+
+	public void setFacStreetName(String facStreetName) {
+		this.facStreetName = facStreetName;
+	}
+
+	public String getFacStreetType() {
+		return facStreetType;
+	}
+
+	public void setFacStreetType(String facStreetType) {
+		this.facStreetType = facStreetType;
+	}
+
+	public String getFacLocalityName() {
+		return facLocalityName;
+	}
+
+	public void setFacLocalityName(String facLocalityName) {
+		this.facLocalityName = facLocalityName;
+	}
+
+	public String getFacProvinceCode() {
+		return facProvinceCode;
+	}
+
+	public void setFacProvinceCode(String facProvinceCode) {
+		this.facProvinceCode = facProvinceCode;
+	}
+
+	public String getFacSiteId() {
+		return facSiteId;
+	}
+
+	public void setFacSiteId(String facSiteId) {
+		this.facSiteId = facSiteId;
+	}
+
+	public String getFacScore() {
+		return facScore;
+	}
+
+	public void setFacScore(String facScore) {
+		this.facScore = facScore;
+	}
+
+	public String getFacMatchPrecision() {
+		return facMatchPrecision;
+	}
+
+	public void setFacMatchPrecision(String facMatchPrecision) {
+		this.facMatchPrecision = facMatchPrecision;
+	}
+
+	public String getFacPrecisionPoints() {
+		return facPrecisionPoints;
+	}
+
+	public void setFacPrecisionPoints(String facPrecisionPoints) {
+		this.facPrecisionPoints = facPrecisionPoints;
+	}
+
+	public String getFacHsdaName() {
+		return facHsdaName;
+	}
+
+	public void setFacHsdaName(String facHsdaName) {
+		this.facHsdaName = facHsdaName;
+	}
+
+	public String getFacDatabcResults() {
+		return facDatabcResults;
+	}
+
+	public void setFacDatabcResults(String facDatabcResults) {
+		this.facDatabcResults = facDatabcResults;
+	}
+
+	public String getFacPcnCode() {
+		return facPcnCode;
+	}
+
+	public void setFacPcnCode(String facPcnCode) {
+		this.facPcnCode = facPcnCode;
+	}
+
+	public String getFacPcnName() {
+		return facPcnName;
+	}
+
+	public void setFacPcnName(String facPcnName) {
+		this.facPcnName = facPcnName;
+	}
+
+	public String getFacChsaStatus() {
+		return facChsaStatus;
+	}
+
+	public void setFacChsaStatus(String facChsaStatus) {
+		this.facChsaStatus = facChsaStatus;
+	}
+
+	public String getFacPcnStatus() {
+		return facPcnStatus;
+	}
+
+	public void setFacPcnStatus(String facPcnStatus) {
+		this.facPcnStatus = facPcnStatus;
+	}
+
+	public String getFacChsaCode() {
+		return facChsaCode;
+	}
+
+	public void setFacChsaCode(String facChsaCode) {
+		this.facChsaCode = facChsaCode;
+	}
+
+	public String getFacChsaName() {
+		return facChsaName;
+	}
+
+	public void setFacChsaName(String facChsaName) {
+		this.facChsaName = facChsaName;
+	}
+
+	public String getFacLhaName() {
+		return facLhaName;
+	}
+
+	public void setFacLhaName(String facLhaName) {
+		this.facLhaName = facLhaName;
+	}
+
+	public String getFacHaName() {
+		return facHaName;
+	}
+
+	public void setFacHaName(String facHaName) {
+		this.facHaName = facHaName;
 	}
 
 	public String getPhysicalAddr1() {
@@ -642,12 +877,20 @@ public class ProcessData {
 		this.physicalCountry = physicalCountry;
 	}
 
-	public String getPhysAddrIsPrivate() {
-		return physAddrIsPrivate;
+	public String getPhysicalAddrPrpsTypeCd() {
+		return physicalAddrPrpsTypeCd;
 	}
 
-	public void setPhysAddrIsPrivate(String physAddrIsPrivate) {
-		this.physAddrIsPrivate = physAddrIsPrivate;
+	public void setPhysicalAddrPrpsTypeCd(String physicalAddrPrpsTypeCd) {
+		this.physicalAddrPrpsTypeCd = physicalAddrPrpsTypeCd;
+	}
+
+	public String getPhysicalAddressValidationStatus() {
+		return physicalAddressValidationStatus;
+	}
+
+	public void setPhysicalAddressValidationStatus(String physicalAddressValidationStatus) {
+		this.physicalAddressValidationStatus = physicalAddressValidationStatus;
 	}
 
 	public String getMailAddr1() {
@@ -714,20 +957,20 @@ public class ProcessData {
 		this.mailCountry = mailCountry;
 	}
 
-	public String getMailAddrIsPrivate() {
-		return mailAddrIsPrivate;
+	public String getMailAddressValidationStatus() {
+		return mailAddressValidationStatus;
 	}
 
-	public void setMailAddrIsPrivate(String mailAddrIsPrivate) {
-		this.mailAddrIsPrivate = mailAddrIsPrivate;
+	public void setMailAddressValidationStatus(String mailAddressValidationStatus) {
+		this.mailAddressValidationStatus = mailAddressValidationStatus;
 	}
 
-	public Long getFacility_id() {
-		return facility_id;
+	public String getPlrFacilityId() {
+		return plrFacilityId;
 	}
 
-	public void setFacility_id(Long facility_id) {
-		this.facility_id = facility_id;
+	public void setPlrFacilityId(String plrFacilityId) {
+		this.plrFacilityId = plrFacilityId;
 	}
 
 	public String getRowstatusCode() {
@@ -777,7 +1020,5 @@ public class ProcessData {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-	
 	
 }
