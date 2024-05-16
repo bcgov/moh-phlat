@@ -47,7 +47,7 @@ export default {
     ],
     headers: [
       {
-        title: '#',
+        title: 'File ID',
         align: 'start',
         sortable: true,
         key: 'id',
