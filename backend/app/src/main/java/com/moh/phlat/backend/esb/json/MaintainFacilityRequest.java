@@ -19,6 +19,7 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,7 +92,7 @@ public class MaintainFacilityRequest implements PlrRequest {
 		//fd.setNotes(createNoteDtos(input));
 		fd.setAddresses(createAddressDtos(input));
 		fd.setCivicAddresses(createCivicAddressDtos(input));
-		fd.setTelecommunication(createTelecomunicationDtos(input));
+		//fd.setTelecommunication(createTelecomunicationDtos(input));
 		return fd;
 	}
 	
@@ -286,42 +287,79 @@ public class MaintainFacilityRequest implements PlrRequest {
 		cad.setDisplayActive(true);
 		cad.setEffectiveStartDate(input.getCreatedAt());
 		//cad.setFacilityId(0L);
-		//cad.setFullAddress("");
+		if (StringUtils.hasText(input.getFacFullAddress()) && !input.getFacFullAddress().equals("NULL")) {
+			cad.setFullAddress(input.getFacFullAddress());
+		}
 		//cad.setGenerationNum(0L);
 		//cad.setId(0L);
-		cad.setNoChangeOnUpdate(true);
+		cad.setNoChangeOnUpdate(false);
 		//cad.setPauthId(0L);
+		if (StringUtils.hasText(input.getFacStreetType())) {
+			cad.setStreetType(input.getFacStreetType());
+		}
 		//cad.setType("");
 		//cad.setTypeCode("");
 		//cad.setTypeId(0L);
 		cad.setUpdatable(true);
 		//cad.setUserChid("");
 		//cad.setChsaDescTxt("");
-		//cad.setChsaHealthAreaCode(0L);
-		//cad.setChsaNameCode("");
-		//cad.setChsaStatus("");
-		//cad.setDataBCResult("");
-		//cad.setHaDescTxt("");
-		//cad.setHsdaDescTxt("");
-		//cad.setLatitude(BigDecimal.ONE);
-		//cad.setLongitude(BigDecimal.ONE);
-		//cad.setLatitudeCHSA(BigDecimal.ONE);
-		//cad.setLongitudeCHSA(BigDecimal.ONE);
-		//cad.setLhaDescTxt("");
-		//cad.setMatchPrecision("");
-		//cad.setNumber(0L);
-		//cad.setPcnDescTxt("");
-		//cad.setPcnNameCode("");
-		//cad.setPcnStatus("");
-		//cad.setPrecisionPoints(0);
-		//cad.setScore(0);
-		//cad.setSiteID("");
-		//cad.setStreetDirection("");
-		//cad.setStreetName("");
-		//cad.setStreetType("");
-		//cad.setUnit(0L);
-		cad.setIsDirectionPrefix(true);
-		cad.setIsTypePrefix(true);
+		if (StringUtils.hasText(input.getFacChsaCode())) {
+			cad.setChsaNameCode(input.getFacChsaCode());
+		}
+		if (StringUtils.hasText(input.getFacChsaName())) {
+			cad.setChsaDescTxt(input.getFacChsaName());
+		}
+		if (StringUtils.hasText(input.getFacChsaStatus())) {
+			cad.setChsaStatus(input.getFacChsaStatus());
+		}
+		if (StringUtils.hasText(input.getFacDatabcResults())) {
+			cad.setDataBCResult(input.getFacDatabcResults());
+		}
+		if (StringUtils.hasText(input.getFacHaName())) {
+			cad.setHaDescTxt(input.getFacHaName());
+		}
+		if (StringUtils.hasText(input.getFacHsdaName())) {
+			cad.setHsdaDescTxt(input.getFacHsdaName());
+		}
+		if (StringUtils.hasText(input.getFacLatitude())) {
+			cad.setLatitude(BigDecimal.valueOf(Double.valueOf(input.getFacLatitude())));
+		}
+		if (StringUtils.hasText(input.getFacLongitude())) {
+			cad.setLongitude(BigDecimal.valueOf(Double.valueOf(input.getFacLongitude())));
+		}
+		if (StringUtils.hasText(input.getFacLhaName())) {
+			cad.setLhaDescTxt(input.getFacLhaName());
+		}
+		if (StringUtils.hasText(input.getFacMatchPrecision())) {
+			cad.setMatchPrecision(input.getFacMatchPrecision());
+		}
+		if (StringUtils.hasText(input.getFacPcnName())) {
+			cad.setPcnDescTxt(null);
+		}
+		if (StringUtils.hasText(input.getFacPcnCode())) {
+			cad.setPcnNameCode(input.getFacPcnCode());
+		}
+		if (StringUtils.hasText(input.getFacPcnStatus())) {
+			cad.setPcnStatus(input.getFacPcnStatus());
+		}
+		if (StringUtils.hasText(input.getFacPrecisionPoints())) {
+			cad.setPrecisionPoints(Integer.valueOf(input.getFacPrecisionPoints()));
+		}
+		if (StringUtils.hasText(input.getFacScore())) {
+			cad.setScore(Integer.valueOf(input.getFacScore()));
+		}
+		if (StringUtils.hasText(input.getFacSiteId())) {
+			cad.setSiteID(input.getFacSiteId());
+		}
+		if (StringUtils.hasText(input.getFacStreetDirection())) {
+			cad.setStreetDirection(input.getFacStreetDirection());
+		}
+		if (StringUtils.hasText(input.getStreetDirectionPrefix())) {
+			cad.setIsDirectionPrefix(Boolean.valueOf(input.getStreetDirectionPrefix()));
+		}
+		if (StringUtils.hasText(input.getStreetTypePrefix())) {
+			cad.setIsTypePrefix(Boolean.valueOf(input.getStreetTypePrefix()));
+		}
 		
 		List<CivicAddressDto> output = new ArrayList<CivicAddressDto>();
 		output.add(cad);

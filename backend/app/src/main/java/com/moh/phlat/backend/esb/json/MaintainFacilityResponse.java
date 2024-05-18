@@ -24,6 +24,8 @@ import com.moh.phlat.backend.model.ProcessData;
 public class MaintainFacilityResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainFacilityResponse.class);
 	
+	private String facilityId;
+	
 	private boolean isLoaded = false;
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
@@ -47,13 +49,19 @@ public class MaintainFacilityResponse implements PlrResponse {
 			om.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 			om.setSerializationInclusion(Include.NON_NULL);
 			
-			/* DISABLING RESPONSE PROCESSING FOR NOW TO COMPLETE STAGE A, WILL REENABLE FOR STAGE B *
 			JsonNode root = om.readTree(json);
-			for (JsonNode ack : root.get("acknowledgements")) {
-				if (ack.get("msgCode") != null && !ack.get("msgCode").asText().contains("success")) {
+			for (JsonNode ack : root.get("acknowledgments")) {
+				if (ack.get("msgCode") != null && ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
 					hasError = true;
+					break;
 				}
-			}*/
+			}
+			if (!hasError) {
+				JsonNode facility = root.get("facility");
+				if (facility.get("facilityIdentifiers") != null && facility.get("facilityIdentifiers").findValue("identifier") != null) {
+					facilityId = facility.get("facilityIdentifiers").findValue("identifier").asText();
+				}
+			}
 			
 		} catch (Exception ex) {
 			hasError = true;
@@ -89,6 +97,10 @@ public class MaintainFacilityResponse implements PlrResponse {
 		return pass;
 	}
 	
+	public String getFacilityId() {
+		return facilityId;
+	}
+
 	public boolean isLoaded() {
 		return isLoaded;
 	}
