@@ -227,7 +227,7 @@ export default {
     redirectToProcessView(id) {
       this.loading = true;
       this.$router.push({
-        name: 'ProcessControlView',
+        name: 'EditSourceData',
         query: {
           id: id,
         },
@@ -236,7 +236,7 @@ export default {
     redirectToView(id) {
       this.loading = true;
       this.$router.push({
-        name: 'SourceControlView',
+        name: 'ViewSourceData',
         query: {
           id: id,
         },
@@ -277,7 +277,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1>File Task Management</h1>
+        <h1>File Task Management - Process File List</h1>
       </div>
 
       <!-- search input -->

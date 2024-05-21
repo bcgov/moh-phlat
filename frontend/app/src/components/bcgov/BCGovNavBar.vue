@@ -54,7 +54,7 @@ export default {
             data-cy="TaskManagement"
             :to="{ name: 'TaskManagement' }"
           >
-            File Task Management
+            File Task Management – Process File List
           </router-link>
         </li>
         <li>

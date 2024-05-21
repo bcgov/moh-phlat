@@ -34,35 +34,23 @@ export default function getRouter(basePath = '/') {
         name: 'Home',
         component: () => import('~/views/File.vue'),
         children: [
-          // { //Used for dev Testing
-          //   path: '/dev',
-          //   name: 'DevTools',
-          //   component: () => import('~/KeycloakDevTools.vue'),
-          //   meta: {
-          //     breadcrumbTitle: 'File Task management',
-          //     accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
-          //     requiresAuth: IdentityProviders.IDIR,
-          //     hasLogin: true,
-          //   },
-          // },
           {
             path: '/',
             name: 'TaskManagement',
             component: () => import('~/views/source-data/TaskManagement.vue'),
             meta: {
-              breadcrumbTitle: 'File Task management',
+              breadcrumbTitle: 'File Task Management - Process File List',
               accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
               // requiresAuth: IdentityProviders.IDIR,
               // hasLogin: true,
             },
           },
           {
-            path: 'source-control-view',
-            name: 'SourceControlView',
-            component: () =>
-              import('~/views/source-data/SourceControlView.vue'),
+            path: 'view-source-data',
+            name: 'ViewSourceData',
+            component: () => import('~/views/source-data/ViewSourceData.vue'),
             meta: {
-              breadcrumbTitle: 'File Control View',
+              breadcrumbTitle: 'View Source Data',
               accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,
@@ -75,12 +63,11 @@ export default function getRouter(basePath = '/') {
             },
           },
           {
-            path: 'process-control-view',
-            name: 'ProcessControlView',
-            component: () =>
-              import('~/views/source-data/ProcessControlView.vue'),
+            path: 'edit-source-data',
+            name: 'EditSourceData',
+            component: () => import('~/views/source-data/EditSourceData.vue'),
             meta: {
-              breadcrumbTitle: 'File Control View',
+              breadcrumbTitle: 'Edit Source Data',
               accessTo: [RegRoles.REG_ADMIN, RegRoles.REG_USER],
               requiresAuth: IdentityProviders.IDIR,
               hasLogin: true,

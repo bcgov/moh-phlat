@@ -446,7 +446,7 @@ export default {
     >
       <!-- page title -->
       <div>
-        <h1>{{ fileName }}</h1>
+        <h1>{{ fileName }} - Edit Source Data</h1>
       </div>
 
       <!-- search input -->
