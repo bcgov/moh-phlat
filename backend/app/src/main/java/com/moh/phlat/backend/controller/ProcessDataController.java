@@ -27,11 +27,13 @@ import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.DbUtilityServiceImpl.ReportSummary;
 
 @RestController
 @RequestMapping("/processdata")
 @CrossOrigin(origins = "*")
 public class ProcessDataController {
+	
 	private static final Logger logger = LoggerFactory.getLogger(ProcessDataController.class);
 
 	@Autowired
@@ -388,5 +390,15 @@ public class ProcessDataController {
 		dbUtilityService.loadProcessDataToPlr(controlTableId,authenticatedUserId);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!",_control));
+	}
+
+@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+@GetMapping("/reportsummary/{controlTableId}")
+public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTableId(
+		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
+	
+	List<ReportSummary> _list = dbUtilityService.getReportSummary(controlTableId);
+	
+	return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _list));
 	}
 }

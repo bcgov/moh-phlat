@@ -7,6 +7,8 @@ import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
+import com.moh.phlat.backend.service.DbUtilityService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
+	 public class ReportSummary {
+		public String attribute;
+		public Long count;
+		
+		public String getAttribute() {
+			return attribute;
+		}
+		public void setAttribute(String attribute) {
+			this.attribute = attribute;
+		}
+		public Long getCount() {
+			return count;
+		}
+		public void setCount(Long count) {
+			this.count = count;
+		}
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
 	@Autowired
@@ -220,4 +240,92 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		}
 	}
 
+	@Override
+	public List<ReportSummary> getReportSummary(Long controlTableId) {
+		String _attribute;
+		Long _count;
+
+		List<ReportSummary> items = new ArrayList<ReportSummary>();
+
+		_attribute ="TOTAL INPUT RECORDS";
+		_count = processDataRepository.countByControlTableId(controlTableId);
+		ReportSummary rs1 = new ReportSummary();
+		rs1.setAttribute((String) _attribute);
+		rs1.setCount((Long)_count);
+		items.add(rs1);
+		
+		_attribute ="TOTAL INITIAL ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"INITIAL");
+		ReportSummary rs2 = new ReportSummary();
+		rs2.setAttribute((String) _attribute);
+		rs2.setCount((Long)_count);
+		items.add(rs2);		
+		
+		_attribute ="TOTAL DO_NOT_LOAD ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"DO_NOT_LOAD");
+		ReportSummary rs3 = new ReportSummary();
+		rs3.setAttribute((String) _attribute);
+		rs3.setCount((Long)_count);
+		items.add(rs3);		
+		
+		_attribute ="TOTAL INVALID ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"INVALID");
+		ReportSummary rs4 = new ReportSummary();
+		rs4.setAttribute((String) _attribute);
+		rs4.setCount((Long)_count);
+		items.add(rs4);		
+
+		_attribute ="TOTAL VALID ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"VALID");
+		ReportSummary rs5 = new ReportSummary();
+		rs5.setAttribute((String) _attribute);
+		rs5.setCount((Long)_count);
+		items.add(rs5);		
+		
+		_attribute ="TOTAL WARNING ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"WARNING");
+		ReportSummary rs6 = new ReportSummary();
+		rs6.setAttribute((String) _attribute);
+		rs6.setCount((Long)_count);
+		items.add(rs6);				
+		
+		_attribute ="TOTAL COMPLETED ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"COMPLETED");
+		ReportSummary rs7 = new ReportSummary();
+		rs7.setAttribute((String) _attribute);
+		rs7.setCount((Long)_count);
+		items.add(rs7);	
+		
+		_attribute ="TOTAL POTENTIAL_DUPLICATE ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"POTENTIAL_DUPLICATE");
+		ReportSummary rs8 = new ReportSummary();
+		rs8.setAttribute((String) _attribute);
+		rs8.setCount((Long)_count);
+		items.add(rs8);	
+		
+		_attribute ="TOTAL LOAD_ERROR ROWSTATUS";
+		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"LOAD_ERROR");
+		ReportSummary rs9 = new ReportSummary();
+		rs9.setAttribute((String) _attribute);
+		rs9.setCount((Long)_count);
+		items.add(rs9);			
+		
+		// adding message code and desc to the list
+
+		List<Object[]> _listMsg = processDataRepository.getProcessDataWithMessageCodeCount(controlTableId);
+		for (Object[] _msg : _listMsg){
+			String _code = (String) _msg[0];
+
+			if (_code!=null) {
+				ReportSummary rsMessage = new ReportSummary();
+				_attribute = (String) _msg[0] + " " + (String) _msg[1];
+				_count = (Long)_msg[2];
+				rsMessage.setAttribute((String) _attribute);
+	 			rsMessage.setCount((Long)_count);
+				items.add(rsMessage);	
+				logger.info("messageCode: {} ; messageDesc: {}; count: {}", _code, _attribute, _count);
+			}	
+		}   
+		return items;
+	}
 }
