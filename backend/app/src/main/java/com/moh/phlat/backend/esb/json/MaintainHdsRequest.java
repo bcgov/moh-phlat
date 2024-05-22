@@ -7,6 +7,8 @@ import ca.bc.gov.health.plr.dto.facility.esb.FacilityDto;
 import ca.bc.gov.health.plr.dto.facility.esb.FacilityIdentifierDto;
 import ca.bc.gov.health.plr.dto.facility.esb.FacilityNameDto;
 import ca.bc.gov.health.plr.dto.provider.esb.AddressDto;
+import ca.bc.gov.health.plr.dto.provider.esb.ElectronicAddressDto;
+import ca.bc.gov.health.plr.dto.provider.esb.HdsTypeDto;
 import ca.bc.gov.health.plr.dto.provider.esb.NoteDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 import ca.bc.gov.health.plr.dto.provider.esb.TelecommunicationDto;
@@ -20,6 +22,9 @@ import com.moh.phlat.backend.model.ProcessData;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -80,72 +85,23 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private ProviderDetails createProviderDetails(ProcessData input) {
 		ProviderDetails pd = new ProviderDetails();
+		pd.setProviderType(input.getHdsType());
+		pd.setHdsType(createHdsTypeDto(input));
+		pd.setAddresses(createAddressDtos(input));
+		pd.setTelecommunication(createTelecomunicationDtos(input));
+		pd.setElectronicAddresses(createElectronicAddressDtos(input));
 		return pd;
 	}
 	
 	private FacilityDto createFacilityDto(ProcessData input) {
 		FacilityDto fd = new FacilityDto();
-		fd.setFacilityDetails(createFacilityDetailsDtos(input));
-		fd.setFacilityNames(createFacilityNameDtos(input));
-		//fd.setFacilityIdentifiers(createFacilityIdentifierDtos(input));
-		//fd.setNotes(createNoteDtos(input));
-		fd.setAddresses(createAddressDtos(input));
-		fd.setCivicAddresses(createCivicAddressDtos(input));
-		fd.setTelecommunication(createTelecomunicationDtos(input));
 		return fd;
 	}
 	
-	private List<FacilityDetailsDto> createFacilityDetailsDtos(ProcessData input) {
+	private HdsTypeDto createHdsTypeDto(ProcessData input) {
+		HdsTypeDto htd = new HdsTypeDto();
 		
-		FacilityDetailsDto fdd = new FacilityDetailsDto();
-		fdd.setCreatedDate(input.getCreatedAt());
-		fdd.setEffectiveStartDate(input.getCreatedAt());
-		fdd.setType("BUILDING");
-		fdd.setTypeCode("BUILDING");
-		//if (StringUtils.hasText(input.getFacilityHdsDetailsAdditionalInfo())) {
-		//	fdd.setAdditionalInfo(input.getFacilityHdsDetailsAdditionalInfo());
-		//}
-		
-		List<FacilityDetailsDto> output = new ArrayList<FacilityDetailsDto>();
-		output.add(fdd);
-		return output;
-	}
-	
-	private List<FacilityNameDto> createFacilityNameDtos(ProcessData input) {
-		
-		FacilityNameDto fnd = new FacilityNameDto();
-		if (StringUtils.hasText(input.getFacBuildingName())) {
-			fnd.setName(input.getFacBuildingName());
-		} else {
-			return null;
-		}
-		
-		fnd.setCreatedDate(input.getCreatedAt());
-		fnd.setEffectiveStartDate(input.getCreatedAt());
-		
-		List<FacilityNameDto> output = new ArrayList<FacilityNameDto>();
-		output.add(fnd);
-		return output;
-	}
-	
-	private List<FacilityIdentifierDto> createFacilityIdentifierDtos(ProcessData input) {
-		FacilityIdentifierDto fid = new FacilityIdentifierDto();
-		fid.setCreatedDate(input.getCreatedAt());
-		fid.setEffectiveStartDate(input.getCreatedAt());
-		
-		List<FacilityIdentifierDto> output = new ArrayList<FacilityIdentifierDto>();
-		output.add(fid);
-		return output;
-	}
-	
-	private List<NoteDto> createNoteDtos(ProcessData input) {
-		NoteDto nd = new NoteDto();
-		nd.setCreatedDate(input.getCreatedAt());
-		nd.setEffectiveStartDate(input.getCreatedAt());
-		
-		List<NoteDto> output = new ArrayList<NoteDto>();
-		output.add(nd);
-		return output;
+		return htd;
 	}
 	
 	private List<AddressDto> createAddressDtos(ProcessData input) {
@@ -370,6 +326,50 @@ public class MaintainHdsRequest implements PlrRequest {
 			td.setEffectiveStartDate(input.getCreatedAt());
 			output.add(td);
 		}
+		return output;
+	}
+	
+	private List<ElectronicAddressDto> createElectronicAddressDtos(ProcessData input) {
+		if (!StringUtils.hasText(input.getHdsEmail() + input.getHdsWebsite())) {
+			return null;
+		}
+		
+		List<ElectronicAddressDto> output = new ArrayList<ElectronicAddressDto>();
+		SimpleDateFormat startDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+		SimpleDateFormat endDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		
+		if (StringUtils.hasText(input.getHdsEmail())) {
+			ElectronicAddressDto ead = new ElectronicAddressDto();
+			ead.setAddress(input.getHdsEmail());
+			ead.setCreatedDate(input.getCreatedAt());
+			try {
+				ead.setEffectiveStartDate(startDateFormat.parse(input.getHdsEffectiveStartDate()));
+			} catch (ParseException ex) {
+				ead.setEffectiveStartDate(input.getCreatedAt());
+			}
+			try {
+				ead.setEffectiveEndDate(endDateFormat.parse(input.getHdsEffectiveEndDate()));
+			} catch (ParseException ex) {
+			}
+			output.add(ead);
+		}
+		
+		if (StringUtils.hasText(input.getHdsWebsite())) {
+			ElectronicAddressDto ead = new ElectronicAddressDto();
+			ead.setAddress(input.getHdsWebsite());
+			ead.setCreatedDate(input.getCreatedAt());
+			try {
+				ead.setEffectiveStartDate(startDateFormat.parse(input.getHdsEffectiveStartDate()));
+			} catch (ParseException ex) {
+				ead.setEffectiveStartDate(input.getCreatedAt());
+			}
+			try {
+				ead.setEffectiveEndDate(endDateFormat.parse(input.getHdsEffectiveEndDate()));
+			} catch (ParseException ex) {
+			}
+			output.add(ead);
+		}
+		
 		return output;
 	}
 }
