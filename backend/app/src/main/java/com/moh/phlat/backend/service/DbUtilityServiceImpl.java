@@ -254,56 +254,56 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		rs1.setCount((Long)_count);
 		items.add(rs1);
 		
-		_attribute ="TOTAL INITIAL ROWSTATUS:";
+		_attribute ="TOTAL INITIAL ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"INITIAL");
 		ReportSummary rs2 = new ReportSummary();
 		rs2.setAttribute((String) _attribute);
 		rs2.setCount((Long)_count);
 		items.add(rs2);		
 		
-		_attribute ="TOTAL DO_NOT_LOAD ROWSTATUS:";
+		_attribute ="TOTAL DO_NOT_LOAD ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"DO_NOT_LOAD");
 		ReportSummary rs3 = new ReportSummary();
 		rs3.setAttribute((String) _attribute);
 		rs3.setCount((Long)_count);
 		items.add(rs3);		
 		
-		_attribute ="TOTAL INVALID ROWSTATUS:";
+		_attribute ="TOTAL INVALID ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"INVALID");
 		ReportSummary rs4 = new ReportSummary();
 		rs4.setAttribute((String) _attribute);
 		rs4.setCount((Long)_count);
 		items.add(rs4);		
 
-		_attribute ="TOTAL VALID ROWSTATUS:";
+		_attribute ="TOTAL VALID ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"VALID");
 		ReportSummary rs5 = new ReportSummary();
 		rs5.setAttribute((String) _attribute);
 		rs5.setCount((Long)_count);
 		items.add(rs5);		
 		
-		_attribute ="TOTAL WARNING ROWSTATUS:";
+		_attribute ="TOTAL WARNING ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"WARNING");
 		ReportSummary rs6 = new ReportSummary();
 		rs6.setAttribute((String) _attribute);
 		rs6.setCount((Long)_count);
 		items.add(rs6);				
 		
-		_attribute ="TOTAL COMPLETED ROWSTATUS:";
+		_attribute ="TOTAL COMPLETED ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"COMPLETED");
 		ReportSummary rs7 = new ReportSummary();
 		rs7.setAttribute((String) _attribute);
 		rs7.setCount((Long)_count);
 		items.add(rs7);	
 		
-		_attribute ="TOTAL POTENTIAL_DUPLICATE ROWSTATUS:";
+		_attribute ="TOTAL POTENTIAL_DUPLICATE ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"POTENTIAL_DUPLICATE");
 		ReportSummary rs8 = new ReportSummary();
 		rs8.setAttribute((String) _attribute);
 		rs8.setCount((Long)_count);
 		items.add(rs8);	
 		
-		_attribute ="TOTAL LOAD_ERROR ROWSTATUS:";
+		_attribute ="TOTAL LOAD_ERROR ROWSTATUS";
 		_count = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,"LOAD_ERROR");
 		ReportSummary rs9 = new ReportSummary();
 		rs9.setAttribute((String) _attribute);
