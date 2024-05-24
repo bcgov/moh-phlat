@@ -18,7 +18,9 @@ COPY pom.xml .
 #RUN mvn dependency:go-offline
 
 COPY src/ ./src/
-RUN mvn package 
+COPY ext-libs ./ext-libs
+
+RUN mvn -Dmaven.test.skip=true package
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
