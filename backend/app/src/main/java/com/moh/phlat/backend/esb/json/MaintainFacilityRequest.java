@@ -91,7 +91,7 @@ public class MaintainFacilityRequest implements PlrRequest {
 		//fd.setFacilityIdentifiers(createFacilityIdentifierDtos(input));
 		//fd.setNotes(createNoteDtos(input));
 		fd.setAddresses(createAddressDtos(input));
-		fd.setCivicAddresses(createCivicAddressDtos(input));
+		//fd.setCivicAddresses(createCivicAddressDtos(input));
 		//fd.setTelecommunication(createTelecomunicationDtos(input));
 		return fd;
 	}
@@ -153,7 +153,7 @@ public class MaintainFacilityRequest implements PlrRequest {
 		List<AddressDto> output = new ArrayList<AddressDto>();
 		output.add(createPhysicalAddressDto(input));
 		if (StringUtils.hasText(input.getMailAddr1()) && StringUtils.hasText(input.getMailBc())) {
-			output.add(createMailingAddressDto(input));
+			//output.add(createMailingAddressDto(input));
 		}
 		return output;
 	}
@@ -265,9 +265,13 @@ public class MaintainFacilityRequest implements PlrRequest {
 	private List<CivicAddressDto> createCivicAddressDtos(ProcessData input) {
 		CivicAddressDto cad = new CivicAddressDto();
 		cad.setActive(true);
-		if (StringUtils.hasText(input.getPhysicalAddr1())) {
+		
+		if (StringUtils.hasText(input.getCivicAddress())) {
+			cad.setAddressLineOne(input.getCivicAddress());
+		} else {
 			cad.setAddressLineOne(input.getPhysicalAddr1());
 		}
+		
 		if (StringUtils.hasText(input.getPhysicalAddr2())) {
 			cad.setAddressLineTwo(input.getPhysicalAddr2());
 		}

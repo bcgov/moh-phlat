@@ -79,6 +79,12 @@ public class PlrEsbBoundary {
 	
 	public MaintainFacilityResponse loadPlrViaEsb(Control control, ProcessData processData) {
 		
+		MaintainFacilityResponse facilityResponse = createFacility(control, processData);
+		createHdsProvider(control, processData);
+		return facilityResponse;
+	}
+	
+	public MaintainFacilityResponse createFacility(Control control, ProcessData processData) {
 		MaintainFacilityRequest maintainFacilityRequest = new MaintainFacilityRequest(control);
 		String jsonRequest = maintainFacilityRequest.processDataToPlrJson(processData);
 		
@@ -113,6 +119,10 @@ public class PlrEsbBoundary {
 			facilityResponse.handleKeyCloakError(token);
 		}
 		return facilityResponse;
+	}
+	
+	private void createHdsProvider(Control control, ProcessData processData) {
+		
 	}
 	
 	private PlrToken getPlrKeyCloakDetails() {
