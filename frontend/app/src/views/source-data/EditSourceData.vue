@@ -261,7 +261,6 @@ export default {
           return { title: h, key: h };
         });
 
-      console.log('tableHeaders-', this.headers);
       this.headers = [...tableHeaders, ...this.headers].filter(
         ({ key }) => key !== 'controlTableId'
       );
