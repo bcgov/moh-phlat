@@ -107,8 +107,8 @@ public class ProcessDataController {
 
 		ProcessData processData = _processData.get();
 
-		if (reqProcessData.getDoNotLoad() != null)
-			processData.setDoNotLoad(reqProcessData.getDoNotLoad());
+		if (reqProcessData.getDoNotLoadFlag() != null)
+			processData.setDoNotLoadFlag(reqProcessData.getDoNotLoadFlag());
 		
 		if (reqProcessData.getStakeholder() != null)
 			processData.setStakeholder(reqProcessData.getStakeholder());
@@ -143,9 +143,6 @@ public class ProcessDataController {
 		if (reqProcessData.getHdsName() != null)
 			processData.setHdsName(reqProcessData.getHdsName());
 		
-		if (reqProcessData.getHdsNameAlias() != null)
-			processData.setHdsNameAlias(reqProcessData.getHdsNameAlias());
-		
 		if (reqProcessData.getHdsPreferredNameFlag() != null)
 			processData.setHdsPreferredNameFlag(reqProcessData.getHdsPreferredNameFlag());
 		
@@ -176,59 +173,20 @@ public class ProcessDataController {
 		if (reqProcessData.getHdsFaxNumber() != null)
 			processData.setHdsFaxNumber(reqProcessData.getHdsFaxNumber());
 		
-		if (reqProcessData.getHdsServiceDeliveryType() != null)
-			processData.setHdsServiceDeliveryType(reqProcessData.getHdsServiceDeliveryType());
-		
+	
 		if (reqProcessData.getPcnClinicType() != null)
 			processData.setPcnClinicType(reqProcessData.getPcnClinicType());
 		
 		if (reqProcessData.getPcnPciFlag() != null)
 			processData.setPcnPciFlag(reqProcessData.getPcnPciFlag());
 		
-		if (reqProcessData.getHdsHoursOfOperation() != null)
-			processData.setHdsHoursOfOperation(reqProcessData.getHdsHoursOfOperation());
-		
-		if (reqProcessData.getHdsContactName() != null)
-			processData.setHdsContactName(reqProcessData.getHdsContactName());
-		
-		if (reqProcessData.getHdsIsForProfitFlag() != null)
-			processData.setHdsIsForProfitFlag(reqProcessData.getHdsIsForProfitFlag());
-		
+
 		if (reqProcessData.getSourceStatus() != null)
 			processData.setSourceStatus(reqProcessData.getSourceStatus());
 		
-		if (reqProcessData.getHdsParentIpcId() != null)
-			processData.setHdsParentIpcId(reqProcessData.getHdsParentIpcId());
-		
-		if (reqProcessData.getBusIpcId() != null)
-			processData.setBusIpcId(reqProcessData.getBusIpcId());
-		
-		if (reqProcessData.getBusCpnId() != null)
-			processData.setBusCpnId(reqProcessData.getBusCpnId());
-		
-		if (reqProcessData.getBusName() != null)
-			processData.setBusName(reqProcessData.getBusName());
-		
-		if (reqProcessData.getBusLegalName() != null)
-			processData.setBusLegalName(reqProcessData.getBusLegalName());
-		
-		if (reqProcessData.getBusPayeeNumber() != null)
-			processData.setBusPayeeNumber(reqProcessData.getBusPayeeNumber());
-		
-		if (reqProcessData.getBusOwnerName() != null)
-			processData.setBusOwnerName(reqProcessData.getBusOwnerName());
-		
-		if (reqProcessData.getBusOwnerType() != null)
-			processData.setBusOwnerType(reqProcessData.getBusOwnerType());
-		
-		if (reqProcessData.getBusOwnerTypeOther() != null)
-			processData.setBusOwnerTypeOther(reqProcessData.getBusOwnerTypeOther());
 		
 		if (reqProcessData.getFacBuildingName() != null)
 			processData.setFacBuildingName(reqProcessData.getFacBuildingName());
-		
-		if (reqProcessData.getFacilityHdsDetailsAdditionalInfo() != null)
-			processData.setFacilityHdsDetailsAdditionalInfo(reqProcessData.getFacilityHdsDetailsAdditionalInfo());
 		
 		if (reqProcessData.getPhysicalAddr1() != null)
 			processData.setPhysicalAddr1(reqProcessData.getPhysicalAddr1());
@@ -254,9 +212,6 @@ public class ProcessDataController {
 		if (reqProcessData.getPhysicalCountry() != null)
 			processData.setPhysicalCountry(reqProcessData.getPhysicalCountry());
 		
-		if (reqProcessData.getPhysAddrIsPrivate() != null)
-			processData.setPhysAddrIsPrivate(reqProcessData.getPhysAddrIsPrivate());
-
 		if (reqProcessData.getMailAddr1() != null)
 			processData.setMailAddr1(reqProcessData.getMailAddr1());
 
@@ -282,9 +237,7 @@ public class ProcessDataController {
 		if (reqProcessData.getMailCountry() != null)
 			processData.setMailCountry(reqProcessData.getMailCountry());
 		
-		if (reqProcessData.getMailAddrIsPrivate() != null)
-			processData.setMailAddrIsPrivate(reqProcessData.getMailAddrIsPrivate());
-		
+
 		if (reqProcessData.getRowstatusCode() != null)
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode());
 
@@ -324,7 +277,7 @@ public class ProcessDataController {
 				
 				dbUtilityService.setControlStatus(processData.getControlTableId(), "PRE-VALIDATION_IN_PROGRESS",authenticatedUserId );
 				
-				if ((!processData.getDoNotLoad().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals("COMPLETE"))) {
+				if ((!processData.getDoNotLoadFlag().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals("COMPLETE"))) {
 					logger.info("validate process data with id: {}", id);
 				    // run asyn process
 					dbUtilityService.validateProcessData(control, processData,authenticatedUserId);

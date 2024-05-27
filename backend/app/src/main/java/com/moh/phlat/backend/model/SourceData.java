@@ -17,13 +17,14 @@ public class SourceData {
     @Column(name="control_id")
     private Long controlTableId;    
     
-    
-    @Column(name="do_not_load")
-    private String doNotLoad;
-
+    @Column(name="do_not_load_flag")
+    private String doNotLoadFlag;
 
     @Column(name="stakeholder")
     private String stakeholder;
+
+    @Column(name="stakeholder_id")
+    private String stakeholderId;
     
     @Column(name="hds_ipc_id")
     private String hdsIpcId;
@@ -49,18 +50,18 @@ public class SourceData {
     @Column(name="hds_provider_identifier_type3")
     private String hdsProviderIdentifierType3;
     
-    @Column(name="hds_hibc_facility_id")
-    private String hdsHibcFacilityId;
+    @Column(name="hds_msp_facility_number")
+    private String hdsMspFacilityNumber;
 
     @Column(name="hds_type")
     private String hdsType;
 
+    @Column(name="hds_sub_type")
+    private String hdsSubType;
+
     @Column(name="hds_name")
     private String hdsName;
 
-    @Column(name="hds_name_alias")
-    private String hdsNameAlias;
-    
     @Column(name="hds_preferred_name_flag")
     private String hdsPreferredNameFlag;
     
@@ -91,8 +92,8 @@ public class SourceData {
     @Column(name="hds_fax_number")
     private String hdsFaxNumber;   
     
-    @Column(name="hds_service_delivery_type")
-    private String hdsServiceDeliveryType;   
+    @Column(name="pcn_service_delivery_type")
+    private String pcnServiceDeliveryType;   
     
     @Column(name="pcn_clinic_type")
     private String pcnClinicType;  
@@ -100,51 +101,21 @@ public class SourceData {
     @Column(name="pcn_pci_flag")
     private String pcnPciFlag;  
     
-    @Column(name="hds_hours_of_operation")
-    private String hdsHoursOfOperation;  
-
-    @Column(name="hds_contact_name")
-    private String hdsContactName;  
-    
-    @Column(name="hds_is_for_profit_flag")
-    private String hdsIsForProfitFlag;  
-    
     @Column(name="source_status")
     private String sourceStatus;  
-    
-    @Column(name="hds_parent_ipc_id")
-    private String hdsParentIpcId;  
-    
-    @Column(name="bus_ipc_id")
-    private String busIpcId;  
-    
-    @Column(name="bus_cpn_id")
-    private String busCpnId;  
-    
-    @Column(name="bus_name")
-    private String busName;
-    
-    @Column(name="bus_legal_name")
-    private String busLegalName;
-    
-    @Column(name="bus_payee_number")
-    private String busPayeeNumber;
-    
-    @Column(name="bus_owner_name")
-    private String busOwnerName;
-    
-    @Column(name="bus_owner_type")
-    private String busOwnerType;
-    
-    @Column(name="bus_owner_type_other")
-    private String busOwnerTypeOther;
+
+    @Column(name="pcn_clinic_status")
+    private String pcnClinicStatus;  
+
+    @Column(name="hds_effective_start_date")
+    private String hdsEffectiveStartDate;  
+
+    @Column(name="fac_address_unit")
+    private String facAddressUnit;  
     
     @Column(name="fac_building_name")
     private String facBuildingName;
-    
-    @Column(name="facility_hds_details_additional_info")
-    private String facilityHdsDetailsAdditionalInfo;
-    
+
     @Column(name="physical_addr1")
     private String physicalAddr1;  
     
@@ -169,8 +140,8 @@ public class SourceData {
     @Column(name="physical_country")
     private String physicalCountry;  
     
-    @Column(name="phys_addr_is_private")
-    private String physAddrIsPrivate;  
+    @Column(name="physical_addr_prps_type_cd")
+    private String physicalAddrPrpsTypeCd;  
     
     @Column(name="mail_addr1")
     private String mailAddr1;  
@@ -195,10 +166,7 @@ public class SourceData {
     
     @Column(name="mail_country")
     private String mailCountry;  
-    
-    @Column(name="mail_addr_is_private")
-    private String mailAddrIsPrivate;  
-    
+
  	@Column(name="created_at")
     private Date createdAt;
 
@@ -227,12 +195,12 @@ public class SourceData {
 		this.controlTableId = controlTableId;
 	}
 
-	public String getDoNotLoad() {
-		return doNotLoad;
+	public String getDoNotLoadFlag() {
+		return doNotLoadFlag;
 	}
 
-	public void setDoNotLoad(String doNotLoad) {
-		this.doNotLoad = doNotLoad;
+	public void setDoNotLoadFlag(String doNotLoadFlag) {
+		this.doNotLoadFlag = doNotLoadFlag;
 	}
 
 	public String getStakeholder() {
@@ -241,6 +209,14 @@ public class SourceData {
 
 	public void setStakeholder(String stakeholder) {
 		this.stakeholder = stakeholder;
+	}
+
+	public String getStakeholderId() {
+		return stakeholderId;
+	}
+
+	public void setStakeholderId(String stakeholderId) {
+		this.stakeholderId = stakeholderId;
 	}
 
 	public String getHdsIpcId() {
@@ -307,12 +283,12 @@ public class SourceData {
 		this.hdsProviderIdentifierType3 = hdsProviderIdentifierType3;
 	}
 
-	public String getHdsHibcFacilityId() {
-		return hdsHibcFacilityId;
+	public String getHdsMspFacilityNumber() {
+		return hdsMspFacilityNumber;
 	}
 
-	public void setHdsHibcFacilityId(String hdsHibcFacilityId) {
-		this.hdsHibcFacilityId = hdsHibcFacilityId;
+	public void setHdsMspFacilityNumber(String hdsMspFacilityNumber) {
+		this.hdsMspFacilityNumber = hdsMspFacilityNumber;
 	}
 
 	public String getHdsType() {
@@ -323,20 +299,20 @@ public class SourceData {
 		this.hdsType = hdsType;
 	}
 
+	public String getHdsSubType() {
+		return hdsSubType;
+	}
+
+	public void setHdsSubType(String hdsSubType) {
+		this.hdsSubType = hdsSubType;
+	}
+
 	public String getHdsName() {
 		return hdsName;
 	}
 
 	public void setHdsName(String hdsName) {
 		this.hdsName = hdsName;
-	}
-
-	public String getHdsNameAlias() {
-		return hdsNameAlias;
-	}
-
-	public void setHdsNameAlias(String hdsNameAlias) {
-		this.hdsNameAlias = hdsNameAlias;
 	}
 
 	public String getHdsPreferredNameFlag() {
@@ -419,12 +395,12 @@ public class SourceData {
 		this.hdsFaxNumber = hdsFaxNumber;
 	}
 
-	public String getHdsServiceDeliveryType() {
-		return hdsServiceDeliveryType;
+	public String getPcnServiceDeliveryType() {
+		return pcnServiceDeliveryType;
 	}
 
-	public void setHdsServiceDeliveryType(String hdsServiceDeliveryType) {
-		this.hdsServiceDeliveryType = hdsServiceDeliveryType;
+	public void setPcnServiceDeliveryType(String pcnServiceDeliveryType) {
+		this.pcnServiceDeliveryType = pcnServiceDeliveryType;
 	}
 
 	public String getPcnClinicType() {
@@ -443,30 +419,6 @@ public class SourceData {
 		this.pcnPciFlag = pcnPciFlag;
 	}
 
-	public String getHdsHoursOfOperation() {
-		return hdsHoursOfOperation;
-	}
-
-	public void setHdsHoursOfOperation(String hdsHoursOfOperation) {
-		this.hdsHoursOfOperation = hdsHoursOfOperation;
-	}
-
-	public String getHdsContactName() {
-		return hdsContactName;
-	}
-
-	public void setHdsContactName(String hdsContactName) {
-		this.hdsContactName = hdsContactName;
-	}
-
-	public String getHdsIsForProfitFlag() {
-		return hdsIsForProfitFlag;
-	}
-
-	public void setHdsIsForProfitFlag(String hdsIsForProfitFlag) {
-		this.hdsIsForProfitFlag = hdsIsForProfitFlag;
-	}
-
 	public String getSourceStatus() {
 		return sourceStatus;
 	}
@@ -475,76 +427,28 @@ public class SourceData {
 		this.sourceStatus = sourceStatus;
 	}
 
-	public String getHdsParentIpcId() {
-		return hdsParentIpcId;
+	public String getPcnClinicStatus() {
+		return pcnClinicStatus;
 	}
 
-	public void setHdsParentIpcId(String hdsParentIpcId) {
-		this.hdsParentIpcId = hdsParentIpcId;
+	public void setPcnClinicStatus(String pcnClinicStatus) {
+		this.pcnClinicStatus = pcnClinicStatus;
 	}
 
-	public String getBusIpcId() {
-		return busIpcId;
+	public String getHdsEffectiveStartDate() {
+		return hdsEffectiveStartDate;
 	}
 
-	public void setBusIpcId(String busIpcId) {
-		this.busIpcId = busIpcId;
+	public void setHdsEffectiveStartDate(String hdsEffectiveStartDate) {
+		this.hdsEffectiveStartDate = hdsEffectiveStartDate;
 	}
 
-	public String getBusCpnId() {
-		return busCpnId;
+	public String getFacAddressUnit() {
+		return facAddressUnit;
 	}
 
-	public void setBusCpnId(String busCpnId) {
-		this.busCpnId = busCpnId;
-	}
-
-	public String getBusName() {
-		return busName;
-	}
-
-	public void setBusName(String busName) {
-		this.busName = busName;
-	}
-
-	public String getBusLegalName() {
-		return busLegalName;
-	}
-
-	public void setBusLegalName(String busLegalName) {
-		this.busLegalName = busLegalName;
-	}
-
-	public String getBusPayeeNumber() {
-		return busPayeeNumber;
-	}
-
-	public void setBusPayeeNumber(String busPayeeNumber) {
-		this.busPayeeNumber = busPayeeNumber;
-	}
-
-	public String getBusOwnerName() {
-		return busOwnerName;
-	}
-
-	public void setBusOwnerName(String busOwnerName) {
-		this.busOwnerName = busOwnerName;
-	}
-
-	public String getBusOwnerType() {
-		return busOwnerType;
-	}
-
-	public void setBusOwnerType(String busOwnerType) {
-		this.busOwnerType = busOwnerType;
-	}
-
-	public String getBusOwnerTypeOther() {
-		return busOwnerTypeOther;
-	}
-
-	public void setBusOwnerTypeOther(String busOwnerTypeOther) {
-		this.busOwnerTypeOther = busOwnerTypeOther;
+	public void setFacAddressUnit(String facAddressUnit) {
+		this.facAddressUnit = facAddressUnit;
 	}
 
 	public String getFacBuildingName() {
@@ -553,14 +457,6 @@ public class SourceData {
 
 	public void setFacBuildingName(String facBuildingName) {
 		this.facBuildingName = facBuildingName;
-	}
-
-	public String getFacilityHdsDetailsAdditionalInfo() {
-		return facilityHdsDetailsAdditionalInfo;
-	}
-
-	public void setFacilityHdsDetailsAdditionalInfo(String facilityHdsDetailsAdditionalInfo) {
-		this.facilityHdsDetailsAdditionalInfo = facilityHdsDetailsAdditionalInfo;
 	}
 
 	public String getPhysicalAddr1() {
@@ -627,12 +523,12 @@ public class SourceData {
 		this.physicalCountry = physicalCountry;
 	}
 
-	public String getPhysAddrIsPrivate() {
-		return physAddrIsPrivate;
+	public String getPhysicalAddrPrpsTypeCd() {
+		return physicalAddrPrpsTypeCd;
 	}
 
-	public void setPhysAddrIsPrivate(String physAddrIsPrivate) {
-		this.physAddrIsPrivate = physAddrIsPrivate;
+	public void setPhysicalAddrPrpsTypeCd(String physicalAddrPrpsTypeCd) {
+		this.physicalAddrPrpsTypeCd = physicalAddrPrpsTypeCd;
 	}
 
 	public String getMailAddr1() {
@@ -699,14 +595,6 @@ public class SourceData {
 		this.mailCountry = mailCountry;
 	}
 
-	public String getMailAddrIsPrivate() {
-		return mailAddrIsPrivate;
-	}
-
-	public void setMailAddrIsPrivate(String mailAddrIsPrivate) {
-		this.mailAddrIsPrivate = mailAddrIsPrivate;
-	}
-
 	public Date getCreatedAt() {
 		return createdAt;
 	}
@@ -742,26 +630,24 @@ public class SourceData {
 	public SourceData() {
 	}
 	
-	public SourceData(Long controlTableId, String doNotLoad, String stakeholder, String hdsIpcId,
-			String hdsCpnId, String hdsProviderIdentifier1, String hdsProviderIdentifier2,
+	public SourceData(Long controlTableId, String doNotLoadFlag, String stakeholder, String stakeholderId,
+			String hdsIpcId, String hdsCpnId, String hdsProviderIdentifier1, String hdsProviderIdentifier2,
 			String hdsProviderIdentifier3, String hdsProviderIdentifierType1, String hdsProviderIdentifierType2,
-			String hdsProviderIdentifierType3, String hdsHibcFacilityId, String hdsType, String hdsName,
-			String hdsNameAlias, String hdsPreferredNameFlag, String hdsEmail, String hdsWebsite,
-			String hdsBusTelAreaCode, String hdsBusTelNumber, String hdsTelExtension, String hdsCellAreaCode,
-			String hdsCellNumber, String hdsFaxAreaCode, String hdsFaxNumber, String hdsServiceDeliveryType,
-			String pcnClinicType, String pcnPciFlag, String hdsHoursOfOperation, String hdsContactName,
-			String hdsIsForProfitFlag, String sourceStatus, String hdsParentIpcId, String busIpcId, String busCpnId,
-			String busName, String busLegalName, String busPayeeNumber, String busOwnerName, String busOwnerType,
-			String busOwnerTypeOther, String facBuildingName, String facilityHdsDetailsAdditionalInfo,
-			String physicalAddr1, String physicalAddr2, String physicalAddr3, String physicalAddr4, String physicalCity,
-			String physicalProvince, String physicalPcode, String physicalCountry, String physAddrIsPrivate,
-			String mailAddr1, String mailAddr2, String mailAddr3, String mailAddr4, String mailCity, String mailBc,
-			String mailPcode, String mailCountry, String mailAddrIsPrivate, Date createdAt, String createdBy,
-			Date updatedAt, String updatedBy) {
+			String hdsProviderIdentifierType3, String hdsMspFacilityNumber, String hdsType, String hdsSubType,
+			String hdsName, String hdsPreferredNameFlag, String hdsEmail, String hdsWebsite, String hdsBusTelAreaCode,
+			String hdsBusTelNumber, String hdsTelExtension, String hdsCellAreaCode, String hdsCellNumber,
+			String hdsFaxAreaCode, String hdsFaxNumber, String pcnServiceDeliveryType, String pcnClinicType,
+			String pcnPciFlag, String sourceStatus, String pcnClinicStatus, String hdsEffectiveStartDate,
+			String facAddressUnit, String facBuildingName, String physicalAddr1, String physicalAddr2,
+			String physicalAddr3, String physicalAddr4, String physicalCity, String physicalProvince,
+			String physicalPcode, String physicalCountry, String physicalAddrPrpsTypeCd, String mailAddr1,
+			String mailAddr2, String mailAddr3, String mailAddr4, String mailCity, String mailBc, String mailPcode,
+			String mailCountry, Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
 		super();
 		this.controlTableId = controlTableId;
-		this.doNotLoad = doNotLoad;
+		this.doNotLoadFlag = doNotLoadFlag;
 		this.stakeholder = stakeholder;
+		this.stakeholderId = stakeholderId;
 		this.hdsIpcId = hdsIpcId;
 		this.hdsCpnId = hdsCpnId;
 		this.hdsProviderIdentifier1 = hdsProviderIdentifier1;
@@ -770,10 +656,10 @@ public class SourceData {
 		this.hdsProviderIdentifierType1 = hdsProviderIdentifierType1;
 		this.hdsProviderIdentifierType2 = hdsProviderIdentifierType2;
 		this.hdsProviderIdentifierType3 = hdsProviderIdentifierType3;
-		this.hdsHibcFacilityId = hdsHibcFacilityId;
+		this.hdsMspFacilityNumber = hdsMspFacilityNumber;
 		this.hdsType = hdsType;
+		this.hdsSubType = hdsSubType;
 		this.hdsName = hdsName;
-		this.hdsNameAlias = hdsNameAlias;
 		this.hdsPreferredNameFlag = hdsPreferredNameFlag;
 		this.hdsEmail = hdsEmail;
 		this.hdsWebsite = hdsWebsite;
@@ -784,24 +670,14 @@ public class SourceData {
 		this.hdsCellNumber = hdsCellNumber;
 		this.hdsFaxAreaCode = hdsFaxAreaCode;
 		this.hdsFaxNumber = hdsFaxNumber;
-		this.hdsServiceDeliveryType = hdsServiceDeliveryType;
+		this.pcnServiceDeliveryType = pcnServiceDeliveryType;
 		this.pcnClinicType = pcnClinicType;
 		this.pcnPciFlag = pcnPciFlag;
-		this.hdsHoursOfOperation = hdsHoursOfOperation;
-		this.hdsContactName = hdsContactName;
-		this.hdsIsForProfitFlag = hdsIsForProfitFlag;
 		this.sourceStatus = sourceStatus;
-		this.hdsParentIpcId = hdsParentIpcId;
-		this.busIpcId = busIpcId;
-		this.busCpnId = busCpnId;
-		this.busName = busName;
-		this.busLegalName = busLegalName;
-		this.busPayeeNumber = busPayeeNumber;
-		this.busOwnerName = busOwnerName;
-		this.busOwnerType = busOwnerType;
-		this.busOwnerTypeOther = busOwnerTypeOther;
+		this.pcnClinicStatus = pcnClinicStatus;
+		this.hdsEffectiveStartDate = hdsEffectiveStartDate;
+		this.facAddressUnit = facAddressUnit;
 		this.facBuildingName = facBuildingName;
-		this.facilityHdsDetailsAdditionalInfo = facilityHdsDetailsAdditionalInfo;
 		this.physicalAddr1 = physicalAddr1;
 		this.physicalAddr2 = physicalAddr2;
 		this.physicalAddr3 = physicalAddr3;
@@ -810,7 +686,7 @@ public class SourceData {
 		this.physicalProvince = physicalProvince;
 		this.physicalPcode = physicalPcode;
 		this.physicalCountry = physicalCountry;
-		this.physAddrIsPrivate = physAddrIsPrivate;
+		this.physicalAddrPrpsTypeCd = physicalAddrPrpsTypeCd;
 		this.mailAddr1 = mailAddr1;
 		this.mailAddr2 = mailAddr2;
 		this.mailAddr3 = mailAddr3;
@@ -819,13 +695,11 @@ public class SourceData {
 		this.mailBc = mailBc;
 		this.mailPcode = mailPcode;
 		this.mailCountry = mailCountry;
-		this.mailAddrIsPrivate = mailAddrIsPrivate;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;
 		this.updatedAt = updatedAt;
 		this.updatedBy = updatedBy;
 	}
 
-	
-	
+
 }

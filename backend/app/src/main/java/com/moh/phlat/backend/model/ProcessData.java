@@ -34,13 +34,14 @@ public class ProcessData {
     @Column(name="control_id")
     private Long controlTableId;    
     
-    
-    @Column(name="do_not_load")
-    private String doNotLoad;
-
+    @Column(name="do_not_load_flag")
+    private String doNotLoadFlag;
 
     @Column(name="stakeholder")
     private String stakeholder;
+
+    @Column(name="stakeholder_id")
+    private String stakeholderId;
     
     @Column(name="hds_ipc_id")
     private String hdsIpcId;
@@ -66,18 +67,36 @@ public class ProcessData {
     @Column(name="hds_provider_identifier_type3")
     private String hdsProviderIdentifierType3;
     
-    @Column(name="hds_hibc_facility_id")
-    private String hdsHibcFacilityId;
+    @Column(name="hds_msp_facility_number")
+    private String hdsMspFacilityNumber;
+
+    @Column(name="hds_pauth_id")
+    private String hdsPauthId;
+
+    @Column(name="hdsCategoryCode")
+    private String hdsCategoryCode;
+
+    @Column(name="hds_role_type_code")
+    private String hdsRoletypeCode;
 
     @Column(name="hds_type")
     private String hdsType;
 
+    @Column(name="hds_sub_type")
+    private String hdsSubType;
+
+    @Column(name="hds_user_chid")
+    private String hdsUserChid;
+
+    @Column(name="hds_created_dts")
+    private String hdsCreatedDts;
+
+    @Column(name="hds_invalidated_dts")
+    private String hdsInvalidatedDts ;
+
     @Column(name="hds_name")
     private String hdsName;
 
-    @Column(name="hds_name_alias")
-    private String hdsNameAlias;
-    
     @Column(name="hds_preferred_name_flag")
     private String hdsPreferredNameFlag;
     
@@ -108,8 +127,8 @@ public class ProcessData {
     @Column(name="hds_fax_number")
     private String hdsFaxNumber;   
     
-    @Column(name="hds_service_delivery_type")
-    private String hdsServiceDeliveryType;   
+    @Column(name="pcn_service_delivery_type")
+    private String pcnServiceDeliveryType;   
     
     @Column(name="pcn_clinic_type")
     private String pcnClinicType;  
@@ -117,51 +136,108 @@ public class ProcessData {
     @Column(name="pcn_pci_flag")
     private String pcnPciFlag;  
     
-    @Column(name="hds_hours_of_operation")
-    private String hdsHoursOfOperation;  
+    @Column(name="hds_status")
+    private String hdsStatus;  
 
-    @Column(name="hds_contact_name")
-    private String hdsContactName;  
-    
-    @Column(name="hds_is_for_profit_flag")
-    private String hdsIsForProfitFlag;  
-    
     @Column(name="source_status")
     private String sourceStatus;  
-    
-    @Column(name="hds_parent_ipc_id")
-    private String hdsParentIpcId;  
-    
-    @Column(name="bus_ipc_id")
-    private String busIpcId;  
-    
-    @Column(name="bus_cpn_id")
-    private String busCpnId;  
-    
-    @Column(name="bus_name")
-    private String busName;
-    
-    @Column(name="bus_legal_name")
-    private String busLegalName;
-    
-    @Column(name="bus_payee_number")
-    private String busPayeeNumber;
-    
-    @Column(name="bus_owner_name")
-    private String busOwnerName;
-    
-    @Column(name="bus_owner_type")
-    private String busOwnerType;
-    
-    @Column(name="bus_owner_type_other")
-    private String busOwnerTypeOther;
+
+    @Column(name="pcn_clinic_status")
+    private String pcnClinicStatus;  
+
+    @Column(name="hds_effective_start_date")
+    private String hdsEffectiveStartDate;  
+
+    @Column(name="hds_effective_end_date")
+    private String hdsEffectiveEndDate;  
+
+    @Column(name="fac_address_unit")
+    private String facAddressUnit;  
     
     @Column(name="fac_building_name")
     private String facBuildingName;
-    
-    @Column(name="facility_hds_details_additional_info")
-    private String facilityHdsDetailsAdditionalInfo;
-    
+
+    @Column(name="fac_civic_addr_id")
+    private String facCivicAddrId;
+
+    @Column(name="fac_civic_addr")
+    private String facCivicAddr;
+
+    @Column(name="fac_latitude")
+    private String facLatitude;
+
+    @Column(name="fac_longitude")
+    private String facLongitude;
+
+    @Column(name="fac_street_direction")
+    private String facStreetDirection;
+
+    @Column(name="street_direction_prefix")
+    private String streetDirectionPrefix;
+
+    @Column(name="fac_civic_number")
+    private String facCivicNumber;
+
+    @Column(name="fac_street_name ")
+    private String facStreetName;
+
+    @Column(name="fac_street_type")
+    private String facStreetType;
+
+    @Column(name="fac_locality_name")
+    private String facLocalityName;
+
+    @Column(name="fac_province_code")
+    private String facProvinceCode;
+
+    @Column(name="fac_site_id")
+    private String fac_site_id;
+
+    @Column(name="fac_score")
+    private String facScore;
+
+    @Column(name="fac_match_precision")
+    private String facMatchPrecision;
+
+    @Column(name="fac_precision_points")
+    private String facPrecisionPoints;
+
+    @Column(name="fac_hsda_name")
+    private String facHsdaName;
+
+    @Column(name="fac_databc_results")
+    private String facDatabcResults;
+
+    @Column(name="fac_pcn_code")
+    private String facPcnCode;
+
+    @Column(name="fac_pcn_name")
+    private String facPcnName;
+
+    @Column(name="fac_chsa_status")
+    private String facChsaStatus ;
+
+    @Column(name="fac_pcn_status")
+    private String facPcnStatus;
+
+    @Column(name="fac_chsa_code")
+    private String fac_chsa_code;
+
+    @Column(name="fac_chsa_name")
+    private String fac_chsa_name;
+
+    @Column(name="fac_lha_name")
+    private String facLhaName;
+
+    @Column(name="fac_ha_name")
+    private String facHhaName;
+
+    @Column(name="fac_reln_type")
+    private String facRelnType;
+
+    @Column(name="fac_type_code")
+    private String facTypeCode;
+
     @Column(name="physical_addr1")
     private String physicalAddr1;  
     
@@ -186,9 +262,12 @@ public class ProcessData {
     @Column(name="physical_country")
     private String physicalCountry;  
     
-    @Column(name="phys_addr_is_private")
-    private String physAddrIsPrivate;  
-    
+    @Column(name="physical_addr_prps_type_cd")
+    private String physicalAddrPrpsTypeCd;  
+
+     @Column(name="physical_address_validation_status")
+    private String physicalAddressValidationStatus;  
+
     @Column(name="mail_addr1")
     private String mailAddr1;  
     
@@ -212,17 +291,17 @@ public class ProcessData {
     
     @Column(name="mail_country")
     private String mailCountry;  
-    
-    @Column(name="mail_addr_is_private")
-    private String mailAddrIsPrivate;  
-    
-    @Column(name="facility_id")
-    private Long facility_id;
-    
+
+    @Column(name="mail_address_validation_status")
+    private String mailAddressValidationStatus;  
+
+    @Column(name="plr_facility_id")
+    private String plrFacilityId ; 
+
     @Column(name="rowstatus_code")
-    private String rowstatusCode;  
-    
-    @Column(name="created_at")
+    private String rowstatusCode; 
+
+ 	@Column(name="created_at")
     private Date createdAt;
 
 	@Column(name="created_by")
@@ -233,9 +312,8 @@ public class ProcessData {
 
 	@Column(name="updated_by")
     private String updatedBy;
+    
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
     private List<Message> messages;
-
-
 }

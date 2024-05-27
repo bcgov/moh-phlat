@@ -151,10 +151,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		Boolean isValid = true;
 		
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
-			logger.info("Handle run type: Facility or HDS");
-			// TO DO:
-			// auto fix
-
 			// required checks
 			if (!StringUtils.hasText(processData.getHdsName())) {
 				isValid = false;
@@ -196,7 +192,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			for (ProcessData s : processDataList) {
 				// skip if the rowstatus is COMPLETE or marked as DO_NOT_LOAD
-				if (!s.getDoNotLoad().equals("Y") && (!s.getRowstatusCode().equals("DO_NOT_LOAD"))
+				if (!s.getDoNotLoadFlag().equals("Y") && (!s.getRowstatusCode().equals("DO_NOT_LOAD"))
 						&& (!s.getRowstatusCode().equals("COMPLETE"))) {
 					logger.info("validate process data with id: {}", s.getId());
 
@@ -228,7 +224,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			for (ProcessData s : processDataList) {
 				// skip record marked as DO_NOT_LOAD and only VALID records
-				if (!s.getDoNotLoad().equals("Y") && s.getRowstatusCode().equals("VALID")) {
+				if (!s.getDoNotLoadFlag().equals("Y") && s.getRowstatusCode().equals("VALID")) {
 					logger.info("loading process data with id: {} to PLR.", s.getId());
 
 					// TO-DO call to PLR via ESB here
@@ -314,16 +310,14 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 		List<Object[]> _listMsg = processDataRepository.getProcessDataWithMessageCodeCount(controlTableId);
 		for (Object[] _msg : _listMsg){
-			String _code = (String) _msg[0];
-
+			String _code = (String) _msg[1];
 			if (_code!=null) {
 				ReportSummary rsMessage = new ReportSummary();
-				_attribute = (String) _msg[0] + " " + (String) _msg[1];
-				_count = (Long)_msg[2];
+				_attribute = (String) _msg[0] + " " + (String) _msg[1] + " " + (String) _msg[2];
+				_count = (Long)_msg[3];
 				rsMessage.setAttribute((String) _attribute);
 	 			rsMessage.setCount((Long)_count);
 				items.add(rsMessage);	
-				logger.info("messageCode: {} ; messageDesc: {}; count: {}", _code, _attribute, _count);
 			}	
 		}   
 		return items;
