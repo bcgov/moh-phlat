@@ -423,7 +423,7 @@ export default {
                   mdi-pencil
                 </v-icon>
               </template>
-              <span>Edit process data</span>
+              <span>Edit source data</span>
             </v-tooltip>
             <!-- Upload to PLR -->
             <v-tooltip

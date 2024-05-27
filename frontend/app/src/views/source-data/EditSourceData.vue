@@ -630,7 +630,7 @@ export default {
                 mdi-pencil
               </v-icon>
             </template>
-            <span>Edit Process Data</span>
+            <span>Edit Record</span>
           </v-tooltip>
         </template>
         <template #no-data>
