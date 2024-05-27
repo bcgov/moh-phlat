@@ -311,134 +311,128 @@ export default {
 };
 </script>
 <template>
+  <div class="mt-6 d-flex flex-nowrap">
+    <!-- page title -->
+    <div class="page-title mw-50p">
+      <h1>{{ fileName }} - View Source Data</h1>
+    </div>
+
+    <!-- search input -->
+    <v-text-field
+      v-model="search"
+      density="compact"
+      variant="underlined"
+      label="Search"
+      append-inner-icon="mdi-magnify"
+      single-line
+      solid
+      class="header-component"
+    ></v-text-field>
+    <v-select
+      v-model="sortOrder"
+      :items="sortOrderTypes"
+      label="Sort orders"
+      item-title="text"
+      density="compact"
+      solid
+      variant="underlined"
+      class="header-component"
+      @update:modelValue="sortOrderHandle"
+    ></v-select>
+    <div class="header-component">
+      <span>
+        <v-tooltip location="bottom">
+          <template #activator="{ props }">
+            <v-btn
+              class="mx-1"
+              color="primary"
+              v-bind="props"
+              size="x-small"
+              density="default"
+              icon="mdi:mdi-view-column"
+              @click="onShowColumnDialog"
+            />
+          </template>
+          <span>Manage Columns</span>
+        </v-tooltip>
+      </span>
+    </div>
+  </div>
+
   <div>
-    <div
-      class="mt-6 d-flex flex-md-row justify-space-between flex-sm-column-reverse flex-xs-column-reverse gapRow"
+    <div></div>
+    <v-data-table
+      key="forceTableRefresh"
+      :loading="loading"
+      height="70vh"
+      :headers="HEADERS"
+      fixed-header
+      :items="inputSrcData"
+      :items-length="inputSrcData.length"
+      density="compact"
+      :sort-by="sortOrderCriteria"
+      class="submissions-table"
+      :search="search"
     >
-      <!-- page title -->
-      <div>
-        <h1>{{ fileName }} - View Source Data</h1>
-      </div>
-
-      <!-- search input -->
-      <div class="submissions-search">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          variant="underlined"
-          label="Search"
-          append-inner-icon="mdi-magnify"
-          single-line
-          class="pb-5"
-        ></v-text-field>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="sortOrder"
-          :items="sortOrderTypes"
-          label="Sort orders"
-          item-title="text"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="sortOrderHandle"
-        ></v-select>
-      </div>
-      <div>
-        <span>
-          <v-tooltip location="bottom">
-            <template #activator="{ props }">
-              <v-btn
-                class="mx-1"
-                color="primary"
-                v-bind="props"
-                size="x-small"
-                density="default"
-                icon="mdi:mdi-view-column"
-                @click="onShowColumnDialog"
-              />
-            </template>
-            <span>Manage Columns</span>
-          </v-tooltip>
-        </span>
-      </div>
-    </div>
-
-    <div>
-      <div></div>
-      <v-data-table
-        key="forceTableRefresh"
-        :loading="loading"
-        height="70vh"
-        :headers="HEADERS"
-        fixed-header
-        :items="inputSrcData"
-        :items-length="inputSrcData.length"
-        density="compact"
-        :sort-by="sortOrderCriteria"
-        class="submissions-table"
-        :search="search"
-      >
-        <template #top>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5"
-                >Are you sure you want to delete this item?</v-card-title
+      <template #top>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >Are you sure you want to delete this item?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+                >Cancel</v-btn
               >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
-                  >Cancel</v-btn
-                >
-                <v-btn
-                  color="blue-darken-1"
-                  variant="text"
-                  @click="deleteItemConfirm"
-                  >OK</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
-        <template #item.actions="{ item }">
-          <v-icon size="small" class="me-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
-        </template>
-        <template #item.doNotLoadFlag="{ item }">
-          {{ item.raw.doNotLoad }}
-        </template>
-        <template #no-data>
-          <v-btn color="primary" @click="initialize"> Reset </v-btn>
-        </template>
-      </v-data-table>
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click="deleteItemConfirm"
+                >OK</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
+      <template #item.actions="{ item }">
+        <v-icon size="small" class="me-2" @click="editItem(item)">
+          mdi-pencil
+        </v-icon>
+        <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
+      </template>
+      <template #item.doNotLoadFlag="{ item }">
+        {{ item.raw.doNotLoad }}
+      </template>
+      <template #no-data>
+        <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      </template>
+    </v-data-table>
 
-      <v-dialog v-model="showColumnsDialog" width="700">
-        <BaseFilter
-          input-filter-placeholder="Search Columns"
-          input-save-button-text="Save"
-          :input-data="BASE_FILTER_HEADERS_FOR_MANAGE_COLUMNS"
-          :preselected-data="PRESELECTED_DATA"
-          :reset-data="RESET_HEADERS"
-          @saving-filter-data="updateFilter"
-          @cancel-filter-data="showColumnsDialog = false"
-        >
-          <template #filter-title><span> Manage Columns </span></template>
-        </BaseFilter>
-      </v-dialog>
+    <v-dialog v-model="showColumnsDialog" width="700">
+      <BaseFilter
+        input-filter-placeholder="Search Columns"
+        input-save-button-text="Save"
+        :input-data="BASE_FILTER_HEADERS_FOR_MANAGE_COLUMNS"
+        :preselected-data="PRESELECTED_DATA"
+        :reset-data="RESET_HEADERS"
+        @saving-filter-data="updateFilter"
+        @cancel-filter-data="showColumnsDialog = false"
+      >
+        <template #filter-title><span> Manage Columns </span></template>
+      </BaseFilter>
+    </v-dialog>
 
-      <v-dialog v-model="dialog" width="900">
-        <BaseEditRecord
-          :item-to-edit="editedItem.selectable"
-          :ignore-to-edit="ignoreToEdit"
-          :is-loading="loading"
-          @handle-record-save="handleRecordSave"
-          @cancel-filter-data="dialog = false"
-        />
-      </v-dialog>
-    </div>
+    <v-dialog v-model="dialog" width="900">
+      <BaseEditRecord
+        :item-to-edit="editedItem.selectable"
+        :ignore-to-edit="ignoreToEdit"
+        :is-loading="loading"
+        @handle-record-save="handleRecordSave"
+        @cancel-filter-data="dialog = false"
+      />
+    </v-dialog>
   </div>
 </template>
 
