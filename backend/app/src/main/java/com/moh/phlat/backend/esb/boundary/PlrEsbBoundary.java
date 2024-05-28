@@ -28,12 +28,15 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moh.phlat.backend.esb.json.MaintainFacilityRequest;
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
+import com.moh.phlat.backend.esb.json.MaintainHdsRequest;
+import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
 
 @Component
 public class PlrEsbBoundary {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlrEsbBoundary.class);
 	private WebClient webClient;
+	private PlrToken token;
 	
 	private SSLContext sslContext;
 	@Autowired
@@ -55,6 +58,8 @@ public class PlrEsbBoundary {
 	private String plrBoundaryClientId;
 	@Value("${plr.boundary.keycloak.client-secret}")
 	private String plrBoundaryClientSecret;
+	
+	private String plrBoundaryEndpoint = "/HSA-web/rs/passthrough/maintain";
 	
 	@PostConstruct
 	public void initPlrEsbBoundary() {
@@ -78,9 +83,15 @@ public class PlrEsbBoundary {
 	}
 	
 	public MaintainFacilityResponse loadPlrViaEsb(Control control, ProcessData processData) {
-		
-		MaintainFacilityResponse facilityResponse = createFacility(control, processData);
-		createHdsProvider(control, processData);
+		MaintainFacilityResponse facilityResponse = null;
+		token = getPlrKeyCloakDetails();
+		if (StringUtils.hasText(token.getAccessToken()) && !StringUtils.hasText(token.getError())) {
+			facilityResponse = createFacility(control, processData);
+			MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
+		} else {
+			facilityResponse = new MaintainFacilityResponse(control);
+			facilityResponse.handleKeyCloakError(token);
+		}
 		return facilityResponse;
 	}
 	
@@ -90,39 +101,58 @@ public class PlrEsbBoundary {
 		
 		MaintainFacilityResponse facilityResponse = new MaintainFacilityResponse(control);
 		
-		PlrToken token = getPlrKeyCloakDetails();
-		if (StringUtils.hasText(token.getAccessToken()) && !StringUtils.hasText(token.getError())) {
+		try {
+			Mono<String> mono = webClient.post()
+					.uri(plrBoundaryHost + plrBoundaryEndpoint)
+					.contentType(MediaType.APPLICATION_JSON)
+					.headers(h -> {
+						h.setBearerAuth(token.getAccessToken());
+						h.add("userID", control.getUserId());
+						h.add("OrganizationId", plrBoundaryOrgId);
+						h.add("PLR_Role", plrBoundaryRole);
+					})
+					.bodyValue(jsonRequest)
+					.retrieve()
+					.bodyToMono(String.class);
+			String jsonResponse = mono.block();
 			
-			try {
-				Mono<String> mono = webClient.post()
-						.uri(plrBoundaryHost + "/HSA-web/rs/passthrough/maintain")
-						.contentType(MediaType.APPLICATION_JSON)
-						.headers(h -> {
-							h.setBearerAuth(token.getAccessToken());
-							h.add("userID", control.getUserId());
-							h.add("OrganizationId", plrBoundaryOrgId);
-							h.add("PLR_Role", plrBoundaryRole);
-						})
-						.bodyValue(jsonRequest)
-						.retrieve()
-						.bodyToMono(String.class);
-				String jsonResponse = mono.block();
-				
-				facilityResponse.plrJsonToProcessData(jsonResponse, processData);
-				
-			} catch (Exception ex) {
-				logger.error("Load Facility request failed: ", ex);
-				facilityResponse.handlePlrError(ex);
-			}
+			facilityResponse.plrJsonToProcessData(jsonResponse, processData);
 			
-		} else {
-			facilityResponse.handleKeyCloakError(token);
+		} catch (Exception ex) {
+			logger.error("Load Facility request failed: ", ex);
+			facilityResponse.handlePlrError(ex);
 		}
 		return facilityResponse;
 	}
 	
-	private void createHdsProvider(Control control, ProcessData processData) {
+	private MaintainHdsResponse createHdsProvider(Control control, ProcessData processData) {
+		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(control);
+		String jsonRequest = maintainHdsRequest.processDataToPlrJson(processData);
 		
+		MaintainHdsResponse hdsResponse = new MaintainHdsResponse(control);
+		
+		try {
+			Mono<String> mono = webClient.post()
+					.uri(plrBoundaryHost + plrBoundaryEndpoint)
+					.contentType(MediaType.APPLICATION_JSON)
+					.headers(h -> {
+						h.setBearerAuth(token.getAccessToken());
+						h.add("userID", control.getUserId());
+						h.add("OrganizationId", plrBoundaryOrgId);
+						h.add("PLR_Role", plrBoundaryRole);
+					})
+					.bodyValue(jsonRequest)
+					.retrieve()
+					.bodyToMono(String.class);
+			String jsonResponse = mono.block();
+			
+			hdsResponse.plrJsonToProcessData(jsonResponse, processData);
+			
+		} catch (Exception ex) {
+			logger.error("Load Facility request failed: ", ex);
+			hdsResponse.handlePlrError(ex);
+		}
+		return hdsResponse;
 	}
 	
 	private PlrToken getPlrKeyCloakDetails() {

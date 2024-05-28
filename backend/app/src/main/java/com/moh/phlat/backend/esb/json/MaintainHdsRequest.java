@@ -1,15 +1,10 @@
 package com.moh.phlat.backend.esb.json;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
-import ca.bc.gov.health.plr.dto.facility.esb.CivicAddressDto;
-import ca.bc.gov.health.plr.dto.facility.esb.FacilityDetailsDto;
 import ca.bc.gov.health.plr.dto.facility.esb.FacilityDto;
-import ca.bc.gov.health.plr.dto.facility.esb.FacilityIdentifierDto;
-import ca.bc.gov.health.plr.dto.facility.esb.FacilityNameDto;
 import ca.bc.gov.health.plr.dto.provider.esb.AddressDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ElectronicAddressDto;
 import ca.bc.gov.health.plr.dto.provider.esb.HdsTypeDto;
-import ca.bc.gov.health.plr.dto.provider.esb.NoteDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 import ca.bc.gov.health.plr.dto.provider.esb.TelecommunicationDto;
 
@@ -24,7 +19,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
