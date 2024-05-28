@@ -73,11 +73,11 @@ public class ProcessData {
     @Column(name="hds_pauth_id")
     private String hdsPauthId;
 
-    @Column(name="hdsCategoryCode")
+    @Column(name="hds_category_ode")
     private String hdsCategoryCode;
 
     @Column(name="hds_role_type_code")
-    private String hdsRoletypeCode;
+    private String hdsRoleTypeCode;
 
     @Column(name="hds_type")
     private String hdsType;
@@ -175,6 +175,9 @@ public class ProcessData {
     @Column(name="street_direction_prefix")
     private String streetDirectionPrefix;
 
+    @Column(name="street_type_prefix")
+    private String streetTypePrefix;
+
     @Column(name="fac_civic_number")
     private String facCivicNumber;
 
@@ -191,7 +194,7 @@ public class ProcessData {
     private String facProvinceCode;
 
     @Column(name="fac_site_id")
-    private String fac_site_id;
+    private String facSiteId;
 
     @Column(name="fac_score")
     private String facScore;
@@ -215,22 +218,22 @@ public class ProcessData {
     private String facPcnName;
 
     @Column(name="fac_chsa_status")
-    private String facChsaStatus ;
+    private String facChsaStatus;
 
     @Column(name="fac_pcn_status")
     private String facPcnStatus;
 
     @Column(name="fac_chsa_code")
-    private String fac_chsa_code;
+    private String facChsaCode;
 
     @Column(name="fac_chsa_name")
-    private String fac_chsa_name;
+    private String facChsaName;
 
     @Column(name="fac_lha_name")
     private String facLhaName;
 
     @Column(name="fac_ha_name")
-    private String facHhaName;
+    private String facHaName;
 
     @Column(name="fac_reln_type")
     private String facRelnType;
