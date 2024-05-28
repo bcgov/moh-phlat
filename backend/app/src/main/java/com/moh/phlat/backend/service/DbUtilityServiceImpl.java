@@ -223,7 +223,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				for (ProcessData s : processDataList) {
 					// skip record marked as DO_NOT_LOAD and only VALID records
 					if (!s.getDoNotLoadFlag().equals("Y") && s.getRowstatusCode().equals("VALID")) {
-						logger.info("loading process data with id: " + s.getId() + " to PLR.");
+						logger.info("loading process data with id: {} to PLR.", s.getId() );
 	
 						MaintainFacilityResponse result = esbBoundary.loadPlrViaEsb(control, s);
 					}

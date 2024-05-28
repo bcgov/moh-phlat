@@ -59,7 +59,7 @@ spring:
       pem:
         client:
           truststore:
-            certificate: classpath:trust.crt
+            certificate: classpath:plr_tls_trust.cert
 
 # -------------- spring related config ends ---------------------------
 
