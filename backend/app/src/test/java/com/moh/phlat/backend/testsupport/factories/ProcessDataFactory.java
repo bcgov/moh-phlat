@@ -13,28 +13,49 @@ public class ProcessDataFactory extends BaseFactory {
     public static List<ProcessData> createProcessDataListWithAllAttributes() {
         List<ProcessData> processData = new ArrayList<>();
 
-        // processData.add(createProcessData(1L, 2L, "N", "John Doe", "123",
-        //                                   "456", "789", "101", "112",
-        //                                   "type1", "type2", "type3",
-        //                                   "hibc123", "type", "Name", "Alias", "Y",
-        //                                   "example@example.com", "www.example.com", "123", "4567890",
-        //                                   "ext123", "456", "7890123", "fax123",
-        //                                   "4567890", "deliveryType", "clinicType",
-        //                                   "pciFlag", "9am-5pm", "Jane Smith",
-        //                                   "Y", "Active", "parent123", "bus123",
-        //                                   "cpn123", "Business Name", "Legal Name", "payee123",
-        //                                   "Owner Name", "Owner Type", "Other",
-        //                                   "Building Name", "Additional Info",
-        //                                   "Address 1", "Address 2", "Address 3", "Address 4",
-        //                                   "City", "Province", "Pcode", "Country",
-        //                                   "Y", "Mailing 1", "Mailing 2", "Mailing 3",
-        //                                   "Mailing 4", "Mail City", "BC", "Mailing Pcode",
-        //                                   "Mailing Country", "Y", 100L, "ACTIVE",
-        //                                    createDate(2024, Calendar.JANUARY, 1), "Admin1",
-        //                                   createDate(2024, Calendar.JANUARY, 2), "Admin2"));
+        processData.add(createProcessData(1L, 2L, "Y", "HOSPITAL", "stakeholderid_1",
+                                         "IpcId_1", "CpnId_1", 
+                                         "identifier1_1", "identifier2_1", "identifier3_1",
+                                          "identType1_1", "identType2_1",
+                                          "identType3_1", "mspFacilityNumber_1", 
+                                          "pauth_lysonle", "catCode_1", "roleTypeCode_1",
+                                          "hdsType_2", "hdsSubType_2", 
+                                          "lysone@0001", "2024-05-27", "3000-12-31", "hdsName_1",
+                                          "N", "test@example.com", "www.test.com",
+                                          "456", "1234567", "ext456", 
+                                          "789", "0123456", "fax456", "1234567", 
+                                          "pcdServiceDeliveryType_2",
+                                          "clinicType_1",
+                                          "Y", 
+                                          "Active", 
+                                          "sourceStatus_1",
+                                          "clinicStatus_Active", 
+                                          "2024-050-28", 
+                                          "9999-12-31",
+                                          "addressUnit_1",
+                                          "buildingName_1",
+                                          "civicAddrId_1",
+                                          "civic_addr_2306 Selwyn Rd",
+                                          "83.2232", "-78.99343",
+                                          "West", "w", "typeprefix",
+                                          "2306", "Selwyn", "Road",
+                                          "localityName","BC","siteId_121","score_100",
+                                          "precision_100", "100",
+                                          "hsdaName", "databc_result",
+                                          "pcnCode", "pcnName", "chsaStatus", "pcnStatus",
+                                          "chsaCode", "chsaName", "lhaName", "haName",
+                                          "relnType", "facTypeCode",
+                                          "Address 5", "Address 6",
+                                          "Address 7", "Address 8", "City2",
+                                          "Province2", "Pcode2", "CANADA", "PRPS", "Valid",
+                                          "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
+                                          "Mail City2", "BC2", "Mailing Pcode2", "CANADA",
+                                          "Invalid", "1000000", "DO_NOT_LOAD",
+                                          createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
+                                          createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
 
 
-        processData.add(createProcessData(2L, 3L, "Y", "HOSPITAL", "stakeholderid02",
+        processData.add(createProcessData(2L, 3L, "Y", "RESIDENTAL CARE", "stakeholderid02",
                                          "IpcId321", "CpnId654", 
                                          "identifier1_2", "identifier2_2", "identifier3_2",
                                           "identType1_2", "identType2_2",
@@ -223,7 +244,5 @@ public class ProcessDataFactory extends BaseFactory {
                           .updatedAt(updatedAt)
                           .updatedBy(updatedBy)
                           .build();
-
-
     }
 }
