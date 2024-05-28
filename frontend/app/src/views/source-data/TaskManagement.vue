@@ -272,27 +272,23 @@ export default {
 </script>
 <template>
   <div>
-    <div
-      class="mt-6 d-flex flex-md-row justify-space-between flex-sm-column-reverse flex-xs-column-reverse gapRow"
-    >
+    <div class="mt-6 d-flex">
       <!-- page title -->
-      <div>
+      <div class="page-title-tm mw-50p">
         <h1>File Task Management - Process File List</h1>
       </div>
-
       <!-- search input -->
-      <div class="submissions-search">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          variant="underlined"
-          label="Search"
-          append-inner-icon="mdi-magnify"
-          single-line
-          class="pb-5"
-        ></v-text-field>
-      </div>
-      <div>
+      <v-text-field
+        v-model="search"
+        density="compact"
+        variant="underlined"
+        label="Search"
+        append-inner-icon="mdi-magnify"
+        single-line
+        solid
+        class="header-component-tm"
+      ></v-text-field>
+      <div class="header-component-tm">
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -423,7 +419,7 @@ export default {
                   mdi-pencil
                 </v-icon>
               </template>
-              <span>Edit process data</span>
+              <span>Edit source data</span>
             </v-tooltip>
             <!-- Upload to PLR -->
             <v-tooltip

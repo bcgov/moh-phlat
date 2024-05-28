@@ -62,6 +62,8 @@ export default {
       { key: 'controlTableId' },
       { key: 'rowstatusCode' },
       { key: 'messages' },
+      { key: 'doNotLoad' },
+      { key: 'doNotLoadFlag' },
     ],
     headers: [
       {
@@ -246,9 +248,18 @@ export default {
       if (this.displayColumnsPreferenceData.length) {
         this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
-      const tableHeaders = this.formFieldHeaders.map((h) => {
-        return { title: h, key: h };
-      });
+
+      const tableHeaders = this.formFieldHeaders
+        .filter(
+          /**
+           * Removing this headers from the list just as a requirement from business for now,
+           * on a later stage this should be removed by backend BCMOHAD-23110/BCMOHAD-23454
+           */
+          (header) => header !== 'doNotLoadFlag' && header !== 'doNotLoad'
+        )
+        .map((h) => {
+          return { title: h, key: h };
+        });
 
       this.headers = [...tableHeaders, ...this.headers].filter(
         ({ key }) => key !== 'controlTableId'
@@ -441,51 +452,46 @@ export default {
 </script>
 <template>
   <div>
-    <div
-      class="mt-6 d-flex flex-md-row justify-space-between flex-sm-column-reverse flex-xs-column-reverse gapRow"
-    >
+    <div class="mt-6 d-flex flex-nowrap">
       <!-- page title -->
-      <div>
+      <div class="page-title mw-50p">
         <h1>{{ fileName }} - Edit Source Data</h1>
       </div>
 
       <!-- search input -->
-      <div class="submissions-search">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          variant="underlined"
-          label="Search"
-          append-inner-icon="mdi-magnify"
-          single-line
-          class="pb-5"
-        ></v-text-field>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="searchByStatus"
-          :items="statusCodes"
-          :clearable="true"
-          label="Filter by status"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="populateInputSource"
-        ></v-select>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="sortOrder"
-          :items="sortOrderTypes"
-          label="Sort orders"
-          item-title="text"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="sortOrderHandle"
-        ></v-select>
-      </div>
-      <div>
+      <v-text-field
+        v-model="search"
+        density="compact"
+        variant="underlined"
+        label="Search"
+        append-inner-icon="mdi-magnify"
+        single-line
+        solid
+        class="header-component"
+      ></v-text-field>
+      <v-select
+        v-model="searchByStatus"
+        :items="statusCodes"
+        :clearable="true"
+        label="Filter by status"
+        density="compact"
+        solid
+        variant="underlined"
+        class="header-component"
+        @update:modelValue="populateInputSource"
+      ></v-select>
+      <v-select
+        v-model="sortOrder"
+        :items="sortOrderTypes"
+        label="Sort orders"
+        item-title="text"
+        density="compact"
+        solid
+        variant="underlined"
+        class="header-component"
+        @update:modelValue="sortOrderHandle"
+      ></v-select>
+      <div class="header-component">
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -619,7 +625,7 @@ export default {
                 mdi-pencil
               </v-icon>
             </template>
-            <span>Edit Process Data</span>
+            <span>Edit Record</span>
           </v-tooltip>
         </template>
         <template #no-data>
