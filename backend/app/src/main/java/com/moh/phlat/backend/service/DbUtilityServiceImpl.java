@@ -24,7 +24,7 @@ import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
-	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DbUtilityServiceImpl.class);
 
 	@Autowired
 	private MessageDetailRepository messageDetailRepository;
