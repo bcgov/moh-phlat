@@ -368,6 +368,9 @@ public class ProcessDataController {
 		if (reqProcessData.getMailCountry() != null)
 			processData.setMailCountry(reqProcessData.getMailCountry());
 		
+		if (reqProcessData.getMailAddrPrpsTypeCd() != null)
+			processData.setMailAddrPrpsTypeCd(reqProcessData.getMailAddrPrpsTypeCd());
+
 		if (reqProcessData.getMailAddressValidationStatus() != null)
 			processData.setMailAddressValidationStatus(reqProcessData.getMailAddressValidationStatus());		
 

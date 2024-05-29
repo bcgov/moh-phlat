@@ -192,6 +192,7 @@ CREATE TABLE IF NOT EXISTS process_data (
   mail_bc VARCHAR(255),
   mail_pcode VARCHAR(255),
   mail_country VARCHAR(255),
+  mail_addr_prps_type_cd VARCHAR(255),  
   mail_address_validation_status VARCHAR(19),
   plr_facility_id VARCHAR(30),
   rowstatus_code VARCHAR(30),

@@ -50,7 +50,7 @@ public class ProcessDataFactory extends BaseFactory {
                                           "Province2", "Pcode2", "CANADA", "PRPS", "Valid",
                                           "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
                                           "Mail City2", "BC2", "Mailing Pcode2", "CANADA",
-                                          "Invalid", "1000000", "DO_NOT_LOAD",
+                                          "PRPS1","Invalid", "1000000", "DO_NOT_LOAD",
                                           createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
                                           createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
 
@@ -92,7 +92,7 @@ public class ProcessDataFactory extends BaseFactory {
                                           "Province2", "Pcode2", "CANADA", "PRPS", "Valid",
                                           "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
                                           "Mail City2", "BC2", "Mailing Pcode2", "CANADA",
-                                          "Invalid", "2000000", "INVALID",
+                                          "PRPS2","Invalid", "2000000", "INVALID",
                                           createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
                                           createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
         return processData;
@@ -142,7 +142,7 @@ public class ProcessDataFactory extends BaseFactory {
                                                  String mailAddr1, String mailAddr2,
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailBc,
                                                  String mailPcode, String mailCountry, 
-                                                 String mailAddressValidationStatus,
+                                                 String mailAddrPrpsTypeCd, String mailAddressValidationStatus,
                                                  String plrFacilityId, String rowstatusCode,
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
 
@@ -236,6 +236,7 @@ public class ProcessDataFactory extends BaseFactory {
                           .mailBc(mailBc)
                           .mailPcode(mailPcode)
                           .mailCountry(mailCountry)
+                          .mailAddrPrpsTypeCd(mailAddrPrpsTypeCd)
                           .mailAddressValidationStatus(mailAddressValidationStatus)
                           .plrFacilityId(plrFacilityId)
                           .rowstatusCode(rowstatusCode)

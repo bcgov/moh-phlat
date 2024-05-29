@@ -421,6 +421,7 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath(baseJasonPath + "mailBc").value(processData.getMailBc()))
                      .andExpect(jsonPath(baseJasonPath + "mailPcode").value(processData.getMailPcode()))
                      .andExpect(jsonPath(baseJasonPath + "mailCountry").value(processData.getMailCountry()))
+                     .andExpect(jsonPath(baseJasonPath + "mailAddrPrpsTypeCd").value(processData.getMailAddrPrpsTypeCd()))
                      .andExpect(jsonPath(baseJasonPath + "mailAddressValidationStatus").value(processData.getMailAddressValidationStatus()))                    
                      .andExpect(jsonPath(baseJasonPath + "plrFacilityId").value(processData.getPlrFacilityId()))
                      .andExpect(jsonPath(baseJasonPath + "rowstatusCode").value(processData.getRowstatusCode()))

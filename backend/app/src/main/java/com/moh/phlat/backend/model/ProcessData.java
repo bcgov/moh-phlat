@@ -295,6 +295,9 @@ public class ProcessData {
     @Column(name="mail_country")
     private String mailCountry;  
 
+    @Column(name="mail_addr_prps_type_cd")
+    private String mailAddrPrpsTypeCd;  
+
     @Column(name="mail_address_validation_status")
     private String mailAddressValidationStatus;  
 
