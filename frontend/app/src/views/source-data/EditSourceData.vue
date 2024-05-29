@@ -1,6 +1,7 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
+import BaseReportSummary from '../../components/base/BaseReportSummary.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
@@ -16,6 +17,7 @@ export default {
     BaseFilter,
     BaseEditRecord,
     BaseChips,
+    BaseReportSummary,
   },
   props: {
     id: {
@@ -104,6 +106,8 @@ export default {
         criteria: [{ key: 'hdsName', order: 'asc' }],
       },
     ],
+    reportSummaryId: null,
+    reportSummaryDialog: false,
   }),
 
   computed: {
@@ -447,6 +451,14 @@ export default {
         return [];
       }
     },
+    viewReportSummary(id) {
+      this.reportSummaryId = id;
+      this.reportSummaryDialog = true;
+    },
+    closeViewReportSummary() {
+      this.reportSummaryId = null;
+      this.reportSummaryDialog = false;
+    },
   },
 };
 </script>
@@ -522,6 +534,23 @@ export default {
               />
             </template>
             <span>Validate All</span>
+          </v-tooltip>
+        </span>
+        <span>
+          <!-- Summary Report -->
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-btn
+                class="mx-1"
+                color="primary"
+                v-bind="props"
+                size="x-small"
+                density="default"
+                icon="mdi:mdi-list-status"
+                @click="viewReportSummary(id)"
+              />
+            </template>
+            <span>View report summary</span>
           </v-tooltip>
         </span>
       </div>
@@ -654,6 +683,13 @@ export default {
           :is-loading="loading"
           @handle-record-save="handleRecordSave"
           @cancel-filter-data="dialog = false"
+        />
+      </v-dialog>
+
+      <v-dialog v-model="reportSummaryDialog" width="700">
+        <BaseReportSummary
+          :control-id="reportSummaryId"
+          @close-view-report-summary="closeViewReportSummary"
         />
       </v-dialog>
     </div>
