@@ -113,6 +113,9 @@ public class ProcessDataController {
 		if (reqProcessData.getStakeholder() != null)
 			processData.setStakeholder(reqProcessData.getStakeholder());
 		
+		if (reqProcessData.getStakeholderId() != null)
+			processData.setStakeholderId(reqProcessData.getStakeholderId());
+
 		if (reqProcessData.getHdsIpcId() != null)
 			processData.setHdsIpcId(reqProcessData.getHdsIpcId());
 
@@ -136,17 +139,41 @@ public class ProcessDataController {
 		
 		if (reqProcessData.getHdsProviderIdentifierType3() != null)
 			processData.setHdsProviderIdentifierType3(reqProcessData.getHdsProviderIdentifierType3());
-		
+
+		if (reqProcessData.getHdsMspFacilityNumber() != null)
+			processData.setHdsMspFacilityNumber(reqProcessData.getHdsMspFacilityNumber());
+
+		if (reqProcessData.getHdsPauthId() != null)
+			processData.setHdsPauthId(reqProcessData.getHdsPauthId());
+
+		if (reqProcessData.getHdsCategoryCode() != null)
+			processData.setHdsCategoryCode(reqProcessData.getHdsCategoryCode());
+
+		if (reqProcessData.getHdsRoleTypeCode() != null)
+			processData.setHdsRoleTypeCode(reqProcessData.getHdsRoleTypeCode());
+
 		if (reqProcessData.getHdsType() != null)
 			processData.setHdsType(reqProcessData.getHdsType());
+
+		if (reqProcessData.getHdsSubType() != null)
+			processData.setHdsSubType(reqProcessData.getHdsSubType());			
 		
+		if (reqProcessData.getHdsUserChid() != null)
+			processData.setHdsUserChid(reqProcessData.getHdsUserChid());			
+		
+		if (reqProcessData.getHdsCreatedDts() != null)
+			processData.setHdsCreatedDts(reqProcessData.getHdsCreatedDts());	
+
+		if (reqProcessData.getHdsInvalidatedDts() != null)
+			processData.setHdsInvalidatedDts(reqProcessData.getHdsInvalidatedDts());	
+
 		if (reqProcessData.getHdsName() != null)
 			processData.setHdsName(reqProcessData.getHdsName());
 		
 		if (reqProcessData.getHdsPreferredNameFlag() != null)
 			processData.setHdsPreferredNameFlag(reqProcessData.getHdsPreferredNameFlag());
 		
-		if (reqProcessData.getHdsWebsite() != null)
+		if (reqProcessData.getHdsEmail() != null)
 			processData.setHdsEmail(reqProcessData.getHdsEmail());
 		
 		if (reqProcessData.getHdsWebsite() != null)
@@ -173,21 +200,120 @@ public class ProcessDataController {
 		if (reqProcessData.getHdsFaxNumber() != null)
 			processData.setHdsFaxNumber(reqProcessData.getHdsFaxNumber());
 		
-	
+		if (reqProcessData.getPcnServiceDeliveryType() != null)
+			processData.setPcnServiceDeliveryType(reqProcessData.getPcnServiceDeliveryType());	
+
 		if (reqProcessData.getPcnClinicType() != null)
 			processData.setPcnClinicType(reqProcessData.getPcnClinicType());
 		
 		if (reqProcessData.getPcnPciFlag() != null)
 			processData.setPcnPciFlag(reqProcessData.getPcnPciFlag());
 		
+		if (reqProcessData.getHdsStatus() != null)
+			processData.setHdsStatus(reqProcessData.getHdsStatus());
 
 		if (reqProcessData.getSourceStatus() != null)
 			processData.setSourceStatus(reqProcessData.getSourceStatus());
 		
-		
+		if (reqProcessData.getPcnClinicStatus() != null)
+			processData.setPcnClinicStatus(reqProcessData.getPcnClinicStatus());
+
+		if (reqProcessData.getHdsEffectiveStartDate() != null)
+			processData.setHdsEffectiveStartDate(reqProcessData.getHdsEffectiveStartDate());
+
+		if (reqProcessData.getHdsEffectiveEndDate() != null)
+			processData.setHdsEffectiveEndDate(reqProcessData.getHdsEffectiveEndDate());	
+
+		if (reqProcessData.getFacAddressUnit() != null)
+			processData.setFacAddressUnit(reqProcessData.getFacAddressUnit());	
+
 		if (reqProcessData.getFacBuildingName() != null)
-			processData.setFacBuildingName(reqProcessData.getFacBuildingName());
-		
+			processData.setFacBuildingName(reqProcessData.getFacBuildingName());	
+
+		if (reqProcessData.getFacCivicAddrId() != null)
+			processData.setFacCivicAddrId(reqProcessData.getFacCivicAddrId());	
+
+		if (reqProcessData.getFacCivicAddr() != null)
+			processData.setFacCivicAddr(reqProcessData.getFacCivicAddr());	
+
+		if (reqProcessData.getFacLatitude() != null)
+			processData.setFacLatitude(reqProcessData.getFacLatitude());	
+
+		if (reqProcessData.getFacLongitude() != null)
+			processData.setFacLongitude(reqProcessData.getFacLongitude());	
+
+		if (reqProcessData.getFacStreetDirection() != null)
+			processData.setFacStreetDirection(reqProcessData.getFacStreetDirection());	
+
+		if (reqProcessData.getStreetDirectionPrefix() != null)
+			processData.setStreetDirectionPrefix(reqProcessData.getStreetDirectionPrefix());	
+
+		if (reqProcessData.getStreetTypePrefix() != null)
+			processData.setStreetTypePrefix(reqProcessData.getStreetTypePrefix());	
+
+		if (reqProcessData.getFacCivicNumber() != null)
+			processData.setFacCivicNumber(reqProcessData.getFacCivicNumber());
+
+		if (reqProcessData.getFacStreetName() != null)
+			processData.setFacStreetName(reqProcessData.getFacStreetName());
+
+		if (reqProcessData.getFacStreetType() != null)
+			processData.setFacStreetType(reqProcessData.getFacStreetType());
+
+		if (reqProcessData.getFacLocalityName() != null)
+			processData.setFacLocalityName(reqProcessData.getFacLocalityName());
+
+		if (reqProcessData.getFacProvinceCode() != null)
+			processData.setFacProvinceCode(reqProcessData.getFacProvinceCode());
+
+		if (reqProcessData.getFacSiteId() != null)
+			processData.setFacSiteId(reqProcessData.getFacSiteId());
+
+		if (reqProcessData.getFacScore() != null)
+			processData.setFacScore(reqProcessData.getFacScore());
+
+		if (reqProcessData.getFacMatchPrecision() != null)
+			processData.setFacMatchPrecision(reqProcessData.getFacMatchPrecision());
+
+		if (reqProcessData.getFacPrecisionPoints() != null)
+			processData.setFacPrecisionPoints(reqProcessData.getFacPrecisionPoints());
+
+		if (reqProcessData.getFacHsdaName() != null)
+			processData.setFacHsdaName(reqProcessData.getFacHsdaName());
+
+		if (reqProcessData.getFacDatabcResults() != null)
+			processData.setFacDatabcResults(reqProcessData.getFacDatabcResults());
+
+		if (reqProcessData.getFacPcnCode() != null)
+			processData.setFacPcnCode(reqProcessData.getFacPcnCode());
+
+		if (reqProcessData.getFacPcnName() != null)
+			processData.setFacPcnName(reqProcessData.getFacPcnName());
+
+		if (reqProcessData.getFacChsaStatus() != null)
+			processData.setFacChsaStatus(reqProcessData.getFacChsaStatus());
+
+		if (reqProcessData.getFacPcnStatus() != null)
+			processData.setFacPcnStatus(reqProcessData.getFacPcnStatus());
+
+		if (reqProcessData.getFacChsaCode() != null)
+			processData.setFacChsaCode(reqProcessData.getFacChsaCode());
+
+		if (reqProcessData.getFacChsaName() != null)
+			processData.setFacChsaName(reqProcessData.getFacChsaName());
+
+		if (reqProcessData.getFacLhaName() != null)
+			processData.setFacLhaName(reqProcessData.getFacLhaName());
+
+		if (reqProcessData.getFacHaName() != null)
+			processData.setFacHaName(reqProcessData.getFacHaName());
+
+		if (reqProcessData.getFacRelnType() != null)
+			processData.setFacRelnType(reqProcessData.getFacRelnType());
+
+		if (reqProcessData.getFacTypeCode() != null)
+			processData.setFacTypeCode(reqProcessData.getFacTypeCode());
+
 		if (reqProcessData.getPhysicalAddr1() != null)
 			processData.setPhysicalAddr1(reqProcessData.getPhysicalAddr1());
 		
@@ -211,13 +337,18 @@ public class ProcessDataController {
 
 		if (reqProcessData.getPhysicalCountry() != null)
 			processData.setPhysicalCountry(reqProcessData.getPhysicalCountry());
-		
+
+		if (reqProcessData.getPhysicalAddrPrpsTypeCd() != null)
+			processData.setPhysicalAddrPrpsTypeCd(reqProcessData.getPhysicalAddrPrpsTypeCd());
+
+		if (reqProcessData.getPhysicalAddressValidationStatus() != null)
+			processData.setPhysicalAddressValidationStatus(reqProcessData.getPhysicalAddressValidationStatus());		
+
 		if (reqProcessData.getMailAddr1() != null)
 			processData.setMailAddr1(reqProcessData.getMailAddr1());
 
 		if (reqProcessData.getMailAddr2() != null)
 			processData.setMailAddr2(reqProcessData.getMailAddr2());
-
 		
 		if (reqProcessData.getMailAddr3() != null)
 			processData.setMailAddr3(reqProcessData.getMailAddr3());
@@ -237,6 +368,11 @@ public class ProcessDataController {
 		if (reqProcessData.getMailCountry() != null)
 			processData.setMailCountry(reqProcessData.getMailCountry());
 		
+		if (reqProcessData.getMailAddressValidationStatus() != null)
+			processData.setMailAddressValidationStatus(reqProcessData.getMailAddressValidationStatus());		
+
+		if (reqProcessData.getPlrFacilityId() != null)
+			processData.setPlrFacilityId(reqProcessData.getPlrFacilityId());
 
 		if (reqProcessData.getRowstatusCode() != null)
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode());
@@ -352,6 +488,8 @@ public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTa
 	
 	List<ReportSummary> _list = dbUtilityService.getReportSummary(controlTableId);
 	
+
+
 	return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _list));
 	}
 }

@@ -254,12 +254,11 @@ public class FileServiceImpl implements FileService {
 	        processData.setPcnServiceDeliveryType(s.getPcnServiceDeliveryType());   
 	        processData.setPcnClinicType(s.getPcnClinicType());
 	        processData.setPcnPciFlag(s.getPcnPciFlag());
-		processData.setSourceStatus(s.getSourceStatus()); 
-		processData.setPcnClinicStatus(s.getPcnClinicStatus());
-		processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());   
-		processData.setFacAddressUnit(s.getFacAddressUnit()); 			    
-		processData.setFacBuildingName(s.getFacBuildingName()); 	
-
+		    processData.setSourceStatus(s.getSourceStatus()); 
+		    processData.setPcnClinicStatus(s.getPcnClinicStatus());
+		    processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());   
+		    processData.setFacAddressUnit(s.getFacAddressUnit()); 			    
+		    processData.setFacBuildingName(s.getFacBuildingName()); 	
 	        processData.setPhysicalAddr1(s.getPhysicalAddr1());
 	        processData.setPhysicalAddr2(s.getPhysicalAddr2());	  
 	        processData.setPhysicalAddr3(s.getPhysicalAddr3());

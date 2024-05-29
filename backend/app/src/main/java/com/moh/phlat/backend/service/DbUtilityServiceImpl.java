@@ -309,6 +309,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		// adding message code and desc to the list
 
 		List<Object[]> _listMsg = processDataRepository.getProcessDataWithMessageCodeCount(controlTableId);
+
 		for (Object[] _msg : _listMsg){
 			String _code = (String) _msg[1];
 			if (_code!=null) {

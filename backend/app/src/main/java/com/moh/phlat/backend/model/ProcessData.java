@@ -73,7 +73,7 @@ public class ProcessData {
     @Column(name="hds_pauth_id")
     private String hdsPauthId;
 
-    @Column(name="hds_category_ode")
+    @Column(name="hds_category_code")
     private String hdsCategoryCode;
 
     @Column(name="hds_role_type_code")
