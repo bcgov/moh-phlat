@@ -18,6 +18,10 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +35,12 @@ public class ControlController {
 	private ControlRepository controlRepository;
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
-	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required = true) int page, 
+			@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
+			@RequestParam(required = false) String sortDirection) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findAll()));
+				.body(new ResponseMessage("success", 200, "", controlRepository.findAll(PageRequest.of(page, pageLimit, 
+						Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));
 	}
 
 	// view specific file control

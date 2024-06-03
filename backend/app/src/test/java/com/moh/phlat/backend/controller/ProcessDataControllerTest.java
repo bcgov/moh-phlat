@@ -39,6 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 /**
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
  * and it shouldn't be assumed that they are used for authorization checks
@@ -101,9 +105,11 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessDataByControlTableId() throws Exception {
+    	
+    	Pageable page = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class))).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),page)).thenReturn(processDataList);
 
         // Perform GET request and validate response
         ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")
@@ -123,7 +129,7 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class));
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),page);
 
     }
 

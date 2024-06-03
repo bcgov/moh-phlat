@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.moh.phlat.backend.service.ProcessDataService;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +61,11 @@ public class ProcessDataController {
 
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/controltable/{controlTableId}")
+	@GetMapping("/view/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
+			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, 
+			@RequestParam(required = true) int page, @RequestParam(required = true) int pageLimit, 
+			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -68,10 +75,14 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		List<ProcessData> processData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus);
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success",
-																			 200, "",
-																			 processData));
+		Pageable test = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		System.out.println(test.toString());
+		List<ProcessData> processData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, test);
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				processData));
+		/*return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				processDataService.findAll(PageRequest.of(page, pageLimit, 
+						Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));*/
 	}
 
 	// get specific row by id

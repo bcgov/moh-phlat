@@ -5,6 +5,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -74,13 +78,16 @@ public class SourceDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
-			@PathVariable Long controlTableId) {
+			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int pageLimit, 
+			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
-
+		
 		if (controlTableData.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-					sourceDataRepository.getAllSourceDataByControlTableId(controlTableId)));
-			// return sourceDataRepository.getAllSourceDataByControlTableId(controlTableId);
+					sourceDataRepository.findAll(PageRequest.of(page, pageLimit, 
+							Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));
+					//sourceDataRepository.getAllSourceDataByControlTableId(controlTableId)));
+					// return sourceDataRepository.getAllSourceDataByControlTableId(controlTableId);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
 					"Source Data not found for control id: " + controlTableId, "[]"));
