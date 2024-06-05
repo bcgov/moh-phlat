@@ -262,7 +262,7 @@ export default {
           (header) => header !== 'doNotLoadFlag' && header !== 'doNotLoad'
         )
         .map((h) => {
-          return { title: h, key: h };
+          return { title: h, key: h, filterable: true };
         });
 
       this.headers = [...tableHeaders, ...this.headers].filter(
@@ -459,6 +459,10 @@ export default {
       this.reportSummaryId = null;
       this.reportSummaryDialog = false;
     },
+    /** Filter column Stuff */
+    remove(key) {
+      this.headers = this.headers.filter((header) => header.key !== key);
+    },
   },
 };
 </script>
@@ -571,6 +575,32 @@ export default {
         :sort-by="sortOrderCriteria"
         class="submissions-table"
       >
+        <template
+          v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }"
+        >
+          <tr>
+            <template v-for="column in columns" :key="column.key">
+              <th class="">
+                <div class="v-data-table-header__content cursor-pointer">
+                  <span class="mr-2" @click="() => toggleSort(column)"
+                    >{{ column.title }}
+                  </span>
+                  <template v-if="isSorted(column)">
+                    <v-icon
+                      :icon="getSortIcon(column)"
+                      @click="() => toggleSort(column)"
+                    ></v-icon>
+                  </template>
+                  <v-icon
+                    v-if="column.filterable"
+                    icon="$close"
+                    @click="() => remove(column.key)"
+                  ></v-icon>
+                </div>
+              </th>
+            </template>
+          </tr>
+        </template>
         <template #item.rowstatusCode="{ item }">
           <div>
             <div
