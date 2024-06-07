@@ -160,7 +160,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			if (processData.getHdsName().isEmpty()) {
 				isValid = false;
 				logger.info("Required check failed on process data id: " + processData.getId());
-				addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
+				// TODO this functionality not needed for phase A.The table message detail also does not exist.
+				//addMessageDetail(processData.getId(), "INVALID", 101, "Mandatory", "HDS Name cannot be empty.");
 			}
 			// error detection
 			
@@ -223,7 +224,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				for (ProcessData s : processDataList) {
 					// skip record marked as DO_NOT_LOAD and only VALID records
 					if (!s.getDoNotLoadFlag().equals("Y") && s.getRowstatusCode().equals("VALID")) {
-						logger.info("loading process data with id: {} to PLR.", s.getId() );
+						 logger.info("loading process data with id: {} to PLR.", s.getId() );
 	
 						MaintainFacilityResponse result = esbBoundary.loadPlrViaEsb(control, s);
 					}
