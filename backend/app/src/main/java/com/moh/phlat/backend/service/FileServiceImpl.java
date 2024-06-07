@@ -97,12 +97,12 @@ public class FileServiceImpl implements FileService {
 			logger.info("Data saved in source table");
 
 
-			Optional<Control> _control = controlRepository.findById(controlTableId);
+			Optional<Control> controlTable = controlRepository.findById(controlTableId);
 
-			if (_control.isPresent()) {
-				Control control = _control.get();
+			if (controlTable.isPresent()) {
+				Control control = controlTable.get();
 				
-				control.setStatusCode("UPLOAD_COMPLETED");
+				control.setStatusCode(RowStatusService.UPLOAD_COMPLETED);
 				control.setUpdatedBy(authenticateUserId);
 				control.setUpdatedAt(new Date());
 			
@@ -121,10 +121,10 @@ public class FileServiceImpl implements FileService {
 
 		} catch (Exception e){
 			logger.error("Error Encountered: {}", e.getMessage(), e);
-			Optional<Control> _control = controlRepository.findById(controlTableId);
+			Optional<Control> controlTable = controlRepository.findById(controlTableId);
 			
-			Control control = _control.get();
-			control.setStatusCode("UPLOAD_ERROR");
+			Control control = controlTable.get();
+			control.setStatusCode(RowStatusService.UPLOAD_ERROR);
 			control.setUpdatedBy(authenticateUserId);
 			control.setUpdatedAt(new Date());
 		
@@ -133,79 +133,166 @@ public class FileServiceImpl implements FileService {
 
 	}
 
+ private static SourceData createSourceData(Long controlTableId, String doNotLoadFlag, String stakeholder, String stakeholderId,
+                                                 String hdsIpcId, String hdsCpnId, 
+                                                 String hdsProviderIdentifier1,
+                                                 String hdsProviderIdentifier2, String hdsProviderIdentifier3,
+                                                 String hdsProviderIdentifierType1, String hdsProviderIdentifierType2, 
+                                                 String hdsProviderIdentifierType3, String hdsMspFacilityNumber,
+                                                 String hdsType, String hdsSubType, 
+												 String hdsName,
+                                                 String hdsPreferredNameFlag, String hdsEmail, String hdsWebsite,
+                                                 String hdsBusTelAreaCode, String hdsBusTelNumber, String hdsTelExtension,
+                                                 String hdsCellAreaCode, String hdsCellNumber, String hdsFaxAreaCode, String hdsFaxNumber, 
+                                                 String pcnServiceDeliveryType,
+                                                 String pcnClinicType,
+                                                 String pcnPciFlag, 
+                                                 String sourceStatus, 
+                                                 String pcnClinicStatus,
+                                                 String hdsEffectiveStartDate, 
+                                                 String facAddressUnit,
+                                                 String facBuildingName,
+                                                 String physicalAddr1, String physicalAddr2, String physicalAddr3,
+                                                 String physicalAddr4,
+                                                 String physicalCity, String physicalProvince, String physicalPcode,
+                                                 String physicalCountry,
+                                                 String physicalAddrPrpsTypeCd,
+                                                 String mailAddr1, String mailAddr2,
+                                                 String mailAddr3, String mailAddr4, String mailCity, String mailBc,
+                                                 String mailPcode, String mailCountry, 
+                                                 Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
+        return SourceData.builder()
+						  .controlTableId(controlTableId)
+                          .doNotLoadFlag(doNotLoadFlag)
+                          .stakeholder(stakeholder)
+                          .stakeholderId(stakeholderId)
+                          .hdsIpcId(hdsIpcId)
+                          .hdsCpnId(hdsCpnId)
+                          .hdsProviderIdentifier1(hdsProviderIdentifier1)
+                          .hdsProviderIdentifier2(hdsProviderIdentifier2)
+                          .hdsProviderIdentifier3(hdsProviderIdentifier3)
+                          .hdsProviderIdentifierType1(hdsProviderIdentifierType1)
+                          .hdsProviderIdentifierType2(hdsProviderIdentifierType2)
+                          .hdsProviderIdentifierType3(hdsProviderIdentifierType3)
+                          .hdsMspFacilityNumber(hdsMspFacilityNumber)
+                          .hdsType(hdsType)
+                          .hdsSubType(hdsSubType)
+                          .hdsName(hdsName)
+                          .hdsPreferredNameFlag(hdsPreferredNameFlag)
+                          .hdsEmail(hdsEmail)
+                          .hdsWebsite(hdsWebsite)
+                          .hdsBusTelAreaCode(hdsBusTelAreaCode)
+                          .hdsBusTelNumber(hdsBusTelNumber)
+                          .hdsTelExtension(hdsTelExtension)
+                          .hdsCellAreaCode(hdsCellAreaCode)
+                          .hdsCellNumber(hdsCellNumber)
+                          .hdsFaxAreaCode(hdsFaxAreaCode)
+                          .hdsFaxNumber(hdsFaxNumber)
+                          .pcnServiceDeliveryType(pcnServiceDeliveryType)
+                          .pcnClinicType(pcnClinicType)
+                          .pcnPciFlag(pcnPciFlag)
+                          .sourceStatus(sourceStatus)
+                          .pcnClinicStatus(pcnClinicStatus)
+                          .hdsEffectiveStartDate(hdsEffectiveStartDate)
+                          .facAddressUnit(facAddressUnit)
+                          .facBuildingName(facBuildingName)
+                          .physicalAddr1(physicalAddr1)
+                          .physicalAddr2(physicalAddr2)
+                          .physicalAddr3(physicalAddr3)
+                          .physicalAddr4(physicalAddr4)
+                          .physicalCity(physicalCity)
+                          .physicalProvince(physicalProvince)
+                          .physicalPcode(physicalPcode)
+                          .physicalCountry(physicalCountry)
+                          .physicalAddrPrpsTypeCd(physicalAddrPrpsTypeCd)
+                          .mailAddr1(mailAddr1)
+                          .mailAddr2(mailAddr2)
+                          .mailAddr3(mailAddr3)
+                          .mailAddr4(mailAddr4)
+                          .mailCity(mailCity)
+                          .mailBc(mailBc)
+                          .mailPcode(mailPcode)
+                          .mailCountry(mailCountry)
+                          .createdAt(createdAt)
+                          .createdBy(createdBy)
+                          .updatedAt(updatedAt)
+                          .updatedBy(updatedBy)
+                          .build();
+    }
+
 	private List<SourceData> csvToSourceData(InputStream inputStream, Long controlTableId, String authenticateUserId) {
 		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 				CSVParser csvParser = new CSVParser(fileReader,
 						CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
-			List<SourceData> sourceDatas = new ArrayList<SourceData>();
+			List<SourceData> sourceData = new ArrayList<SourceData>();
 			List<CSVRecord> records = csvParser.getRecords();
 			for (CSVRecord csvRecords : records) {
-				SourceData sourceData = new SourceData(controlTableId, 
+				sourceData.add(createSourceData(
+					    controlTableId,
 						csvRecords.get("DO_NOT_LOAD_FLAG"), 
 						csvRecords.get("STAKEHOLDER"),
-						csvRecords.get("STAKEHOLDER_ID"),
-						csvRecords.get("HDS_IPC_ID"),	
-						csvRecords.get("HDS_CPN_ID"),
-						csvRecords.get("HDS_PROVIDER_IDENTIFIER1"),
-						csvRecords.get("HDS_PROVIDER_IDENTIFIER2"),
-						csvRecords.get("HDS_PROVIDER_IDENTIFIER3"),						
-						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE1"),
-						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE2"),
-						csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE3"),
-						csvRecords.get("HDS_MSP_FACILITY_NUMBER"),
-						csvRecords.get("HDS_TYPE"),
-						csvRecords.get("HDS_SUB_TYPE"),
-						csvRecords.get("HDS_NAME"),												
-						csvRecords.get("HDS_PREFERRED_NAME_FLAG"),							
-						csvRecords.get("HDS_EMAIL"),	
-						csvRecords.get("HDS_WEBSITE"),	
-						csvRecords.get("HDS_BUS_TEL_AREA_CODE"),
-						csvRecords.get("HDS_BUS_TEL_NUMBER"),
-						csvRecords.get("HDS_TEL_EXTENSION"),	
-						csvRecords.get("HDS_CELL_AREA_CODE"),
-						csvRecords.get("HDS_CELL_NUMBER"),
-						csvRecords.get("HDS_FAX_AREA_CODE"),
-						csvRecords.get("HDS_FAX_NUMBER"),
-						csvRecords.get("PCN_SERVICE_DELIVERY_TYPE"),
-						csvRecords.get("PCN_CLINIC_TYPE"),
-						csvRecords.get("PCN_PCI_FLAG"),
-						csvRecords.get("SOURCE_STATUS"),	
-						csvRecords.get("PCN_CLINIC_STATUS"),	
-						csvRecords.get("HDS_EFFECTIVE_START_DATE"),							
-						csvRecords.get("FAC_ADDRESS_UNIT"),
-						csvRecords.get("FAC_BUILDING_NAME"),
-						csvRecords.get("PHYSICAL_ADDR1"),
-						csvRecords.get("PHYSICAL_ADDR2"),
-						csvRecords.get("PHYSICAL_ADDR3"),
-						csvRecords.get("PHYSICAL_ADDR4"),
-						csvRecords.get("PHYSICAL_CITY"),						
-						csvRecords.get("PHYSICAL_PROVINCE"),
-						csvRecords.get("PHYSICAL_PCODE"),
-						csvRecords.get("PHYSICAL_COUNTRY"),
-						csvRecords.get("PHYSICAL_ADDR_PRPS_TYPE_CD"),	
-						csvRecords.get("MAIL_ADDR1"),
-						csvRecords.get("MAIL_ADDR2"),
-						csvRecords.get("MAIL_ADDR3"),
-						csvRecords.get("MAIL_ADDR4"),
-						csvRecords.get("MAIL_CITY"),						
-						csvRecords.get("MAIL_BC"),
-						csvRecords.get("MAIL_PCODE"),
-						csvRecords.get("MAIL_COUNTRY"),
-						new Date(), // created_at
-						authenticateUserId,
-						null, // updated_at
-						null // updated_by
-						);
-				sourceDatas.add(sourceData);
+				 		csvRecords.get("STAKEHOLDER_ID"),
+				 		csvRecords.get("HDS_IPC_ID"),	
+				 		csvRecords.get("HDS_CPN_ID"),
+				 		csvRecords.get("HDS_PROVIDER_IDENTIFIER1"),
+				 		csvRecords.get("HDS_PROVIDER_IDENTIFIER2"),
+				 		csvRecords.get("HDS_PROVIDER_IDENTIFIER3"),						
+				 		csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE1"),
+				 		csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE2"),
+				 		csvRecords.get("HDS_PROVIDER_IDENTIFIER_TYPE3"),
+				 		csvRecords.get("HDS_MSP_FACILITY_NUMBER"),
+				 		csvRecords.get("HDS_TYPE"),
+				 		csvRecords.get("HDS_SUB_TYPE"),
+				 		csvRecords.get("HDS_NAME"),												
+				 		csvRecords.get("HDS_PREFERRED_NAME_FLAG"),							
+				 		csvRecords.get("HDS_EMAIL"),	
+				 		csvRecords.get("HDS_WEBSITE"),	
+				 		csvRecords.get("HDS_BUS_TEL_AREA_CODE"),
+				 		csvRecords.get("HDS_BUS_TEL_NUMBER"),
+				 		csvRecords.get("HDS_TEL_EXTENSION"),	
+				 		csvRecords.get("HDS_CELL_AREA_CODE"),
+				 		csvRecords.get("HDS_CELL_NUMBER"),
+				 		csvRecords.get("HDS_FAX_AREA_CODE"),
+				 		csvRecords.get("HDS_FAX_NUMBER"),
+				 		csvRecords.get("PCN_SERVICE_DELIVERY_TYPE"),
+				 		csvRecords.get("PCN_CLINIC_TYPE"),
+				 		csvRecords.get("PCN_PCI_FLAG"),
+				 		csvRecords.get("SOURCE_STATUS"),	
+				 		csvRecords.get("PCN_CLINIC_STATUS"),	
+				 		csvRecords.get("HDS_EFFECTIVE_START_DATE"),							
+				 		csvRecords.get("FAC_ADDRESS_UNIT"),
+				 		csvRecords.get("FAC_BUILDING_NAME"),
+				 		csvRecords.get("PHYSICAL_ADDR1"),
+				 		csvRecords.get("PHYSICAL_ADDR2"),
+				 		csvRecords.get("PHYSICAL_ADDR3"),
+				 		csvRecords.get("PHYSICAL_ADDR4"),
+				 		csvRecords.get("PHYSICAL_CITY"),						
+				 		csvRecords.get("PHYSICAL_PROVINCE"),
+				 		csvRecords.get("PHYSICAL_PCODE"),
+				 		csvRecords.get("PHYSICAL_COUNTRY"),
+				 		csvRecords.get("PHYSICAL_ADDR_PRPS_TYPE_CD"),	
+				 		csvRecords.get("MAIL_ADDR1"),
+				 		csvRecords.get("MAIL_ADDR2"),
+				 		csvRecords.get("MAIL_ADDR3"),
+				 		csvRecords.get("MAIL_ADDR4"),
+				 		csvRecords.get("MAIL_CITY"),						
+				 		csvRecords.get("MAIL_BC"),
+				 		csvRecords.get("MAIL_PCODE"),
+				 		csvRecords.get("MAIL_COUNTRY"),
+				 		new Date(), // created_at
+			    		authenticateUserId,
+				 		null, // updated_at
+				 		null // updated_by
+				));
 			}
-			return sourceDatas;
+			return sourceData;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("Unexpected error: {}", e.getMessage(), e);
-			Optional<Control> _control = controlRepository.findById(controlTableId);
+			Optional<Control> controlTable = controlRepository.findById(controlTableId);
 			
-			Control control = _control.get();
-			control.setStatusCode("UPLOAD_ERROR");
+			Control control = controlTable.get();
+			control.setStatusCode(RowStatusService.UPLOAD_ERROR);
 			control.setUpdatedBy(authenticateUserId);
 			control.setUpdatedAt(new Date());
 		
@@ -218,7 +305,7 @@ public class FileServiceImpl implements FileService {
 	private void copyInputSourceDataToProcessData(Long controlTableId, String authenticateUserId) {
 
 		Optional<Control> control = controlRepository.findById(controlTableId);	
-		Control _control = control.get();
+		Control controlTable = control.get();
 		
     	Iterable<SourceData> inputSourceData = sourceDataRepository.getAllSourceDataByControlTableId(controlTableId);
     	
@@ -276,39 +363,40 @@ public class FileServiceImpl implements FileService {
 	        processData.setMailBc(s.getMailBc());      
 	        processData.setMailPcode(s.getMailPcode());      
 	        processData.setMailCountry(s.getMailCountry());
-	        processData.setMailAddressValidationStatus("");
+	        processData.setMailAddrValidationStatus("");
 	        processData.setCreatedAt(s.getCreatedAt());
 	        processData.setCreatedBy(authenticateUserId);
 	        
 	        // set default values
-		if (_control.getLoadTypeHds()) {
-		    processData.setHdsUserChid(_control.getBatchLabelName());
+		if (controlTable.getLoadTypeHds()) {
+		    processData.setHdsUserChid(controlTable.getBatchLabelName());
 		    processData.setHdsInvalidatedDts("9999-12-30");	        
 		    processData.setHdsEffectiveEndDate("9999-12-30");  		    
-		    processData.setHdsStatus("Active");   		    	
-	            processData.setHdsCategoryCode("ORGANIZATION");
-		    if (s.getHdsPreferredNameFlag().isEmpty()) {
-			processData.setHdsPreferredNameFlag("Y");   
+	        processData.setHdsCategoryCode("ORGANIZATION");
+		    
+			if (s.getHdsPreferredNameFlag().isEmpty()) {
+			   processData.setHdsPreferredNameFlag("Y");   
 		    }	        
-		    if (s.getHdsType().isEmpty()) {
-			if (s.getStakeholder().equals("PHARMACY")) {
-			   processData.setHdsType("Pharmacy");
-		      } else if (s.getStakeholder().equals("CLINIC")) {
+		    
+			if (s.getHdsType().isEmpty()) {
+			     if (s.getStakeholder().equals("PHARMACY")) {
+			        processData.setHdsType("Pharmacy");
+		         } else if (s.getStakeholder().equals("CLINIC")) {
 		           processData.setHdsType("Clinic");
-		        }
-		    }
+		         }
+		       }
 	        }
 		    
-	        if (_control.getLoadTypeFacility()) {
-		    processData.setFacRelnType("LOCATION OF"); 		
-		    processData.setFacTypeCode("BUILDING"); 		
+	        if (controlTable.getLoadTypeFacility()) {
+		        processData.setFacRelnType("LOCATION OF"); 		
+		        processData.setFacTypeCode("BUILDING"); 		
 	        }
 		    
 	        
 	        if (s.getDoNotLoadFlag().equals("Y")) {
-		    processData.setRowstatusCode("DO_NOT_LOAD"); 
+		        processData.setRowstatusCode(RowStatusService.DO_NOT_LOAD); 
 	        } else {;
-	            processData.setRowstatusCode("INITIAL"); 
+	            processData.setRowstatusCode(RowStatusService.INITIAL); 
 	        }
 	        
 	        processDataRepository.save(processData);

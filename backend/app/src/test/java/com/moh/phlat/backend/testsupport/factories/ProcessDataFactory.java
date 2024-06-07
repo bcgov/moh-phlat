@@ -27,7 +27,6 @@ public class ProcessDataFactory extends BaseFactory {
                                           "pcdServiceDeliveryType_2",
                                           "clinicType_1",
                                           "Y", 
-                                          "Active", 
                                           "sourceStatus_1",
                                           "clinicStatus_Active", 
                                           "2024-050-28", 
@@ -69,7 +68,6 @@ public class ProcessDataFactory extends BaseFactory {
                                           "pcdServiceDeliveryType_2",
                                           "clinicType2",
                                           "Y", 
-                                          "Active", 
                                           "sourceStatus_2",
                                           "clinicStatus_Active", 
                                           "2024-050-28", 
@@ -117,7 +115,6 @@ public class ProcessDataFactory extends BaseFactory {
                                                  String pcnServiceDeliveryType,
                                                  String pcnClinicType,
                                                  String pcnPciFlag, 
-                                                 String hdsStatus, 
                                                  String sourceStatus, 
                                                  String pcnClinicStatus,
                                                  String hdsEffectiveStartDate, 
@@ -138,11 +135,11 @@ public class ProcessDataFactory extends BaseFactory {
                                                  String physicalAddr4,
                                                  String physicalCity, String physicalProvince, String physicalPcode,
                                                  String physicalCountry,
-                                                 String physicalAddrPrpsTypeCd, String physicalAddressValidationStatus,
+                                                 String physicalAddrPrpsTypeCd, String physicalAddrValidationStatus,
                                                  String mailAddr1, String mailAddr2,
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailBc,
                                                  String mailPcode, String mailCountry, 
-                                                 String mailAddrPrpsTypeCd, String mailAddressValidationStatus,
+                                                 String mailAddrPrpsTypeCd, String mailAddrValidationStatus,
                                                  String plrFacilityId, String rowstatusCode,
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
 
@@ -183,7 +180,6 @@ public class ProcessDataFactory extends BaseFactory {
                           .pcnServiceDeliveryType(pcnServiceDeliveryType)
                           .pcnClinicType(pcnClinicType)
                           .pcnPciFlag(pcnPciFlag)
-                          .hdsStatus(hdsStatus)
                           .sourceStatus(sourceStatus)
                           .pcnClinicStatus(pcnClinicStatus)
                           .hdsEffectiveStartDate(hdsEffectiveStartDate)
@@ -227,7 +223,7 @@ public class ProcessDataFactory extends BaseFactory {
                           .physicalPcode(physicalPcode)
                           .physicalCountry(physicalCountry)
                           .physicalAddrPrpsTypeCd(physicalAddrPrpsTypeCd)
-                          .physicalAddressValidationStatus((physicalAddressValidationStatus))
+                          .physicalAddrValidationStatus((physicalAddrValidationStatus))
                           .mailAddr1(mailAddr1)
                           .mailAddr2(mailAddr2)
                           .mailAddr3(mailAddr3)
@@ -237,7 +233,7 @@ public class ProcessDataFactory extends BaseFactory {
                           .mailPcode(mailPcode)
                           .mailCountry(mailCountry)
                           .mailAddrPrpsTypeCd(mailAddrPrpsTypeCd)
-                          .mailAddressValidationStatus(mailAddressValidationStatus)
+                          .mailAddrValidationStatus(mailAddrValidationStatus)
                           .plrFacilityId(plrFacilityId)
                           .rowstatusCode(rowstatusCode)
                           .createdAt(createdAt)

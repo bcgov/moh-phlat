@@ -136,9 +136,6 @@ public class ProcessData {
     @Column(name="pcn_pci_flag")
     private String pcnPciFlag;  
     
-    @Column(name="hds_status")
-    private String hdsStatus;  
-
     @Column(name="source_status")
     private String sourceStatus;  
 
@@ -268,8 +265,8 @@ public class ProcessData {
     @Column(name="physical_addr_prps_type_cd")
     private String physicalAddrPrpsTypeCd;  
 
-     @Column(name="physical_address_validation_status")
-    private String physicalAddressValidationStatus;  
+     @Column(name="physical_addr_validation_status")
+    private String physicalAddrValidationStatus;  
 
     @Column(name="mail_addr1")
     private String mailAddr1;  
@@ -298,8 +295,8 @@ public class ProcessData {
     @Column(name="mail_addr_prps_type_cd")
     private String mailAddrPrpsTypeCd;  
 
-    @Column(name="mail_address_validation_status")
-    private String mailAddressValidationStatus;  
+    @Column(name="mail_addr_validation_status")
+    private String mailAddrValidationStatus;  
 
     @Column(name="plr_facility_id")
     private String plrFacilityId ; 
@@ -318,7 +315,6 @@ public class ProcessData {
 
 	@Column(name="updated_by")
     private String updatedBy;
-    
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
     private List<Message> messages;
