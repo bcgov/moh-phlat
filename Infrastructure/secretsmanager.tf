@@ -7,18 +7,28 @@ resource "aws_secretsmanager_secret" "phlat_db_database" {
 }
 
 resource "aws_secretsmanager_secret" "phlat_keycloak_provider_url" {
+  #This Keycloak URL facilitates credential exchange for the Frontend (FE) and token verification for the Backend (BE),
+  # validating tokens sent in the API header by the FE or any other client
   name = "${var.application}_keycloak_provider_url"
 }
 
+resource "aws_secretsmanager_secret" "phlat_plr_keycloak_provider_url" {
+  # PLR keycloak URL, used to retrieve token for calling PLR API
+  name = "${var.application}_plr_keycloak_provider_url"
+}
+
 resource "aws_secretsmanager_secret" "phlat_keycloak_client_id" {
+  # PLR Keycloak Client ID: Used to retrieve tokens for authentication and authorization when calling the PLR API
   name = "${var.application}_keycloak_client_id"
 }
 
 resource "aws_secretsmanager_secret" "phlat_keycloak_client_secret" {
+  # used to retrieve token for calling PLR API
   name = "${var.application}_keycloak_client_secret"
 }
 
 resource "aws_secretsmanager_secret" "phlat_keycloak_client_id_web" {
+  # used by FE for Authentication
   name = "${var.application}_keycloak_client_id_web"
 }
 
@@ -33,6 +43,11 @@ resource "aws_secretsmanager_secret_version" "phlat_db_database" {
 
 resource "aws_secretsmanager_secret_version" "phlat_keycloak_provider_url" {
   secret_id     = aws_secretsmanager_secret.phlat_keycloak_provider_url.id
+  secret_string = "changeme"
+}
+
+resource "aws_secretsmanager_secret_version" "phlat_plr_keycloak_provider_url" {
+  secret_id     = aws_secretsmanager_secret.phlat_plr_keycloak_provider_url.id
   secret_string = "changeme"
 }
 
