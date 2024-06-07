@@ -72,8 +72,8 @@ public class FileServiceImpl implements FileService {
 						"Returning false. The header length of the uploaded file does not match the length obtained from the database.");
 				logger.warn("Uploaded file header length: {}, Database file header length: {}", headerLine.length(),
 							expectedHeaderLine.length());
-				logger.warn(expectedHeaderLine);	
-				logger.warn(headerLine);			
+				logger.warn("Expected Header fields: {}", expectedHeaderLine);
+				logger.warn("Header fields from file: {}", headerLine);
 
 				return false;
 			}
