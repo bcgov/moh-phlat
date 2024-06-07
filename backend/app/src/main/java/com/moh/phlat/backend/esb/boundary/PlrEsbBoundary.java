@@ -87,7 +87,7 @@ public class PlrEsbBoundary {
 		token = getPlrKeyCloakDetails();
 		if (StringUtils.hasText(token.getAccessToken()) && !StringUtils.hasText(token.getError())) {
 			facilityResponse = createFacility(control, processData);
-			MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
+			//MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 		} else {
 			facilityResponse = new MaintainFacilityResponse(control);
 			facilityResponse.handleKeyCloakError(token);

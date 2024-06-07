@@ -161,16 +161,18 @@ public class MaintainFacilityRequest implements PlrRequest {
 	private AddressDto createPhysicalAddressDto(ProcessData input) {
 		AddressDto ad = new AddressDto();
 		ad.setActive(true);
-		ad.setAddressLineOne(input.getPhysicalAddr1());
-		if (StringUtils.hasText(input.getPhysicalAddr2())) {
-			ad.setAddressLineTwo(input.getPhysicalAddr2());
-		}
-		if (StringUtils.hasText(input.getPhysicalAddr3())) {
-			ad.setAddressLineThree(input.getPhysicalAddr3());
-		}
-		if (StringUtils.hasText(input.getPhysicalAddr4())) {
-			ad.setAddressLineFour(input.getPhysicalAddr4());
-		}
+		String addrLine1 = input.getCivicAddress().split(",")[0].trim();
+		ad.setAddressLineOne(addrLine1);
+		//ad.setAddressLineOne(input.getPhysicalAddr1());
+		//if (StringUtils.hasText(input.getPhysicalAddr2())) {
+		//	ad.setAddressLineTwo(input.getPhysicalAddr2());
+		//}
+		//if (StringUtils.hasText(input.getPhysicalAddr3())) {
+		//	ad.setAddressLineThree(input.getPhysicalAddr3());
+		//}
+		//if (StringUtils.hasText(input.getPhysicalAddr4())) {
+		//	ad.setAddressLineFour(input.getPhysicalAddr4());
+		//}
 		if (StringUtils.hasText(input.getPhysicalCity())) {
 			ad.setCity(input.getPhysicalCity());
 		}
