@@ -235,197 +235,197 @@ public class SourceDataController {
 	}
 	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getColumnList/{columnName}")
-	public ResponseEntity<ResponseMessage> getColumnLists(@PathVariable String columnName) {
+	@GetMapping("/getColumnList/{controlTableId}")
+	public ResponseEntity<ResponseMessage> getColumnLists(@PathVariable Long controlTableId, @RequestParam(required = false) String columnKey) {
 
 		List<String> _sourceData = new ArrayList();
 
-		switch(columnName) {
+		switch(columnKey) {
 			case "id":
-				_sourceData = sourceDataRepository.findAllDistinctId();
+				_sourceData = sourceDataRepository.findAllDistinctId(controlTableId);
 				break;
 			case "control_id":
-				_sourceData = sourceDataRepository.findAllDistinctControlId();
+				_sourceData = sourceDataRepository.findAllDistinctControlId(controlTableId);
 				break;
-			case "do_not_load":
-				_sourceData = sourceDataRepository.findAllDistinctDoNotLoad();
+			case "doNotLoadFlag":
+				_sourceData = sourceDataRepository.findAllDistinctDoNotLoad(controlTableId);
 				break;
 			case "stakeholder":
-				_sourceData = sourceDataRepository.findAllDistinctStakeholder();
+				_sourceData = sourceDataRepository.findAllDistinctStakeholder(controlTableId);
 				break;
-			case "hds_ipc_id":
-				_sourceData = sourceDataRepository.findAllDistinctHdsIpcId();
+			case "hdsIpcId":
+				_sourceData = sourceDataRepository.findAllDistinctHdsIpcId(controlTableId);
 				break;
-			case "hds_cpn_id":
-				_sourceData = sourceDataRepository.findAllDistinctHdsCpnId();
+			case "hdsCpnId":
+				_sourceData = sourceDataRepository.findAllDistinctHdsCpnId(controlTableId);
 				break;
-			case "hds_provider_identifier1":
-				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifier1();
+			case "hdsProviderIdentifier1":
+				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifier1(controlTableId);
 				break;
-			case "hds_provider_identifier2":
-				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifier2();
+			case "hdsProviderIdentifier2":
+				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifier2(controlTableId);
 				break;
-			case "hds_provider_identifier3":
-				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifier3();
+			case "hdsProviderIdentifier3":
+				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifier3(controlTableId);
 				break;
-			case "hds_provider_identifier_type1":
-				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifierType1();
+			case "hdsProviderIdentifierType1":
+				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifierType1(controlTableId);
 				break;
-			case "hds_provider_identifier_type2":
-				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifierType2();
+			case "hdsProviderIdentifierType2":
+				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifierType2(controlTableId);
 				break;
-			case "hds_provider_identifier_type3":
-				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifierType3();
+			case "hdsProviderIdentifierType3":
+				_sourceData = sourceDataRepository.findAllDistinctHdsProviderIdentifierType3(controlTableId);
 				break;
-			case "hds_hibc_facility_id":
-				_sourceData = sourceDataRepository.findAllDistinctHdsHibcFacilityId();
+			case "hdsHibcFacilityId":
+				_sourceData = sourceDataRepository.findAllDistinctHdsHibcFacilityId(controlTableId);
 				break;
-			case "hds_type":
-				_sourceData = sourceDataRepository.findAllDistinctHdsType();
+			case "hdsType":
+				_sourceData = sourceDataRepository.findAllDistinctHdsType(controlTableId);
 				break;
-			case "hds_name":
-				_sourceData = sourceDataRepository.findAllDistinctHdsName();
+			case "hdsName":
+				_sourceData = sourceDataRepository.findAllDistinctHdsName(controlTableId);
 				break;
-			case "hds_name_alias":
-				_sourceData = sourceDataRepository.findAllDistinctHdsNameAlias();
+			case "hdsNameAlias":
+				_sourceData = sourceDataRepository.findAllDistinctHdsNameAlias(controlTableId);
 				break;
-			case "hds_preferred_name_flag":
-				_sourceData = sourceDataRepository.findAllDistinctHdsPreferredNameFlag();
+			case "hdsPreferredNameFlag":
+				_sourceData = sourceDataRepository.findAllDistinctHdsPreferredNameFlag(controlTableId);
 				break;
-			case "hds_email":
-				_sourceData = sourceDataRepository.findAllDistinctHdsEmail();
+			case "hdsEmail":
+				_sourceData = sourceDataRepository.findAllDistinctHdsEmail(controlTableId);
 				break;
-			case "hds_website":
-				_sourceData = sourceDataRepository.findAllDistinctHdsWebsite();
+			case "hdsWebsite":
+				_sourceData = sourceDataRepository.findAllDistinctHdsWebsite(controlTableId);
 				break;
-			case "HDS_BUS_TEL_AREA_CODE":
-				_sourceData = sourceDataRepository.findAllDistinctHdsBusTelAreaCode();
+			case "hdsBusTelAreaCode":
+				_sourceData = sourceDataRepository.findAllDistinctHdsBusTelAreaCode(controlTableId);
 				break;
-			case "HDS_BUS_TEL_NUMBER":
-				_sourceData = sourceDataRepository.findAllDistinctHdsBusTelNumber();
+			case "hdsBusTelNumber":
+				_sourceData = sourceDataRepository.findAllDistinctHdsBusTelNumber(controlTableId);
 				break;
-			case "HDS_TEL_EXTENSION":
-				_sourceData = sourceDataRepository.findAllDistinctHdsTelExtension();
+			case "hdsTelExtension":
+				_sourceData = sourceDataRepository.findAllDistinctHdsTelExtension(controlTableId);
 				break;
-			case "HDS_CELL_AREA_CODE":
-				_sourceData = sourceDataRepository.findAllDistinctHdsCellAreaCode();
+			case "hdsCellAreaCode":
+				_sourceData = sourceDataRepository.findAllDistinctHdsCellAreaCode(controlTableId);
 				break;
-			case "HDS_CELL_NUMBER":
-				_sourceData = sourceDataRepository.findAllDistinctHdsCellNumber();
+			case "hdsCellNumber":
+				_sourceData = sourceDataRepository.findAllDistinctHdsCellNumber(controlTableId);
 				break;
-			case "HDS_FAX_AREA_CODE":
-				_sourceData = sourceDataRepository.findAllDistinctHdsFaxAreaCode();
+			case "hdsFaxAreaCode":
+				_sourceData = sourceDataRepository.findAllDistinctHdsFaxAreaCode(controlTableId);
 				break;
-			case "HDS_FAX_NUMBER":
-				_sourceData = sourceDataRepository.findAllDistinctHdsFaxNumber();
+			case "hdsFaxNumber":
+				_sourceData = sourceDataRepository.findAllDistinctHdsFaxNumber(controlTableId);
 				break;
-			case "HDS_SERVICE_DELIVERY_TYPE":
-				_sourceData = sourceDataRepository.findAllDistinctHdsServiceDeliveryType();
+			case "hdsServiceDeliveryType":
+				_sourceData = sourceDataRepository.findAllDistinctHdsServiceDeliveryType(controlTableId);
 				break;
-			case "PCN_CLINIC_TYPE":
-				_sourceData = sourceDataRepository.findAllDistinctPcnClinicType();
+			case "pcnClinicType":
+				_sourceData = sourceDataRepository.findAllDistinctPcnClinicType(controlTableId);
 				break;
-			case "PCN_PCI_FLAG":
-				_sourceData = sourceDataRepository.findAllDistinctPcnPciFlag();
+			case "pcnPciFlag":
+				_sourceData = sourceDataRepository.findAllDistinctPcnPciFlag(controlTableId);
 				break;
-			case "HDS_HOURS_OF_OPERATION":
-				_sourceData = sourceDataRepository.findAllDistinctHdsHoursOfOperation();
+			case "hdsHoursOfOperation":
+				_sourceData = sourceDataRepository.findAllDistinctHdsHoursOfOperation(controlTableId);
 				break;
-			case "HDS_CONTACT_NAME":
-				_sourceData = sourceDataRepository.findAllDistinctHdsContactName();
+			case "hdsContactName":
+				_sourceData = sourceDataRepository.findAllDistinctHdsContactName(controlTableId);
 				break;
-			case "HDS_IS_FOR_PROFIT_FLAG":
-				_sourceData = sourceDataRepository.findAllDistinctHdsIsForProfitFlag();
+			case "hdsIsForProfitFlag":
+				_sourceData = sourceDataRepository.findAllDistinctHdsIsForProfitFlag(controlTableId);
 				break;
-			case "SOURCE_STATUS":
-				_sourceData = sourceDataRepository.findAllDistinctSourceStatus();
+			case "sourceStatus":
+				_sourceData = sourceDataRepository.findAllDistinctSourceStatus(controlTableId);
 				break;
-			case "HDS_PARENT_IPC_ID":
-				_sourceData = sourceDataRepository.findAllDistinctHdsParentIpcId();
+			case "hdaParentIpcId":
+				_sourceData = sourceDataRepository.findAllDistinctHdsParentIpcId(controlTableId);
 				break;
-			case "BUS_IPC_ID":
-				_sourceData = sourceDataRepository.findAllDistinctBusIpcId();
+			case "busIpcId":
+				_sourceData = sourceDataRepository.findAllDistinctBusIpcId(controlTableId);
 				break;
-			case "BUS_CPN_ID":
-				_sourceData = sourceDataRepository.findAllDistinctBusCpnId();
+			case "busCpnId":
+				_sourceData = sourceDataRepository.findAllDistinctBusCpnId(controlTableId);
 				break;
-			case "BUS_NAME":
-				_sourceData = sourceDataRepository.findAllDistinctBusName();
+			case "busName":
+				_sourceData = sourceDataRepository.findAllDistinctBusName(controlTableId);
 				break;
-			case "BUS_LEGAL_NAME":
-				_sourceData = sourceDataRepository.findAllDistinctBusLegalName();
+			case "busLegalName":
+				_sourceData = sourceDataRepository.findAllDistinctBusLegalName(controlTableId);
 				break;
-			case "BUS_PAYEE_NUMBER":
-				_sourceData = sourceDataRepository.findAllDistinctBusPayeeNumber();
+			case "busPayeeNumber":
+				_sourceData = sourceDataRepository.findAllDistinctBusPayeeNumber(controlTableId);
 				break;
-			case "BUS_OWNER_NAME":
-				_sourceData = sourceDataRepository.findAllDistinctBusOwnerName();
+			case "busOwnerName":
+				_sourceData = sourceDataRepository.findAllDistinctBusOwnerName(controlTableId);
 				break;
-			case "BUS_OWNER_TYPE":
-				_sourceData = sourceDataRepository.findAllDistinctBusOwnerType();
+			case "busOwnerType":
+				_sourceData = sourceDataRepository.findAllDistinctBusOwnerType(controlTableId);
 				break;
-			case "BUS_OWNER_TYPE_OTHER":
-				_sourceData = sourceDataRepository.findAllDistinctBusOwnerTypeOther();
+			case "busOwnerTypeOther":
+				_sourceData = sourceDataRepository.findAllDistinctBusOwnerTypeOther(controlTableId);
 				break;
-			case "FAC_BUILDING_NAME":
-				_sourceData = sourceDataRepository.findAllDistinctFacBuildingName();
+			case "facBuildingName":
+				_sourceData = sourceDataRepository.findAllDistinctFacBuildingName(controlTableId);
 				break;
-			case "FACILITY_HDS_DETAILS_ADDITIONAL_INFO":
-				_sourceData = sourceDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo();
+			case "facilityHdsDetailsAdditionalInfo":
+				_sourceData = sourceDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo(controlTableId);
 				break;
-			case "PHYSICAL_ADDR1":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr1();
+			case "physicalAddr1":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr1(controlTableId);
 				break;
-			case "PHYSICAL_ADDR2":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr2();
+			case "physicalAddr2":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr2(controlTableId);
 				break;
-			case "PHYSICAL_ADDR3":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr3();
+			case "physicalAddr3":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr3(controlTableId);
 				break;
-			case "PHYSICAL_ADDR4":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr4();
+			case "physicalAddr":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalAddr4(controlTableId);
 				break;
-			case "PHYSICAL_CITY":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalCity();
+			case "physicalCity":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalCity(controlTableId);
 				break;
-			case "PHYSICAL_PROVINCE":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalProvince();
+			case "physicalProvince":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalProvince(controlTableId);
 				break;
-			case "PHYSICAL_PCODE":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalPcode();
+			case "physicalPcode":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalPcode(controlTableId);
 				break;
-			case "PHYSICAL_COUNTRY":
-				_sourceData = sourceDataRepository.findAllDistinctPhysicalCountry();
+			case "physicalCountry":
+				_sourceData = sourceDataRepository.findAllDistinctPhysicalCountry(controlTableId);
 				break;
-			case "PHYS_ADDR_IS_PRIVATE":
-				_sourceData = sourceDataRepository.findAllDistinctPhysAddrIsPrivate();
+			case "physAddrIsPrivate":
+				_sourceData = sourceDataRepository.findAllDistinctPhysAddrIsPrivate(controlTableId);
 				break;
-			case "MAIL_ADDR1":
-				_sourceData = sourceDataRepository.findAllDistinctMailAddr1();
+			case "mailAddr1":
+				_sourceData = sourceDataRepository.findAllDistinctMailAddr1(controlTableId);
 				break;
-			case "MAIL_ADDR2":
-				_sourceData = sourceDataRepository.findAllDistinctMailAddr2();
+			case "mailAddr2":
+				_sourceData = sourceDataRepository.findAllDistinctMailAddr2(controlTableId);
 				break;
-			case "MAIL_ADDR3":
-				_sourceData = sourceDataRepository.findAllDistinctMailAddr3();
+			case "mailAddr3":
+				_sourceData = sourceDataRepository.findAllDistinctMailAddr3(controlTableId);
 				break;
-			case "MAIL_ADDR4":
-				_sourceData = sourceDataRepository.findAllDistinctMailAddr4();
+			case "mailAddr4":
+				_sourceData = sourceDataRepository.findAllDistinctMailAddr4(controlTableId);
 				break;
-			case "MAIL_CITY":
-				_sourceData = sourceDataRepository.findAllDistinctMailCity();
+			case "nailCity":
+				_sourceData = sourceDataRepository.findAllDistinctMailCity(controlTableId);
 				break;
-			case "MAIL_BC":
-				_sourceData = sourceDataRepository.findAllDistinctMailBc();
+			case "mailBc":
+				_sourceData = sourceDataRepository.findAllDistinctMailBc(controlTableId);
 				break;
-			case "MAIL_PCODE":
-				_sourceData = sourceDataRepository.findAllDistinctMailPcode();
+			case "mailPcode":
+				_sourceData = sourceDataRepository.findAllDistinctMailPcode(controlTableId);
 				break;
-			case "MAIL_COUNTRY":
-				_sourceData = sourceDataRepository.findAllDistinctMailCountry();
+			case "mailCountry":
+				_sourceData = sourceDataRepository.findAllDistinctMailCountry(controlTableId);
 				break;
-			case "MAIL_ADDR_IS_PRIVATE":
-				_sourceData = sourceDataRepository.findAllDistinctMailAddrIsPrivate();
+			case "mailAddrIsPrivate":
+				_sourceData = sourceDataRepository.findAllDistinctMailAddrIsPrivate(controlTableId);
 				break;
 			default:
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", 

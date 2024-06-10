@@ -459,197 +459,197 @@ public class ProcessDataController {
 	}
 	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getColumnList/{columnName}")
-	public ResponseEntity<ResponseMessage> getColumnLists(@PathVariable String columnName) {
+	@GetMapping("/getColumnList/{controlTableId}")
+	public ResponseEntity<ResponseMessage> getColumnLists(@PathVariable Long controlTableId, @RequestParam(required = false) String columnKey) {
 
 		List<String> _processData = new ArrayList();
 
-		switch(columnName) {
+		switch(columnKey) {
 			case "id":
-				_processData = processDataRepository.findAllDistinctId();
+				_processData = processDataRepository.findAllDistinctId(controlTableId);
 				break;
-			case "control_id":
-				_processData = processDataRepository.findAllDistinctControlId();
+			case "controlTableId":
+				_processData = processDataRepository.findAllDistinctControlId(controlTableId);
 				break;
 			case "do_not_load":
-				_processData = processDataRepository.findAllDistinctDoNotLoad();
+				_processData = processDataRepository.findAllDistinctDoNotLoad(controlTableId);
 				break;
 			case "stakeholder":
-				_processData = processDataRepository.findAllDistinctStakeholder();
+				_processData = processDataRepository.findAllDistinctStakeholder(controlTableId);
 				break;
-			case "hds_ipc_id":
-				_processData = processDataRepository.findAllDistinctHdsIpcId();
+			case "hdsIpcId":
+				_processData = processDataRepository.findAllDistinctHdsIpcId(controlTableId);
 				break;
-			case "hds_cpn_id":
-				_processData = processDataRepository.findAllDistinctHdsCpnId();
+			case "hdsCpnId":
+				_processData = processDataRepository.findAllDistinctHdsCpnId(controlTableId);
 				break;
-			case "hds_provider_identifier1":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier1();
+			case "hdsProviderIdentifier1":
+				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier1(controlTableId);
 				break;
-			case "hds_provider_identifier2":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier2();
+			case "hdsProviderIdentifier2":
+				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier2(controlTableId);
 				break;
-			case "hds_provider_identifier3":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier3();
+			case "hdsProviderIdentifier3":
+				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier3(controlTableId);
 				break;
-			case "hds_provider_identifier_type1":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType1();
+			case "hdsProviderIdentifierType1":
+				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType1(controlTableId);
 				break;
-			case "hds_provider_identifier_type2":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType2();
+			case "hdsProviderIdentifierType2":
+				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType2(controlTableId);
 				break;
-			case "hds_provider_identifier_type3":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType3();
+			case "hdsProviderIdentifierType3":
+				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType3(controlTableId);
 				break;
-			case "hds_hibc_facility_id":
-				_processData = processDataRepository.findAllDistinctHdsHibcFacilityId();
+			case "hdsMspFacilityNumber":
+				_processData = processDataRepository.findAllDistinctHdsHibcFacilityId(controlTableId);
 				break;
-			case "hds_type":
-				_processData = processDataRepository.findAllDistinctHdsType();
+			case "hdsType":
+				_processData = processDataRepository.findAllDistinctHdsType(controlTableId);
 				break;
-			case "hds_name":
-				_processData = processDataRepository.findAllDistinctHdsName();
+			case "hdsName":
+				_processData = processDataRepository.findAllDistinctHdsName(controlTableId);
 				break;
 			case "hds_name_alias":
-				_processData = processDataRepository.findAllDistinctHdsNameAlias();
+				_processData = processDataRepository.findAllDistinctHdsNameAlias(controlTableId);
 				break;
-			case "hds_preferred_name_flag":
-				_processData = processDataRepository.findAllDistinctHdsPreferredNameFlag();
+			case "hdsPreferredNameFlag":
+				_processData = processDataRepository.findAllDistinctHdsPreferredNameFlag(controlTableId);
 				break;
-			case "hds_email":
-				_processData = processDataRepository.findAllDistinctHdsEmail();
+			case "hdsEmail":
+				_processData = processDataRepository.findAllDistinctHdsEmail(controlTableId);
 				break;
-			case "hds_website":
-				_processData = processDataRepository.findAllDistinctHdsWebsite();
+			case "hdsWebsite":
+				_processData = processDataRepository.findAllDistinctHdsWebsite(controlTableId);
 				break;
-			case "HDS_BUS_TEL_AREA_CODE":
-				_processData = processDataRepository.findAllDistinctHdsBusTelAreaCode();
+			case "hdsBusTelAreaCode":
+				_processData = processDataRepository.findAllDistinctHdsBusTelAreaCode(controlTableId);
 				break;
-			case "HDS_BUS_TEL_NUMBER":
-				_processData = processDataRepository.findAllDistinctHdsBusTelNumber();
+			case "hdsBusTelNumber":
+				_processData = processDataRepository.findAllDistinctHdsBusTelNumber(controlTableId);
 				break;
-			case "HDS_TEL_EXTENSION":
-				_processData = processDataRepository.findAllDistinctHdsTelExtension();
+			case "hdsTelExtension":
+				_processData = processDataRepository.findAllDistinctHdsTelExtension(controlTableId);
 				break;
-			case "HDS_CELL_AREA_CODE":
-				_processData = processDataRepository.findAllDistinctHdsCellAreaCode();
+			case "hdsCellAreaCode":
+				_processData = processDataRepository.findAllDistinctHdsCellAreaCode(controlTableId);
 				break;
-			case "HDS_CELL_NUMBER":
-				_processData = processDataRepository.findAllDistinctHdsCellNumber();
+			case "hdsCellNumber":
+				_processData = processDataRepository.findAllDistinctHdsCellNumber(controlTableId);
 				break;
-			case "HDS_FAX_AREA_CODE":
-				_processData = processDataRepository.findAllDistinctHdsFaxAreaCode();
+			case "hdsFaxAreaCode":
+				_processData = processDataRepository.findAllDistinctHdsFaxAreaCode(controlTableId);
 				break;
-			case "HDS_FAX_NUMBER":
-				_processData = processDataRepository.findAllDistinctHdsFaxNumber();
+			case "hdsFaxNumber":
+				_processData = processDataRepository.findAllDistinctHdsFaxNumber(controlTableId);
 				break;
-			case "HDS_SERVICE_DELIVERY_TYPE":
-				_processData = processDataRepository.findAllDistinctHdsServiceDeliveryType();
+			case "pcnServiceDeliveryType":
+				_processData = processDataRepository.findAllDistinctHdsServiceDeliveryType(controlTableId);
 				break;
-			case "PCN_CLINIC_TYPE":
-				_processData = processDataRepository.findAllDistinctPcnClinicType();
+			case "pcnClinicType":
+				_processData = processDataRepository.findAllDistinctPcnClinicType(controlTableId);
 				break;
-			case "PCN_PCI_FLAG":
-				_processData = processDataRepository.findAllDistinctPcnPciFlag();
+			case "pcnPciFlag":
+				_processData = processDataRepository.findAllDistinctPcnPciFlag(controlTableId);
 				break;
-			case "HDS_HOURS_OF_OPERATION":
-				_processData = processDataRepository.findAllDistinctHdsHoursOfOperation();
+			case "hdsHoursOfOperation":
+				_processData = processDataRepository.findAllDistinctHdsHoursOfOperation(controlTableId);
 				break;
-			case "HDS_CONTACT_NAME":
-				_processData = processDataRepository.findAllDistinctHdsContactName();
+			case "hdsContactName":
+				_processData = processDataRepository.findAllDistinctHdsContactName(controlTableId);
 				break;
-			case "HDS_IS_FOR_PROFIT_FLAG":
-				_processData = processDataRepository.findAllDistinctHdsIsForProfitFlag();
+			case "hdsIsForProfitFlag":
+				_processData = processDataRepository.findAllDistinctHdsIsForProfitFlag(controlTableId);
 				break;
-			case "SOURCE_STATUS":
-				_processData = processDataRepository.findAllDistinctSourceStatus();
+			case "sourceStatus":
+				_processData = processDataRepository.findAllDistinctSourceStatus(controlTableId);
 				break;
-			case "HDS_PARENT_IPC_ID":
-				_processData = processDataRepository.findAllDistinctHdsParentIpcId();
+			case "hdsParentIpcId":
+				_processData = processDataRepository.findAllDistinctHdsParentIpcId(controlTableId);
 				break;
-			case "BUS_IPC_ID":
-				_processData = processDataRepository.findAllDistinctBusIpcId();
+			case "busIpcId":
+				_processData = processDataRepository.findAllDistinctBusIpcId(controlTableId);
 				break;
-			case "BUS_CPN_ID":
-				_processData = processDataRepository.findAllDistinctBusCpnId();
+			case "busCpnId":
+				_processData = processDataRepository.findAllDistinctBusCpnId(controlTableId);
 				break;
-			case "BUS_NAME":
-				_processData = processDataRepository.findAllDistinctBusName();
+			case "busName":
+				_processData = processDataRepository.findAllDistinctBusName(controlTableId);
 				break;
-			case "BUS_LEGAL_NAME":
-				_processData = processDataRepository.findAllDistinctBusLegalName();
+			case "busLegalName":
+				_processData = processDataRepository.findAllDistinctBusLegalName(controlTableId);
 				break;
-			case "BUS_PAYEE_NUMBER":
-				_processData = processDataRepository.findAllDistinctBusPayeeNumber();
+			case "busPayeeNumber":
+				_processData = processDataRepository.findAllDistinctBusPayeeNumber(controlTableId);
 				break;
-			case "BUS_OWNER_NAME":
-				_processData = processDataRepository.findAllDistinctBusOwnerName();
+			case "busOwnerName":
+				_processData = processDataRepository.findAllDistinctBusOwnerName(controlTableId);
 				break;
-			case "BUS_OWNER_TYPE":
-				_processData = processDataRepository.findAllDistinctBusOwnerType();
+			case "busOwnerType":
+				_processData = processDataRepository.findAllDistinctBusOwnerType(controlTableId);
 				break;
-			case "BUS_OWNER_TYPE_OTHER":
-				_processData = processDataRepository.findAllDistinctBusOwnerTypeOther();
+			case "busOwnerTypeOther":
+				_processData = processDataRepository.findAllDistinctBusOwnerTypeOther(controlTableId);
 				break;
-			case "FAC_BUILDING_NAME":
-				_processData = processDataRepository.findAllDistinctFacBuildingName();
+			case "facBuildingName":
+				_processData = processDataRepository.findAllDistinctFacBuildingName(controlTableId);
 				break;
-			case "FACILITY_HDS_DETAILS_ADDITIONAL_INFO":
-				_processData = processDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo();
+			case "facilityHdsDetailsAdditionalInfo":
+				_processData = processDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo(controlTableId);
 				break;
-			case "PHYSICAL_ADDR1":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr1();
+			case "physicalAddr1":
+				_processData = processDataRepository.findAllDistinctPhysicalAddr1(controlTableId);
 				break;
-			case "PHYSICAL_ADDR2":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr2();
+			case "physicalAddr2":
+				_processData = processDataRepository.findAllDistinctPhysicalAddr2(controlTableId);
 				break;
-			case "PHYSICAL_ADDR3":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr3();
+			case "physicalAddr3":
+				_processData = processDataRepository.findAllDistinctPhysicalAddr3(controlTableId);
 				break;
-			case "PHYSICAL_ADDR4":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr4();
+			case "physicalAddr":
+				_processData = processDataRepository.findAllDistinctPhysicalAddr4(controlTableId);
 				break;
-			case "PHYSICAL_CITY":
-				_processData = processDataRepository.findAllDistinctPhysicalCity();
+			case "physicalCity":
+				_processData = processDataRepository.findAllDistinctPhysicalCity(controlTableId);
 				break;
-			case "PHYSICAL_PROVINCE":
-				_processData = processDataRepository.findAllDistinctPhysicalProvince();
+			case "physicalProvince":
+				_processData = processDataRepository.findAllDistinctPhysicalProvince(controlTableId);
 				break;
-			case "PHYSICAL_PCODE":
-				_processData = processDataRepository.findAllDistinctPhysicalPcode();
+			case "physicalPcode":
+				_processData = processDataRepository.findAllDistinctPhysicalPcode(controlTableId);
 				break;
-			case "PHYSICAL_COUNTRY":
-				_processData = processDataRepository.findAllDistinctPhysicalCountry();
+			case "physicalCountry":
+				_processData = processDataRepository.findAllDistinctPhysicalCountry(controlTableId);
 				break;
-			case "PHYS_ADDR_IS_PRIVATE":
-				_processData = processDataRepository.findAllDistinctPhysAddrIsPrivate();
+			case "physAddrIsPrivate":
+				_processData = processDataRepository.findAllDistinctPhysAddrIsPrivate(controlTableId);
 				break;
-			case "MAIL_ADDR1":
-				_processData = processDataRepository.findAllDistinctMailAddr1();
+			case "mailAddr1":
+				_processData = processDataRepository.findAllDistinctMailAddr1(controlTableId);
 				break;
-			case "MAIL_ADDR2":
-				_processData = processDataRepository.findAllDistinctMailAddr2();
+			case "mailAddr2":
+				_processData = processDataRepository.findAllDistinctMailAddr2(controlTableId);
 				break;
-			case "MAIL_ADDR3":
-				_processData = processDataRepository.findAllDistinctMailAddr3();
+			case "mailAddr3":
+				_processData = processDataRepository.findAllDistinctMailAddr3(controlTableId);
 				break;
-			case "MAIL_ADDR4":
-				_processData = processDataRepository.findAllDistinctMailAddr4();
+			case "mailAddr4":
+				_processData = processDataRepository.findAllDistinctMailAddr4(controlTableId);
 				break;
-			case "MAIL_CITY":
-				_processData = processDataRepository.findAllDistinctMailCity();
+			case "mailCity":
+				_processData = processDataRepository.findAllDistinctMailCity(controlTableId);
 				break;
-			case "MAIL_BC":
-				_processData = processDataRepository.findAllDistinctMailBc();
+			case "mailBc":
+				_processData = processDataRepository.findAllDistinctMailBc(controlTableId);
 				break;
-			case "MAIL_PCODE":
-				_processData = processDataRepository.findAllDistinctMailPcode();
+			case "mailPcode":
+				_processData = processDataRepository.findAllDistinctMailPcode(controlTableId);
 				break;
-			case "MAIL_COUNTRY":
-				_processData = processDataRepository.findAllDistinctMailCountry();
+			case "mailCountry":
+				_processData = processDataRepository.findAllDistinctMailCountry(controlTableId);
 				break;
-			case "MAIL_ADDR_IS_PRIVATE":
-				_processData = processDataRepository.findAllDistinctMailAddrIsPrivate();
+			case "mailAddrIsPrivate":
+				_processData = processDataRepository.findAllDistinctMailAddrIsPrivate(controlTableId);
 				break;
 			default:
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", 
