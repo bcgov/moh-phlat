@@ -225,7 +225,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			for (ProcessData s : processDataList) {
 				// skip record marked as DO_NOT_LOAD and only VALID records
-				if (!s.getDoNotLoadFlag().equals("Y") && s.getRowstatusCode().equals("VALID")) {
+				if (!s.getDoNotLoadFlag().equals("Y") && s.getRowstatusCode().equals(RowStatusService.VALID)) {
 					logger.info("loading process data with id: {} to PLR.", s.getId());
 
 					// TO-DO call to PLR via ESB here
