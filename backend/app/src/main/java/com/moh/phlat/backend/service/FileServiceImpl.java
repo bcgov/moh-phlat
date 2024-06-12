@@ -367,24 +367,16 @@ public class FileServiceImpl implements FileService {
 	        processData.setCreatedBy(authenticateUserId);
 	        
 	        // set default values
-		if (controlTable.getLoadTypeHds()) {
-		    processData.setHdsUserChid(controlTable.getBatchLabelName());
-		    processData.setHdsInvalidatedDts("9999-12-30");	        
-		    processData.setHdsEffectiveEndDate("9999-12-30");  		    
-	        processData.setHdsCategoryCode("ORGANIZATION");
-		    
-			if (s.getHdsPreferredNameFlag().isEmpty()) {
-			   processData.setHdsPreferredNameFlag("Y");   
-		    }	        
-		    
-			if (s.getHdsType().isEmpty()) {
-			     if (s.getStakeholder().equals("PHARMACY")) {
-			        processData.setHdsType("Pharmacy");
-		         } else if (s.getStakeholder().equals("CLINIC")) {
-		           processData.setHdsType("Clinic");
-		         }
-		       }
-	        }
+		    if (controlTable.getLoadTypeHds()) {
+				processData.setHdsUserChid(controlTable.getBatchLabelName());
+				processData.setHdsInvalidatedDts("9999-12-30");	        
+				processData.setHdsEffectiveEndDate("9999-12-30");  		    
+				processData.setHdsCategoryCode("ORGANIZATION");
+					
+				if (s.getHdsPreferredNameFlag().isEmpty()) {
+				    processData.setHdsPreferredNameFlag("Y");   
+				}	        
+		    }
 		    
 	        if (controlTable.getLoadTypeFacility()) {
 		        processData.setFacRelnType("LOCATION OF"); 		
@@ -392,14 +384,14 @@ public class FileServiceImpl implements FileService {
 	        }
 		    
 	        
-	        if (s.getDoNotLoadFlag().equals("Y")) {
+	        if ("Y".equals(s.getDoNotLoadFlag())) {
 		        processData.setRowstatusCode(RowStatusService.DO_NOT_LOAD); 
 	        } else {;
 	            processData.setRowstatusCode(RowStatusService.INITIAL); 
 	        }
 	        
 	        processDataRepository.save(processData);
-    	     }
+    	}
 	}
 
 }
