@@ -111,7 +111,7 @@ public class FileServiceImpl implements FileService {
 				copyInputSourceDataToProcessData(controlTableId,authenticateUserId);
 				
 
-				dbUtilityService.setControlStatus(controlTableId, "PRE-VALIDATION_IN_PROGRESS",	authenticateUserId);
+				dbUtilityService.setControlStatus(controlTableId, RowStatusService.PRE_VALIDATION_IN_PROGRESS,	authenticateUserId);
 				// asynchronous operation
 				dbUtilityService.validateProcessDataByControlTableId(controlTableId,authenticateUserId);
 				
