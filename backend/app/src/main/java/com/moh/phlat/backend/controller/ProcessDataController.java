@@ -1,6 +1,7 @@
 package com.moh.phlat.backend.controller;
 
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.DbUtilityServiceImpl.ReportSummary;
+import com.moh.phlat.backend.service.dto.ReportSummary;
 import com.moh.phlat.backend.service.RowStatusService;
 
 @RestController
@@ -481,7 +482,7 @@ public class ProcessDataController {
 public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTableId(
 		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
 	
-	List<ReportSummary> list = dbUtilityService.getReportSummary(controlTableId);
+	List<ReportSummary> list = processDataService.getReportSummary(controlTableId);
 	
 	return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}

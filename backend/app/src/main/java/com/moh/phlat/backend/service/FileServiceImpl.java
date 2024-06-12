@@ -73,6 +73,8 @@ public class FileServiceImpl implements FileService {
 				logger.warn("Uploaded file header length: {}, Database file header length: {}", headerLine.length(),
 							expectedHeaderLine.length());
 				
+				logger.warn("Column headers from uploading file: {}", headerLine);
+				logger.warn("Expected column headers: {}", expectedHeaderLine);
 				return false;
 			}
 		} catch (IOException e) {
