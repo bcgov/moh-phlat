@@ -121,7 +121,7 @@ export default {
       'updatedProcessData',
       'validateAllStatus',
     ]),
-    ...mapState(useFilterDataStore, ['selectedFiltersData']),
+    ...mapState(useFilterDataStore, ['editSourceSelectedFiltersData']),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
@@ -185,7 +185,7 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    selectedFiltersData: {
+    editSourceSelectedFiltersData: {
       async handler() {
         await this.populateInputSource();
       },
@@ -282,15 +282,22 @@ export default {
     },
 
     async populateInputSource() {
-      await this.fetchProcessDataByControlId(this.id, this.selectedFiltersData);
+      await this.fetchProcessDataByControlId(
+        this.id,
+        this.editSourceSelectedFiltersData
+      );
       this.inputSrcData = this.processData;
     },
 
     async searchByStatusHandle() {
       this.loading = true;
       this.searchByStatus
-        ? this.updateSelectedFiltersData('rowStatus', [this.searchByStatus])
-        : this.updateSelectedFiltersData('rowStatus', []);
+        ? this.updateSelectedFiltersData(
+            'rowStatus',
+            [this.searchByStatus],
+            'editSrcData'
+          )
+        : this.updateSelectedFiltersData('rowStatus', [], 'editSrcData');
       await this.populateInputSource();
       this.loading = false;
     },
@@ -599,7 +606,7 @@ export default {
                   </template>
                   <BaseColumnFilter
                     v-if="column.filterable"
-                    source-type="editSourceData"
+                    source-type="editSrcData"
                     :control-id="id"
                     :column="column"
                   />

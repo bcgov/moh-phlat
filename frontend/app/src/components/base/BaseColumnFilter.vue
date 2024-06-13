@@ -45,7 +45,7 @@ export default {
     },
     sourceType: {
       type: String,
-      default: 'editSourceData',
+      default: 'editSrcData',
     },
   },
   emits: ['cancel-filter-data'],
@@ -55,19 +55,42 @@ export default {
       inputFilter: '',
       showColumnFilterDialauge: false,
       localInputData: [],
+      storeKey:
+        this.sourceType === 'editSrcData'
+          ? 'editSourcefiltersData'
+          : 'viewSourcefiltersData',
+      storeSelectedKey:
+        this.sourceType === 'editSrcData'
+          ? 'editSourceSelectedFiltersData'
+          : 'viewSourceSelectedFiltersData',
     };
   },
   computed: {
-    ...mapState(useFilterDataStore, ['filtersData', 'selectedFiltersData']),
+    ...mapState(useFilterDataStore, [
+      'editSourcefiltersData',
+      'editSourceSelectedFiltersData',
+      'viewSourcefiltersData',
+      'viewSourceSelectedFiltersData',
+    ]),
+    STORE_KEY() {
+      return this.sourceType === 'editSrcData'
+        ? 'editSourcefiltersData'
+        : 'viewSourcefiltersData';
+    },
+    STORE_SELECTED_KEY() {
+      return this.sourceType === 'editSrcData'
+        ? 'editSourceSelectedFiltersData'
+        : 'viewSourceSelectedFiltersData';
+    },
     GET_FILTER_ICON_DETAILS() {
       if (
-        this.selectedFiltersData &&
-        this.selectedFiltersData[this.column.key] &&
-        this.selectedFiltersData[this.column.key].length
+        this[this.STORE_SELECTED_KEY] &&
+        this[this.STORE_SELECTED_KEY][this.column.key] &&
+        this[this.STORE_SELECTED_KEY][this.column.key].length
       ) {
         return {
           icon: 'mdi-filter-check',
-          count: this.selectedFiltersData[this.column.key].length,
+          count: this[this.STORE_SELECTED_KEY][this.column.key].length,
         };
       } else {
         return {
@@ -84,7 +107,11 @@ export default {
     ]),
     async updateFilterData() {
       this.inputFilter = '';
-      this.updateSelectedFiltersData(this.column.key, this.selectedData);
+      this.updateSelectedFiltersData(
+        this.column.key,
+        this.selectedData,
+        this.sourceType
+      );
       this.showColumnFilterDialauge = false;
     },
     onResetColumns() {
@@ -92,7 +119,7 @@ export default {
       this.inputFilter = '';
     },
     cancelFilterData() {
-      (this.selectedData = this.selectedFiltersData[this.column.key]),
+      (this.selectedData = this[this.STORE_SELECTED_KEY][this.column.key]),
         this.$emit('cancel-filter-data');
     },
 
@@ -106,7 +133,11 @@ export default {
       if (this.showColumnFilterDialauge) {
         this.fetchFilterData();
       }
-      this.selectedData = this.selectedFiltersData[this.column.key];
+      this.selectedData =
+        this[this.STORE_SELECTED_KEY] &&
+        this[this.STORE_SELECTED_KEY][this.column.key]
+          ? this[this.STORE_SELECTED_KEY][this.column.key]
+          : [];
 
       this.loading = false;
     },
@@ -117,8 +148,8 @@ export default {
         this.sourceType
       );
 
-      if (Array.isArray(this.filtersData[this.column.key])) {
-        this.localInputData = this.filtersData[this.column.key];
+      if (Array.isArray(this[this.STORE_KEY][this.column.key])) {
+        this.localInputData = this[this.STORE_KEY][this.column.key];
       } else {
         this.localInputData = [];
       }
@@ -162,7 +193,7 @@ export default {
   <v-dialog v-model="showColumnFilterDialauge" width="700">
     <v-card>
       <v-card-title class="text-h5 pb-0 titleWrapper">
-        Filter {{ column.title }}
+        Filter {{ column.title }} {{ storeKey }}
       </v-card-title>
       <v-card-text class="mt-0 pt-0">
         <hr class="hr" />

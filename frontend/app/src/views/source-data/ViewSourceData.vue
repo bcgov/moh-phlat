@@ -84,7 +84,7 @@ export default {
       'deleteInputSourceDataById',
       'updatedInputSourceData',
     ]),
-    ...mapState(useFilterDataStore, ['selectedFiltersData']),
+    ...mapState(useFilterDataStore, ['viewSourceSelectedFiltersData']),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
@@ -138,7 +138,7 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    selectedFiltersData: {
+    viewSourceSelectedFiltersData: {
       async handler() {
         await this.populateInputSource();
       },
@@ -151,7 +151,6 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationStore, ['addNotification']),
-    ...mapActions(useFilterDataStore, ['updateSelectedFiltersData']),
     ...mapActions(useInputSourceDataStore, [
       'fetchInputSourceDataByControlId',
       'fetchFormFieldHeaders',
@@ -195,7 +194,7 @@ export default {
       // Get the submissions for this form
       await this.fetchInputSourceDataByControlId(
         this.id,
-        this.selectedFiltersData
+        this.viewSourceSelectedFiltersData
       );
       this.inputSrcData = this.inputSourceData;
     },
@@ -405,7 +404,7 @@ export default {
                   </template>
                   <BaseColumnFilter
                     v-if="column.filterable"
-                    source-type="viewSorceData"
+                    source-type="viewSrcData"
                     :control-id="id"
                     :column="column"
                   />
