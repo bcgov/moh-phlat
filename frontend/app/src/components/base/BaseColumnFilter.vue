@@ -43,6 +43,10 @@ export default {
       type: String,
       default: 'Filter',
     },
+    sourceType: {
+      type: String,
+      default: 'editSourceData',
+    },
   },
   emits: ['cancel-filter-data'],
   data() {
@@ -107,7 +111,11 @@ export default {
       this.loading = false;
     },
     async fetchFilterData() {
-      await this.getAllFilterItemsForColumn(this.column.key, this.controlId);
+      await this.getAllFilterItemsForColumn(
+        this.column.key,
+        this.controlId,
+        this.sourceType
+      );
 
       if (Array.isArray(this.filtersData[this.column.key])) {
         this.localInputData = this.filtersData[this.column.key];

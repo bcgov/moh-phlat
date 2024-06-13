@@ -599,7 +599,7 @@ export default {
                   </template>
                   <BaseColumnFilter
                     v-if="column.filterable"
-                    source-type="edit"
+                    source-type="editSourceData"
                     :control-id="id"
                     :column="column"
                   />

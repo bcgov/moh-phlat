@@ -1,12 +1,15 @@
 import { appAxios } from '~/services/interceptors';
-// import { ApiRoutes } from '~/utils/constants';
+import { objectToQueryParams } from '~/utils/filters';
 
 export default {
   async serviceGetAllInputSourceData() {
     return appAxios().get(`sourcedata/view/all`);
   },
-  async serviceGetInputSourceDataById(id) {
-    return appAxios().get(`sourcedata/view/controltableid/${id}`);
+  async serviceGetInputSourceDataById(id, filter = {}) {
+    const { rowStatus, ...filtered } = filter; // eslint-disable-line no-unused-vars
+    const queryString = objectToQueryParams(filtered);
+    const makeQuery = queryString ? `?${queryString}` : '';
+    return appAxios().get(`sourcedata/view/controltableid/${id + makeQuery}`);
   },
   async serviceDeleteInputSourceDataById(id) {
     return appAxios().delete(`sourcedata/delete/${id}`);

@@ -7,11 +7,12 @@ export const useFilterDataStore = defineStore('filters', {
   }),
   getters: {},
   actions: {
-    async getAllFilterItemsForColumn(columnKey, controlId) {
+    async getAllFilterItemsForColumn(columnKey, controlId, sourceType) {
       try {
         const { data } = await filtersService.ServiceGetColumnList(
           columnKey,
-          controlId
+          controlId,
+          sourceType
         );
         if (data.statusCode === 200) {
           if (Array.isArray(data.data)) {
