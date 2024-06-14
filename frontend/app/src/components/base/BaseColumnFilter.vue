@@ -193,7 +193,7 @@ export default {
   <v-dialog v-model="showColumnFilterDialauge" width="700">
     <v-card>
       <v-card-title class="text-h5 pb-0 titleWrapper">
-        Filter {{ column.title }} {{ storeKey }}
+        Filter {{ column.title }}
       </v-card-title>
       <v-card-text class="mt-0 pt-0">
         <hr class="hr" />
