@@ -23,12 +23,8 @@ public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> 
     @EntityGraph(value = "ProcessData.withMessageDetails", type = EntityGraph.EntityGraphType.FETCH)
     List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus);
 
-   @Query("SELECT pd.rowstatusCode, count(pd) from ProcessData pd  where pd.controlTableId = :controlTableId group by pd.rowstatusCode")
-    List<Object[]> getRowstatusCountByControlTableId(Long controlTableId);
-      
-    @Query("SELECT md.messageCode, md.messageDesc,count(md) from ProcessData pd LEFT JOIN pd.messages md WHERE pd.controlTableId = :controlTableId group by md.messageCode, md.messageDesc")
+    @Query("SELECT md.messageType, md.messageCode, md.messageDesc,count(md) from ProcessData pd LEFT JOIN pd.messages md WHERE pd.controlTableId = :controlTableId group by md.messageType, md.messageCode, md.messageDesc")
     List<Object[]> getProcessDataWithMessageCodeCount(Long controlTableId);
-
 
 	long countAllByControlTableIdAndRowstatusCode(Long controlTableId, String string);
 
