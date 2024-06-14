@@ -2,7 +2,6 @@ package com.moh.phlat.backend.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.moh.phlat.backend.service.dto.ReportSummary;
 import com.moh.phlat.backend.service.RowStatusService;
 import com.moh.phlat.backend.model.ProcessData;
@@ -28,73 +27,62 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 
     }
 
+    private static ReportSummary createReportSummaryData(String reportAttributeName, Long reportAttributeValue) {
+        return ReportSummary.builder()
+						  .attribute(reportAttributeName)
+                          .count(reportAttributeValue)
+                          .build();
+    }
+
     public List<ReportSummary> getReportSummary(Long controlTableId) {
-		String rowStatus;
-		Long rcount;
+		String reportAttributeName;
+		Long reportAttributeValue;
 
 		List<ReportSummary> items = new ArrayList<ReportSummary>();
 
-		rowStatus ="TOTAL INPUT RECORDS";
-		rcount = processDataRepository.countByControlTableId(controlTableId);
-		ReportSummary rs1 = new ReportSummary();
-		rs1.setRowStatus((String) rowStatus);
-		rs1.setRowStatusCount((Long)rcount);
+		reportAttributeName ="TOTAL INPUT RECORDS";
+		reportAttributeValue = processDataRepository.countByControlTableId(controlTableId);
+     	ReportSummary rs1 = createReportSummaryData(reportAttributeName, reportAttributeValue);
 		items.add(rs1);
 		
-		rowStatus ="TOTAL INITIAL ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.INITIAL);
-		ReportSummary rs2 = new ReportSummary();
-		rs2.setRowStatus((String) rowStatus);
-		rs2.setRowStatusCount((Long)rcount);
-		items.add(rs2);		
-		
-		rowStatus ="TOTAL DO_NOT_LOAD ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.DO_NOT_LOAD);
-		ReportSummary rs3 = new ReportSummary();
-		rs3.setRowStatus((String) rowStatus);
-		rs3.setRowStatusCount((Long)rcount);
+		reportAttributeName = "TOTAL INITIAL ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.INITIAL);
+     	ReportSummary rs2 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs2);
+
+		reportAttributeName = "TOTAL DO_NOT_LOAD ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.DO_NOT_LOAD);
+     	ReportSummary rs3 = createReportSummaryData(reportAttributeName, reportAttributeValue);
 		items.add(rs3);		
 		
-		rowStatus ="TOTAL INVALID ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.INVALID);
-		ReportSummary rs4 = new ReportSummary();
-		rs4.setRowStatus((String) rowStatus);
-		rs4.setRowStatusCount((Long)rcount);
-		items.add(rs4);		
+		reportAttributeName ="TOTAL INVALID ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.INVALID);
+     	ReportSummary rs4 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs4);	
 
-		rowStatus ="TOTAL VALID ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.VALID);
-		ReportSummary rs5 = new ReportSummary();
-		rs5.setRowStatus((String) rowStatus);
-		rs5.setRowStatusCount((Long)rcount);
-		items.add(rs5);		
+		reportAttributeName ="TOTAL VALID ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.VALID);
+		ReportSummary rs5 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs5);	
 		
-		rowStatus ="TOTAL WARNING ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.WARNING);
-		ReportSummary rs6 = new ReportSummary();
-		rs6.setRowStatus((String) rowStatus);
-		rs6.setRowStatusCount((Long)rcount);
-		items.add(rs6);				
+		reportAttributeName ="TOTAL WARNING ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.WARNING);
+     	ReportSummary rs6 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs6);	
+
+		reportAttributeName ="TOTAL COMPLETED ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.COMPLETED);
+     	ReportSummary rs7 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs7);
+
+		reportAttributeName = "TOTAL POTENTIAL_DUPLICATE ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.POTENTIAL_DUPLICATE);
+     	ReportSummary rs8 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs8);
 		
-		rowStatus ="TOTAL COMPLETED ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.COMPLETED);
-		ReportSummary rs7 = new ReportSummary();
-		rs7.setRowStatus((String) rowStatus);
-		rs7.setRowStatusCount((Long)rcount);
-		items.add(rs7);	
-		
-		rowStatus ="TOTAL POTENTIAL_DUPLICATE ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.POTENTIAL_DUPLICATE);
-		ReportSummary rs8 = new ReportSummary();
-		rs8.setRowStatus((String) rowStatus);
-		rs8.setRowStatusCount((Long)rcount);
-		items.add(rs8);	
-		
-		rowStatus ="TOTAL LOAD_ERROR ROWSTATUS";
-		rcount = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.LOAD_ERROR);
-		ReportSummary rs9 = new ReportSummary();
-		rs9.setRowStatus((String) rowStatus);
-		rs9.setRowStatusCount((Long)rcount);
+		reportAttributeName = "TOTAL LOAD_ERROR ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.LOAD_ERROR);
+     	ReportSummary rs9 = createReportSummaryData(reportAttributeName, reportAttributeValue);
 		items.add(rs9);			
 		
 		// adding message code and desc to the list
@@ -104,11 +92,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		for (Object[] msg : listMsg){
 			String code = (String) msg[1];
 			if (StringUtils.hasText(code)) {
-				ReportSummary rsMessage = new ReportSummary();
-				rowStatus = (String) msg[0] + " " + (String) msg[1] + " " + (String) msg[2];
-				rcount = (Long) msg[3];
-				rsMessage.setRowStatus((String) rowStatus);
-	 			rsMessage.setRowStatusCount((Long)rcount);
+				reportAttributeName = (String) msg[0] + " " + (String) msg[1] + " " + (String) msg[2];
+				reportAttributeValue = (Long) msg[3];
+				ReportSummary rsMessage = createReportSummaryData(reportAttributeName, reportAttributeValue);
 				items.add(rsMessage);	
 			}	
 		}   

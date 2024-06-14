@@ -1,22 +1,11 @@
 package com.moh.phlat.backend.service.dto;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Builder
 public class ReportSummary {
-
-	public String rowStatus;
-	public Long rowStatusCount;
-		
-	public String getRowStatus() {
-		return rowStatus;
-	}
-
-	public void setRowStatus(String rowStatus) {
-		this.rowStatus = rowStatus;
-	}
-
-	public Long getRowStatusCount() {
-		return rowStatusCount;
-	}
-	public void setRowStatusCount(Long rowStatusCount) {
-		this.rowStatusCount = rowStatusCount;
-	}
+	public String attribute;
+	public Long count;
 }
