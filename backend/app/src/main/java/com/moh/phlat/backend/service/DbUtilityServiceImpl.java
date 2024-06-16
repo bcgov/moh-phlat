@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.moh.phlat.backend.esb.boundary.PlrEsbBoundary;
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
+import com.moh.phlat.backend.esb.json.PlrResponse;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.MessageDetail;
 import com.moh.phlat.backend.model.ProcessData;
@@ -226,7 +227,10 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					if (!s.getDoNotLoadFlag().equals("Y") && s.getRowstatusCode().equals("VALID")) {
 						 logger.info("loading process data with id: {} to PLR.", s.getId() );
 	
-						MaintainFacilityResponse result = esbBoundary.loadPlrViaEsb(control, s);
+						List<PlrResponse> results = esbBoundary.loadPlrViaEsb(control, s);
+						for (PlrResponse result : results) {
+							// Individual result logging and status tracking goes here
+						}
 					}
 				}
 				setControlStatus(control.getId(), "PLR_LOAD_COMPLETED", authenticatedUserId);

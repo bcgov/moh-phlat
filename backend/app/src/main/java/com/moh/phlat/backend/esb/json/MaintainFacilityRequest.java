@@ -73,9 +73,7 @@ public class MaintainFacilityRequest implements PlrRequest {
 
 	private Map<String,Object> createEsbMetadata(ProcessData input) {
 		Map<String,Object> emd = new HashMap<String,Object>();
-		emd.put("Role", "REG_ADMIN");
-		emd.put("OrganizationID", "00002855");
-		emd.put("isLRA", true);
+		emd.put("isLRA", false);
 		return emd;
 	}
 	

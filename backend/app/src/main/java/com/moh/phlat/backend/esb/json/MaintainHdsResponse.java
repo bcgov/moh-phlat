@@ -65,7 +65,7 @@ public class MaintainHdsResponse implements PlrResponse {
 			
 		} catch (Exception ex) {
 			hasError = true;
-			logger.error("PLR's response coudl not be parsed: ", ex);
+			logger.error("PLR's response could not be parsed: ", ex);
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
 		}

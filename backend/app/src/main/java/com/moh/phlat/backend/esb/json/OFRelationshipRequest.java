@@ -29,9 +29,9 @@ import java.util.UUID;
 
 import org.springframework.util.StringUtils;
 
-public class MaintainHdsRequest implements PlrRequest {
+public class OFRelationshipRequest implements PlrRequest {
 	
-	public MaintainHdsRequest(Control control) {
+	public OFRelationshipRequest(Control control) {
 		
 	}
 	

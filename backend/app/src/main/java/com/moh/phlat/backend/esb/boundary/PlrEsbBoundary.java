@@ -7,6 +7,7 @@ import com.moh.phlat.backend.esb.json.MaintainFacilityRequest;
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
 import com.moh.phlat.backend.esb.json.MaintainHdsRequest;
 import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
+import com.moh.phlat.backend.esb.json.PlrResponse;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import jakarta.annotation.PostConstruct;
@@ -26,6 +27,8 @@ import reactor.core.publisher.Mono;
 
 import javax.net.ssl.SSLContext;
 import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class PlrEsbBoundary {
@@ -45,10 +48,6 @@ public class PlrEsbBoundary {
 	
 	@Value("${plr.boundary.host}")
 	private String plrBoundaryHost;
-	@Value("${plr.boundary.org-id}")
-	private String plrBoundaryOrgId;
-	@Value("${plr.boundary.role}")
-	private String plrBoundaryRole;
 
 	@Value("${plr.boundary.keycloak.provider-url}")
 	private String keyCloakUrl;
@@ -80,20 +79,27 @@ public class PlrEsbBoundary {
 		return webClient != null;
 	}
 	
-	public MaintainFacilityResponse loadPlrViaEsb(Control control, ProcessData processData) {
-		MaintainFacilityResponse facilityResponse = null;
+	public List<PlrResponse> loadPlrViaEsb(Control control, ProcessData processData) {
+		List<PlrResponse> plrResponses = new ArrayList();
 		token = getPlrKeyCloakDetails();
 		if (StringUtils.hasText(token.getAccessToken()) && !StringUtils.hasText(token.getError())) {
-			facilityResponse = createFacility(control, processData);
-			//MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
-		} else {
-			facilityResponse = new MaintainFacilityResponse(control);
-			facilityResponse.handleKeyCloakError(token);
-		}
-		return facilityResponse;
+			if (control.getLoadTypeFacility()) {
+				MaintainFacilityResponse facilityResponse = createFacility(control, processData);
+				plrResponses.add(facilityResponse);
+			}
+			if (control.getLoadTypeHds()) {
+				//MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
+				//plrResponses.add(hdsResponse);
+			}
+			if (control.getLoadTypeOFRelationship()) {
+				//MaintainOFResponse ofResponse = createOFRelationship(control, processData);
+				//plrResponses.add(ofResponse);
+			}
+		} 
+		return plrResponses;
 	}
 	
-	public MaintainFacilityResponse createFacility(Control control, ProcessData processData) {
+	private MaintainFacilityResponse createFacility(Control control, ProcessData processData) {
 		MaintainFacilityRequest maintainFacilityRequest = new MaintainFacilityRequest(control);
 		String jsonRequest = maintainFacilityRequest.processDataToPlrJson(processData);
 		
@@ -106,8 +112,6 @@ public class PlrEsbBoundary {
 					.headers(h -> {
 						h.setBearerAuth(token.getAccessToken());
 						h.add("userID", control.getUserId());
-						h.add("OrganizationId", plrBoundaryOrgId);
-						h.add("PLR_Role", plrBoundaryRole);
 					})
 					.bodyValue(jsonRequest)
 					.retrieve()
@@ -136,8 +140,6 @@ public class PlrEsbBoundary {
 					.headers(h -> {
 						h.setBearerAuth(token.getAccessToken());
 						h.add("userID", control.getUserId());
-						h.add("OrganizationId", plrBoundaryOrgId);
-						h.add("PLR_Role", plrBoundaryRole);
 					})
 					.bodyValue(jsonRequest)
 					.retrieve()

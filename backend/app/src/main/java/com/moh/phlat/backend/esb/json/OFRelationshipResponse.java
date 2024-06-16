@@ -21,10 +21,10 @@ import com.moh.phlat.backend.esb.boundary.PlrToken;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
-public class MaintainFacilityResponse implements PlrResponse {
-	private static final Logger logger = LoggerFactory.getLogger(MaintainFacilityResponse.class);
+public class OFRelationshipResponse implements PlrResponse {
+	private static final Logger logger = LoggerFactory.getLogger(OFRelationshipResponse.class);
 	
-	private String facilityId;
+	private String hdsId;
 	
 	private boolean isLoaded = false;
 	private boolean isDuplicate = false;
@@ -32,7 +32,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 	
 	private List<PlrError> plrErrors = new ArrayList<PlrError>();
 	
-	public MaintainFacilityResponse(Control control) {
+	public OFRelationshipResponse(Control control) {
 		
 	}
 	
@@ -57,9 +57,9 @@ public class MaintainFacilityResponse implements PlrResponse {
 				}
 			}
 			if (!hasError) {
-				JsonNode facility = root.get("facility");
-				if (facility.get("facilityIdentifiers") != null && facility.get("facilityIdentifiers").findValue("identifier") != null) {
-					facilityId = facility.get("facilityIdentifiers").findValue("identifier").asText();
+				JsonNode hds = root.get("facility");
+				if (hds.get("facilityIdentifiers") != null && hds.get("facilityIdentifiers").findValue("identifier") != null) {
+					hdsId = hds.get("facilityIdentifiers").findValue("identifier").asText();
 				}
 			}
 			
@@ -97,8 +97,8 @@ public class MaintainFacilityResponse implements PlrResponse {
 		return pass;
 	}
 	
-	public String getFacilityId() {
-		return facilityId;
+	public String getHdsId() {
+		return hdsId;
 	}
 
 	public boolean isLoaded() {
