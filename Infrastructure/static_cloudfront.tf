@@ -25,6 +25,13 @@ resource "aws_cloudfront_origin_access_control" "phlat" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_cloudfront_function" "add_response_security_headers" {
+  name    = "cf-add-security-headers-to-response"
+  runtime = "cloudfront-js-1.0"
+  comment = "Function to add security headers in response"
+  code    = file("${path.module}/cloudfront-functions/response-headers.js")
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.static.bucket_regional_domain_name
@@ -50,6 +57,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl     = 0
     default_ttl = 3600
     max_ttl     = 86400
+
+    function_association {
+      event_type   = "viewer-response"
+      function_arn = aws_cloudfront_function.add_response_security_headers.arn
+    }
   }
 
   ordered_cache_behavior {
@@ -60,6 +72,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
     cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
     compress               = true
+
+    function_association {
+      event_type   = "viewer-response"
+      function_arn = aws_cloudfront_function.add_response_security_headers.arn
+    }
   }
 
   price_class = "PriceClass_100"
