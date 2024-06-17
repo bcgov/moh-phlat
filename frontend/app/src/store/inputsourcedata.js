@@ -53,7 +53,15 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
     async fetchFormFieldHeaders() {
       try {
         const { data } = await inputSourceDataService.serviceGetFormFields();
-        this.formFieldHeaders = data;
+        this.formFieldHeaders = data.map((key) => ({
+          key: key,
+          title: key
+            .split(/(?=[A-Z])/) // split the string into words on uppercase letters
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize the first letter of each word
+            .join(' '), // join the words back into a string with spaces
+          filterable: false, // set filterable to false
+          sortable: false, // set sortable to false
+        }));
       } catch (error) {
         console.log('Something went wrong. (DJDSUU#396)', error); // eslint-disable-line no-console
       }

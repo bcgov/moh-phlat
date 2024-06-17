@@ -174,9 +174,7 @@ export default {
     async populateHeaders() {
       // Get the header for this table
       await this.fetchFormFieldHeaders();
-      const tableHeaders = this.formFieldHeaders.map((h) => {
-        return { title: h, key: h };
-      });
+      const tableHeaders = this.formFieldHeaders;
       this.headers = [...tableHeaders, ...this.headers];
     },
 

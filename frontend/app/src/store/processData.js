@@ -65,7 +65,15 @@ export const useProcessDataStore = defineStore('processdata', {
       try {
         const { data } =
           await processDataService.serviceGetFormFieldsFromProcessData();
-        this.formFieldHeaders = data;
+        this.formFieldHeaders = data.map((key) => ({
+          key: key,
+          title: key
+            .split(/(?=[A-Z])/) // split the string into words on uppercase letters
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize the first letter of each word
+            .join(' '), // join the words back into a string with spaces
+          filterable: true, // set filterable to false
+          sortable: false, // set sortable to false
+        }));
       } catch (error) {
         console.log('Something went wrong. (DPDSUU#396)', error); // eslint-disable-line no-console
       }
