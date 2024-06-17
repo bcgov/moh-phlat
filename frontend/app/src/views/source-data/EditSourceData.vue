@@ -665,7 +665,7 @@ export default {
       </v-data-table>
       <v-dialog v-model="showValidateAllDialog" width="700">
         <BasePrompt
-          promptBodyText="Are you sure you want to validate all records?"
+          prompt-body-text="Are you sure you want to validate all records?"
           @do-action="validateAll"
           @abort-action="showValidateAllDialog = false"
         />
