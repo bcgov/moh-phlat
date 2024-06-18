@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS table_column_info
   column_name VARCHAR(40) NOT NULL,
 	header_name VARCHAR(40),
   variable_name VARCHAR(40) NULL,
+  title VARCHAR(40),
   UNIQUE(table_name, column_name)
 );
 

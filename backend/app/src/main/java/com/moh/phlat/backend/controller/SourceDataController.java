@@ -2,6 +2,7 @@ package com.moh.phlat.backend.controller;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ControlRepository;
@@ -25,6 +27,8 @@ import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
+import com.moh.phlat.backend.service.dto.UiColumnName;
+import com.moh.phlat.backend.service.TableColumnInfoService;
 
 @RestController
 @RequestMapping("/sourcedata")
@@ -43,6 +47,9 @@ public class SourceDataController {
 
 	@Autowired
 	private DbUtilityService dbUtilityService;
+
+    @Autowired
+	private TableColumnInfoService tableColumnInfoService;
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("view/all")
@@ -90,9 +97,12 @@ public class SourceDataController {
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/getformfields/header")
-	public String getAllHeader() {
-		return dbUtilityService.getVariablesByTableNameSortedById("SOURCE_DATA");
+    public @ResponseBody ResponseEntity<ResponseMessage> getAllHeader() {
+	    List<UiColumnName> list = null;
+		list = tableColumnInfoService.getUiColumnNames("SOURCE_DATA");
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
+
 
 	@PostMapping("/upload")
 	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file,

@@ -31,6 +31,8 @@ import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.dto.ReportSummary;
 import com.moh.phlat.backend.service.RowStatusService;
+import com.moh.phlat.backend.service.dto.UiColumnName;
+import com.moh.phlat.backend.service.TableColumnInfoService;
 
 @RestController
 @RequestMapping("/processdata")
@@ -50,6 +52,9 @@ public class ProcessDataController {
 
 	@Autowired
 	private ProcessDataService processDataService;
+
+    @Autowired
+	private TableColumnInfoService tableColumnInfoService;
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
@@ -390,8 +395,10 @@ public class ProcessDataController {
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/getformfields/header")
-	public String getAllHeader() {
-		return dbUtilityService.getVariablesByTableNameSortedById("PROCESS_DATA");
+    public @ResponseBody ResponseEntity<ResponseMessage> getAllHeader() {
+	    List<UiColumnName> list = null;
+		list = tableColumnInfoService.getUiColumnNames("PROCESS_DATA");
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 
 	// get specific row by id

@@ -27,6 +27,9 @@ public class TableColumnInfo {
     @Column(name="VARIABLE_NAME")    
     private String variableName;
 
+    @Column(name="TITLE")    
+    private String title;
+
 	public Long getId() {
 		return id;
 	}
@@ -65,5 +68,13 @@ public class TableColumnInfo {
 
 	public void setVariableName(String variableName) {
 		this.variableName = variableName;
-	}    
+	}  
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	} 	  
 }
