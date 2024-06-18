@@ -89,7 +89,7 @@ public class ProcessDataControllerTest {
 
 
         //checking date here and rest of the elements in method below.
-        resultActions.andExpect(jsonPath("$.data[0].createdAt").value("2024-01-01T00:00:00.000+00:00"));
+        resultActions.andExpect(jsonPath("$.data[0].createdAt").value("2024-02-01T00:00:00.000+00:00"));
         // assert the json elements of a single record
         checkProcessDataJsonResult(resultActions, "$.data[0].", processDataList.get(0));
 
@@ -117,7 +117,7 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath("$.data.length()").value(processDataList.size()));
 
         //checking date here and rest of the elements in method below.
-        resultActions.andExpect(jsonPath("$.data[0].createdAt").value("2024-01-01T00:00:00.000+00:00"));
+        resultActions.andExpect(jsonPath("$.data[0].createdAt").value("2024-02-01T00:00:00.000+00:00"));
         // assert the json elements of a single record, pick any of the two records.
         checkProcessDataJsonResult(resultActions, "$.data[0].", processDataList.get(0));
 
@@ -146,7 +146,7 @@ public class ProcessDataControllerTest {
 
 
         //checking date here and rest of the elements in method below.
-        resultActions.andExpect(jsonPath("$.data.createdAt").value("2024-01-01T00:00:00.000+00:00"));
+        resultActions.andExpect(jsonPath("$.data.createdAt").value("2024-02-01T00:00:00.000+00:00"));
         // assert the json elements of a single record, pick any of the two records.
         checkProcessDataJsonResult(resultActions, "$.data.", processDataList.get(0));
 
@@ -184,7 +184,7 @@ public class ProcessDataControllerTest {
 
 
         //checking date here and rest of the elements in method below.
-        resultActions.andExpect(jsonPath("$.data.createdAt").value("2024-01-01T00:00:00.000+00:00"));
+        resultActions.andExpect(jsonPath("$.data.createdAt").value("2024-02-01T00:00:00.000+00:00"));
         resultActions.andExpect(jsonPath("$.data.updatedAt").isNotEmpty());
         // assert the json elements of a single record, pick any of the two records.
         checkProcessDataJsonResult(resultActions, "$.data.", processDataList.get(0));
@@ -328,8 +328,8 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath(baseJasonPath + "controlTableId").value(processData.getControlTableId()
                                                                                             .intValue()))
                      .andExpect(jsonPath(baseJasonPath + "doNotLoadFlag").value(processData.getDoNotLoadFlag()))
-                     .andExpect(jsonPath(baseJasonPath + "stakeholder").value(processData.getStakeholderId()))
-                     .andExpect(jsonPath(baseJasonPath + "stakeholderiD").value(processData.getStakeholder()))
+                     .andExpect(jsonPath(baseJasonPath + "stakeholder").value(processData.getStakeholder()))
+                     .andExpect(jsonPath(baseJasonPath + "stakeholderId").value(processData.getStakeholderId()))
                      .andExpect(jsonPath(baseJasonPath + "hdsIpcId").value(processData.getHdsIpcId()))
 
                      .andExpect(jsonPath(baseJasonPath + "hdsCpnId").value(processData.getHdsCpnId()))
