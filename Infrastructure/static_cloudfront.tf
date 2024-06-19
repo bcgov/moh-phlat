@@ -37,7 +37,7 @@ resource "aws_cloudfront_response_headers_policy" "csp_policy" {
   security_headers_config {
     content_security_policy {
       override                = true
-      content_security_policy = "default-src 'self'; img-src 'self'; connect-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://phlatapi-test.hlth.gov.bc.ca/ https://phlatapi-dev.hlth.gov.bc.ca/ https://common-logon.hlth.gov.bc.ca/ ; style-src 'self' https://fonts.googleapis.com/ ; script-src 'self'; base-uri 'self'; form-action 'self'; frame-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://common-logon.hlth.gov.bc.ca/"
+      content_security_policy = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/ ;connect-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://phlatapi-test.hlth.gov.bc.ca/ https://phlatapi-dev.hlth.gov.bc.ca/ https://common-logon.hlth.gov.bc.ca/ ; style-src 'self' https://fonts.googleapis.com/ ; script-src 'self'; base-uri 'self'; form-action 'self'; frame-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://common-logon.hlth.gov.bc.ca/"
     }
   }
 }
