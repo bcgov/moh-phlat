@@ -1,8 +1,8 @@
 package com.moh.phlat.backend.controller;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.SourceData;
@@ -49,7 +48,7 @@ public class SourceDataController {
 	private DbUtilityService dbUtilityService;
 
     @Autowired
-	private TableColumnInfoService tableColumnInfoService;
+    private TableColumnInfoService tableColumnInfoService;	
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("view/all")
@@ -97,12 +96,11 @@ public class SourceDataController {
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/getformfields/header")
-    public @ResponseBody ResponseEntity<ResponseMessage> getAllHeader() {
+	public ResponseEntity<ResponseMessage> getAllHeader() {
 	    List<UiColumnName> list = null;
-		list = tableColumnInfoService.getUiColumnNames("SOURCE_DATA");
+		list = tableColumnInfoService.getUiColumnNames("PROCESS_DATA");
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
-
 
 	@PostMapping("/upload")
 	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file,

@@ -9,7 +9,11 @@ import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
 import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
+import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
 import com.moh.phlat.backend.testsupport.factories.UserRoles;
+import com.moh.phlat.backend.service.dto.UiColumnName;
+import com.moh.phlat.backend.service.TableColumnInfoService;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -63,11 +67,15 @@ public class ProcessDataControllerTest {
     @MockBean
     private DbUtilityService dbUtilityService;
 
+    @MockBean
+    private TableColumnInfoService tableColumnInfoService;	
 
     List<ProcessData> processDataList = Collections.unmodifiableList(ProcessDataFactory
                                                                              .createProcessDataListWithAllAttributes());
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
+    List<UiColumnName> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getUiColumnNames());
+                                                                
 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
@@ -195,12 +203,12 @@ public class ProcessDataControllerTest {
 
     }
 
-
+ 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void getAllHeader() throws Exception {
 
-        when(dbUtilityService.getVariablesByTableNameSortedById(anyString())).thenReturn("Test Headers");
+        when(tableColumnInfoService.getUiColumnNames(anyString())).thenReturn(uiColumnNameList);
         // Perform Put request and validate response
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/getformfields/header")
                                                                             .with(csrf())
@@ -208,11 +216,10 @@ public class ProcessDataControllerTest {
         resultActions.andExpect(status().isOk());
 
         //check if mocked methods were called
-        verify(dbUtilityService, times(1)).getVariablesByTableNameSortedById(anyString());
+        verify(tableColumnInfoService, times(1)).getUiColumnNames(anyString());
 
     }
-
-
+ 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testValidateProcessDataById() throws Exception {

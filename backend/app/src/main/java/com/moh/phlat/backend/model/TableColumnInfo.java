@@ -6,9 +6,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Entity
 @Table(name = "TABLE_COLUMN_INFO")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class TableColumnInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +27,6 @@ public class TableColumnInfo {
     
     @Column(name="TABLE_NAME")    
     private String tableName;
-
 
     @Column(name="COLUMN_NAME")    
     private String columnName;
@@ -29,52 +39,4 @@ public class TableColumnInfo {
 
     @Column(name="TITLE")    
     private String title;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTableName() {
-		return tableName;
-	}
-
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-
-	public String getColumnName() {
-		return columnName;
-	}
-
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
-	}
-
-	public String getHeaderName() {
-		return headerName;
-	}
-
-	public void setHeaderName(String headerName) {
-		this.headerName = headerName;
-	}
-
-	public String getVariableName() {
-		return variableName;
-	}
-
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
-	}  
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	} 	  
 }
