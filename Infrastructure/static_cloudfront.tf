@@ -25,11 +25,21 @@ resource "aws_cloudfront_origin_access_control" "phlat" {
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_cloudfront_function" "add_response_security_headers" {
+/*resource "aws_cloudfront_function" "add_response_security_headers" {
   name    = "cf-add-security-headers-to-response"
   runtime = "cloudfront-js-1.0"
   comment = "Function to add security headers in response"
   code    = file("${path.module}/cloudfront-functions/response-headers.js")
+}*/
+resource "aws_cloudfront_response_headers_policy" "csp_policy" {
+  name = "CSPPolicy"
+
+  security_headers_config {
+    content_security_policy {
+      override                = true
+      content_security_policy = "default-src 'self'; img-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'"
+    }
+  }
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
@@ -58,10 +68,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     default_ttl = 3600
     max_ttl     = 86400
 
-    function_association {
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.csp_policy.id
+
+/*    function_association {
       event_type   = "viewer-response"
       function_arn = aws_cloudfront_function.add_response_security_headers.arn
-    }
+    }*/
   }
 
   ordered_cache_behavior {
@@ -73,10 +85,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
     compress               = true
 
-    function_association {
+/*    function_association {
       event_type   = "viewer-response"
       function_arn = aws_cloudfront_function.add_response_security_headers.arn
-    }
+    }*/
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.csp_policy.id
   }
 
   price_class = "PriceClass_100"
@@ -100,7 +114,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 }
 
-# to get the Cloud front URL if doamin/alias is not configured
+# to get the Cloud front URL if domain/alias is not configured
 output "cloudfront_domain_name" {
   value = aws_cloudfront_distribution.s3_distribution.domain_name
 }
