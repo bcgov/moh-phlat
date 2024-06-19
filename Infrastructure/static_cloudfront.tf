@@ -37,7 +37,7 @@ resource "aws_cloudfront_response_headers_policy" "csp_policy" {
   security_headers_config {
     content_security_policy {
       override                = true
-      content_security_policy = "default-src 'self'; img-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'"
+      content_security_policy = "default-src 'self' https://common-logon-dev.hlth.gov.bc.ca https://common-logon-test.hlth.gov.bc.ca https://common-logon.hlth.gov.bc.ca; img-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'"
     }
   }
 }
