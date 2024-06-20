@@ -27,10 +27,10 @@ resource "aws_cloudfront_origin_access_control" "phlat" {
 
 resource "aws_cloudfront_response_headers_policy" "csp_policy" {
   name = "CSPPolicy"
-  comment = "Sets Constent Security Policy header in response"
+  comment = "Sets Content Security Policy header in response"
   security_headers_config {
     content_security_policy {
-      # override with this values, if origin is setting same header
+      #Override with this if the origin is setting the same header.
       override                = true
       content_security_policy = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/ ; connect-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://phlatapi-test.hlth.gov.bc.ca/ https://phlatapi-dev.hlth.gov.bc.ca/ https://common-logon.hlth.gov.bc.ca/ ; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval' ; base-uri 'self'; form-action 'self'; frame-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://common-logon.hlth.gov.bc.ca/"
     }
@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl     = 0
     default_ttl = 3600
     max_ttl     = 86400
-    # associate CSP header policy here
+    # associate CSP header policy
     response_headers_policy_id = aws_cloudfront_response_headers_policy.csp_policy.id
   }
 
@@ -74,7 +74,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
     cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
     compress               = true
-    # associate CSP header policy here
+    # associate CSP header policy
     response_headers_policy_id = aws_cloudfront_response_headers_policy.csp_policy.id
   }
 
