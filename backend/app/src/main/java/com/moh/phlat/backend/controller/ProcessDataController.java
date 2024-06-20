@@ -1,7 +1,5 @@
 package com.moh.phlat.backend.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,39 +63,7 @@ public class ProcessDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required =false) List<String> id,
-			@RequestParam(required =false) List<String> actions, @RequestParam(required =false) List<String> rowStatusCode,
-			@RequestParam(required =false) List<String> doNotLoad, @RequestParam(required =false) List<String> stakeholder,
-			@RequestParam(required =false) List<String> hdsLpcId, @RequestParam(required =false) List<String> hdsCpnId,
-			@RequestParam(required =false) List<String> hdsProviderId1, @RequestParam(required =false) List<String> hdsProviderId2,
-			@RequestParam(required =false) List<String> hdsProviderId3, @RequestParam(required =false) List<String> hdsProviderIdType1,
-			@RequestParam(required =false) List<String> hdsProviderIdType2, @RequestParam(required =false) List<String> hdsProviderIdType3,
-			@RequestParam(required =false) List<String> hdsHibcFacId, @RequestParam(required =false) List<String> hdsType,
-			@RequestParam(required =false) List<String> hdsName, @RequestParam(required =false) List<String> hdsNameAlias,
-			@RequestParam(required =false) List<String> hdsPrefNameFlag, @RequestParam(required =false) List<String> hdsEmail,
-			@RequestParam(required =false) List<String> hdsWebsite, @RequestParam(required =false) List<String> hdsBusTelAreaCode,
-			@RequestParam(required =false) List<String> hdsBusTelNum, @RequestParam(required =false) List<String> hdsTelExt,
-			@RequestParam(required =false) List<String> hdsCellAreaCode, @RequestParam(required =false) List<String> hdsCellNum,
-			@RequestParam(required =false) List<String> hdsFaxAreaCode, @RequestParam(required =false) List<String> hdsFaxNum,
-			@RequestParam(required =false) List<String> hdsServiceDelType, @RequestParam(required =false) List<String> pcnCLinicType,
-			@RequestParam(required =false) List<String> pcnPciFlag, @RequestParam(required =false) List<String> hdsHoursOfOp,
-			@RequestParam(required =false) List<String> hdsContactName, @RequestParam(required =false) List<String> hdsIsForProfitFlag,
-			@RequestParam(required =false) List<String> sourceStatus, @RequestParam(required =false) List<String> hdsParentIpcId,
-			@RequestParam(required =false) List<String> busIpcId, @RequestParam(required =false) List<String> busCpnId,
-			@RequestParam(required =false) List<String> busName, @RequestParam(required =false) List<String> busLegalName,
-			@RequestParam(required =false) List<String> busPayeeNum, @RequestParam(required =false) List<String> busOwnerName,
-			@RequestParam(required =false) List<String> busOwnerType, @RequestParam(required =false) List<String> busOwnerTypeOther,
-			@RequestParam(required =false) List<String> facBuildingName, @RequestParam(required =false) List<String> facHdsDetailAddInfo,
-			@RequestParam(required =false) List<String> physAddr1, @RequestParam(required =false) List<String> physAddr2,
-			@RequestParam(required =false) List<String> physAddr3, @RequestParam(required =false) List<String> physAddr4,
-			@RequestParam(required =false) List<String> physCity, @RequestParam(required =false) List<String> physProv,
-			@RequestParam(required =false) List<String> physPCode, @RequestParam(required =false) List<String> physCountry,
-			@RequestParam(required =false) List<String> physAddrIsPrivate, @RequestParam(required =false) List<String> mailAddr1,
-			@RequestParam(required =false) List<String> mailAddr2, @RequestParam(required =false) List<String> mailAddr3,
-			@RequestParam(required =false) List<String> mailAddr4, @RequestParam(required =false) List<String> mailCity,
-			@RequestParam(required =false) List<String> mailBc, @RequestParam(required =false) List<String> mailPcode,
-			@RequestParam(required =false) List<String> mailCountry, @RequestParam(required =false) List<String> mailAddrIsPriv,
-			@RequestParam(required =false) List<String> messages) {
+			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -107,32 +73,10 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		if (rowStatus == null && id == null && actions == null && rowStatusCode == null && messages== null && doNotLoad == null && stakeholder == null && 
-				hdsLpcId == null && hdsCpnId == null && hdsProviderId1 == null && hdsProviderId2 == null && hdsProviderId3 == null && 
-				hdsProviderIdType1 == null && hdsProviderIdType2 == null && hdsProviderIdType3 == null && hdsHibcFacId == null && hdsType == null && 
-				hdsName == null && hdsNameAlias == null && hdsPrefNameFlag == null && hdsEmail == null && hdsWebsite == null && 
-				hdsBusTelAreaCode == null && hdsBusTelNum == null && hdsTelExt == null && hdsCellAreaCode == null && hdsCellNum == null && 
-				hdsFaxAreaCode == null && hdsFaxNum == null && hdsServiceDelType == null && pcnCLinicType == null && pcnPciFlag == null && 
-				hdsHoursOfOp == null && hdsContactName == null && hdsIsForProfitFlag == null && sourceStatus == null && hdsParentIpcId == null && 
-				busIpcId == null && busCpnId == null && busName == null && busLegalName == null && busPayeeNum == null && busOwnerName == null && 
-				busOwnerType == null && busOwnerTypeOther == null && facBuildingName == null && facHdsDetailAddInfo == null && physAddr1 == null && 
-				physAddr2 == null && physAddr3 == null && physAddr4 == null && physCity == null && physProv == null && physPCode == null && 
-				physCountry == null && physAddrIsPrivate == null && mailAddr1 == null && mailAddr2 == null && mailAddr3 == null && mailAddr4 == null && 
-				mailCity == null && mailBc == null && mailPcode == null && mailCountry == null && mailAddrIsPriv == null) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				processDataRepository.getAllProcessDataByControlTableId(controlTableId)));
-		} else {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
-					processDataRepository.findAll(ProcessDataRepository.buildSpecificationIn(controlTableId, rowStatus, id, actions,  rowStatusCode, 
-							messages, doNotLoad, stakeholder, hdsLpcId, hdsCpnId, hdsProviderId1, hdsProviderId2, hdsProviderId3, hdsProviderIdType1, 
-							hdsProviderIdType2, hdsProviderIdType3, hdsHibcFacId, hdsType, hdsName, hdsNameAlias, hdsPrefNameFlag, hdsEmail,
-							hdsWebsite, hdsBusTelAreaCode, hdsBusTelNum, hdsTelExt, hdsCellAreaCode, hdsCellNum, hdsFaxAreaCode, hdsFaxNum,
-							hdsServiceDelType, pcnCLinicType, pcnPciFlag, hdsHoursOfOp, hdsContactName, hdsIsForProfitFlag,
-							sourceStatus, hdsParentIpcId, busIpcId, busCpnId, busName, busLegalName, busPayeeNum, busOwnerName,
-							busOwnerType, busOwnerTypeOther, facBuildingName, facHdsDetailAddInfo, physAddr1, physAddr2,
-							physAddr3, physAddr4, physCity, physProv, physPCode, physCountry, physAddrIsPrivate, mailAddr1,
-							mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv))));
-		}
+		List<ProcessData> processData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus);
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success",
+																			 200, "",
+																			 processData));
 	}
 
 	// get specific row by id
@@ -533,215 +477,13 @@ public class ProcessDataController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!", controlTable));
 	}
 
-	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/reportsummary/{controlTableId}")
-	public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTableId(
-			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
-		
-		List<ReportSummary> list = processDataService.getReportSummary(controlTableId);
+@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+@GetMapping("/reportsummary/{controlTableId}")
+public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTableId(
+		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
 	
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
-	}
+	List<ReportSummary> list = processDataService.getReportSummary(controlTableId);
 	
-	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getColumnList/{controlTableId}")
-	public ResponseEntity<ResponseMessage> getColumnLists(@PathVariable Long controlTableId, @RequestParam(required = false) String columnKey) {
-
-		List<String> _processData = new ArrayList();
-
-		switch(columnKey) {
-			case "id":
-				_processData = processDataRepository.findAllDistinctId(controlTableId);
-				break;
-			case "controlTableId":
-				_processData = processDataRepository.findAllDistinctControlId(controlTableId);
-				break;
-			case "do_not_load":
-				_processData = processDataRepository.findAllDistinctDoNotLoad(controlTableId);
-				break;
-			case "stakeholder":
-				_processData = processDataRepository.findAllDistinctStakeholder(controlTableId);
-				break;
-			case "hdsIpcId":
-				_processData = processDataRepository.findAllDistinctHdsIpcId(controlTableId);
-				break;
-			case "hdsCpnId":
-				_processData = processDataRepository.findAllDistinctHdsCpnId(controlTableId);
-				break;
-			case "hdsProviderIdentifier1":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier1(controlTableId);
-				break;
-			case "hdsProviderIdentifier2":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier2(controlTableId);
-				break;
-			case "hdsProviderIdentifier3":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifier3(controlTableId);
-				break;
-			case "hdsProviderIdentifierType1":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType1(controlTableId);
-				break;
-			case "hdsProviderIdentifierType2":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType2(controlTableId);
-				break;
-			case "hdsProviderIdentifierType3":
-				_processData = processDataRepository.findAllDistinctHdsProviderIdentifierType3(controlTableId);
-				break;
-			case "hdsMspFacilityNumber":
-				_processData = processDataRepository.findAllDistinctHdsHibcFacilityId(controlTableId);
-				break;
-			case "hdsType":
-				_processData = processDataRepository.findAllDistinctHdsType(controlTableId);
-				break;
-			case "hdsName":
-				_processData = processDataRepository.findAllDistinctHdsName(controlTableId);
-				break;
-			case "hds_name_alias":
-				_processData = processDataRepository.findAllDistinctHdsNameAlias(controlTableId);
-				break;
-			case "hdsPreferredNameFlag":
-				_processData = processDataRepository.findAllDistinctHdsPreferredNameFlag(controlTableId);
-				break;
-			case "hdsEmail":
-				_processData = processDataRepository.findAllDistinctHdsEmail(controlTableId);
-				break;
-			case "hdsWebsite":
-				_processData = processDataRepository.findAllDistinctHdsWebsite(controlTableId);
-				break;
-			case "hdsBusTelAreaCode":
-				_processData = processDataRepository.findAllDistinctHdsBusTelAreaCode(controlTableId);
-				break;
-			case "hdsBusTelNumber":
-				_processData = processDataRepository.findAllDistinctHdsBusTelNumber(controlTableId);
-				break;
-			case "hdsTelExtension":
-				_processData = processDataRepository.findAllDistinctHdsTelExtension(controlTableId);
-				break;
-			case "hdsCellAreaCode":
-				_processData = processDataRepository.findAllDistinctHdsCellAreaCode(controlTableId);
-				break;
-			case "hdsCellNumber":
-				_processData = processDataRepository.findAllDistinctHdsCellNumber(controlTableId);
-				break;
-			case "hdsFaxAreaCode":
-				_processData = processDataRepository.findAllDistinctHdsFaxAreaCode(controlTableId);
-				break;
-			case "hdsFaxNumber":
-				_processData = processDataRepository.findAllDistinctHdsFaxNumber(controlTableId);
-				break;
-			case "pcnServiceDeliveryType":
-				_processData = processDataRepository.findAllDistinctHdsServiceDeliveryType(controlTableId);
-				break;
-			case "pcnClinicType":
-				_processData = processDataRepository.findAllDistinctPcnClinicType(controlTableId);
-				break;
-			case "pcnPciFlag":
-				_processData = processDataRepository.findAllDistinctPcnPciFlag(controlTableId);
-				break;
-			case "hdsHoursOfOperation":
-				_processData = processDataRepository.findAllDistinctHdsHoursOfOperation(controlTableId);
-				break;
-			case "hdsContactName":
-				_processData = processDataRepository.findAllDistinctHdsContactName(controlTableId);
-				break;
-			case "hdsIsForProfitFlag":
-				_processData = processDataRepository.findAllDistinctHdsIsForProfitFlag(controlTableId);
-				break;
-			case "sourceStatus":
-				_processData = processDataRepository.findAllDistinctSourceStatus(controlTableId);
-				break;
-			case "hdsParentIpcId":
-				_processData = processDataRepository.findAllDistinctHdsParentIpcId(controlTableId);
-				break;
-			case "busIpcId":
-				_processData = processDataRepository.findAllDistinctBusIpcId(controlTableId);
-				break;
-			case "busCpnId":
-				_processData = processDataRepository.findAllDistinctBusCpnId(controlTableId);
-				break;
-			case "busName":
-				_processData = processDataRepository.findAllDistinctBusName(controlTableId);
-				break;
-			case "busLegalName":
-				_processData = processDataRepository.findAllDistinctBusLegalName(controlTableId);
-				break;
-			case "busPayeeNumber":
-				_processData = processDataRepository.findAllDistinctBusPayeeNumber(controlTableId);
-				break;
-			case "busOwnerName":
-				_processData = processDataRepository.findAllDistinctBusOwnerName(controlTableId);
-				break;
-			case "busOwnerType":
-				_processData = processDataRepository.findAllDistinctBusOwnerType(controlTableId);
-				break;
-			case "busOwnerTypeOther":
-				_processData = processDataRepository.findAllDistinctBusOwnerTypeOther(controlTableId);
-				break;
-			case "facBuildingName":
-				_processData = processDataRepository.findAllDistinctFacBuildingName(controlTableId);
-				break;
-			case "facilityHdsDetailsAdditionalInfo":
-				_processData = processDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo(controlTableId);
-				break;
-			case "physicalAddr1":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr1(controlTableId);
-				break;
-			case "physicalAddr2":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr2(controlTableId);
-				break;
-			case "physicalAddr3":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr3(controlTableId);
-				break;
-			case "physicalAddr":
-				_processData = processDataRepository.findAllDistinctPhysicalAddr4(controlTableId);
-				break;
-			case "physicalCity":
-				_processData = processDataRepository.findAllDistinctPhysicalCity(controlTableId);
-				break;
-			case "physicalProvince":
-				_processData = processDataRepository.findAllDistinctPhysicalProvince(controlTableId);
-				break;
-			case "physicalPcode":
-				_processData = processDataRepository.findAllDistinctPhysicalPcode(controlTableId);
-				break;
-			case "physicalCountry":
-				_processData = processDataRepository.findAllDistinctPhysicalCountry(controlTableId);
-				break;
-			case "physAddrIsPrivate":
-				_processData = processDataRepository.findAllDistinctPhysAddrIsPrivate(controlTableId);
-				break;
-			case "mailAddr1":
-				_processData = processDataRepository.findAllDistinctMailAddr1(controlTableId);
-				break;
-			case "mailAddr2":
-				_processData = processDataRepository.findAllDistinctMailAddr2(controlTableId);
-				break;
-			case "mailAddr3":
-				_processData = processDataRepository.findAllDistinctMailAddr3(controlTableId);
-				break;
-			case "mailAddr4":
-				_processData = processDataRepository.findAllDistinctMailAddr4(controlTableId);
-				break;
-			case "mailCity":
-				_processData = processDataRepository.findAllDistinctMailCity(controlTableId);
-				break;
-			case "mailBc":
-				_processData = processDataRepository.findAllDistinctMailBc(controlTableId);
-				break;
-			case "mailPcode":
-				_processData = processDataRepository.findAllDistinctMailPcode(controlTableId);
-				break;
-			case "mailCountry":
-				_processData = processDataRepository.findAllDistinctMailCountry(controlTableId);
-				break;
-			case "mailAddrIsPrivate":
-				_processData = processDataRepository.findAllDistinctMailAddrIsPrivate(controlTableId);
-				break;
-			default:
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", 
-						_processData));
-		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Retrieved the items in the column.", 
-				_processData));
+	return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 }

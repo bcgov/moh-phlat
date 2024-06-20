@@ -1,8 +1,6 @@
 package com.moh.phlat.backend.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.moh.phlat.backend.model.Control;
@@ -34,22 +31,9 @@ public class ControlController {
 	private ControlRepository controlRepository;
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
-	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required =false) List<String> ids, 
-			@RequestParam(required =false) List<String> fileName, @RequestParam(required =false) List<String> userIds, 
-			@RequestParam(required =false) List<String> fileExtractedDates, @RequestParam(required =false) List<String> batchLabelNames, 
-			@RequestParam(required =false) List<String> loadTypeFacilitys, @RequestParam(required =false) List<String> loadTypeHds, 
-			@RequestParam(required =false) List<String> loadTypeBusOrgs, @RequestParam(required =false) List<String> loadTypeOFRelationships, 
-			@RequestParam(required =false) List<String> loadTypeOORelationships, @RequestParam(required =false) List<String> loadTypeIORelationships, 
-			@RequestParam(required =false) List<String> loadTypeWlOrgXrefs, @RequestParam(required =false) List<String> loadTypeWlPracIdentXrefs, 
-			@RequestParam(required =false) List<String> processStartDates, @RequestParam(required =false) List<String> processEndDates, 
-			@RequestParam(required =false) List<String> statusCodes, @RequestParam(required =false) List<String> createdBy, 
-			@RequestParam(required =false) List<String> createdAt, @RequestParam(required =false) List<String> updatedBy, 
-			@RequestParam(required =false) List<String> updatedAt) {
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findAll(ControlRepository.buildSpecificationIn(ids, fileName, 
-						userIds, fileExtractedDates, batchLabelNames, loadTypeFacilitys, loadTypeHds, loadTypeBusOrgs, loadTypeOFRelationships, 
-						loadTypeOORelationships, loadTypeIORelationships, loadTypeWlOrgXrefs, loadTypeWlPracIdentXrefs, processStartDates, 
-						processEndDates, statusCodes, createdBy, createdAt, updatedBy, updatedAt))));
+				.body(new ResponseMessage("success", 200, "", controlRepository.findAll()));
 	}
 
 	// view specific file control
@@ -148,79 +132,5 @@ public class ControlController {
 		}
 	}
 
-	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getColumnList/{columnName}")
-	public ResponseEntity<ResponseMessage> getColumnLists(@PathVariable String columnName) {
-
-		List<String> _controlData = new ArrayList();
-
-		switch(columnName) {
-			case "id":
-				_controlData = controlRepository.findAllDistinctId();
-				break;
-			case "file_name":
-				_controlData = controlRepository.findAllDistinctFileName();
-				break;
-			case "user_id":
-				_controlData = controlRepository.findAllDistinctUserId();
-				break;
-			case "file_extracted_date":
-				_controlData = controlRepository.findAllDistinctFileExtractedDate();
-				break;
-			case "batch_label_name":
-				_controlData = controlRepository.findAllDistinctBatchLabelName();
-				break;
-			case "load_type_facility":
-				_controlData = controlRepository.findAllDistinctLoadTypeFacility();
-				break;
-			case "load_type_hds":
-				_controlData = controlRepository.findAllDistinctLoadTypeHds();
-				break;
-			case "load_type_bus_org":
-				_controlData = controlRepository.findAllDistinctLoadTypeBusOrg();
-				break;
-			case "load_type_o_f_relationship":
-				_controlData = controlRepository.findAllDistinctLoadTypeOFRelationship();
-				break;
-			case "load_type_o_o_relationship":
-				_controlData = controlRepository.findAllDistinctLoadTypeOORelationship();
-				break;
-			case "load_type_i_o_relationship":
-				_controlData = controlRepository.findAllDistinctLoadTypeIORelationship();
-				break;
-			case "load_type_wl_org_xref":
-				_controlData = controlRepository.findAllDistinctLoadTypeWlOrgXref();
-				break;
-			case "load_type_wl_prac_ident_xref":
-				_controlData = controlRepository.findAllDistinctLoadTypeWlPracIdentXref();
-				break;
-			case "process_start_date":
-				_controlData = controlRepository.findAllDistinctProcessStartDate();
-				break;
-			case "process_end_date":
-				_controlData = controlRepository.findAllDistinctProcessEndDate();
-				break;
-			case "status_code":
-				_controlData = controlRepository.findAllDistinctStatusCode();
-				break;
-			case "created_by":
-				_controlData = controlRepository.findAllDistinctCreatedBy();
-				break;
-			case "created_at":
-				_controlData = controlRepository.findAllDistinctCreatedAt();
-				break;
-			case "updated_by":
-				_controlData = controlRepository.findAllDistinctUpdatedBy();
-				break;
-			case "updated_at":
-				_controlData = controlRepository.findAllDistinctUpdatedAt();
-				break;
-			default:
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", 
-						_controlData));
-		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Retrieved the items in the column.", 
-				_controlData));
-	}
+	
 }
