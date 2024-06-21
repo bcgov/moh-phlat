@@ -156,7 +156,6 @@ public class PlrEsbBoundary {
 	}
 	
 	private PlrToken getPlrKeyCloakDetails() {
-		logger.info("PLR Keycloak url is {} ", keyCloakUrl);
 		WebClient webClient = WebClient.builder()
 				.baseUrl(keyCloakUrl)
 				.clientConnector(new JdkClientHttpConnector(HttpClient.newHttpClient()))
