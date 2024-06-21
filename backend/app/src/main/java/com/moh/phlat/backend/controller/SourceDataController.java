@@ -74,7 +74,7 @@ public class SourceDataController {
 
 	// get source data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/view/controltableid/{controlTableId}")
+	@PostMapping("/view/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required =false) List<String> id,
 			@RequestParam(required =false) List<String> doNotLoad, @RequestParam(required =false) List<String> stakeholder,

@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +55,7 @@ public class ProcessDataController {
 
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/controltable/{controlTableId}")
+	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
 		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required =false) List<String> id,
 		@RequestParam(required =false) List<String> actions, @RequestParam(required =false) List<String> rowStatusCode,
