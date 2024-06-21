@@ -12,10 +12,10 @@ resource "aws_secretsmanager_secret" "phlat_keycloak_provider_url" {
   name = "${var.application}_keycloak_provider_url"
 }
 
-/*resource "aws_secretsmanager_secret" "phlat_plr_keycloak_provider_url" {
+resource "aws_secretsmanager_secret" "phlat_plr_keycloak_provider_url" {
   # PLR keycloak URL, used to retrieve token for calling PLR API
   name = "${var.application}_plr_keycloak_provider_url"
-}*/
+}
 
 resource "aws_secretsmanager_secret" "phlat_keycloak_client_id" {
   # PLR Keycloak Client ID: Used to retrieve tokens for authentication and authorization when calling the PLR API
@@ -46,10 +46,10 @@ resource "aws_secretsmanager_secret_version" "phlat_keycloak_provider_url" {
   secret_string = "changeme"
 }
 
-/*resource "aws_secretsmanager_secret_version" "phlat_plr_keycloak_provider_url" {
+resource "aws_secretsmanager_secret_version" "phlat_plr_keycloak_provider_url" {
   secret_id     = aws_secretsmanager_secret.phlat_plr_keycloak_provider_url.id
   secret_string = "changeme"
-}*/
+}
 
 resource "aws_secretsmanager_secret_version" "phlat_keycloak_client_id" {
   secret_id     = aws_secretsmanager_secret.phlat_keycloak_client_id.id
