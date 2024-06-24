@@ -486,7 +486,7 @@ export default {
               <span>Approve</span>
             </v-tooltip>
             <!-- Summary Report -->
-            <v-tooltip>
+            <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-icon
                   v-bind="props"
