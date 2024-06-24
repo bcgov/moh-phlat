@@ -9,7 +9,7 @@ export default {
     const { rowStatus, ...filtered } = filter; // eslint-disable-line no-unused-vars
     const queryString = objectToQueryParams(filtered);
     const makeQuery = queryString ? `?${queryString}` : '';
-    return appAxios().get(`sourcedata/view/controltableid/${id + makeQuery}`);
+    return appAxios().post(`sourcedata/view/controltableid/${id + makeQuery}`);
   },
   async serviceDeleteInputSourceDataById(id) {
     return appAxios().delete(`sourcedata/delete/${id}`);

@@ -15,7 +15,7 @@ export default {
     return appAxios().get(`controltable/view/${id}`);
   },
   async serviceGetAllControlTable() {
-    return appAxios().get(`controltable/view/all`);
+    return appAxios().post(`controltable/view/all`);
   },
   async serviceDeleteControlTableById(id) {
     return appAxios().delete(`controltable/delete/${id}`);
