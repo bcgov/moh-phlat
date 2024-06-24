@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
+import com.moh.phlat.backend.service.ControlService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,10 @@ public class ControlController {
 
 	@Autowired
 	private ControlRepository controlRepository;
+	
+	@Autowired
+	private ControlService controlService;
+	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required =false) List<String> ids, 
@@ -47,31 +52,31 @@ public class ControlController {
 			@RequestParam(required =false) List<String> createdAt, @RequestParam(required =false) List<String> updatedBy, 
 			@RequestParam(required =false) List<String> updatedAt) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findAll(ControlRepository.buildSpecificationIn(ids, fileName, 
+				.body(new ResponseMessage("success", 200, "", controlService.findAll(ids, fileName, 
 						userIds, fileExtractedDates, batchLabelNames, loadTypeFacilitys, loadTypeHds, loadTypeBusOrgs, loadTypeOFRelationships, 
 						loadTypeOORelationships, loadTypeIORelationships, loadTypeWlOrgXrefs, loadTypeWlPracIdentXrefs, processStartDates, 
-						processEndDates, statusCodes, createdBy, createdAt, updatedBy, updatedAt))));
+						processEndDates, statusCodes, createdBy, createdAt, updatedBy, updatedAt)));
 	}
 
 	// view specific file control
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getControlById(@PathVariable Long id) {
-		Optional<Control> controlTable = controlRepository.findById(id);
+		List<Control> controlTable = controlService.findById(id);
 		if (controlTable.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ResponseMessage("success", 404, "Control table not found with id: " + id, "[]"));
 		}
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findById(id)));
+				.body(new ResponseMessage("success", 200, "", controlService.findById(id)));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/filename/{fileName}")
 	public ResponseEntity<ResponseMessage> getControlByFileName(@PathVariable String fileName) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findByFileName(fileName)));
+				.body(new ResponseMessage("success", 200, "", controlService.findByFileName(fileName)));
 
 	}
 
@@ -79,7 +84,7 @@ public class ControlController {
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ResponseMessage> updateControl(@PathVariable("id") long id,
 			@RequestBody Control requestControl) {
-		Optional<Control> controlTableData = controlRepository.findById(id);
+		List<Control> controlTableData = controlService.findById(id);
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -88,7 +93,7 @@ public class ControlController {
 
 		try {
 
-			Control _controlTable = controlTableData.get();
+			Control _controlTable = controlTableData.get(0);
 
 			_controlTable.setFileName(requestControl.getFileName());
 			_controlTable.setUserId(AuthenticationUtils.getAuthenticatedUserId());

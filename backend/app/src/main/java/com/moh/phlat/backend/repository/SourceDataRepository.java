@@ -139,7 +139,7 @@ public interface SourceDataRepository extends CrudRepository<SourceData, Long> {
 	@Query(value="Select distinct MAIL_ADDR_IS_PRIVATE FROM source_data",nativeQuery=true)
 	public List<String> findAllDistinctMailAddrIsPrivate();
 
-	public static Specification<SourceData> buildSpecificationIn(Long controlId, List<String> ids, List<String> doNotLoad, List<String> stakeholder, 
+	/*public static Specification<SourceData> buildSpecificationIn(Long controlId, List<String> ids, List<String> doNotLoad, List<String> stakeholder, 
 			List<String> hdsLpcId, List<String> hdsCpnId, List<String> hdsProviderId1, List<String> hdsProviderId2, List<String> hdsProviderId3, 
 			List<String> hdsProviderIdType1, List<String> hdsProviderIdType2, List<String> hdsProviderIdType3, List<String> hdsHibcFacId, 
 			List<String> hdsType, List<String> hdsName, List<String> hdsNameAlias, List<String> hdsPrefNameFlag, List<String> hdsEmail, 
@@ -402,5 +402,5 @@ public interface SourceDataRepository extends CrudRepository<SourceData, Long> {
 		}
 
 		return combinedSpecification;
-	}
+	}*/
 }
