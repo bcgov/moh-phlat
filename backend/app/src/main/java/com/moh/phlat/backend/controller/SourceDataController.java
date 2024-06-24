@@ -98,7 +98,7 @@ public class SourceDataController {
 	@GetMapping("/getformfields/header")
 	public ResponseEntity<ResponseMessage> getAllHeader() {
 	    List<UiColumnName> list = null;
-		list = tableColumnInfoService.getUiColumnNames("PROCESS_DATA");
+		list = tableColumnInfoService.getUiColumnNames("SOURCE_DATA");
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 
