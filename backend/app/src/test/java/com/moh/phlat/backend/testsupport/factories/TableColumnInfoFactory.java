@@ -12,14 +12,15 @@ public class TableColumnInfoFactory extends BaseFactory {
     public static List<TableColumnInfo> createTableColumnInfo() {
         List<TableColumnInfo> tableColumnInfo = new ArrayList<>();
 
-        tableColumnInfo.add(createTableColumnInfoAttributes("SOURCE_DATA", "DO_NOT_LOAD_FLAG", "DO_NOT_LOAD_FALG", "doNotLoadFlag", "Do Not Load Flag"));
+        tableColumnInfo.add(createTableColumnInfoAttributes(1L,"SOURCE_DATA", "DO_NOT_LOAD_FLAG", "DO_NOT_LOAD_FALG", "doNotLoadFlag", "Do Not Load Flag"));
         return tableColumnInfo;
 
     }
 
-    private static TableColumnInfo createTableColumnInfoAttributes(String tableName, String columnName, String headerName, String variableName, String title) {
+    private static TableColumnInfo createTableColumnInfoAttributes(Long id, String tableName, String columnName, String headerName, String variableName, String title) {
 
         return TableColumnInfo.builder()
+                          .id(id)
                           .tableName(tableName)
                           .columnName(columnName)
                           .headerName(headerName)

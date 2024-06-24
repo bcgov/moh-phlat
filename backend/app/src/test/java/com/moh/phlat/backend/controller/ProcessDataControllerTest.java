@@ -209,12 +209,15 @@ public class ProcessDataControllerTest {
     public void getAllHeader() throws Exception {
 
         when(tableColumnInfoService.getUiColumnNames(anyString())).thenReturn(uiColumnNameList);
+
         // Perform Put request and validate response
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/getformfields/header")
                                                                             .with(csrf())
                                                                             .contentType(MediaType.APPLICATION_JSON));
-        resultActions.andExpect(status().isOk());
 
+        resultActions.andExpect(status().isOk())
+                     .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                
         //check if mocked methods were called
         verify(tableColumnInfoService, times(1)).getUiColumnNames(anyString());
 
