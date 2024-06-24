@@ -6,6 +6,7 @@ export const IdentityProviders = Object.freeze({
   BCEIDBASIC: 'bceid-basic', // Basic BCeID
   BCEIDBUSINESS: 'bceid-business', // Business BCeID
   IDIR: 'idir', // IDIR
+  BCEID: 'bceid', //bceid
 });
 
 /** Input source data types */

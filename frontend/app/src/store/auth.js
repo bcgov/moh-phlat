@@ -125,8 +125,10 @@ export const useAuthStore = defineStore('auth', {
           const router = getRouter();
           router.replace({
             name: 'Login',
-            query: { idpHint: ['idir'] },
-            // query: { idpHint: ['idir', 'bceid-business', 'bceid-basic'] },
+            // query: { idpHint: ['idir'] },
+            query: {
+              idpHint: ['idir', 'bceid-business', 'bceid-basic', 'bceid'],
+            },
           });
         }
       }

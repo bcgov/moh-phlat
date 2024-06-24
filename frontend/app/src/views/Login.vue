@@ -12,6 +12,7 @@ export default {
         IdentityProviders.IDIR,
         IdentityProviders.BCEIDBUSINESS,
         IdentityProviders.BCEIDBASIC,
+        IdentityProviders.BCEID,
       ],
     },
   },
@@ -21,6 +22,18 @@ export default {
       {
         label: 'IDIR',
         type: IdentityProviders.IDIR,
+      },
+      {
+        label: 'BCEIDBUSINESS',
+        type: IdentityProviders.BCEIDBUSINESS,
+      },
+      {
+        label: 'BCEIDBASIC',
+        type: IdentityProviders.BCEIDBASIC,
+      },
+      {
+        label: 'BCEID',
+        type: IdentityProviders.BCEID,
       },
     ],
     IDPS() {
