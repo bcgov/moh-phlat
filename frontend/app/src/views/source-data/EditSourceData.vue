@@ -1,6 +1,7 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
+import BasePrompt from '../../components/base/BasePrompt.vue';
 import BaseReportSummary from '../../components/base/BaseReportSummary.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
@@ -18,6 +19,7 @@ export default {
     BaseEditRecord,
     BaseChips,
     BaseReportSummary,
+    BasePrompt,
   },
   props: {
     id: {
@@ -108,6 +110,7 @@ export default {
     ],
     reportSummaryId: null,
     reportSummaryDialog: false,
+    showValidateAllDialog: false,
   }),
 
   computed: {
@@ -307,7 +310,6 @@ export default {
         });
       }
     },
-
     validateAll() {
       this.requestValidateAll();
     },
@@ -526,7 +528,7 @@ export default {
                 size="x-small"
                 density="default"
                 icon="mdi:mdi-shield-account-variant-outline"
-                @click="validateAll"
+                @click="showValidateAllDialog = true"
               />
             </template>
             <span>Validate All</span>
@@ -657,7 +659,13 @@ export default {
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
         </template>
       </v-data-table>
-
+      <v-dialog v-model="showValidateAllDialog" width="700">
+        <BasePrompt
+          prompt-body-text="Are you sure you want to validate all records?"
+          @do-action="validateAll"
+          @abort-action="showValidateAllDialog = false"
+        />
+      </v-dialog>
       <v-dialog v-model="showColumnsDialog" width="700">
         <BaseFilter
           input-filter-placeholder="Search Columns"

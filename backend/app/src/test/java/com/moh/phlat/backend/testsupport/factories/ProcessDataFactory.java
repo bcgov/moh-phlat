@@ -13,7 +13,7 @@ public class ProcessDataFactory extends BaseFactory {
     public static List<ProcessData> createProcessDataListWithAllAttributes() {
         List<ProcessData> processData = new ArrayList<>();
 
-        processData.add(createProcessData(1L, 2L, "Y", "HOSPITAL", "stakeholderid_1",
+        processData.add(createProcessData(1L, 2L, "N", "HOSPITAL", "stakeholderid_1",
                                          "IpcId_1", "CpnId_1", 
                                          "identifier1_1", "identifier2_1", "identifier3_1",
                                           "identType1_1", "identType2_1",
@@ -49,7 +49,7 @@ public class ProcessDataFactory extends BaseFactory {
                                           "Province2", "Pcode2", "CANADA", "PRPS", "Valid",
                                           "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
                                           "Mail City2", "BC2", "Mailing Pcode2", "CANADA",
-                                          "PRPS1","Invalid", "1000000", "DO_NOT_LOAD",
+                                          "PRPS1","Invalid", "1000000", "VALID",
                                           createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
                                           createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
 
