@@ -353,7 +353,7 @@ INSERT INTO table_column_info(table_name, column_name, header_name,variable_name
 );
 
 INSERT INTO table_column_info(table_name, column_name, header_name,variable_name, title) VALUES (
-'PROCESS_DATA', 'FAC_ADDRESS_UNIT', 'FAC_ADDRESS_UNIT', 'facAddressUnit', 'Faciity Addr Unit #'
+'PROCESS_DATA', 'FAC_ADDRESS_UNIT', 'FAC_ADDRESS_UNIT', 'facAddressUnit', 'Facility Addr Unit #'
 );
 
 INSERT INTO table_column_info(table_name, column_name, header_name,variable_name, title) VALUES (
