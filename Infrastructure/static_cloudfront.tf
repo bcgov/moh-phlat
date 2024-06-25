@@ -39,7 +39,7 @@ resource "aws_cloudfront_response_headers_policy" "response_security_headers" {
   custom_headers_config {
     items {
       header = "Permissions-Policy"
-      # does not allow access to following
+      # Restricts access to geolocation, microphone, and camera features.
       value    = "geolocation=(), microphone=(), camera=()"
       override = true
     }
