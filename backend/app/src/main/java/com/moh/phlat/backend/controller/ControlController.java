@@ -22,6 +22,7 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.ControlService;
+import com.moh.phlat.backend.service.ProcessDataService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,80 +153,5 @@ public class ControlController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
 					"Internal error encountered while approving constrol table with id: " + id, "[]"));
 		}
-	}
-
-	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/{controltableId}/distinct-values/{columnKey}")
-	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable String controltableId, @PathVariable String columnKey) {
-
-		List<String> controlData = new ArrayList<String>();
-
-		switch(columnKey) {
-			case "id":
-				controlData = controlRepository.findAllDistinctId();
-				break;
-			case "file_name":
-				controlData = controlRepository.findAllDistinctFileName();
-				break;
-			case "user_id":
-				controlData = controlRepository.findAllDistinctUserId();
-				break;
-			case "file_extracted_date":
-				controlData = controlRepository.findAllDistinctFileExtractedDate();
-				break;
-			case "batch_label_name":
-				controlData = controlRepository.findAllDistinctBatchLabelName();
-				break;
-			case "load_type_facility":
-				controlData = controlRepository.findAllDistinctLoadTypeFacility();
-				break;
-			case "load_type_hds":
-				controlData = controlRepository.findAllDistinctLoadTypeHds();
-				break;
-			case "load_type_bus_org":
-				controlData = controlRepository.findAllDistinctLoadTypeBusOrg();
-				break;
-			case "load_type_o_f_relationship":
-				controlData = controlRepository.findAllDistinctLoadTypeOFRelationship();
-				break;
-			case "load_type_o_o_relationship":
-				controlData = controlRepository.findAllDistinctLoadTypeOORelationship();
-				break;
-			case "load_type_i_o_relationship":
-				controlData = controlRepository.findAllDistinctLoadTypeIORelationship();
-				break;
-			case "load_type_wl_org_xref":
-				controlData = controlRepository.findAllDistinctLoadTypeWlOrgXref();
-				break;
-			case "load_type_wl_prac_ident_xref":
-				controlData = controlRepository.findAllDistinctLoadTypeWlPracIdentXref();
-				break;
-			case "process_start_date":
-				controlData = controlRepository.findAllDistinctProcessStartDate();
-				break;
-			case "process_end_date":
-				controlData = controlRepository.findAllDistinctProcessEndDate();
-				break;
-			case "status_code":
-				controlData = controlRepository.findAllDistinctStatusCode();
-				break;
-			case "created_by":
-				controlData = controlRepository.findAllDistinctCreatedBy();
-				break;
-			case "created_at":
-				controlData = controlRepository.findAllDistinctCreatedAt();
-				break;
-			case "updated_by":
-				controlData = controlRepository.findAllDistinctUpdatedBy();
-				break;
-			case "updated_at":
-				controlData = controlRepository.findAllDistinctUpdatedAt();
-				break;
-			default:
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", 
-						controlData));
-		}
-
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", controlData));
 	}
 }

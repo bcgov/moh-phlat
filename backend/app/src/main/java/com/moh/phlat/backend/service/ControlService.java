@@ -1,10 +1,13 @@
 package com.moh.phlat.backend.service;
 
+import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.moh.phlat.backend.model.Control;
 
-public interface ControlService {
+public interface ControlService {			
 	List<Control> findById(Long id);
 	
 	List<Control> findByFileName(String fileName);

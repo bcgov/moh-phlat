@@ -128,4 +128,152 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		}   
 		return items;
 	}
+
+	@Override
+	public List<String> getDistinctColumnValues(Long controlTableId, String columnKey) {
+		switch(columnKey) {
+			case "id":
+				return processDataRepository.findAllDistinctId(controlTableId);
+			case "controlTableId":
+				return processDataRepository.findAllDistinctControlId(controlTableId);
+			case "do_not_load":
+				return processDataRepository.findAllDistinctDoNotLoad(controlTableId);
+			case "stakeholder":
+				return processDataRepository.findAllDistinctStakeholder(controlTableId);
+			case "hdsIpcId":
+				return processDataRepository.findAllDistinctHdsIpcId(controlTableId);
+			case "hdsCpnId":
+				return processDataRepository.findAllDistinctHdsCpnId(controlTableId);
+			case "hdsProviderIdentifier1":
+				return processDataRepository.findAllDistinctHdsProviderIdentifier1(controlTableId);
+			case "hdsProviderIdentifier2":
+				return processDataRepository.findAllDistinctHdsProviderIdentifier2(controlTableId);
+			case "hdsProviderIdentifier3":
+				return processDataRepository.findAllDistinctHdsProviderIdentifier3(controlTableId);
+			case "hdsProviderIdentifierType1":
+				return processDataRepository.findAllDistinctHdsProviderIdentifierType1(controlTableId);
+			case "hdsProviderIdentifierType2":
+				return processDataRepository.findAllDistinctHdsProviderIdentifierType2(controlTableId);
+			case "hdsProviderIdentifierType3":
+				return processDataRepository.findAllDistinctHdsProviderIdentifierType3(controlTableId);
+			case "hdsMspFacilityNumber":
+				return processDataRepository.findAllDistinctHdsHibcFacilityId(controlTableId);
+			case "hdsType":
+				return processDataRepository.findAllDistinctHdsType(controlTableId);
+			case "hdsName":
+				return processDataRepository.findAllDistinctHdsName(controlTableId);
+			case "hds_name_alias":
+				//return processDataRepository.findAllDistinctHdsNameAlias(controlTableId);
+				break;
+			case "hdsPreferredNameFlag":
+				return processDataRepository.findAllDistinctHdsPreferredNameFlag(controlTableId);
+			case "hdsEmail":
+				return processDataRepository.findAllDistinctHdsEmail(controlTableId);
+			case "hdsWebsite":
+				return processDataRepository.findAllDistinctHdsWebsite(controlTableId);
+			case "hdsBusTelAreaCode":
+				return processDataRepository.findAllDistinctHdsBusTelAreaCode(controlTableId);
+			case "hdsBusTelNumber":
+				return processDataRepository.findAllDistinctHdsBusTelNumber(controlTableId);
+			case "hdsTelExtension":
+				return processDataRepository.findAllDistinctHdsTelExtension(controlTableId);
+			case "hdsCellAreaCode":
+				return processDataRepository.findAllDistinctHdsCellAreaCode(controlTableId);
+			case "hdsCellNumber":
+				return processDataRepository.findAllDistinctHdsCellNumber(controlTableId);
+			case "hdsFaxAreaCode":
+				return processDataRepository.findAllDistinctHdsFaxAreaCode(controlTableId);
+			case "hdsFaxNumber":
+				return processDataRepository.findAllDistinctHdsFaxNumber(controlTableId);
+			case "pcnServiceDeliveryType":
+				return processDataRepository.findAllDistinctHdsServiceDeliveryType(controlTableId);
+			case "pcnClinicType":
+				return processDataRepository.findAllDistinctPcnClinicType(controlTableId);
+			case "pcnPciFlag":
+				return processDataRepository.findAllDistinctPcnPciFlag(controlTableId);
+			case "hdsHoursOfOperation":
+				//return processDataRepository.findAllDistinctHdsHoursOfOperation(controlTableId);
+				break;
+			case "hdsContactName":
+				//return processDataRepository.findAllDistinctHdsContactName(controlTableId);
+				break;
+			case "hdsIsForProfitFlag":
+				//return processDataRepository.findAllDistinctHdsIsForProfitFlag(controlTableId);
+				break;
+			case "sourceStatus":
+				return processDataRepository.findAllDistinctSourceStatus(controlTableId);
+			case "hdsParentIpcId":
+				//return processDataRepository.findAllDistinctHdsParentIpcId(controlTableId);
+				break;
+			case "busIpcId":
+				//return processDataRepository.findAllDistinctBusIpcId(controlTableId);
+				break;
+			case "busCpnId":
+				//return processDataRepository.findAllDistinctBusCpnId(controlTableId);
+				break;
+			case "busName":
+				//return processDataRepository.findAllDistinctBusName(controlTableId);
+				break;
+			case "busLegalName":
+				//return processDataRepository.findAllDistinctBusLegalName(controlTableId);
+				break;
+			case "busPayeeNumber":
+				//return processDataRepository.findAllDistinctBusPayeeNumber(controlTableId);
+				break;
+			case "busOwnerName":
+				//return processDataRepository.findAllDistinctBusOwnerName(controlTableId);
+				break;
+			case "busOwnerType":
+				//return processDataRepository.findAllDistinctBusOwnerType(controlTableId);
+				break;
+			case "busOwnerTypeOther":
+				//return processDataRepository.findAllDistinctBusOwnerTypeOther(controlTableId);
+				break;
+			case "facBuildingName":
+				return processDataRepository.findAllDistinctFacBuildingName(controlTableId);
+			case "facilityHdsDetailsAdditionalInfo":
+				//return processDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo(controlTableId);
+				break;
+			case "physicalAddr1":
+				return processDataRepository.findAllDistinctPhysicalAddr1(controlTableId);
+			case "physicalAddr2":
+				return processDataRepository.findAllDistinctPhysicalAddr2(controlTableId);
+			case "physicalAddr3":
+				return processDataRepository.findAllDistinctPhysicalAddr3(controlTableId);
+			case "physicalAddr":
+				return processDataRepository.findAllDistinctPhysicalAddr4(controlTableId);
+			case "physicalCity":
+				return processDataRepository.findAllDistinctPhysicalCity(controlTableId);
+			case "physicalProvince":
+				return processDataRepository.findAllDistinctPhysicalProvince(controlTableId);
+			case "physicalPcode":
+				return processDataRepository.findAllDistinctPhysicalPcode(controlTableId);
+			case "physicalCountry":
+				return processDataRepository.findAllDistinctPhysicalCountry(controlTableId);
+			case "physAddrIsPrivate":
+				//return processDataRepository.findAllDistinctPhysAddrIsPrivate(controlTableId);
+				break;
+			case "mailAddr1":
+				return processDataRepository.findAllDistinctMailAddr1(controlTableId);
+			case "mailAddr2":
+				return processDataRepository.findAllDistinctMailAddr2(controlTableId);
+			case "mailAddr3":
+				return processDataRepository.findAllDistinctMailAddr3(controlTableId);
+			case "mailAddr4":
+				return processDataRepository.findAllDistinctMailAddr4(controlTableId);
+			case "mailCity":
+				return processDataRepository.findAllDistinctMailCity(controlTableId);
+			case "mailBc":
+				return processDataRepository.findAllDistinctMailBc(controlTableId);
+			case "mailPcode":
+				return processDataRepository.findAllDistinctMailPcode(controlTableId);
+			case "mailCountry":
+				return processDataRepository.findAllDistinctMailCountry(controlTableId);
+			case "mailAddrIsPrivate":
+				//return processDataRepository.findAllDistinctMailAddrIsPrivate(controlTableId);
+				break;
+		}	
+			
+		return null;
+	}
 }
