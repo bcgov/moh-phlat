@@ -3,6 +3,7 @@ package com.moh.phlat.backend.controller;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
-import com.moh.phlat.backend.service.dto.UiColumnName;
 import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.UiColumnName;
 
 @RestController
 @RequestMapping("/sourcedata")
@@ -95,10 +96,10 @@ public class SourceDataController {
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getformfields/header")
-	public ResponseEntity<ResponseMessage> getAllHeader() {
+	@GetMapping("/display-columns-names")
+	public ResponseEntity<ResponseMessage> getDisplayColumnNames() {
 	    List<UiColumnName> list = null;
-		list = tableColumnInfoService.getUiColumnNames("SOURCE_DATA");
+		list = tableColumnInfoService.getUiColumnNames(TableColumnInfoService.SOURCE_DATA);
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 

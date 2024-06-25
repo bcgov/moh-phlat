@@ -1,16 +1,16 @@
 package com.moh.phlat.backend.service;
 
-import com.moh.phlat.backend.model.TableColumnInfo;
-import com.moh.phlat.backend.repository.TableColumnInfoRepository;
-import com.moh.phlat.backend.service.dto.UiColumnName;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.ArrayList;
+import com.moh.phlat.backend.model.TableColumnInfo;
+import com.moh.phlat.backend.repository.TableColumnInfoRepository;
+import com.moh.phlat.backend.service.dto.UiColumnName;
 
 @Service
 public class TableColumnInfoServiceImpl implements TableColumnInfoService {
@@ -20,8 +20,6 @@ public class TableColumnInfoServiceImpl implements TableColumnInfoService {
     @Autowired
     private TableColumnInfoRepository tableColumnInfoRepository;
 
-    //@Override
-    
     private static UiColumnName createUiColumnNameData(String key, String title) {
         return UiColumnName.builder()
 						  .key(key)

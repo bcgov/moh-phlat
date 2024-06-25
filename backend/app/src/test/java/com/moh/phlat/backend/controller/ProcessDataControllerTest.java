@@ -1,18 +1,21 @@
 package com.moh.phlat.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.ProcessDataService;
-import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
-import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
-import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
-import com.moh.phlat.backend.testsupport.factories.UserRoles;
-import com.moh.phlat.backend.service.dto.UiColumnName;
-import com.moh.phlat.backend.service.TableColumnInfoService;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,22 +29,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.ProcessDataService;
+import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.UiColumnName;
+import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
+import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
+import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
+import com.moh.phlat.backend.testsupport.factories.UserRoles;
 
 /**
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
@@ -211,7 +211,7 @@ public class ProcessDataControllerTest {
         when(tableColumnInfoService.getUiColumnNames(anyString())).thenReturn(uiColumnNameList);
 
         // Perform Put request and validate response
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/getformfields/header")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/display-columns-names")
                                                                             .with(csrf())
                                                                             .contentType(MediaType.APPLICATION_JSON));
 

@@ -1,17 +1,16 @@
 package com.moh.phlat.backend.controller;
 
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.moh.phlat.backend.service.ProcessDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,18 +20,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.util.StringUtils;
+
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
-import jakarta.validation.Valid;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.dto.ReportSummary;
+import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.RowStatusService;
-import com.moh.phlat.backend.service.dto.UiColumnName;
 import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.ReportSummary;
+import com.moh.phlat.backend.service.dto.UiColumnName;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/processdata")
@@ -393,10 +394,10 @@ public class ProcessDataController {
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getformfields/header")
-	public ResponseEntity<ResponseMessage> getAllHeader() {
+	@GetMapping("/display-columns-names")
+	public ResponseEntity<ResponseMessage> getDisplayColumnNames() {
 	    List<UiColumnName> list = null;
-		list = tableColumnInfoService.getUiColumnNames("PROCESS_DATA");
+		list = tableColumnInfoService.getUiColumnNames(TableColumnInfoService.PROCESS_DATA);
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 
