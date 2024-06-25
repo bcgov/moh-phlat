@@ -32,24 +32,14 @@ resource "aws_cloudfront_response_headers_policy" "response_security_headers" {
     content_security_policy {
       #Override with this if the origin is setting the same header.
       override                = true
-      content_security_policy = <<EOF
-        default-src 'self';
-        img-src 'self';
-        font-src 'self' https://fonts.gstatic.com/;
-        connect-src 'self' https://*.hlth.gov.bc.ca/;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/;
-        script-src 'self' 'unsafe-eval';
-        base-uri 'self';
-        form-action 'self';
-        frame-src 'self' https://*.hlth.gov.bc.ca/;
-      EOF
+      content_security_policy = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/"
     }
   }
 
   custom_headers_config {
     items {
       header = "Permissions-Policy"
-      # does not allow following on user device.
+      # does not allow access to following
       value    = "geolocation=(), microphone=(), camera=()"
       override = true
     }
