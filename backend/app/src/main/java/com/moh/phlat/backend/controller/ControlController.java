@@ -40,23 +40,10 @@ public class ControlController {
 	private ControlService controlService;
 	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@PostMapping("/view/all")
-	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required =false) List<String> ids, 
-			@RequestParam(required =false) List<String> fileName, @RequestParam(required =false) List<String> userIds, 
-			@RequestParam(required =false) List<String> fileExtractedDates, @RequestParam(required =false) List<String> batchLabelNames, 
-			@RequestParam(required =false) List<String> loadTypeFacilitys, @RequestParam(required =false) List<String> loadTypeHds, 
-			@RequestParam(required =false) List<String> loadTypeBusOrgs, @RequestParam(required =false) List<String> loadTypeOFRelationships, 
-			@RequestParam(required =false) List<String> loadTypeOORelationships, @RequestParam(required =false) List<String> loadTypeIORelationships, 
-			@RequestParam(required =false) List<String> loadTypeWlOrgXrefs, @RequestParam(required =false) List<String> loadTypeWlPracIdentXrefs, 
-			@RequestParam(required =false) List<String> processStartDates, @RequestParam(required =false) List<String> processEndDates, 
-			@RequestParam(required =false) List<String> statusCodes, @RequestParam(required =false) List<String> createdBy, 
-			@RequestParam(required =false) List<String> createdAt, @RequestParam(required =false) List<String> updatedBy, 
-			@RequestParam(required =false) List<String> updatedAt) {
+	@GetMapping("/view/all")
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlService.findAll(ids, fileName, 
-						userIds, fileExtractedDates, batchLabelNames, loadTypeFacilitys, loadTypeHds, loadTypeBusOrgs, loadTypeOFRelationships, 
-						loadTypeOORelationships, loadTypeIORelationships, loadTypeWlOrgXrefs, loadTypeWlPracIdentXrefs, processStartDates, 
-						processEndDates, statusCodes, createdBy, createdAt, updatedBy, updatedAt)));
+				.body(new ResponseMessage("success", 200, "", controlRepository.findAll()));
 	}
 
 	// view specific file control

@@ -1,16 +1,13 @@
 package com.moh.phlat.backend.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.SourceDataRepository;
-import com.moh.phlat.backend.response.ResponseMessage;
 
 @Service
 public class SourceDataServiceImpl implements SourceDataService {
@@ -41,16 +38,193 @@ public class SourceDataServiceImpl implements SourceDataService {
 			List<String> mailAddr3, List<String> mailAddr4, List<String> mailCity, List<String> mailBc,
 			List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv) {
 		
-		return sourceDataRepository.findAll(specificationService.buildSpecificationInSourceData(
-				controlId, ids,
-				doNotLoad, stakeholder, hdsLpcId, hdsCpnId, hdsProviderId1, hdsProviderId2, hdsProviderId3, hdsProviderIdType1, 
-				hdsProviderIdType2, hdsProviderIdType3, hdsHibcFacId, hdsType, hdsName, hdsNameAlias, hdsPrefNameFlag, hdsEmail,
-				hdsWebsite, hdsBusTelAreaCode, hdsBusTelNum, hdsTelExt, hdsCellAreaCode, hdsCellNum, hdsFaxAreaCode, hdsFaxNum,
-				hdsServiceDelType, pcnCLinicType, pcnPciFlag, hdsHoursOfOp, hdsContactName, hdsIsForProfitFlag,
-				sourceStatus, hdsParentIpcId, busIpcId, busCpnId, busName, busLegalName, busPayeeNum, busOwnerName,
-				busOwnerType, busOwnerTypeOther, facBuildingName, facHdsDetailAddInfo, physAddr1, physAddr2,
-				physAddr3, physAddr4, physCity, physProv, physPCode, physCountry, physAddrIsPrivate, mailAddr1,
-				mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv));
+		Specification<SourceData> combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
+
+		if(ids != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", ids);
+		}
+		if(doNotLoad != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "doNotLoad", doNotLoad);
+		}
+		if(stakeholder != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "stakeholder", stakeholder);
+		}
+		if(hdsLpcId != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsLpcId", hdsLpcId);
+		}
+		if(hdsCpnId != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCpnId", hdsCpnId);
+		}
+		if(hdsProviderId1 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId1", hdsProviderId1);
+		}
+		if(hdsProviderId2 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId2", hdsProviderId2);
+		}
+		if(hdsProviderId3 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId3", hdsProviderId3);
+		}
+		if(hdsProviderIdType1 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType1", hdsProviderIdType1);
+		}
+		if(hdsProviderIdType2 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType2", hdsProviderIdType2);
+		}
+		if(hdsProviderIdType3 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType3", hdsProviderIdType3);
+		}
+		if(hdsHibcFacId != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHibcFacId", hdsHibcFacId);
+		}
+		if(hdsType != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsType", hdsType);
+		}
+		if(hdsName != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsName", hdsName);
+		}
+		if(hdsNameAlias != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameAlias", hdsNameAlias);
+		}
+		if(hdsPrefNameFlag != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsPrefNameFlag", hdsPrefNameFlag);
+		}
+		if(hdsEmail != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmail", hdsEmail);
+		}
+		if(hdsWebsite != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsite", hdsWebsite);
+		}
+		if(hdsBusTelAreaCode != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsBusTelAreaCode", hdsBusTelAreaCode);
+		}
+		if(hdsBusTelNum != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsBusTelNum", hdsBusTelNum);
+		}
+		if(hdsTelExt != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsTelExt", hdsTelExt);
+		}
+		if(hdsCellAreaCode != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellAreaCode", hdsCellAreaCode);
+		}
+		if(hdsCellNum != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellNum", hdsCellNum);
+		}
+		if(hdsFaxAreaCode != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxAreaCode", hdsFaxAreaCode);
+		}
+		if(hdsFaxNum != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxNum", hdsFaxNum);
+		}
+		if(hdsServiceDelType != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsServiceDelType", hdsServiceDelType);
+		}
+		if(pcnCLinicType != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnCLinicType", pcnCLinicType);
+		}
+		if(pcnPciFlag != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnPciFlag", pcnPciFlag);
+		}
+		if(hdsHoursOfOp != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHoursOfOp", hdsHoursOfOp);
+		}
+		if(hdsContactName != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsContactName", hdsContactName);
+		}
+		if(hdsIsForProfitFlag != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsIsForProfitFlag", hdsIsForProfitFlag);
+		}
+		if(sourceStatus != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "sourceStatus", sourceStatus);
+		}
+		if(hdsParentIpcId != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsParentIpcId", hdsParentIpcId);
+		}
+		if(busIpcId != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busIpcId", busIpcId);
+		}
+		if(busCpnId != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busCpnId", busCpnId);
+		}
+		if(busName != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busName", busName);
+		}
+		if(busLegalName != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busLegalName", busLegalName);
+		}
+		if(busPayeeNum != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busPayeeNum", busPayeeNum);
+		}
+		if(busOwnerName != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerName", busOwnerName);
+		}
+		if(busOwnerType != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerType", busOwnerType);
+		}
+		if(busOwnerTypeOther != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerTypeOther", busOwnerTypeOther);
+		}
+		if(facBuildingName != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facBuildingName", facBuildingName);
+		}
+		if(facHdsDetailAddInfo != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facHdsDetailAddInfo", facHdsDetailAddInfo);
+		}
+		if(physAddr1 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr1", physAddr1);
+		}
+		if(physAddr2 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr2", physAddr2);
+		}
+		if(physAddr3 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr3", physAddr3);
+		}
+		if(physAddr4 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr4", physAddr4);
+		}
+		if(physCity != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physCity", physCity);
+		}
+		if(physProv != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physProv", physProv);
+		}
+		if(physPCode != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physPCode", physPCode);
+		}
+		if(physCountry != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physCountry", physCountry);
+		}
+		if(physAddrIsPrivate != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddrIsPrivate", physAddrIsPrivate);
+		}
+		if(mailAddr1 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr1", mailAddr1);
+		}
+		if(mailAddr2 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr2", mailAddr2);
+		}
+		if(mailAddr3 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr3", mailAddr3);
+		}
+		if(mailAddr4 != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr4", mailAddr4);
+		}
+		if(mailCity != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCity", mailCity);
+		}
+		if(mailBc != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailBc", mailBc);
+		}
+		if(mailPcode != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailPcode", mailPcode);
+		}
+		if(mailCountry != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", mailCountry);
+		}
+		if(mailAddrIsPriv != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", mailAddrIsPriv);
+		}
+		
+		return sourceDataRepository.findAll(combinedSpecification);
 	}
 
 	@Override
