@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
-import com.moh.phlat.backend.service.dto.ColumnInfo;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
 
 @Service
 public class TableColumnInfoServiceImpl implements TableColumnInfoService {
@@ -20,19 +20,19 @@ public class TableColumnInfoServiceImpl implements TableColumnInfoService {
     @Autowired
     private TableColumnInfoRepository tableColumnInfoRepository;
 
-    private static ColumnInfo createColumnInfoData(String key, String title) {
-        return ColumnInfo.builder()
+    private static ColumnDisplayName createColumnInfoData(String key, String title) {
+        return ColumnDisplayName.builder()
 						  .key(key)
                           .title(title)
                           .build();
     }
     
-    public List<ColumnInfo> getColumnInfoList(String tableName) {
-        List<ColumnInfo> items = new ArrayList<ColumnInfo>();
+    public List<ColumnDisplayName> getColumnDisplayNameList(String tableName) {
+        List<ColumnDisplayName> items = new ArrayList<ColumnDisplayName>();
 		List<TableColumnInfo> tableColumnInfo = tableColumnInfoRepository.findByTableNameOrderByIdAsc(tableName);
 
 		for (TableColumnInfo row : tableColumnInfo) {
-            ColumnInfo newRec = createColumnInfoData(row.getVariableName(), row.getTitle());
+            ColumnDisplayName newRec = createColumnInfoData(row.getVariableName(), row.getTitle());
             items.add(newRec);
 		}
         return items;

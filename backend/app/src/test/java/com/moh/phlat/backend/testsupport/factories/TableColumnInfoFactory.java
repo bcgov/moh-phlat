@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.moh.phlat.backend.model.TableColumnInfo;
-import com.moh.phlat.backend.service.dto.ColumnInfo;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
 
 public class TableColumnInfoFactory extends BaseFactory {
     public static List<TableColumnInfo> createTableColumnInfo() {
@@ -27,19 +27,19 @@ public class TableColumnInfoFactory extends BaseFactory {
                           .build();
     }
 
-    private static ColumnInfo createColumnInfoData(String key, String title) {
-        return ColumnInfo.builder()
+    private static ColumnDisplayName createColumnDisplayNameData(String key, String title) {
+        return ColumnDisplayName.builder()
 						  .key(key)
                           .title(title)
                           .build();
     }
 
-    public static List<ColumnInfo> getColumnInfoList() {
-        List<ColumnInfo> items = new ArrayList<ColumnInfo>();
+    public static List<ColumnDisplayName> getColumnDisplayNameList() {
+        List<ColumnDisplayName> items = new ArrayList<ColumnDisplayName>();
 		List<TableColumnInfo> tableColumnInfo = createTableColumnInfo();
 
 		for (TableColumnInfo row : tableColumnInfo) {
-            ColumnInfo newRec = createColumnInfoData(row.getVariableName(), row.getTitle());
+            ColumnDisplayName newRec = createColumnDisplayNameData(row.getVariableName(), row.getTitle());
             items.add(newRec);
 		}
         return items;

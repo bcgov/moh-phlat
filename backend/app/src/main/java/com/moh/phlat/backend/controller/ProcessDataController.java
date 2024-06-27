@@ -30,7 +30,7 @@ import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.RowStatusService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
-import com.moh.phlat.backend.service.dto.ColumnInfo;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
 import com.moh.phlat.backend.service.dto.ReportSummary;
 
 import jakarta.validation.Valid;
@@ -396,8 +396,8 @@ public class ProcessDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/display-columns-names")
 	public ResponseEntity<ResponseMessage> getDisplayColumnNames() {
-	    List<ColumnInfo> list = null;
-		list = tableColumnInfoService.getColumnInfoList(TableColumnInfoService.PROCESS_DATA);
+	    List<ColumnDisplayName> list = null;
+		list = tableColumnInfoService.getColumnDisplayNameList(TableColumnInfoService.PROCESS_DATA);
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 

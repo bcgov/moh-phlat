@@ -37,7 +37,7 @@ import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
-import com.moh.phlat.backend.service.dto.ColumnInfo;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
 import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
 import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
 import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
@@ -74,9 +74,8 @@ public class ProcessDataControllerTest {
                                                                              .createProcessDataListWithAllAttributes());
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
-    List<ColumnInfo> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getColumnInfoList());
+    List<ColumnDisplayName> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getColumnDisplayNameList());
                                                                 
-
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessData() throws Exception {
@@ -139,8 +138,6 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetProcessDataById() throws Exception {
-
-
         when(processDataRepository.findById(anyLong())).thenReturn(Optional.of(processDataList.get(0)));
 
         // Perform GET request and validate response
@@ -167,11 +164,8 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void updateProcessDataById() throws Exception {
-
-
         when(processDataRepository.findById(anyLong())).thenReturn(Optional.of(processDataList.get(0)));
         when(processDataRepository.save(Mockito.any(ProcessData.class))).thenReturn(processDataList.get(0));
-
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -208,7 +202,7 @@ public class ProcessDataControllerTest {
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void getAllHeader() throws Exception {
 
-        when(tableColumnInfoService.getColumnInfoList(anyString())).thenReturn(uiColumnNameList);
+        when(tableColumnInfoService.getColumnDisplayNameList(anyString())).thenReturn(uiColumnNameList);
 
         // Perform Put request and validate response
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/display-columns-names")
@@ -219,7 +213,7 @@ public class ProcessDataControllerTest {
                      .andExpect(content().contentType(MediaType.APPLICATION_JSON));
                 
         //check if mocked methods were called
-        verify(tableColumnInfoService, times(1)).getColumnInfoList(anyString());
+        verify(tableColumnInfoService, times(1)).getColumnDisplayNameList(anyString());
 
     }
  
