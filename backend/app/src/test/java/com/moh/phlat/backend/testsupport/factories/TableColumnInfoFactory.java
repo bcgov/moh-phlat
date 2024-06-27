@@ -1,12 +1,10 @@
 package com.moh.phlat.backend.testsupport.factories;
 
-import com.moh.phlat.backend.model.TableColumnInfo;
-import com.moh.phlat.backend.service.dto.UiColumnName;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
+import com.moh.phlat.backend.model.TableColumnInfo;
+import com.moh.phlat.backend.service.dto.ColumnInfo;
 
 public class TableColumnInfoFactory extends BaseFactory {
     public static List<TableColumnInfo> createTableColumnInfo() {
@@ -29,19 +27,19 @@ public class TableColumnInfoFactory extends BaseFactory {
                           .build();
     }
 
-    private static UiColumnName createUiColumnNameData(String key, String title) {
-        return UiColumnName.builder()
+    private static ColumnInfo createColumnInfoData(String key, String title) {
+        return ColumnInfo.builder()
 						  .key(key)
                           .title(title)
                           .build();
     }
 
-    public static List<UiColumnName> getUiColumnNames() {
-        List<UiColumnName> items = new ArrayList<UiColumnName>();
+    public static List<ColumnInfo> getColumnInfoList() {
+        List<ColumnInfo> items = new ArrayList<ColumnInfo>();
 		List<TableColumnInfo> tableColumnInfo = createTableColumnInfo();
 
 		for (TableColumnInfo row : tableColumnInfo) {
-            UiColumnName newRec = createUiColumnNameData(row.getVariableName(), row.getTitle());
+            ColumnInfo newRec = createColumnInfoData(row.getVariableName(), row.getTitle());
             items.add(newRec);
 		}
         return items;

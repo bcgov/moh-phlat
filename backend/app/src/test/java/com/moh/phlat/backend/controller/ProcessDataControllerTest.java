@@ -37,7 +37,7 @@ import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
-import com.moh.phlat.backend.service.dto.UiColumnName;
+import com.moh.phlat.backend.service.dto.ColumnInfo;
 import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
 import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
 import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
@@ -74,7 +74,7 @@ public class ProcessDataControllerTest {
                                                                              .createProcessDataListWithAllAttributes());
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
-    List<UiColumnName> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getUiColumnNames());
+    List<ColumnInfo> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getColumnInfoList());
                                                                 
 
     @Test
@@ -208,7 +208,7 @@ public class ProcessDataControllerTest {
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void getAllHeader() throws Exception {
 
-        when(tableColumnInfoService.getUiColumnNames(anyString())).thenReturn(uiColumnNameList);
+        when(tableColumnInfoService.getColumnInfoList(anyString())).thenReturn(uiColumnNameList);
 
         // Perform Put request and validate response
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/display-columns-names")
@@ -219,7 +219,7 @@ public class ProcessDataControllerTest {
                      .andExpect(content().contentType(MediaType.APPLICATION_JSON));
                 
         //check if mocked methods were called
-        verify(tableColumnInfoService, times(1)).getUiColumnNames(anyString());
+        verify(tableColumnInfoService, times(1)).getColumnInfoList(anyString());
 
     }
  

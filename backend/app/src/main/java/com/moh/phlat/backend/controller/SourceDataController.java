@@ -28,7 +28,7 @@ import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
-import com.moh.phlat.backend.service.dto.UiColumnName;
+import com.moh.phlat.backend.service.dto.ColumnInfo;
 
 @RestController
 @RequestMapping("/sourcedata")
@@ -98,8 +98,8 @@ public class SourceDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/display-columns-names")
 	public ResponseEntity<ResponseMessage> getDisplayColumnNames() {
-	    List<UiColumnName> list = null;
-		list = tableColumnInfoService.getUiColumnNames(TableColumnInfoService.SOURCE_DATA);
+	    List<ColumnInfo> list = null;
+		list = tableColumnInfoService.getColumnInfoList(TableColumnInfoService.SOURCE_DATA);
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 
