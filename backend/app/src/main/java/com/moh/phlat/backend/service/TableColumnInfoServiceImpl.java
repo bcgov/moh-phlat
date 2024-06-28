@@ -27,7 +27,7 @@ public class TableColumnInfoServiceImpl implements TableColumnInfoService {
                           .build();
     }
     
-    public List<ColumnDisplayName> getColumnDisplayNameList(String tableName) {
+    public List<ColumnDisplayName> getColumnDisplayNames(String tableName) {
         List<ColumnDisplayName> items = new ArrayList<ColumnDisplayName>();
 		List<TableColumnInfo> tableColumnInfo = tableColumnInfoRepository.findByTableNameOrderByIdAsc(tableName);
 

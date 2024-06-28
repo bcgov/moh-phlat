@@ -202,10 +202,10 @@ public class ProcessDataControllerTest {
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void getAllHeader() throws Exception {
 
-        when(tableColumnInfoService.getColumnDisplayNameList(anyString())).thenReturn(uiColumnNameList);
+        when(tableColumnInfoService.getColumnDisplayNames(anyString())).thenReturn(uiColumnNameList);
 
         // Perform Put request and validate response
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/display-columns-names")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/column-display-names")
                                                                             .with(csrf())
                                                                             .contentType(MediaType.APPLICATION_JSON));
 
@@ -213,7 +213,7 @@ public class ProcessDataControllerTest {
                      .andExpect(content().contentType(MediaType.APPLICATION_JSON));
                 
         //check if mocked methods were called
-        verify(tableColumnInfoService, times(1)).getColumnDisplayNameList(anyString());
+        verify(tableColumnInfoService, times(1)).getColumnDisplayNames(anyString());
 
     }
  
