@@ -395,7 +395,7 @@ public class ProcessDataController {
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/column-display-names")
-	public ResponseEntity<ResponseMessage> getDisplayColumnNames() {
+	public ResponseEntity<ResponseMessage> getColumnDisplayNames() {
 	    List<ColumnDisplayName> list = null;
 		list = tableColumnInfoService.getColumnDisplayNames(TableColumnInfoService.PROCESS_DATA);
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));

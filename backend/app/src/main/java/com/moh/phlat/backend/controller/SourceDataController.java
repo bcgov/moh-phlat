@@ -97,7 +97,7 @@ public class SourceDataController {
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/column-display-names")
-	public ResponseEntity<ResponseMessage> getColumnDisplayNameList() {
+	public ResponseEntity<ResponseMessage> getColumnDisplayNames() {
 	    List<ColumnDisplayName> list = null;
 		list = tableColumnInfoService.getColumnDisplayNames(TableColumnInfoService.SOURCE_DATA);
 	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
