@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.moh.phlat.backend.service.ProcessDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,16 +23,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.util.StringUtils;
+
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
-import jakarta.validation.Valid;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.dto.ReportSummary;
+import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.RowStatusService;
+import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
+import com.moh.phlat.backend.service.dto.ReportSummary;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/processdata")
@@ -52,6 +56,16 @@ public class ProcessDataController {
 
 	@Autowired
 	private ProcessDataService processDataService;
+
+    @Autowired
+    private TableColumnInfoService tableColumnInfoService;	
+
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+	@GetMapping("/view/all")
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDatas() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseMessage("success", 200, "", processDataRepository.findAll()));
+	}
 
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
@@ -422,9 +436,11 @@ public class ProcessDataController {
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getformfields/header")
-	public String getAllHeader() {
-		return dbUtilityService.getVariablesByTableNameSortedById("PROCESS_DATA");
+	@GetMapping("/column-display-names")
+	public ResponseEntity<ResponseMessage> getColumnDisplayNames() {
+	    List<ColumnDisplayName> list = null;
+		list = tableColumnInfoService.getColumnDisplayNames(TableColumnInfoService.PROCESS_DATA);
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 
 	// get specific row by id

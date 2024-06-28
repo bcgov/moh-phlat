@@ -1,31 +1,5 @@
 package com.moh.phlat.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.ProcessDataService;
-import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
-import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
-import com.moh.phlat.backend.testsupport.factories.UserRoles;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.nullable;
@@ -38,6 +12,36 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.ProcessDataService;
+import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
+import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
+import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
+import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
+import com.moh.phlat.backend.testsupport.factories.UserRoles;
 
 /**
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
@@ -63,12 +67,15 @@ public class ProcessDataControllerTest {
     @MockBean
     private DbUtilityService dbUtilityService;
 
+    @MockBean
+    private TableColumnInfoService tableColumnInfoService;	
 
     List<ProcessData> processDataList = Collections.unmodifiableList(ProcessDataFactory
                                                                              .createProcessDataListWithAllAttributes());
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
-
+    List<ColumnDisplayName> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getColumnDisplayNameList());
+                                                                
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessData() throws Exception {
@@ -133,8 +140,6 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetProcessDataById() throws Exception {
-
-
         when(processDataRepository.findById(anyLong())).thenReturn(Optional.of(processDataList.get(0)));
 
         // Perform GET request and validate response
@@ -161,11 +166,8 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void updateProcessDataById() throws Exception {
-
-
         when(processDataRepository.findById(anyLong())).thenReturn(Optional.of(processDataList.get(0)));
         when(processDataRepository.save(Mockito.any(ProcessData.class))).thenReturn(processDataList.get(0));
-
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -197,24 +199,26 @@ public class ProcessDataControllerTest {
 
     }
 
-
+ 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void getAllHeader() throws Exception {
 
-        when(dbUtilityService.getVariablesByTableNameSortedById(anyString())).thenReturn("Test Headers");
+        when(tableColumnInfoService.getColumnDisplayNames(anyString())).thenReturn(uiColumnNameList);
+
         // Perform Put request and validate response
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/getformfields/header")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/processdata/column-display-names")
                                                                             .with(csrf())
                                                                             .contentType(MediaType.APPLICATION_JSON));
-        resultActions.andExpect(status().isOk());
 
+        resultActions.andExpect(status().isOk())
+                     .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                
         //check if mocked methods were called
-        verify(dbUtilityService, times(1)).getVariablesByTableNameSortedById(anyString());
+        verify(tableColumnInfoService, times(1)).getColumnDisplayNames(anyString());
 
     }
-
-
+ 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testValidateProcessDataById() throws Exception {

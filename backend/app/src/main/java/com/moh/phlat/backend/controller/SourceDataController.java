@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
 import com.moh.phlat.backend.service.SourceDataService;
+import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
 
 @RestController
 @RequestMapping("/sourcedata")
@@ -49,6 +52,9 @@ public class SourceDataController {
 	
 	@Autowired
 	private SourceDataService sourceDataService;
+
+    @Autowired
+    private TableColumnInfoService tableColumnInfoService;	
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("view/all")
@@ -133,9 +139,11 @@ public class SourceDataController {
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/getformfields/header")
-	public String getAllHeader() {
-		return dbUtilityService.getVariablesByTableNameSortedById("SOURCE_DATA");
+	@GetMapping("/column-display-names")
+	public ResponseEntity<ResponseMessage> getColumnDisplayNames() {
+	    List<ColumnDisplayName> list = null;
+		list = tableColumnInfoService.getColumnDisplayNames(TableColumnInfoService.SOURCE_DATA);
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
 	}
 
 	@PostMapping("/upload")
