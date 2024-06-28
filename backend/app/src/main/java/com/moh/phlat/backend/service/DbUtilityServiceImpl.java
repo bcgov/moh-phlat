@@ -7,13 +7,15 @@ import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
+import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.RowStatusService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
+
 	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
 	@Autowired
@@ -39,21 +42,18 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	public String getVariablesByTableNameSortedById(String tableName) {
 		String variableName = "";
 
-//		List<TableColumnInfo> tableColumnInfo = tableColumnInfoRepository.findAllByOrderByIdAsc();
 		List<TableColumnInfo> tableColumnInfo = tableColumnInfoRepository.findByTableNameOrderByIdAsc(tableName);
-		// findAllByTableNameSortedById(tableName.toUpperCase());
 
 		List<String> listVariableName = new ArrayList<>();
 
-		for (TableColumnInfo _row : tableColumnInfo) {
-			variableName = _row.getVariableName();
+		for (TableColumnInfo row : tableColumnInfo) {
+			variableName = row.getVariableName();
 			if (!variableName.isEmpty()) {
-				listVariableName.add(_row.getVariableName());
+				listVariableName.add(row.getVariableName());
 			}
 		}
 
 		String result = listVariableName.stream()
-//				 .sorted()
 				.map(item -> "\"" + item + "\"").collect(Collectors.joining(", "));
 
 		return "[" + result + "]";
@@ -72,8 +72,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 		List<String> listHeaderName = new ArrayList<>();
 
-		for (TableColumnInfo _row : tableColumnInfo) {
-			headerName = _row.getHeaderName();
+		for (TableColumnInfo row : tableColumnInfo) {
+			headerName = row.getHeaderName();
 			//logger.info("headerName: " + headerName);
 			if (!headerName.isEmpty()) {
 				i = i + 1;
@@ -82,7 +82,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				} else {
 					retResult = retResult + "," + headerName;
 				}
-				listHeaderName.add(_row.getHeaderName());
+				listHeaderName.add(row.getHeaderName());
 			}
 		}
 
@@ -95,14 +95,14 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	@Override
 	public void setProcessDataStatus(Long processDataId, String rowstatusCode, String authenticatedUserId) {
 
-		Optional<ProcessData> _processData = processDataRepository.findById(processDataId);
+		Optional<ProcessData> processDataTable = processDataRepository.findById(processDataId);
 		try {
-			if (_processData.isPresent()) {
-				ProcessData processData1 = _processData.get();
+			if (processDataTable.isPresent()) {
+				ProcessData processData = processDataTable.get();
 
-				processData1.setRowstatusCode(rowstatusCode);
-				processData1.setUpdatedBy(authenticatedUserId);
-				processDataRepository.save(processData1);
+				processData.setRowstatusCode(rowstatusCode);
+				processData.setUpdatedBy(authenticatedUserId);
+				processDataRepository.save(processData);
 			}
 		} catch (Exception e) {
 			logger.error("Error occured: {}", e.getMessage(), e);
@@ -110,10 +110,10 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	}
 
 	public void setControlStatus(Long controlId, String statusCode, String authenticatedUserId) {
-		Optional<Control> _control = controlRepository.findById(controlId);
+		Optional<Control> controlTable = controlRepository.findById(controlId);
 		try {
-			if (_control.isPresent()) {
-				Control control1 = _control.get();
+			if (controlTable.isPresent()) {
+				Control control1 = controlTable.get();
 
 				control1.setStatusCode(statusCode);
 				control1.setUpdatedBy(authenticatedUserId);
@@ -131,10 +131,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		Boolean isValid = true;
 		
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
-			logger.info("Handle run type: Facility or HDS");
-			// TO DO:
-			// auto fix
-
 			// required checks
 			if (!StringUtils.hasText(processData.getHdsName())) {
 				isValid = false;
@@ -153,9 +149,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			
 			
 			if (isValid) { 
-				setProcessDataStatus(processData.getId(), "VALID",authenticatedUserId);
+				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
 			} else {
-				setProcessDataStatus(processData.getId(), "INVALID", authenticatedUserId);
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 			}
 			
 		}
@@ -166,29 +162,29 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	public void validateProcessDataByControlTableId(Long controlTableId, String authenticatedUserId) {
 		logger.info("START VALIDATE ASYNC");
 
-		Optional<Control> _control = controlRepository.findById(controlTableId);
+		Optional<Control> controlTable = controlRepository.findById(controlTableId);
 
-		if (_control.isPresent()) {
-			Control control = _control.get();
+		if (controlTable.isPresent()) {
+			Control control = controlTable.get();
 
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
 
-			for (ProcessData s : processDataList) {
-				// skip if the rowstatus is COMPLETE or marked as DO_NOT_LOAD
-				if (!s.getDoNotLoad().equals("Y") && (!s.getRowstatusCode().equals("DO_NOT_LOAD"))
-						&& (!s.getRowstatusCode().equals("COMPLETE"))) {
-					logger.info("validate process data with id: {}", s.getId());
+			for (ProcessData rec : processDataList) {
+				// skip if the rowstatus is COMPLETED or marked as DO_NOT_LOAD
+				if (!"Y".equals(rec.getDoNotLoadFlag()) && !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
+						&& !RowStatusService.COMPLETED.equals(rec.getRowstatusCode())) {
+					logger.info("validate process data with id: {}", rec.getId());
 
 					// run asyn process
-					validateProcessData(control, s, authenticatedUserId);
+					validateProcessData(control, rec, authenticatedUserId);
 				} else {
-					logger.info("skip validating process data with id: {}", s.getId());
+					logger.info("skip validating process data with id: {}", rec.getId());
 				}
 			}
-			setControlStatus(control.getId(), "PRE-VALIDATION_COMPLETED",
+			setControlStatus(control.getId(), RowStatusService.PRE_VALIDATION_COMPLETED,
 							 authenticatedUserId);
-			logger.info("PRE-VALIDATION COMPLETED");
+			logger.info(RowStatusService.PRE_VALIDATION_COMPLETED);
 		}
 	}
 
@@ -198,26 +194,25 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	public void loadProcessDataToPlr(Long controlTableId, String authenticatedUserId) {
 		logger.info("START PLR LOAD IN ASYNC MODE");
 
-		Optional<Control> _control = controlRepository.findById(controlTableId);
+		Optional<Control> controlTable = controlRepository.findById(controlTableId);
 
-		if (_control.isPresent()) {
-			Control control = _control.get();
+		if (controlTable.isPresent()) {
+			Control control = controlTable.get();
 
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
 
-			for (ProcessData s : processDataList) {
-				// skip record marked as DO_NOT_LOAD and only VALID records
-				if (!s.getDoNotLoad().equals("Y") && s.getRowstatusCode().equals("VALID")) {
-					logger.info("loading process data with id: {} to PLR.", s.getId());
+			for (ProcessData rec : processDataList) {
+				// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
+				if (!"Y".equals(rec.getDoNotLoadFlag()) && RowStatusService.VALID.equals(rec.getRowstatusCode())) {
+					logger.info("loading process data with id: {} to PLR.", rec.getId());
 
 					// TO-DO call to PLR via ESB here
 					// loadPlrViaEsb(control, s);
 				}
 			}
-			setControlStatus(control.getId(), "PLR_LOAD_COMPLETED", authenticatedUserId);
+			setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
 			logger.info("PLR_LOAD COMPLETED");
 		}
-	}
-
+	}	
 }

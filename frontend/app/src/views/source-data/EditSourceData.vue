@@ -1,6 +1,8 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
+import BasePrompt from '../../components/base/BasePrompt.vue';
+import BaseReportSummary from '../../components/base/BaseReportSummary.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
@@ -16,6 +18,8 @@ export default {
     BaseFilter,
     BaseEditRecord,
     BaseChips,
+    BaseReportSummary,
+    BasePrompt,
   },
   props: {
     id: {
@@ -62,6 +66,8 @@ export default {
       { key: 'controlTableId' },
       { key: 'rowstatusCode' },
       { key: 'messages' },
+      { key: 'doNotLoad' },
+      { key: 'doNotLoadFlag' },
     ],
     headers: [
       {
@@ -102,6 +108,9 @@ export default {
         criteria: [{ key: 'hdsName', order: 'asc' }],
       },
     ],
+    reportSummaryId: null,
+    reportSummaryDialog: false,
+    showValidateAllDialog: false,
   }),
 
   computed: {
@@ -246,9 +255,18 @@ export default {
       if (this.displayColumnsPreferenceData.length) {
         this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
-      const tableHeaders = this.formFieldHeaders.map((h) => {
-        return { title: h, key: h };
-      });
+
+      const tableHeaders = this.formFieldHeaders
+        .filter(
+          /**
+           * Removing this headers from the list just as a requirement from business for now,
+           * on a later stage this should be removed by backend BCMOHAD-23110/BCMOHAD-23454
+           */
+          (header) => header !== 'doNotLoadFlag' && header !== 'doNotLoad'
+        )
+        .map((h) => {
+          return { title: h, key: h };
+        });
 
       this.headers = [...tableHeaders, ...this.headers].filter(
         ({ key }) => key !== 'controlTableId'
@@ -296,7 +314,6 @@ export default {
         });
       }
     },
-
     validateAll() {
       this.requestValidateAll();
     },
@@ -436,56 +453,59 @@ export default {
         return [];
       }
     },
+    viewReportSummary(id) {
+      this.reportSummaryId = id;
+      this.reportSummaryDialog = true;
+    },
+    closeViewReportSummary() {
+      this.reportSummaryId = null;
+      this.reportSummaryDialog = false;
+    },
   },
 };
 </script>
 <template>
   <div>
-    <div
-      class="mt-6 d-flex flex-md-row justify-space-between flex-sm-column-reverse flex-xs-column-reverse gapRow"
-    >
+    <div class="mt-6 d-flex flex-nowrap">
       <!-- page title -->
-      <div>
+      <div class="page-title mw-50p">
         <h1>{{ fileName }} - Edit Source Data</h1>
       </div>
 
       <!-- search input -->
-      <div class="submissions-search">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          variant="underlined"
-          label="Search"
-          append-inner-icon="mdi-magnify"
-          single-line
-          class="pb-5"
-        ></v-text-field>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="searchByStatus"
-          :items="statusCodes"
-          :clearable="true"
-          label="Filter by status"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="populateInputSource"
-        ></v-select>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="sortOrder"
-          :items="sortOrderTypes"
-          label="Sort orders"
-          item-title="text"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="sortOrderHandle"
-        ></v-select>
-      </div>
-      <div>
+      <v-text-field
+        v-model="search"
+        density="compact"
+        variant="underlined"
+        label="Search"
+        append-inner-icon="mdi-magnify"
+        single-line
+        solid
+        class="header-component"
+      ></v-text-field>
+      <v-select
+        v-model="searchByStatus"
+        :items="statusCodes"
+        :clearable="true"
+        label="Filter by status"
+        density="compact"
+        solid
+        variant="underlined"
+        class="header-component"
+        @update:modelValue="populateInputSource"
+      ></v-select>
+      <v-select
+        v-model="sortOrder"
+        :items="sortOrderTypes"
+        label="Sort orders"
+        item-title="text"
+        density="compact"
+        solid
+        variant="underlined"
+        class="header-component"
+        @update:modelValue="sortOrderHandle"
+      ></v-select>
+      <div class="header-component">
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -512,10 +532,27 @@ export default {
                 size="x-small"
                 density="default"
                 icon="mdi:mdi-shield-account-variant-outline"
-                @click="validateAll"
+                @click="showValidateAllDialog = true"
               />
             </template>
             <span>Validate All</span>
+          </v-tooltip>
+        </span>
+        <span>
+          <!-- Summary Report -->
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-btn
+                class="mx-1"
+                color="primary"
+                v-bind="props"
+                size="x-small"
+                density="default"
+                icon="mdi:mdi-list-status"
+                @click="viewReportSummary(id)"
+              />
+            </template>
+            <span>View report summary</span>
           </v-tooltip>
         </span>
       </div>
@@ -619,14 +656,20 @@ export default {
                 mdi-pencil
               </v-icon>
             </template>
-            <span>Edit Process Data</span>
+            <span>Edit Record</span>
           </v-tooltip>
         </template>
         <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
         </template>
       </v-data-table>
-
+      <v-dialog v-model="showValidateAllDialog" width="700">
+        <BasePrompt
+          prompt-body-text="Are you sure you want to validate all records?"
+          @do-action="validateAll"
+          @abort-action="showValidateAllDialog = false"
+        />
+      </v-dialog>
       <v-dialog v-model="showColumnsDialog" width="700">
         <BaseFilter
           input-filter-placeholder="Search Columns"
@@ -648,6 +691,13 @@ export default {
           :is-loading="loading"
           @handle-record-save="handleRecordSave"
           @cancel-filter-data="dialog = false"
+        />
+      </v-dialog>
+
+      <v-dialog v-model="reportSummaryDialog" width="700">
+        <BaseReportSummary
+          :control-id="reportSummaryId"
+          @close-view-report-summary="closeViewReportSummary"
         />
       </v-dialog>
     </div>

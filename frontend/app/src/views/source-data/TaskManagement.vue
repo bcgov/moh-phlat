@@ -1,5 +1,6 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
+import BaseReportSummary from '../../components/base/BaseReportSummary.vue';
 import { mapActions, mapState } from 'pinia';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useAuthStore } from '~/store/auth';
@@ -15,6 +16,7 @@ import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
 export default {
   components: {
     BaseFilter,
+    BaseReportSummary,
   },
   props: {},
   data: () => ({
@@ -70,12 +72,14 @@ export default {
         key: 'actions',
         sortable: false,
         fixed: true,
-        width: '120px',
+        width: '160px',
       },
     ],
     onlyShowColumns: [],
     desserts: [],
     editedIndex: -1,
+    reportSummaryId: null,
+    reportSummaryDialog: false,
   }),
 
   computed: {
@@ -267,32 +271,37 @@ export default {
       }
       this.close();
     },
+
+    viewReportSummary(id) {
+      this.reportSummaryId = id;
+      this.reportSummaryDialog = true;
+    },
+    closeViewReportSummary() {
+      this.reportSummaryId = null;
+      this.reportSummaryDialog = false;
+    },
   },
 };
 </script>
 <template>
   <div>
-    <div
-      class="mt-6 d-flex flex-md-row justify-space-between flex-sm-column-reverse flex-xs-column-reverse gapRow"
-    >
+    <div class="mt-6 d-flex">
       <!-- page title -->
-      <div>
+      <div class="page-title-tm mw-50p">
         <h1>File Task Management - Process File List</h1>
       </div>
-
       <!-- search input -->
-      <div class="submissions-search">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          variant="underlined"
-          label="Search"
-          append-inner-icon="mdi-magnify"
-          single-line
-          class="pb-5"
-        ></v-text-field>
-      </div>
-      <div>
+      <v-text-field
+        v-model="search"
+        density="compact"
+        variant="underlined"
+        label="Search"
+        append-inner-icon="mdi-magnify"
+        single-line
+        solid
+        class="header-component-tm"
+      ></v-text-field>
+      <div class="header-component-tm">
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -423,7 +432,7 @@ export default {
                   mdi-pencil
                 </v-icon>
               </template>
-              <span>Edit process data</span>
+              <span>Edit source data</span>
             </v-tooltip>
             <!-- Upload to PLR -->
             <v-tooltip
@@ -476,6 +485,21 @@ export default {
               </template>
               <span>Approve</span>
             </v-tooltip>
+            <!-- Summary Report -->
+            <v-tooltip location="bottom">
+              <template #activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  size="large"
+                  class="me-2"
+                  label="VIEW"
+                  @click="viewReportSummary(item.raw.id)"
+                >
+                  mdi-list-status
+                </v-icon>
+              </template>
+              <span>View report summary</span>
+            </v-tooltip>
           </slot>
         </template>
         <!-- <template #no-data>
@@ -495,6 +519,13 @@ export default {
         >
           <template #filter-title><span> Manage Columns </span></template>
         </BaseFilter>
+      </v-dialog>
+
+      <v-dialog v-model="reportSummaryDialog" width="700">
+        <BaseReportSummary
+          :control-id="reportSummaryId"
+          @close-view-report-summary="closeViewReportSummary"
+        />
       </v-dialog>
     </div>
   </div>

@@ -13,45 +13,84 @@ public class ProcessDataFactory extends BaseFactory {
     public static List<ProcessData> createProcessDataListWithAllAttributes() {
         List<ProcessData> processData = new ArrayList<>();
 
-        processData.add(createProcessData(1L, 2L, "N", "John Doe", "123",
-                                          "456", "789", "101", "112",
-                                          "type1", "type2", "type3",
-                                          "hibc123", "type", "Name", "Alias", "Y",
-                                          "example@example.com", "www.example.com", "123", "4567890",
-                                          "ext123", "456", "7890123", "fax123",
-                                          "4567890", "deliveryType", "clinicType",
-                                          "pciFlag", "9am-5pm", "Jane Smith",
-                                          "Y", "Active", "parent123", "bus123",
-                                          "cpn123", "Business Name", "Legal Name", "payee123",
-                                          "Owner Name", "Owner Type", "Other",
-                                          "Building Name", "Additional Info",
-                                          "Address 1", "Address 2", "Address 3", "Address 4",
-                                          "City", "Province", "Pcode", "Country",
-                                          "Y", "Mailing 1", "Mailing 2", "Mailing 3",
-                                          "Mailing 4", "Mail City", "BC", "Mailing Pcode",
-                                          "Mailing Country", "Y", 100L, "ACTIVE",
-                                           createDate(2024, Calendar.JANUARY, 1), "Admin1",
-                                          createDate(2024, Calendar.JANUARY, 2), "Admin2"));
-
-
-        processData.add(createProcessData(2L, 3L, "Y", "Jane Smith", "321",
-                                          "654", "987", "210", "121",
-                                          "type4", "type5", "type6",
-                                          "hibc456", "type2", "Name2", "Alias2",
+        processData.add(createProcessData(1L, 2L, "N", "HOSPITAL", "stakeholderid_1",
+                                         "IpcId_1", "CpnId_1", 
+                                         "identifier1_1", "identifier2_1", "identifier3_1",
+                                          "identType1_1", "identType2_1",
+                                          "identType3_1", "mspFacilityNumber_1", 
+                                          "pauth_lysonle", "catCode_1", "roleTypeCode_1",
+                                          "hdsType_2", "hdsSubType_2", 
+                                          "lysone@0001", "2024-05-27", "3000-12-31", "hdsName_1",
                                           "N", "test@example.com", "www.test.com",
-                                          "456", "1234567", "ext456", "789",
-                                          "0123456", "fax456", "1234567", "deliveryType2",
-                                          "clinicType2", "pciFlag2", "8am-4pm",
-                                          "John Doe", "N", "Inactive", "parent456",
-                                          "bus321", "cpn321", "Business Name2",
-                                          "Legal Name2", "payee321", "Owner Name2",
-                                          "Owner Type2", "Other2", "Building Name2",
-                                          "Additional Info2", "Address 5", "Address 6",
+                                          "456", "1234567", "ext456", 
+                                          "789", "0123456", "fax456", "1234567", 
+                                          "pcdServiceDeliveryType_2",
+                                          "clinicType_1",
+                                          "Y", 
+                                          "sourceStatus_1",
+                                          "clinicStatus_Active", 
+                                          "2024-050-28", 
+                                          "9999-12-31",
+                                          "addressUnit_1",
+                                          "buildingName_1",
+                                          "civicAddrId_1",
+                                          "civic_addr_2306 Selwyn Rd",
+                                          "83.2232", "-78.99343",
+                                          "West", "w", "typeprefix",
+                                          "2306", "Selwyn", "Road",
+                                          "localityName","BC","siteId_121","score_100",
+                                          "precision_100", "100",
+                                          "hsdaName", "databc_result",
+                                          "pcnCode", "pcnName", "chsaStatus", "pcnStatus",
+                                          "chsaCode", "chsaName", "lhaName", "haName",
+                                          "relnType", "facTypeCode",
+                                          "Address 5", "Address 6",
                                           "Address 7", "Address 8", "City2",
-                                          "Province2", "Pcode2", "Country2", "N",
+                                          "Province2", "Pcode2", "CANADA", "PRPS", "Valid",
                                           "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
-                                          "Mail City2", "BC2", "Mailing Pcode2", "Mailing Country2",
-                                          "N", 200L, "INACTIVE",
+                                          "Mail City2", "BC2", "Mailing Pcode2", "CANADA",
+                                          "PRPS1","Invalid", "1000000", "VALID",
+                                          createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
+                                          createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
+
+
+        processData.add(createProcessData(2L, 3L, "Y", "RESIDENTAL CARE", "stakeholderid02",
+                                         "IpcId321", "CpnId654", 
+                                         "identifier1_2", "identifier2_2", "identifier3_2",
+                                          "identType1_2", "identType2_2",
+                                          "identType3_2", "mspFacilityNumber2", 
+                                          "pauth_lyson", "catCode_2", "roleTypeCode_2",
+                                          "hdsType_2", "hdsSubType_2", 
+                                          "lysone@0001", "2024-05-27", "3000-12-31", "hdsName2",
+                                          "N", "test@example.com", "www.test.com",
+                                          "456", "1234567", "ext456", 
+                                          "789", "0123456", "fax456", "1234567", 
+                                          "pcdServiceDeliveryType_2",
+                                          "clinicType2",
+                                          "Y", 
+                                          "sourceStatus_2",
+                                          "clinicStatus_Active", 
+                                          "2024-050-28", 
+                                          "9999-12-31",
+                                          "addressUnit_2",
+                                          "Building Name2",
+                                          "civic_addr_id_2",
+                                          "civic_addr_2306 Selwyn Rd",
+                                          "83.2232", "-78.99343",
+                                          "West", "w", "typeprefix",
+                                          "2306", "Selwyn", "Road",
+                                          "localityName","BC","siteId_121","score_100",
+                                          "precision_100", "100",
+                                          "hsdaName", "databc_result",
+                                          "pcnCode", "pcnName", "chsaStatus", "pcnStatus",
+                                          "chsaCode", "chsaName", "lhaName", "haName",
+                                          "relnType", "facTypeCode",
+                                          "Address 5", "Address 6",
+                                          "Address 7", "Address 8", "City2",
+                                          "Province2", "Pcode2", "CANADA", "PRPS", "Valid",
+                                          "Mailing 5", "Mailing 6", "Mailing 7", "Mailing 8",
+                                          "Mail City2", "BC2", "Mailing Pcode2", "CANADA",
+                                          "PRPS2","Invalid", "2000000", "INVALID",
                                           createDate(2024, Calendar.FEBRUARY, 1), "Admin2",
                                           createDate(2024, Calendar.FEBRUARY, 2), "Admin3"));
         return processData;
@@ -61,39 +100,55 @@ public class ProcessDataFactory extends BaseFactory {
     // Create and add three Control objects to the list
 
 
-    private static ProcessData createProcessData(Long id, Long controlTableId, String doNotLoad, String stakeholder,
-                                                 String hdsIpcId, String hdsCpnId, String hdsProviderIdentifier1,
+    private static ProcessData createProcessData(Long id, Long controlTableId, String doNotLoad, String stakeholder, String stakeholderId,
+                                                 String hdsIpcId, String hdsCpnId, 
+                                                 String hdsProviderIdentifier1,
                                                  String hdsProviderIdentifier2, String hdsProviderIdentifier3,
-                                                 String hdsProviderIdentifierType1, String hdsProviderIdentifierType2,
-                                                 String hdsProviderIdentifierType3, String hdsHibcFacilityId,
-                                                 String hdsType, String hdsName, String hdsNameAlias,
+                                                 String hdsProviderIdentifierType1, String hdsProviderIdentifierType2, 
+                                                 String hdsProviderIdentifierType3, String hdsMspFacilityNumber,
+                                                 String hdsPauthId, String hdsCategoryCode, String hdsRoleTypeCode,
+                                                 String hdsType, String hdsSubType, 
+                                                 String hdsUserChid, String hdsCreatedDts, String hdsInvalidatedDts, String hdsName,
                                                  String hdsPreferredNameFlag, String hdsEmail, String hdsWebsite,
-                                                 String hdsBusTelAreaCode, String hdsBusTelNumber,
-                                                 String hdsTelExtension,
-                                                 String hdsCellAreaCode, String hdsCellNumber, String hdsFaxAreaCode,
-                                                 String hdsFaxNumber, String hdsServiceDeliveryType,
+                                                 String hdsBusTelAreaCode, String hdsBusTelNumber, String hdsTelExtension,
+                                                 String hdsCellAreaCode, String hdsCellNumber, String hdsFaxAreaCode, String hdsFaxNumber, 
+                                                 String pcnServiceDeliveryType,
                                                  String pcnClinicType,
-                                                 String pcnPciFlag, String hdsHoursOfOperation, String hdsContactName,
-                                                 String hdsIsForProfitFlag, String sourceStatus, String hdsParentIpcId,
-                                                 String busIpcId, String busCpnId, String busName, String busLegalName,
-                                                 String busPayeeNumber, String busOwnerName, String busOwnerType,
-                                                 String busOwnerTypeOther, String facBuildingName,
-                                                 String facilityHdsDetailsAdditionalInfo,
+                                                 String pcnPciFlag, 
+                                                 String sourceStatus, 
+                                                 String pcnClinicStatus,
+                                                 String hdsEffectiveStartDate, 
+                                                 String hdsEffectiveEndDate,
+                                                 String facAddressUnit,
+                                                 String facBuildingName,
+                                                 String facCivicAddrId, String facCivicAddr,
+                                                 String facLatitude, String facLongitude,
+                                                 String facStreetDirection, String streetDirectionPrefix, String streetTypePrefix,
+                                                 String facCivicNumber, String facStreetName, String facStreetType,
+                                                 String facLocalityName, String facProvinceCode, String facSiteId, String facScore,
+                                                 String facMatchPrecision, String facPrecisionPoints,
+                                                 String facHsdaName, String facDatabcResults,
+                                                 String facPcnCode, String facPcnName, String facChsaStatus, String facPcnStatus,
+                                                 String facChsaCode, String facChsaName, String facLhaName, String facHaName,
+                                                 String facRelnType, String facTypeCode,
                                                  String physicalAddr1, String physicalAddr2, String physicalAddr3,
                                                  String physicalAddr4,
                                                  String physicalCity, String physicalProvince, String physicalPcode,
                                                  String physicalCountry,
-                                                 String physAddrIsPrivate, String mailAddr1, String mailAddr2,
+                                                 String physicalAddrPrpsTypeCd, String physicalAddrValidationStatus,
+                                                 String mailAddr1, String mailAddr2,
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailBc,
-                                                 String mailPcode, String mailCountry, String mailAddrIsPrivate,
-                                                 Long facility_id, String rowstatusCode,
+                                                 String mailPcode, String mailCountry, 
+                                                 String mailAddrPrpsTypeCd, String mailAddrValidationStatus,
+                                                 String plrFacilityId, String rowstatusCode,
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
 
         return ProcessData.builder()
                           .id(id)
                           .controlTableId(controlTableId)
-                          .doNotLoad(doNotLoad)
+                          .doNotLoadFlag(doNotLoad)
                           .stakeholder(stakeholder)
+                          .stakeholderId(stakeholderId)
                           .hdsIpcId(hdsIpcId)
                           .hdsCpnId(hdsCpnId)
                           .hdsProviderIdentifier1(hdsProviderIdentifier1)
@@ -102,10 +157,16 @@ public class ProcessDataFactory extends BaseFactory {
                           .hdsProviderIdentifierType1(hdsProviderIdentifierType1)
                           .hdsProviderIdentifierType2(hdsProviderIdentifierType2)
                           .hdsProviderIdentifierType3(hdsProviderIdentifierType3)
-                          .hdsHibcFacilityId(hdsHibcFacilityId)
+                          .hdsMspFacilityNumber(hdsMspFacilityNumber)
+                          .hdsPauthId(hdsPauthId)
+                          .hdsCategoryCode(hdsCategoryCode)
+                          .hdsRoleTypeCode(hdsRoleTypeCode)
                           .hdsType(hdsType)
+                          .hdsSubType(hdsSubType)
+                          .hdsUserChid(hdsUserChid)
+                          .hdsCreatedDts(hdsCreatedDts)
+                          .hdsInvalidatedDts(hdsInvalidatedDts)
                           .hdsName(hdsName)
-                          .hdsNameAlias(hdsNameAlias)
                           .hdsPreferredNameFlag(hdsPreferredNameFlag)
                           .hdsEmail(hdsEmail)
                           .hdsWebsite(hdsWebsite)
@@ -116,24 +177,43 @@ public class ProcessDataFactory extends BaseFactory {
                           .hdsCellNumber(hdsCellNumber)
                           .hdsFaxAreaCode(hdsFaxAreaCode)
                           .hdsFaxNumber(hdsFaxNumber)
-                          .hdsServiceDeliveryType(hdsServiceDeliveryType)
+                          .pcnServiceDeliveryType(pcnServiceDeliveryType)
                           .pcnClinicType(pcnClinicType)
                           .pcnPciFlag(pcnPciFlag)
-                          .hdsHoursOfOperation(hdsHoursOfOperation)
-                          .hdsContactName(hdsContactName)
-                          .hdsIsForProfitFlag(hdsIsForProfitFlag)
                           .sourceStatus(sourceStatus)
-                          .hdsParentIpcId(hdsParentIpcId)
-                          .busIpcId(busIpcId)
-                          .busCpnId(busCpnId)
-                          .busName(busName)
-                          .busLegalName(busLegalName)
-                          .busPayeeNumber(busPayeeNumber)
-                          .busOwnerName(busOwnerName)
-                          .busOwnerType(busOwnerType)
-                          .busOwnerTypeOther(busOwnerTypeOther)
+                          .pcnClinicStatus(pcnClinicStatus)
+                          .hdsEffectiveStartDate(hdsEffectiveStartDate)
+                          .hdsEffectiveEndDate(hdsEffectiveEndDate)
+                          .facAddressUnit(facAddressUnit)
                           .facBuildingName(facBuildingName)
-                          .facilityHdsDetailsAdditionalInfo(facilityHdsDetailsAdditionalInfo)
+                          .facCivicAddrId(facCivicAddrId)
+                          .facCivicAddr(facCivicAddr)
+                          .facLatitude(facLatitude)
+                          .facLongitude(facLongitude)
+                          .facStreetDirection(facStreetDirection)
+                          .streetDirectionPrefix(streetDirectionPrefix)
+                          .streetTypePrefix(streetTypePrefix)
+                          .facCivicNumber(facCivicNumber)
+                          .facStreetName(facStreetName)
+                          .facStreetType(facStreetType)
+                          .facLocalityName(facLocalityName)
+                          .facProvinceCode(facProvinceCode)
+                          .facSiteId(facSiteId)
+                          .facScore(facScore)
+                          .facMatchPrecision(facMatchPrecision)
+                          .facPrecisionPoints(facPrecisionPoints)
+                          .facHsdaName(facHsdaName)
+                          .facDatabcResults(facDatabcResults)
+                          .facPcnCode(facPcnCode)
+                          .facPcnName(facPcnName)
+                          .facChsaStatus(facChsaStatus)
+                          .facPcnStatus(facPcnStatus)
+                          .facChsaCode(facChsaCode)
+                          .facChsaName(facChsaName)
+                          .facLhaName(facLhaName)
+                          .facHaName(facHaName)
+                          .facRelnType(facRelnType)
+                          .facTypeCode(facTypeCode)
                           .physicalAddr1(physicalAddr1)
                           .physicalAddr2(physicalAddr2)
                           .physicalAddr3(physicalAddr3)
@@ -142,7 +222,8 @@ public class ProcessDataFactory extends BaseFactory {
                           .physicalProvince(physicalProvince)
                           .physicalPcode(physicalPcode)
                           .physicalCountry(physicalCountry)
-                          .physAddrIsPrivate(physAddrIsPrivate)
+                          .physicalAddrPrpsTypeCd(physicalAddrPrpsTypeCd)
+                          .physicalAddrValidationStatus((physicalAddrValidationStatus))
                           .mailAddr1(mailAddr1)
                           .mailAddr2(mailAddr2)
                           .mailAddr3(mailAddr3)
@@ -151,15 +232,14 @@ public class ProcessDataFactory extends BaseFactory {
                           .mailBc(mailBc)
                           .mailPcode(mailPcode)
                           .mailCountry(mailCountry)
-                          .mailAddrIsPrivate(mailAddrIsPrivate)
-                          .facility_id(facility_id)
+                          .mailAddrPrpsTypeCd(mailAddrPrpsTypeCd)
+                          .mailAddrValidationStatus(mailAddrValidationStatus)
+                          .plrFacilityId(plrFacilityId)
                           .rowstatusCode(rowstatusCode)
                           .createdAt(createdAt)
                           .createdBy(createdBy)
                           .updatedAt(updatedAt)
                           .updatedBy(updatedBy)
                           .build();
-
-
     }
 }

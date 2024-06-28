@@ -312,39 +312,35 @@ export default {
 </script>
 <template>
   <div>
-    <div
-      class="mt-6 d-flex flex-md-row justify-space-between flex-sm-column-reverse flex-xs-column-reverse gapRow"
-    >
+    <div class="mt-6 d-flex flex-nowrap">
       <!-- page title -->
-      <div>
+      <div class="page-title mw-50p">
         <h1>{{ fileName }} - View Source Data</h1>
       </div>
 
       <!-- search input -->
-      <div class="submissions-search">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          variant="underlined"
-          label="Search"
-          append-inner-icon="mdi-magnify"
-          single-line
-          class="pb-5"
-        ></v-text-field>
-      </div>
-      <div class="d-flex align-center width-select">
-        <v-select
-          v-model="sortOrder"
-          :items="sortOrderTypes"
-          label="Sort orders"
-          item-title="text"
-          density="compact"
-          solid
-          variant="underlined"
-          @update:modelValue="sortOrderHandle"
-        ></v-select>
-      </div>
-      <div>
+      <v-text-field
+        v-model="search"
+        density="compact"
+        variant="underlined"
+        label="Search"
+        append-inner-icon="mdi-magnify"
+        single-line
+        solid
+        class="header-component"
+      ></v-text-field>
+      <v-select
+        v-model="sortOrder"
+        :items="sortOrderTypes"
+        label="Sort orders"
+        item-title="text"
+        density="compact"
+        solid
+        variant="underlined"
+        class="header-component"
+        @update:modelValue="sortOrderHandle"
+      ></v-select>
+      <div class="header-component">
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
@@ -406,6 +402,9 @@ export default {
             mdi-pencil
           </v-icon>
           <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
+        </template>
+        <template #item.doNotLoadFlag="{ item }">
+          {{ item.raw.doNotLoad }}
         </template>
         <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
