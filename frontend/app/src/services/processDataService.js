@@ -8,7 +8,7 @@ export default {
   async serviceGetProcessDataById(id, filter = {}) {
     const queryString = objectToQueryParams(filter);
     const makeQuery = queryString ? `?${queryString}` : '';
-    return appAxios().get(`processdata/controltable/${id + makeQuery}`);
+    return appAxios().post(`processdata/controltable/${id + makeQuery}`);
   },
   async serviceGetFormFieldsFromProcessData() {
     return appAxios().get(`processdata/getformfields/header`);

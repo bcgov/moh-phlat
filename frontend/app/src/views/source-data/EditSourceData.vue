@@ -1,11 +1,13 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
+import BaseColumnFilter from '../../components/base/BaseColumnFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
 import BasePrompt from '../../components/base/BasePrompt.vue';
 import BaseReportSummary from '../../components/base/BaseReportSummary.vue';
 import { mapActions, mapState } from 'pinia';
 import { useProcessDataStore } from '~/store/processData';
 import { useControlTableDataStore } from '~/store/controltabledata';
+import { useFilterDataStore } from '~/store/filtersDataStore';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
@@ -20,6 +22,7 @@ export default {
     BaseChips,
     BaseReportSummary,
     BasePrompt,
+    BaseColumnFilter,
   },
   props: {
     id: {
@@ -36,7 +39,7 @@ export default {
     dialogDelete: false,
     showColumnsDialog: false,
     deleteSingleItem: {},
-    filterData: [],
+    filterData: {},
     filterIgnore: [],
     filterIgnoreColumns: [
       {
@@ -121,6 +124,7 @@ export default {
       'updatedProcessData',
       'validateAllStatus',
     ]),
+    ...mapState(useFilterDataStore, ['editSourceSelectedFiltersData']),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useStatusDataStore, ['allStatusData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
@@ -184,12 +188,19 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    editSourceSelectedFiltersData: {
+      async handler() {
+        await this.populateInputSource();
+      },
+      deep: true,
+    },
   },
 
   async mounted() {
     this.initialize();
   },
   methods: {
+    ...mapActions(useFilterDataStore, ['updateSelectedFiltersData']),
     ...mapActions(useNotificationStore, ['addNotification']),
     ...mapActions(useProcessDataStore, [
       'fetchProcessDataByControlId',
@@ -265,7 +276,7 @@ export default {
           (header) => header !== 'doNotLoadFlag' && header !== 'doNotLoad'
         )
         .map((h) => {
-          return { title: h, key: h };
+          return { title: h, key: h, filterable: true };
         });
 
       this.headers = [...tableHeaders, ...this.headers].filter(
@@ -274,15 +285,24 @@ export default {
     },
 
     async populateInputSource() {
-      if (this.searchByStatus === null) {
-        await this.fetchProcessDataByControlId(this.id, {});
-      } else {
-        await this.fetchProcessDataByControlId(this.id, {
-          rowStatus: this.searchByStatus,
-        });
-      }
-
+      await this.fetchProcessDataByControlId(
+        this.id,
+        this.editSourceSelectedFiltersData
+      );
       this.inputSrcData = this.processData;
+    },
+
+    async searchByStatusHandle() {
+      this.loading = true;
+      this.searchByStatus
+        ? this.updateSelectedFiltersData(
+            'rowStatus',
+            [this.searchByStatus],
+            'editSrcData'
+          )
+        : this.updateSelectedFiltersData('rowStatus', [], 'editSrcData');
+      await this.populateInputSource();
+      this.loading = false;
     },
 
     async sortOrderHandle() {
@@ -329,7 +349,6 @@ export default {
 
     async updateFilter(data, changeDisplayColumnsPreference = true) {
       this.showColumnsDialog = false;
-      this.filterData = data;
       let preferences = {
         columns: [],
       };
@@ -492,7 +511,7 @@ export default {
         solid
         variant="underlined"
         class="header-component"
-        @update:modelValue="populateInputSource"
+        @update:modelValue="searchByStatusHandle"
       ></v-select>
       <v-select
         v-model="sortOrder"
@@ -573,6 +592,31 @@ export default {
         :sort-by="sortOrderCriteria"
         class="submissions-table"
       >
+        <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
+          <tr>
+            <template v-for="column in columns" :key="column.key">
+              <th class="">
+                <div class="v-data-table-header__content cursor-pointer">
+                  <span class="mr-2" @click="() => toggleSort(column)"
+                    >{{ column.title }}
+                  </span>
+                  <template v-if="isSorted(column)">
+                    <v-icon
+                      :icon="getSortIcon(column)"
+                      @click="() => toggleSort(column)"
+                    ></v-icon>
+                  </template>
+                  <BaseColumnFilter
+                    v-if="column.filterable"
+                    source-type="editSrcData"
+                    :control-id="id"
+                    :column="column"
+                  />
+                </div>
+              </th>
+            </template>
+          </tr>
+        </template>
         <template #item.rowstatusCode="{ item }">
           <div>
             <div
