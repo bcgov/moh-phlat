@@ -1,6 +1,8 @@
 package com.moh.phlat.backend.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
+import com.moh.phlat.backend.service.SourceDataService;
 
 @RestController
 @RequestMapping("/sourcedata")
@@ -47,6 +50,9 @@ public class SourceDataController {
 
 	@Autowired
 	private DbUtilityService dbUtilityService;
+	
+	@Autowired
+	private SourceDataService sourceDataService;
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("view/all")
@@ -76,22 +82,58 @@ public class SourceDataController {
 
 	// get source data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/view/controltableid/{controlTableId}")
+	@PostMapping("/view/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int pageLimit, 
-			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection) {
+			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection, @RequestParam(required =false) List<String> id,
+			@RequestParam(required =false) List<String> doNotLoad, @RequestParam(required =false) List<String> stakeholder,
+			@RequestParam(required =false) List<String> hdsLpcId, @RequestParam(required =false) List<String> hdsCpnId,
+			@RequestParam(required =false) List<String> hdsProviderId1, @RequestParam(required =false) List<String> hdsProviderId2,
+			@RequestParam(required =false) List<String> hdsProviderId3, @RequestParam(required =false) List<String> hdsProviderIdType1,
+			@RequestParam(required =false) List<String> hdsProviderIdType2, @RequestParam(required =false) List<String> hdsProviderIdType3,
+			@RequestParam(required =false) List<String> hdsHibcFacId, @RequestParam(required =false) List<String> hdsType,
+			@RequestParam(required =false) List<String> hdsName, @RequestParam(required =false) List<String> hdsNameAlias,
+			@RequestParam(required =false) List<String> hdsPrefNameFlag, @RequestParam(required =false) List<String> hdsEmail,
+			@RequestParam(required =false) List<String> hdsWebsite, @RequestParam(required =false) List<String> hdsBusTelAreaCode,
+			@RequestParam(required =false) List<String> hdsBusTelNum, @RequestParam(required =false) List<String> hdsTelExt,
+			@RequestParam(required =false) List<String> hdsCellAreaCode, @RequestParam(required =false) List<String> hdsCellNum,
+			@RequestParam(required =false) List<String> hdsFaxAreaCode, @RequestParam(required =false) List<String> hdsFaxNum,
+			@RequestParam(required =false) List<String> hdsServiceDelType, @RequestParam(required =false) List<String> pcnCLinicType,
+			@RequestParam(required =false) List<String> pcnPciFlag, @RequestParam(required =false) List<String> hdsHoursOfOp,
+			@RequestParam(required =false) List<String> hdsContactName, @RequestParam(required =false) List<String> hdsIsForProfitFlag,
+			@RequestParam(required =false) List<String> sourceStatus, @RequestParam(required =false) List<String> hdsParentIpcId,
+			@RequestParam(required =false) List<String> busIpcId, @RequestParam(required =false) List<String> busCpnId,
+			@RequestParam(required =false) List<String> busName, @RequestParam(required =false) List<String> busLegalName,
+			@RequestParam(required =false) List<String> busPayeeNum, @RequestParam(required =false) List<String> busOwnerName,
+			@RequestParam(required =false) List<String> busOwnerType, @RequestParam(required =false) List<String> busOwnerTypeOther,
+			@RequestParam(required =false) List<String> facBuildingName, @RequestParam(required =false) List<String> facHdsDetailAddInfo,
+			@RequestParam(required =false) List<String> physAddr1, @RequestParam(required =false) List<String> physAddr2,
+			@RequestParam(required =false) List<String> physAddr3, @RequestParam(required =false) List<String> physAddr4,
+			@RequestParam(required =false) List<String> physCity, @RequestParam(required =false) List<String> physProv,
+			@RequestParam(required =false) List<String> physPCode, @RequestParam(required =false) List<String> physCountry,
+			@RequestParam(required =false) List<String> physAddrIsPrivate, @RequestParam(required =false) List<String> mailAddr1,
+			@RequestParam(required =false) List<String> mailAddr2, @RequestParam(required =false) List<String> mailAddr3,
+			@RequestParam(required =false) List<String> mailAddr4, @RequestParam(required =false) List<String> mailCity,
+			@RequestParam(required =false) List<String> mailBc, @RequestParam(required =false) List<String> mailPcode,
+			@RequestParam(required =false) List<String> mailCountry, @RequestParam(required =false) List<String> mailAddrIsPriv,
+			@RequestParam(required =false) List<String> messages) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
-		
-		if (controlTableData.isPresent()) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-					sourceDataRepository.findAll(PageRequest.of(page, pageLimit, 
-							Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));
-					//sourceDataRepository.getAllSourceDataByControlTableId(controlTableId)));
-					// return sourceDataRepository.getAllSourceDataByControlTableId(controlTableId);
-		} else {
+
+		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
-					"Source Data not found for control id: " + controlTableId, "[]"));
-		}
+					"Process Data not found for control_id: " + controlTableId, "[]"));
+		}		
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				sourceDataService.findAll(controlTableId, id,
+							doNotLoad, stakeholder, hdsLpcId, hdsCpnId, hdsProviderId1, hdsProviderId2, hdsProviderId3, hdsProviderIdType1, 
+							hdsProviderIdType2, hdsProviderIdType3, hdsHibcFacId, hdsType, hdsName, hdsNameAlias, hdsPrefNameFlag, hdsEmail,
+							hdsWebsite, hdsBusTelAreaCode, hdsBusTelNum, hdsTelExt, hdsCellAreaCode, hdsCellNum, hdsFaxAreaCode, hdsFaxNum,
+							hdsServiceDelType, pcnCLinicType, pcnPciFlag, hdsHoursOfOp, hdsContactName, hdsIsForProfitFlag,
+							sourceStatus, hdsParentIpcId, busIpcId, busCpnId, busName, busLegalName, busPayeeNum, busOwnerName,
+							busOwnerType, busOwnerTypeOther, facBuildingName, facHdsDetailAddInfo, physAddr1, physAddr2,
+							physAddr3, physAddr4, physCity, physProv, physPCode, physCountry, physAddrIsPrivate, mailAddr1,
+							mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv)));
 
 	}
 
@@ -182,4 +224,15 @@ public class SourceDataController {
 				new ResponseMessage("error", 400, "Please upload a non-empty CSV file with the standard format!", 0));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+	@GetMapping("/{controlTableId}/distinct-values/{columnKey}")
+	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
+
+		if(SourceDataService.SOURCE_DATA_COLUMNS.contains(columnKey)) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.getDistinctColumnValues(controlTableId, columnKey)));
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));
+		
+	}
 }
