@@ -17,7 +17,7 @@ public class SpecificationServiceImpl<T> implements SpecificationService {
 	
 	public <T> Specification<T> hasDataWithMessages(Long controlId){
 		return (root, query, builder) -> {
-			root.fetch("messages",JoinType.LEFT);
+			root.join("messages",JoinType.LEFT);
 			return builder.equal(root.get("controlTableId"), controlId);
 		};
 	}

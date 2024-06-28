@@ -75,11 +75,11 @@ public class ProcessDataController {
 
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/view/controltable/{controlTableId}")
+	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
 		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required = true) int page, 
 		@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
-		@RequestParam(required = false) String sortDirection, @PostMap@RequestParam(required =false) List<String> id,
+		@RequestParam(required = false) String sortDirection, @RequestParam(required =false) List<String> id,
 		@RequestParam(required =false) List<String> actions, @RequestParam(required =false) List<String> rowStatusCode,
 		@RequestParam(required =false) List<String> doNotLoad, @RequestParam(required =false) List<String> stakeholder,
 		@RequestParam(required =false) List<String> hdsLpcId, @RequestParam(required =false) List<String> hdsCpnId,
@@ -121,14 +121,8 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		Pageable test = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
-		System.out.println(test.toString());
-		List<ProcessData> processData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, test);
-		/*return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				processData));
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				processDataService.findAll(PageRequest.of(page, pageLimit, 
-						Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));*/
+		Pageable currentPage = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
 				processDataService.getProcessDataWithMessages(
 						controlTableId, rowStatus, id, actions,  rowStatusCode, 
@@ -139,7 +133,7 @@ public class ProcessDataController {
 						sourceStatus, hdsParentIpcId, busIpcId, busCpnId, busName, busLegalName, busPayeeNum, busOwnerName,
 						busOwnerType, busOwnerTypeOther, facBuildingName, facHdsDetailAddInfo, physAddr1, physAddr2,
 						physAddr3, physAddr4, physCity, physProv, physPCode, physCountry, physAddrIsPrivate, mailAddr1,
-						mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv)));
+						mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv,currentPage)));
 	}
 
 	// get specific row by id

@@ -24,15 +24,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     @Override
     public List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, Pageable pageable) {
 
-        /*if (StringUtils.hasText(rowStatus)) {
-            return processDataRepository.getProcessDataWithMessages(controlTableId, rowStatus, pageable);
-        } else {
-            return processDataRepository.getProcessDataWithMessages(controlTableId, pageable);
-        }*/
-
-		return getProcessDataWithMessages(controlId,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+		return getProcessDataWithMessages(controlTableId,rowStatus,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
 				null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-				null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+				null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null, pageable);
 
     }
     
@@ -50,7 +44,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     		List<String> facBuildingName, List<String> facHdsDetailAddInfo, List<String> physAddr1, List<String> physAddr2, List<String> physAddr3,
     		List<String> physAddr4, List<String> physCity, List<String> physProv, List<String> physPCode, List<String> physCountry, 
     		List<String> physAddrIsPrivate, List<String> mailAddr1, List<String> mailAddr2, List<String> mailAddr3, List<String> mailAddr4, 
-    		List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv) {
+    		List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv, Pageable pageable) {
     	
     	Specification<ProcessData> combinedSpecification = specificationService.hasDataWithMessages(controlId);
 
@@ -250,7 +244,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", mailAddrIsPriv);
 		}
 		
-		return processDataRepository.findAll(combinedSpecification);
+		return processDataRepository.findAll(combinedSpecification, pageable);
     }
 
     private static ReportSummary createReportSummaryData(String reportAttributeName, Long reportAttributeValue) {

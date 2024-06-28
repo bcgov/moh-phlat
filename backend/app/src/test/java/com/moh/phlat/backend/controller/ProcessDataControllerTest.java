@@ -139,7 +139,7 @@ public class ProcessDataControllerTest {
         verify(controlRepository, times(1)).findById(anyLong());
         //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),page);
         //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class));
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong());
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),page);
 
     }
 

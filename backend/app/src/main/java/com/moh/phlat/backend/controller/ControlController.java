@@ -1,6 +1,5 @@
 package com.moh.phlat.backend.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +20,8 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.ControlService;
-import com.moh.phlat.backend.service.ProcessDataService;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +43,7 @@ public class ControlController {
 			@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
 			@RequestParam(required = false) String sortDirection) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findAll(PageRequest.of(page, pageLimit, 
+				.body(new ResponseMessage("success", 200, "", controlService.findAll(PageRequest.of(page, pageLimit, 
 						Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));
 	}
 

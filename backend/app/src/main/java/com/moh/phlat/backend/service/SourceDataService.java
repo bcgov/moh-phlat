@@ -2,6 +2,8 @@ package com.moh.phlat.backend.service;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.moh.phlat.backend.model.SourceData;
 
@@ -28,7 +30,7 @@ public interface SourceDataService {
 			List<String> facBuildingName, List<String> facHdsDetailAddInfo, List<String> physAddr1, List<String> physAddr2, List<String> physAddr3,
 			List<String> physAddr4, List<String> physCity, List<String> physProv, List<String> physPCode, List<String> physCountry, 
 			List<String> physAddrIsPrivate, List<String> mailAddr1, List<String> mailAddr2, List<String> mailAddr3, List<String> mailAddr4, 
-			List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv);
+			List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv, Pageable pageable);
 	
 	public List<String> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
 }

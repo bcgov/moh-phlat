@@ -2,9 +2,7 @@ package com.moh.phlat.backend.repository;
 
 import com.moh.phlat.backend.model.ProcessData;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +23,7 @@ public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> 
 
 	long countByControlTableId(Long controlTableId);   
 	
-	public List<ProcessData> findAll(Specification<ProcessData> spec);
+	public List<ProcessData> findAll(Specification<ProcessData> spec, Pageable pageable);
 
 	@Query(value="Select distinct pd.id FROM ProcessData pd WHERE pd.controlTableId = :controlTableId")
 	public List<String> findAllDistinctId(Long controlTableId);

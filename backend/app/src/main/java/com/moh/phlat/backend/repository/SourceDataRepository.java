@@ -15,7 +15,7 @@ import com.moh.phlat.backend.model.SourceData;
 @Repository
 public interface SourceDataRepository extends CrudRepository<SourceData, Long> {
 	public List<SourceData> getAllSourceDataByControlTableId(Long controlTableId);
-	public List<SourceData> findAll(Specification<SourceData> spec);
+	public List<SourceData> findAll(Specification<SourceData> spec, Pageable pageable);
 	
 	@Query(value="Select distinct sd.id FROM SourceData sd WHERE sd.controlTableId = :controlTableId")
 	public List<String> findAllDistinctId(Long controlTableId);

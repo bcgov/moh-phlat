@@ -3,6 +3,7 @@ package com.moh.phlat.backend.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class SourceDataServiceImpl implements SourceDataService {
 			List<String> physAddr4, List<String> physCity, List<String> physProv, List<String> physPCode,
 			List<String> physCountry, List<String> physAddrIsPrivate, List<String> mailAddr1, List<String> mailAddr2,
 			List<String> mailAddr3, List<String> mailAddr4, List<String> mailCity, List<String> mailBc,
-			List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv) {
+			List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv, Pageable pageable) {
 		
 		Specification<SourceData> combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
 
@@ -224,7 +225,7 @@ public class SourceDataServiceImpl implements SourceDataService {
 			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", mailAddrIsPriv);
 		}
 		
-		return sourceDataRepository.findAll(combinedSpecification);
+		return sourceDataRepository.findAll(combinedSpecification, pageable);
 	}
 
 	@Override

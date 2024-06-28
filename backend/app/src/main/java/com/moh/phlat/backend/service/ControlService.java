@@ -2,6 +2,8 @@ package com.moh.phlat.backend.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import com.moh.phlat.backend.model.Control;
 
 public interface ControlService {			
@@ -9,5 +11,5 @@ public interface ControlService {
 	
 	List<Control> findByFileName(String fileName);
 	
-	List<Control> findAll();
+	List<Control> findAll(Pageable pageable);
 }

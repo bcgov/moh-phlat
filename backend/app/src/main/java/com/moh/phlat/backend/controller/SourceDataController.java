@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.http.HttpStatus;
@@ -52,9 +53,6 @@ public class SourceDataController {
 	private FileService fileService;
 
 	@Autowired
-	private DbUtilityService dbUtilityService;
-	
-	@Autowired
 	private SourceDataService sourceDataService;
 
     @Autowired
@@ -88,7 +86,7 @@ public class SourceDataController {
 
 	// get source data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@PostMapping("/view/controltableid/{controlTableId}")
+	@PostMapping("/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int pageLimit, 
 			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection, @RequestParam(required =false) List<String> id,
@@ -129,6 +127,8 @@ public class SourceDataController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}		
+		
+		Pageable currentPage = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
 				sourceDataService.findAll(controlTableId, id,
@@ -139,7 +139,7 @@ public class SourceDataController {
 							sourceStatus, hdsParentIpcId, busIpcId, busCpnId, busName, busLegalName, busPayeeNum, busOwnerName,
 							busOwnerType, busOwnerTypeOther, facBuildingName, facHdsDetailAddInfo, physAddr1, physAddr2,
 							physAddr3, physAddr4, physCity, physProv, physPCode, physCountry, physAddrIsPrivate, mailAddr1,
-							mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv)));
+							mailAddr2, mailAddr3, mailAddr4, mailCity, mailBc, mailPcode, mailCountry, mailAddrIsPriv, currentPage)));
 
 	}
 

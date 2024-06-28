@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public interface ProcessDataService {
-
-    List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, Pageable pageable);
 	
 	public final List<String> PROCESS_DATA_COLUMNS = Arrays.asList("id", "controlTableId", "do_not_load", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
 			"hdsProviderIdentifier2", "hdsProviderIdentifier3", "hdsProviderIdentifierType1", "hdsProviderIdentifierType2", "hdsProviderIdentifierType3", 
@@ -22,10 +20,9 @@ public interface ProcessDataService {
 			"physicalAddr2", "physicalAddr3", "physicalAddr", "physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate",
 			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate");
 
-    //List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus);
     List<ReportSummary> getReportSummary(Long controlTableId);
     
-    List<ProcessData> getProcessDataWithMessages(Long controlId);
+    List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, Pageable pageable);
 	
 	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, List<String> ids, List<String> actions, 
 		List<String> rowStatusCode, List<String> messages, List<String> doNotLoad, List<String> stakeholder, List<String> hdsLpcId, 
@@ -40,7 +37,7 @@ public interface ProcessDataService {
 		List<String> facBuildingName, List<String> facHdsDetailAddInfo, List<String> physAddr1, List<String> physAddr2, List<String> physAddr3,
 		List<String> physAddr4, List<String> physCity, List<String> physProv, List<String> physPCode, List<String> physCountry, 
 		List<String> physAddrIsPrivate, List<String> mailAddr1, List<String> mailAddr2, List<String> mailAddr3, List<String> mailAddr4, 
-		List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv);
+		List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv, Pageable pageable);
 	
 	public List<String> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
 }
