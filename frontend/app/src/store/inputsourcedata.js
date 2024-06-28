@@ -53,7 +53,19 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
     async fetchFormFieldHeaders() {
       try {
         const { data } = await inputSourceDataService.serviceGetFormFields();
-        this.formFieldHeaders = data;
+        if (data.data) {
+          this.formFieldHeaders = data.data.map((heading) => ({
+            ...heading,
+            filterable: true, // set filterable to false
+            sortable: true, // set sortable to false
+          }));
+        } else {
+          const notificationStore = useNotificationStore();
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong. (PJQOD#3956)',
+            type: data.status || 'warning',
+          });
+        }
       } catch (error) {
         console.log('Something went wrong. (DJDSUU#396)', error); // eslint-disable-line no-console
       }
