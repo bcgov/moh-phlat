@@ -25,16 +25,26 @@ resource "aws_cloudfront_origin_access_control" "phlat" {
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_cloudfront_response_headers_policy" "csp_policy" {
-  name = "CSPPolicy"
-  comment = "Sets Content Security Policy header in response"
+resource "aws_cloudfront_response_headers_policy" "response_security_headers" {
+  name    = "Response-Security-Headers"
+  comment = "Defines response headers policy for CloudFront with enhanced security headers"
   security_headers_config {
     content_security_policy {
       #Override with this if the origin is setting the same header.
       override                = true
-      content_security_policy = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/ ; connect-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://phlatapi-test.hlth.gov.bc.ca/ https://phlatapi-dev.hlth.gov.bc.ca/ https://common-logon.hlth.gov.bc.ca/ ; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval' ; base-uri 'self'; form-action 'self'; frame-src 'self' https://common-logon-test.hlth.gov.bc.ca/ https://common-logon-dev.hlth.gov.bc.ca/  https://common-logon.hlth.gov.bc.ca/"
+      content_security_policy = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/"
     }
   }
+
+  custom_headers_config {
+    items {
+      header = "Permissions-Policy"
+      # Restricts access to geolocation, microphone, and camera features.
+      value    = "geolocation=(), microphone=(), camera=()"
+      override = true
+    }
+  }
+
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
@@ -63,7 +73,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     default_ttl = 3600
     max_ttl     = 86400
     # associate CSP header policy
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.csp_policy.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_security_headers.id
   }
 
   ordered_cache_behavior {
@@ -75,7 +85,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cache_policy_id        = data.aws_cloudfront_cache_policy.Managed-CachingOptimized.id
     compress               = true
     # associate CSP header policy
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.csp_policy.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_security_headers.id
   }
 
   price_class = "PriceClass_100"
