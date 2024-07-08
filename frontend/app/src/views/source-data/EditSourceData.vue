@@ -49,9 +49,6 @@ export default {
         key: 'actions',
       },
       {
-        key: 'messages',
-      },
-      {
         key: 'rowstatusCode',
       },
     ],
