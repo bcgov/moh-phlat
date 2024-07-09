@@ -4,10 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.csv.CSVFormat;
@@ -21,12 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.moh.phlat.backend.repository.SourceDataRepository;
-import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.SourceData;
+import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.repository.SourceDataRepository;
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -44,7 +43,13 @@ public class FileServiceImpl implements FileService {
 	private ProcessDataRepository processDataRepository;	
 
 	@Autowired
-	private DbUtilityService dbUtilityService;
+	private ProcessDataService processDataService;
+
+	@Autowired
+	private ControlService controlService;
+
+	@Autowired
+	private TableColumnInfoService tableColumnInfoService;
     
 	@Override
 	public boolean hasCsvFormat(MultipartFile file, String tableName) {
@@ -55,7 +60,7 @@ public class FileServiceImpl implements FileService {
 		}
 
 		// Get expected header line from DB
-		String expectedHeaderLine = dbUtilityService.getHeadersByTableNameSortedById(tableName.toUpperCase()).trim();
+		String expectedHeaderLine = tableColumnInfoService.getHeadersByTableNameSortedById(tableName.toUpperCase()).trim();
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 			// Read the header line from the file
@@ -111,9 +116,9 @@ public class FileServiceImpl implements FileService {
 				copyInputSourceDataToProcessData(controlTableId,authenticateUserId);
 				
 
-				dbUtilityService.setControlStatus(controlTableId, RowStatusService.PRE_VALIDATION_IN_PROGRESS,	authenticateUserId);
+				controlService.setControlStatus(controlTableId, RowStatusService.PRE_VALIDATION_IN_PROGRESS,	authenticateUserId);
 				// asynchronous operation
-				dbUtilityService.validateProcessDataByControlTableId(controlTableId,authenticateUserId);
+				processDataService.validateProcessDataByControlTableId(controlTableId,authenticateUserId);
 				
 			}
 			logger.info("Loading of target table completed successfully");

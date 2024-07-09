@@ -26,7 +26,7 @@ import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
-import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.ControlService;
 import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.RowStatusService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
@@ -48,11 +48,14 @@ public class ProcessDataController {
 	@Autowired
 	private ProcessDataRepository processDataRepository;
 
-	@Autowired
-	private DbUtilityService dbUtilityService;
+	// @Autowired
+	// private DbUtilityService dbUtilityService;
 
 	@Autowired
 	private ProcessDataService processDataService;
+
+	@Autowired
+	private ControlService controlService;
 
     @Autowired
     private TableColumnInfoService tableColumnInfoService;	
@@ -414,17 +417,17 @@ public class ProcessDataController {
 			if (controlTable.isPresent()) {
 				Control control = controlTable.get();
 				
-				dbUtilityService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_IN_PROGRESS,authenticatedUserId );
+				controlService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_IN_PROGRESS,authenticatedUserId );
 				
 				if ((!processData.getDoNotLoadFlag().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals(RowStatusService.COMPLETED))) {
 					logger.info("validate process data with id: {}", id);
 				    // run asyn process
-					dbUtilityService.validateProcessData(control, processData,authenticatedUserId);
+					processDataService.validateProcessData(control, processData,authenticatedUserId);
 				} else {
 					logger.info("skip validating process data with id: {}", id);
 				}
 
-				dbUtilityService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_COMPLETED,
+				controlService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_COMPLETED,
 												  authenticatedUserId);
 				
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
@@ -447,10 +450,10 @@ public class ProcessDataController {
 			
 		}
 		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
-		dbUtilityService.setControlStatus(id, RowStatusService.PRE_VALIDATION_COMPLETED,
+		controlService.setControlStatus(id, RowStatusService.PRE_VALIDATION_COMPLETED,
 										  authenticatedUserId);
 		// asynchronous operation
-		dbUtilityService.validateProcessDataByControlTableId(id,authenticatedUserId);
+		processDataService.validateProcessDataByControlTableId(id,authenticatedUserId);
 
 		Optional<Control> control = controlRepository.findById(id);
 		
@@ -476,10 +479,10 @@ public class ProcessDataController {
 		}
 		
 		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
-		dbUtilityService.setControlStatus(controlTableId, RowStatusService.PLR_LOAD_IN_PROGRESS,
+		controlService.setControlStatus(controlTableId, RowStatusService.PLR_LOAD_IN_PROGRESS,
 										  authenticatedUserId);
 		// asynchronous operation
-		dbUtilityService.loadProcessDataToPlr(controlTableId,authenticatedUserId);
+		processDataService.loadProcessDataToPlr(controlTableId,authenticatedUserId);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!", controlTable));
 	}

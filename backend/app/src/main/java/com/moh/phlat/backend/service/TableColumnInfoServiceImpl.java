@@ -37,4 +37,35 @@ public class TableColumnInfoServiceImpl implements TableColumnInfoService {
 		}
         return items;
     }
+
+    @Override
+	public String getHeadersByTableNameSortedById(String tableName) {
+		String headerName = "";
+		String retResult = "";
+		Integer i = 0;
+
+
+		List<TableColumnInfo> tableColumnInfo = tableColumnInfoRepository.findByTableNameOrderByIdAsc(tableName);
+
+		List<String> listHeaderName = new ArrayList<>();
+
+		for (TableColumnInfo row : tableColumnInfo) {
+			headerName = row.getHeaderName();
+			if (!headerName.isEmpty()) {
+				i = i + 1;
+				if (i == 1) {
+					retResult = retResult + headerName;
+				} else {
+					retResult = retResult + "," + headerName;
+				}
+				listHeaderName.add(row.getHeaderName());
+			}
+		}
+
+		return retResult;
+
+	}
+
+
+
 }

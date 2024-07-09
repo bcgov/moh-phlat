@@ -25,7 +25,6 @@ import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
-import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
 import com.moh.phlat.backend.service.dto.ColumnDisplayName;
@@ -44,9 +43,6 @@ public class SourceDataController {
 
 	@Autowired
 	private FileService fileService;
-
-	@Autowired
-	private DbUtilityService dbUtilityService;
 
     @Autowired
     private TableColumnInfoService tableColumnInfoService;	

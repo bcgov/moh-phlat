@@ -34,7 +34,7 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.ControlService;
 import com.moh.phlat.backend.service.ProcessDataService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
 import com.moh.phlat.backend.service.dto.ColumnDisplayName;
@@ -65,7 +65,7 @@ public class ProcessDataControllerTest {
     private ProcessDataService processDataService;
 
     @MockBean
-    private DbUtilityService dbUtilityService;
+    private ControlService controlService;
 
     @MockBean
     private TableColumnInfoService tableColumnInfoService;	
@@ -223,8 +223,8 @@ public class ProcessDataControllerTest {
 
         when(processDataRepository.findById(anyLong())).thenReturn(Optional.of(processDataList.get(0)));
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        doNothing().when(dbUtilityService).setControlStatus(anyLong(), anyString(), anyString());
-        doNothing().when(dbUtilityService)
+        doNothing().when(controlService).setControlStatus(anyLong(), anyString(), anyString());
+        doNothing().when(processDataService)
                    .validateProcessData(Mockito.any(Control.class), Mockito.any(ProcessData.class), anyString());
 
 
@@ -248,8 +248,8 @@ public class ProcessDataControllerTest {
         //check if mocked methods were called
         verify(processDataRepository, times(1)).findById(anyLong());
         verify(controlRepository, times(2)).findById(anyLong());
-        verify(dbUtilityService, times(2)).setControlStatus(anyLong(), anyString(), anyString());
-        verify(dbUtilityService, times(1)).validateProcessData(Mockito.any(Control.class),
+        verify(controlService, times(2)).setControlStatus(anyLong(), anyString(), anyString());
+        verify(processDataService, times(1)).validateProcessData(Mockito.any(Control.class),
                                                                Mockito.any(ProcessData.class), anyString());
 
     }
@@ -259,8 +259,8 @@ public class ProcessDataControllerTest {
     public void testValidateAllProcessData() throws Exception {
 
         when(processDataRepository.getAllProcessDataByControlTableId(anyLong())).thenReturn(processDataList);
-        doNothing().when(dbUtilityService).setControlStatus(anyLong(), anyString(), anyString());
-        doNothing().when(dbUtilityService).validateProcessDataByControlTableId(anyLong(), anyString());
+        doNothing().when(controlService).setControlStatus(anyLong(), anyString(), anyString());
+        doNothing().when(processDataService).validateProcessDataByControlTableId(anyLong(), anyString());
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
 
         // Perform Put request and validate response
@@ -283,8 +283,8 @@ public class ProcessDataControllerTest {
         //check if mocked methods were called
         verify(processDataRepository, times(1)).getAllProcessDataByControlTableId(anyLong());
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(dbUtilityService, times(1)).setControlStatus(anyLong(), anyString(), anyString());
-        verify(dbUtilityService, times(1)).validateProcessDataByControlTableId(anyLong(), anyString());
+        verify(controlService, times(1)).setControlStatus(anyLong(), anyString(), anyString());
+        verify(processDataService, times(1)).validateProcessDataByControlTableId(anyLong(), anyString());
     }
 
 
@@ -293,8 +293,8 @@ public class ProcessDataControllerTest {
     public void testPlrLoad() throws Exception {
 
         when(processDataRepository.getAllProcessDataByControlTableId(anyLong())).thenReturn(processDataList);
-        doNothing().when(dbUtilityService).setControlStatus(anyLong(), anyString(), anyString());
-        doNothing().when(dbUtilityService).loadProcessDataToPlr(anyLong(), anyString());
+        doNothing().when(controlService).setControlStatus(anyLong(), anyString(), anyString());
+        doNothing().when(processDataService).loadProcessDataToPlr(anyLong(), anyString());
         Control control = controls.get(0);
         //logic in the controller needs approved control
         control.setStatusCode("APPROVED");
@@ -320,8 +320,8 @@ public class ProcessDataControllerTest {
         //check if mocked methods were called
         verify(processDataRepository, times(1)).getAllProcessDataByControlTableId(anyLong());
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(dbUtilityService, times(1)).setControlStatus(anyLong(), anyString(), anyString());
-        verify(dbUtilityService, times(1)).loadProcessDataToPlr(anyLong(), anyString());
+        verify(controlService, times(1)).setControlStatus(anyLong(), anyString(), anyString());
+        verify(processDataService, times(1)).loadProcessDataToPlr(anyLong(), anyString());
     }
 
 

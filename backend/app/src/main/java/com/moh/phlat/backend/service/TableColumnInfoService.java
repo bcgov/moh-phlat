@@ -8,5 +8,6 @@ public interface TableColumnInfoService {
     String PROCESS_DATA = "PROCESS_DATA";
     String SOURCE_DATA = "SOURCE_DATA";
 
+	public String getHeadersByTableNameSortedById(String tableName);
     List<ColumnDisplayName> getColumnDisplayNames(String tableName);
 }
