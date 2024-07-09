@@ -10,6 +10,10 @@ import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.RowStatusService;
 
+import com.moh.phlat.backend.esb.boundary.PlrEsbBoundary;
+import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
+import com.moh.phlat.backend.esb.json.PlrResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Autowired
 	private ProcessDataRepository processDataRepository;
+	
+	@Autowired
+	private PlrEsbBoundary esbBoundary;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -202,17 +209,24 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
 
-			for (ProcessData rec : processDataList) {
-				// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
-				if (!"Y".equals(rec.getDoNotLoadFlag()) && RowStatusService.VALID.equals(rec.getRowstatusCode())) {
-					logger.info("loading process data with id: {} to PLR.", rec.getId());
+			if (esbBoundary.isReadyToConnect()) {
+				for (ProcessData rec : processDataList) {
+					// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
+					if (!"Y".equals(rec.getDoNotLoadFlag()) && RowStatusService.VALID.equals(rec.getRowstatusCode())) {
+						logger.info("loading process data with id: {} to PLR.", rec.getId());
 
-					// TO-DO call to PLR via ESB here
-					// loadPlrViaEsb(control, s);
+						List<PlrResponse> results = esbBoundary.loadPlrViaEsb(control, rec);
+						for (PlrResponse result : results) {
+							// Individual result logging and status tracking goes here
+						}
+					}
 				}
+				setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
+				logger.info("PLR_LOAD COMPLETED");
+			} else {
+				setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
+				logger.error("PLR_LOAD FAILED TO START");
 			}
-			setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
-			logger.info("PLR_LOAD COMPLETED");
 		}
 	}	
 }
