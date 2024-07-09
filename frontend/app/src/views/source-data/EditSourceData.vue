@@ -49,9 +49,6 @@ export default {
         key: 'actions',
       },
       {
-        key: 'messages',
-      },
-      {
         key: 'rowstatusCode',
       },
     ],
@@ -256,17 +253,13 @@ export default {
         this.onlyShowColumns = this.displayColumnsPreferenceData;
       }
 
-      const tableHeaders = this.formFieldHeaders
-        .filter(
-          /**
-           * Removing this headers from the list just as a requirement from business for now,
-           * on a later stage this should be removed by backend BCMOHAD-23110/BCMOHAD-23454
-           */
-          (header) => header !== 'doNotLoadFlag' && header !== 'doNotLoad'
-        )
-        .map((h) => {
-          return { title: h, key: h };
-        });
+      const tableHeaders = this.formFieldHeaders.filter(
+        /**
+         * Removing this headers from the list just as a requirement from business for now,
+         * on a later stage this should be removed by backend BCMOHAD-23110/BCMOHAD-23454
+         */
+        (header) => header !== 'doNotLoadFlag' && header !== 'doNotLoad'
+      );
 
       this.headers = [...tableHeaders, ...this.headers].filter(
         ({ key }) => key !== 'controlTableId'
