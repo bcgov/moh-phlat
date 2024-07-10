@@ -9,7 +9,7 @@ import com.moh.phlat.backend.model.SourceData;
 
 public interface SourceDataService {
 	
-	public final List<String> SOURCE_DATA_COLUMNS = Arrays.asList("id", "control_id", "doNotLoadFlag", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
+	List<String> SOURCE_DATA_COLUMNS = Arrays.asList("id", "control_id", "doNotLoadFlag", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
 			"hdsProviderIdentifier2", "hdsProviderIdentifier3", "hdsProviderIdentifierType1", "hdsProviderIdentifierType2", "hdsProviderIdentifierType3", "hdsHibcFacilityId",
 			"hdsType", "hdsName", "hdsNameAlias", "hdsPreferredNameFlag", "hdsEmail", "hdsWebsite", "hdsBusTelAreaCode", "hdsBusTelNumber", "hdsTelExtension", 
 			"hdsCellAreaCode", "hdsCellNumber", "hdsFaxAreaCode", "hdsFaxNumber", "hdsServiceDeliveryType", "pcnClinicType", "pcnPciFlag", "hdsHoursOfOperation",

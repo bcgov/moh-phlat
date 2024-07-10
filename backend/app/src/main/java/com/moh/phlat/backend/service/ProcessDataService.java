@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public interface ProcessDataService {
 	
-	public final List<String> PROCESS_DATA_COLUMNS = Arrays.asList("id", "controlTableId", "do_not_load", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
+	List<String> PROCESS_DATA_COLUMNS = Arrays.asList("id", "controlTableId", "do_not_load", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
 			"hdsProviderIdentifier2", "hdsProviderIdentifier3", "hdsProviderIdentifierType1", "hdsProviderIdentifierType2", "hdsProviderIdentifierType3", 
 			"hdsMspFacilityNumber", "hdsType", "hdsName", "hds_name_alias", "hdsPreferredNameFlag", "hdsEmail", "hdsWebsite", "hdsBusTelAreaCode", "hdsBusTelNumber",
 			"hdsTelExtension", "hdsCellAreaCode", "hdsCellNumber", "hdsFaxAreaCode", "hdsFaxNumber", "pcnServiceDeliveryType", "pcnClinicType", "pcnPciFlag",
@@ -20,10 +20,7 @@ public interface ProcessDataService {
 			"physicalAddr2", "physicalAddr3", "physicalAddr", "physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate",
 			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate");
 
-    //List<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus);
     List<ReportSummary> getReportSummary(Long controlTableId);
-    
-    List<ProcessData> getProcessDataWithMessages(Long controlId);
 	
 	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ParamProcess pProcess);
 	

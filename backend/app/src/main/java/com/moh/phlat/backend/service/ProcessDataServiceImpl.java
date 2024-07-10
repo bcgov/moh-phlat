@@ -30,13 +30,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 	
 	@Autowired
 	EntityManager entityManager;
-
-    @Override
-	public List<ProcessData> getProcessDataWithMessages(Long controlId) {
-
-		return getProcessDataWithMessages(controlId,null,new ParamProcess());
-
-    }
     
     @Override
     public List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ParamProcess pProcess) {
