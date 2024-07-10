@@ -8,6 +8,8 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.SourceData;
 
+import jakarta.persistence.TypedQuery;
+
 public interface SpecificationService {
 	
 	public <T> Specification<T> hasDataWithMessages(Long controlId);

@@ -3,9 +3,16 @@ package com.moh.phlat.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import com.moh.phlat.backend.service.dto.ReportSummary;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import com.moh.phlat.backend.service.RowStatusService;
 import com.moh.phlat.backend.model.ParamProcess;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,6 +27,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     
 	@Autowired
 	private SpecificationService specificationService;
+	
+	@Autowired
+	EntityManager entityManager;
 
     @Override
 	public List<ProcessData> getProcessDataWithMessages(Long controlId) {
@@ -308,152 +318,17 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 
 	@Override
 	public List<String> getDistinctColumnValues(Long controlTableId, String columnKey) {
-		// Can't use specification to get a list of strings. 
-		// https://stackoverflow.com/questions/68710246/distinct-on-specific-column-using-jpa-specification
+
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<String> query = cb.createQuery(String.class);
+        
+        Root<ProcessData> root = query.from(ProcessData.class);
+	        
+	    query.select(root.get(columnKey)).distinct(true);
+	    query.where(cb.equal(root.get("controlTableId"), controlTableId));
+	    query.orderBy(cb.asc(root.get(columnKey)));
+        
+        return entityManager.createQuery(query).getResultList();
 		
-		switch(columnKey) {
-			case "id":
-				return processDataRepository.findAllDistinctId(controlTableId);
-			case "controlTableId":
-				return processDataRepository.findAllDistinctControlId(controlTableId);
-			case "do_not_load":
-				return processDataRepository.findAllDistinctDoNotLoad(controlTableId);
-			case "stakeholder":
-				return processDataRepository.findAllDistinctStakeholder(controlTableId);
-			case "hdsIpcId":
-				return processDataRepository.findAllDistinctHdsIpcId(controlTableId);
-			case "hdsCpnId":
-				return processDataRepository.findAllDistinctHdsCpnId(controlTableId);
-			case "hdsProviderIdentifier1":
-				return processDataRepository.findAllDistinctHdsProviderIdentifier1(controlTableId);
-			case "hdsProviderIdentifier2":
-				return processDataRepository.findAllDistinctHdsProviderIdentifier2(controlTableId);
-			case "hdsProviderIdentifier3":
-				return processDataRepository.findAllDistinctHdsProviderIdentifier3(controlTableId);
-			case "hdsProviderIdentifierType1":
-				return processDataRepository.findAllDistinctHdsProviderIdentifierType1(controlTableId);
-			case "hdsProviderIdentifierType2":
-				return processDataRepository.findAllDistinctHdsProviderIdentifierType2(controlTableId);
-			case "hdsProviderIdentifierType3":
-				return processDataRepository.findAllDistinctHdsProviderIdentifierType3(controlTableId);
-			case "hdsMspFacilityNumber":
-				return processDataRepository.findAllDistinctHdsHibcFacilityId(controlTableId);
-			case "hdsType":
-				return processDataRepository.findAllDistinctHdsType(controlTableId);
-			case "hdsName":
-				return processDataRepository.findAllDistinctHdsName(controlTableId);
-			case "hds_name_alias":
-				//return processDataRepository.findAllDistinctHdsNameAlias(controlTableId);
-				break;
-			case "hdsPreferredNameFlag":
-				return processDataRepository.findAllDistinctHdsPreferredNameFlag(controlTableId);
-			case "hdsEmail":
-				return processDataRepository.findAllDistinctHdsEmail(controlTableId);
-			case "hdsWebsite":
-				return processDataRepository.findAllDistinctHdsWebsite(controlTableId);
-			case "hdsBusTelAreaCode":
-				return processDataRepository.findAllDistinctHdsBusTelAreaCode(controlTableId);
-			case "hdsBusTelNumber":
-				return processDataRepository.findAllDistinctHdsBusTelNumber(controlTableId);
-			case "hdsTelExtension":
-				return processDataRepository.findAllDistinctHdsTelExtension(controlTableId);
-			case "hdsCellAreaCode":
-				return processDataRepository.findAllDistinctHdsCellAreaCode(controlTableId);
-			case "hdsCellNumber":
-				return processDataRepository.findAllDistinctHdsCellNumber(controlTableId);
-			case "hdsFaxAreaCode":
-				return processDataRepository.findAllDistinctHdsFaxAreaCode(controlTableId);
-			case "hdsFaxNumber":
-				return processDataRepository.findAllDistinctHdsFaxNumber(controlTableId);
-			case "pcnServiceDeliveryType":
-				return processDataRepository.findAllDistinctHdsServiceDeliveryType(controlTableId);
-			case "pcnClinicType":
-				return processDataRepository.findAllDistinctPcnClinicType(controlTableId);
-			case "pcnPciFlag":
-				return processDataRepository.findAllDistinctPcnPciFlag(controlTableId);
-			case "hdsHoursOfOperation":
-				//return processDataRepository.findAllDistinctHdsHoursOfOperation(controlTableId);
-				break;
-			case "hdsContactName":
-				//return processDataRepository.findAllDistinctHdsContactName(controlTableId);
-				break;
-			case "hdsIsForProfitFlag":
-				//return processDataRepository.findAllDistinctHdsIsForProfitFlag(controlTableId);
-				break;
-			case "sourceStatus":
-				return processDataRepository.findAllDistinctSourceStatus(controlTableId);
-			case "hdsParentIpcId":
-				//return processDataRepository.findAllDistinctHdsParentIpcId(controlTableId);
-				break;
-			case "busIpcId":
-				//return processDataRepository.findAllDistinctBusIpcId(controlTableId);
-				break;
-			case "busCpnId":
-				//return processDataRepository.findAllDistinctBusCpnId(controlTableId);
-				break;
-			case "busName":
-				//return processDataRepository.findAllDistinctBusName(controlTableId);
-				break;
-			case "busLegalName":
-				//return processDataRepository.findAllDistinctBusLegalName(controlTableId);
-				break;
-			case "busPayeeNumber":
-				//return processDataRepository.findAllDistinctBusPayeeNumber(controlTableId);
-				break;
-			case "busOwnerName":
-				//return processDataRepository.findAllDistinctBusOwnerName(controlTableId);
-				break;
-			case "busOwnerType":
-				//return processDataRepository.findAllDistinctBusOwnerType(controlTableId);
-				break;
-			case "busOwnerTypeOther":
-				//return processDataRepository.findAllDistinctBusOwnerTypeOther(controlTableId);
-				break;
-			case "facBuildingName":
-				return processDataRepository.findAllDistinctFacBuildingName(controlTableId);
-			case "facilityHdsDetailsAdditionalInfo":
-				//return processDataRepository.findAllDistinctFacilityHdsDetailsAdditionalInfo(controlTableId);
-				break;
-			case "physicalAddr1":
-				return processDataRepository.findAllDistinctPhysicalAddr1(controlTableId);
-			case "physicalAddr2":
-				return processDataRepository.findAllDistinctPhysicalAddr2(controlTableId);
-			case "physicalAddr3":
-				return processDataRepository.findAllDistinctPhysicalAddr3(controlTableId);
-			case "physicalAddr":
-				return processDataRepository.findAllDistinctPhysicalAddr4(controlTableId);
-			case "physicalCity":
-				return processDataRepository.findAllDistinctPhysicalCity(controlTableId);
-			case "physicalProvince":
-				return processDataRepository.findAllDistinctPhysicalProvince(controlTableId);
-			case "physicalPcode":
-				return processDataRepository.findAllDistinctPhysicalPcode(controlTableId);
-			case "physicalCountry":
-				return processDataRepository.findAllDistinctPhysicalCountry(controlTableId);
-			case "physAddrIsPrivate":
-				//return processDataRepository.findAllDistinctPhysAddrIsPrivate(controlTableId);
-				break;
-			case "mailAddr1":
-				return processDataRepository.findAllDistinctMailAddr1(controlTableId);
-			case "mailAddr2":
-				return processDataRepository.findAllDistinctMailAddr2(controlTableId);
-			case "mailAddr3":
-				return processDataRepository.findAllDistinctMailAddr3(controlTableId);
-			case "mailAddr4":
-				return processDataRepository.findAllDistinctMailAddr4(controlTableId);
-			case "mailCity":
-				return processDataRepository.findAllDistinctMailCity(controlTableId);
-			case "mailBc":
-				return processDataRepository.findAllDistinctMailBc(controlTableId);
-			case "mailPcode":
-				return processDataRepository.findAllDistinctMailPcode(controlTableId);
-			case "mailCountry":
-				return processDataRepository.findAllDistinctMailCountry(controlTableId);
-			case "mailAddrIsPrivate":
-				//return processDataRepository.findAllDistinctMailAddrIsPrivate(controlTableId);
-				break;
-		}	
-			
-		return null;
 	}
 }
