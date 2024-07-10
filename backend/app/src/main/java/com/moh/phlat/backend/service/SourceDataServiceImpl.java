@@ -21,7 +21,7 @@ public class SourceDataServiceImpl implements SourceDataService {
 	private SpecificationService specificationService;
 	
 	@Override
-	public List<SourceData> findAll(Long controlId, ParamSource pSource) {
+	public List<SourceData> getSourceData(Long controlId, ParamSource pSource) {
 		
 		Specification<SourceData> combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
 

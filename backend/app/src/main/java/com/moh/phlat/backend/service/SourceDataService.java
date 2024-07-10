@@ -18,7 +18,7 @@ public interface SourceDataService {
 			"physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate", "mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "nailCity",
 			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate");
 
-	public List<SourceData> findAll(Long controlId,  ParamSource pSource);
+	public List<SourceData> getSourceData(Long controlId,  ParamSource pSource);
 	
 	public List<String> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
 }

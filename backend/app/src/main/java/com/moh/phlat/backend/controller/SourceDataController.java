@@ -97,7 +97,7 @@ public class SourceDataController {
 		}		
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				sourceDataService.findAll(controlTableId, pSource)));
+				sourceDataService.getSourceData(controlTableId, pSource)));
 
 	}
 
