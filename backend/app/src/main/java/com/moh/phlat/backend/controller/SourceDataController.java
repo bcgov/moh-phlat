@@ -93,7 +93,7 @@ public class SourceDataController {
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
-					"Process Data not found for control_id: " + controlTableId, "[]"));
+					"Source Data not found for control_id: " + controlTableId, "[]"));
 		}		
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
