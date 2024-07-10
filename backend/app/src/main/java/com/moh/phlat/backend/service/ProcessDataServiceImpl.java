@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.moh.phlat.backend.service.dto.ReportSummary;
 import com.moh.phlat.backend.service.RowStatusService;
+import com.moh.phlat.backend.model.ParamProcess;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,224 +24,209 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     @Override
 	public List<ProcessData> getProcessDataWithMessages(Long controlId) {
 
-		return getProcessDataWithMessages(controlId,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-				null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-				null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+		return getProcessDataWithMessages(controlId,null,new ParamProcess());
 
     }
     
     @Override
-    public List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, List<String> ids, List<String> actions, 
-    		List<String> rowStatusCode, List<String> messages, List<String> doNotLoad, List<String> stakeholder, List<String> hdsLpcId, 
-    		List<String> hdsCpnId, List<String> hdsProviderId1, List<String> hdsProviderId2, List<String> hdsProviderId3, 
-    		List<String> hdsProviderIdType1, List<String> hdsProviderIdType2, List<String> hdsProviderIdType3, List<String> hdsHibcFacId, 
-    		List<String> hdsType, List<String> hdsName, List<String> hdsNameAlias, List<String> hdsPrefNameFlag, List<String> hdsEmail, 
-    		List<String> hdsWebsite, List<String> hdsBusTelAreaCode, List<String> hdsBusTelNum, List<String> hdsTelExt, List<String> hdsCellAreaCode,
-    		List<String> hdsCellNum, List<String> hdsFaxAreaCode, List<String> hdsFaxNum, List<String> hdsServiceDelType, List<String> pcnCLinicType,
-    		List<String> pcnPciFlag, List<String> hdsHoursOfOp, List<String> hdsContactName, List<String> hdsIsForProfitFlag, List<String> sourceStatus,
-    		List<String> hdsParentIpcId, List<String> busIpcId, List<String> busCpnId, List<String> busName, List<String> busLegalName, 
-    		List<String> busPayeeNum, List<String> busOwnerName, List<String> busOwnerType, List<String> busOwnerTypeOther, 
-    		List<String> facBuildingName, List<String> facHdsDetailAddInfo, List<String> physAddr1, List<String> physAddr2, List<String> physAddr3,
-    		List<String> physAddr4, List<String> physCity, List<String> physProv, List<String> physPCode, List<String> physCountry, 
-    		List<String> physAddrIsPrivate, List<String> mailAddr1, List<String> mailAddr2, List<String> mailAddr3, List<String> mailAddr4, 
-    		List<String> mailCity, List<String> mailBc, List<String> mailPcode, List<String> mailCountry, List<String> mailAddrIsPriv) {
+    public List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ParamProcess pProcess) {
     	
     	Specification<ProcessData> combinedSpecification = specificationService.hasDataWithMessages(controlId);
 
 		if(reqRowStatusCode != null) {
 			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", reqRowStatusCode);
 		}
-		if(ids != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", ids);
+		if(pProcess.getId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", pProcess.getId());
 		}
-		if(actions != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "actions", actions);
+		if(pProcess.getActions() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "actions", pProcess.getActions());
 		}
-		if(rowStatusCode != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowStatusCode", rowStatusCode);
+		if(pProcess.getRowStatusCode() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowStatusCode", pProcess.getRowStatusCode());
 		}
-		if(messages != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "messages", messages);
+		if(pProcess.getMessages() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "messages", pProcess.getMessages());
 		}
-		if(doNotLoad != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "doNotLoad", doNotLoad);
+		if(pProcess.getDoNotLoad() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "doNotLoad", pProcess.getDoNotLoad());
 		}
-		if(stakeholder != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "stakeholder", stakeholder);
+		if(pProcess.getStakeholder() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "stakeholder", pProcess.getStakeholder());
 		}
-		if(hdsLpcId != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsLpcId", hdsLpcId);
+		if(pProcess.getHdsLpcId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsLpcId", pProcess.getHdsLpcId());
 		}
-		if(hdsCpnId != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCpnId", hdsCpnId);
+		if(pProcess.getHdsCpnId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCpnId", pProcess.getHdsCpnId());
 		}
-		if(hdsProviderId1 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId1", hdsProviderId1);
+		if(pProcess.getHdsProviderId1() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId1", pProcess.getHdsProviderId1());
 		}
-		if(hdsProviderId2 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId2", hdsProviderId2);
+		if(pProcess.getHdsProviderId2() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId2", pProcess.getHdsProviderId2());
 		}
-		if(hdsProviderId3 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId3", hdsProviderId3);
+		if(pProcess.getHdsProviderId3() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderId3", pProcess.getHdsProviderId3());
 		}
-		if(hdsProviderIdType1 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType1", hdsProviderIdType1);
+		if(pProcess.getHdsProviderIdType1() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType1", pProcess.getHdsProviderIdType1());
 		}
-		if(hdsProviderIdType2 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType2", hdsProviderIdType2);
+		if(pProcess.getHdsProviderIdType2() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType2", pProcess.getHdsProviderIdType2());
 		}
-		if(hdsProviderIdType3 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType3", hdsProviderIdType3);
+		if(pProcess.getHdsProviderIdType3() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdType3", pProcess.getHdsProviderIdType3());
 		}
-		if(hdsHibcFacId != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHibcFacId", hdsHibcFacId);
+		if(pProcess.getHdsHibcFacId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHibcFacId", pProcess.getHdsHibcFacId());
 		}
-		if(hdsType != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsType", hdsType);
+		if(pProcess.getHdsType() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsType", pProcess.getHdsType());
 		}
-		if(hdsName != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsName", hdsName);
+		if(pProcess.getHdsName() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsName", pProcess.getHdsName());
 		}
-		if(hdsNameAlias != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameAlias", hdsNameAlias);
+		if(pProcess.getHdsNameAlias() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameAlias", pProcess.getHdsNameAlias());
 		}
-		if(hdsPrefNameFlag != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsPrefNameFlag", hdsPrefNameFlag);
+		if(pProcess.getHdsPrefNameFlag() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsPrefNameFlag", pProcess.getHdsPrefNameFlag());
 		}
-		if(hdsEmail != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmail", hdsEmail);
+		if(pProcess.getHdsEmail() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmail", pProcess.getHdsEmail());
 		}
-		if(hdsWebsite != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsite", hdsWebsite);
+		if(pProcess.getHdsWebsite() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsite", pProcess.getHdsWebsite());
 		}
-		if(hdsBusTelAreaCode != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsBusTelAreaCode", hdsBusTelAreaCode);
+		if(pProcess.getHdsBusTelAreaCode() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsBusTelAreaCode", pProcess.getHdsBusTelAreaCode());
 		}
-		if(hdsBusTelNum != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsBusTelNum", hdsBusTelNum);
+		if(pProcess.getHdsBusTelNum() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsBusTelNum", pProcess.getHdsBusTelNum());
 		}
-		if(hdsTelExt != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsTelExt", hdsTelExt);
+		if(pProcess.getHdsTelExt() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsTelExt", pProcess.getHdsTelExt());
 		}
-		if(hdsCellAreaCode != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellAreaCode", hdsCellAreaCode);
+		if(pProcess.getHdsCellAreaCode() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellAreaCode", pProcess.getHdsCellAreaCode());
 		}
-		if(hdsCellNum != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellNum", hdsCellNum);
+		if(pProcess.getHdsCellNum() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellNum", pProcess.getHdsCellNum());
 		}
-		if(hdsFaxAreaCode != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxAreaCode", hdsFaxAreaCode);
+		if(pProcess.getHdsFaxAreaCode() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxAreaCode", pProcess.getHdsFaxAreaCode());
 		}
-		if(hdsFaxNum != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxNum", hdsFaxNum);
+		if(pProcess.getHdsFaxNum() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxNum", pProcess.getHdsFaxNum());
 		}
-		if(hdsServiceDelType != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsServiceDelType", hdsServiceDelType);
+		if(pProcess.getHdsServiceDelType() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsServiceDelType", pProcess.getHdsServiceDelType());
 		}
-		if(pcnCLinicType != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnCLinicType", pcnCLinicType);
+		if(pProcess.getPcnClinicType() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnCLinicType", pProcess.getPcnClinicType());
 		}
-		if(pcnPciFlag != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnPciFlag", pcnPciFlag);
+		if(pProcess.getPcnPciFlag() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnPciFlag", pProcess.getPcnPciFlag());
 		}
-		if(hdsHoursOfOp != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHoursOfOp", hdsHoursOfOp);
+		if(pProcess.getHdsHoursOfOp() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHoursOfOp", pProcess.getHdsHoursOfOp());
 		}
-		if(hdsContactName != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsContactName", hdsContactName);
+		if(pProcess.getHdsContactName() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsContactName", pProcess.getHdsContactName());
 		}
-		if(hdsIsForProfitFlag != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsIsForProfitFlag", hdsIsForProfitFlag);
+		if(pProcess.getHdsIsForProfitFlag() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsIsForProfitFlag", pProcess.getHdsIsForProfitFlag());
 		}
-		if(sourceStatus != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "sourceStatus", sourceStatus);
+		if(pProcess.getSourceStatus() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "sourceStatus", pProcess.getSourceStatus());
 		}
-		if(hdsParentIpcId != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsParentIpcId", hdsParentIpcId);
+		if(pProcess.getHdsParentIpcId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsParentIpcId", pProcess.getHdsParentIpcId());
 		}
-		if(busIpcId != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busIpcId", busIpcId);
+		if(pProcess.getBusIpcId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busIpcId", pProcess.getBusIpcId());
 		}
-		if(busCpnId != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busCpnId", busCpnId);
+		if(pProcess.getBusCpnId() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busCpnId", pProcess.getBusCpnId());
 		}
-		if(busName != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busName", busName);
+		if(pProcess.getBusName() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busName", pProcess.getBusName());
 		}
-		if(busLegalName != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busLegalName", busLegalName);
+		if(pProcess.getBusLegalName() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busLegalName", pProcess.getBusLegalName());
 		}
-		if(busPayeeNum != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busPayeeNum", busPayeeNum);
+		if(pProcess.getBusPayeeNum() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busPayeeNum", pProcess.getBusPayeeNum());
 		}
-		if(busOwnerName != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerName", busOwnerName);
+		if(pProcess.getBusOwnerName() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerName", pProcess.getBusOwnerName());
 		}
-		if(busOwnerType != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerType", busOwnerType);
+		if(pProcess.getBusOwnerType() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerType", pProcess.getBusOwnerType());
 		}
-		if(busOwnerTypeOther != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerTypeOther", busOwnerTypeOther);
+		if(pProcess.getBusOwnerTypeOther() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerTypeOther", pProcess.getBusOwnerTypeOther());
 		}
-		if(facBuildingName != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facBuildingName", facBuildingName);
+		if(pProcess.getFacBuildingName() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facBuildingName", pProcess.getFacBuildingName());
 		}
-		if(facHdsDetailAddInfo != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facHdsDetailAddInfo", facHdsDetailAddInfo);
+		if(pProcess.getFacHdsDetailAddInfo() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facHdsDetailAddInfo", pProcess.getFacHdsDetailAddInfo());
 		}
-		if(physAddr1 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr1", physAddr1);
+		if(pProcess.getPhysAddr1() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr1", pProcess.getPhysAddr1());
 		}
-		if(physAddr2 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr2", physAddr2);
+		if(pProcess.getPhysAddr2() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr2", pProcess.getPhysAddr2());
 		}
-		if(physAddr3 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr3", physAddr3);
+		if(pProcess.getPhysAddr3() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr3", pProcess.getPhysAddr3());
 		}
-		if(physAddr4 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr4", physAddr4);
+		if(pProcess.getPhysAddr4() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddr4", pProcess.getPhysAddr4());
 		}
-		if(physCity != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physCity", physCity);
+		if(pProcess.getPhysCity() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physCity", pProcess.getPhysCity());
 		}
-		if(physProv != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physProv", physProv);
+		if(pProcess.getPhysProv() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physProv", pProcess.getPhysProv());
 		}
-		if(physPCode != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physPCode", physPCode);
+		if(pProcess.getPhysPCode() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physPCode", pProcess.getPhysPCode());
 		}
-		if(physCountry != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physCountry", physCountry);
+		if(pProcess.getPhysCountry() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physCountry", pProcess.getPhysCountry());
 		}
-		if(physAddrIsPrivate != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddrIsPrivate", physAddrIsPrivate);
+		if(pProcess.getPhysAddrIsPrivate() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddrIsPrivate", pProcess.getPhysAddrIsPrivate());
 		}
-		if(mailAddr1 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr1", mailAddr1);
+		if(pProcess.getMailAddr1() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr1", pProcess.getMailAddr1());
 		}
-		if(mailAddr2 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr2", mailAddr2);
+		if(pProcess.getMailAddr2() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr2", pProcess.getMailAddr2());
 		}
-		if(mailAddr3 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr3", mailAddr3);
+		if(pProcess.getMailAddr3() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr3", pProcess.getMailAddr3());
 		}
-		if(mailAddr4 != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr4", mailAddr4);
+		if(pProcess.getMailAddr4() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr4", pProcess.getMailAddr4());
 		}
-		if(mailCity != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCity", mailCity);
+		if(pProcess.getMailCity() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCity", pProcess.getMailCity());
 		}
-		if(mailBc != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailBc", mailBc);
+		if(pProcess.getMailBc() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailBc", pProcess.getMailBc());
 		}
-		if(mailPcode != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailPcode", mailPcode);
+		if(pProcess.getMailPcode() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailPcode", pProcess.getMailPcode());
 		}
-		if(mailCountry != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", mailCountry);
+		if(pProcess.getMailCountry() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", pProcess.getMailCountry());
 		}
-		if(mailAddrIsPriv != null) {
-			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", mailAddrIsPriv);
+		if(pProcess.getMailAddrIsPriv() != null) {
+			combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", pProcess.getMailAddrIsPriv());
 		}
 		
 		return processDataRepository.findAll(combinedSpecification);
