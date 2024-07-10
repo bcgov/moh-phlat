@@ -498,7 +498,7 @@ public class ProcessDataController {
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/{controlTableId}/distinct-values/{columnKey}")
+	@GetMapping("/{controlTableId}/column-distinct-values/{columnKey}")
 	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
 	
 		if(ProcessDataService.PROCESS_DATA_COLUMNS.contains(columnKey)) {

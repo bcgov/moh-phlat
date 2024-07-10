@@ -87,7 +87,7 @@ public class SourceDataController {
 	// get source data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltableid/{controlTableId}")
-	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceData(
 			@PathVariable Long controlTableId, @RequestBody ParamSource pSource) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
@@ -191,7 +191,7 @@ public class SourceDataController {
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/{controlTableId}/distinct-values/{columnKey}")
+	@GetMapping("/{controlTableId}/column-distinct-values/{columnKey}")
 	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
 
 		if(SourceDataService.SOURCE_DATA_COLUMNS.contains(columnKey)) {
