@@ -195,7 +195,7 @@ public class SourceDataController {
 	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
 
 		if(SourceDataService.SOURCE_DATA_COLUMNS.contains(columnKey)) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.getDistinctColumnValues(controlTableId, columnKey)));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.getUniqueColumnValues(controlTableId, columnKey)));
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));

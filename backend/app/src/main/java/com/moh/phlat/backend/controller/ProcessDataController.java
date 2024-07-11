@@ -502,7 +502,7 @@ public class ProcessDataController {
 	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
 	
 		if(ProcessDataService.PROCESS_DATA_COLUMNS.contains(columnKey)) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", processDataService.getDistinctColumnValues(controlTableId, columnKey)));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", processDataService.getUniqueColumnValues(controlTableId, columnKey)));
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));
