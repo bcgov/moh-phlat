@@ -64,11 +64,16 @@ resource "aws_ecs_task_definition" "phlat_td" {
           valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_provider_url.arn
         },
         {
-          name      = "KEYCLOAK_CLIENT_ID"
+          name      = "PLR_KEYCLOAK_PROVIDER_URL"
+          valueFrom = aws_secretsmanager_secret_version.phlat_plr_keycloak_provider_url.arn
+        },
+
+        {
+          name      = "PLR_KEYCLOAK_CLIENT_ID"
           valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_id.arn
         },
         {
-          name      = "KEYCLOAK_CLIENT_SECRET"
+          name      = "PLR_KEYCLOAK_CLIENT_SECRET"
           valueFrom = aws_secretsmanager_secret_version.phlat_keycloak_client_secret.arn
         },
         {
