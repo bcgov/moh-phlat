@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
-import com.moh.phlat.backend.service.ControlService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.slf4j.Logger;
@@ -32,13 +32,14 @@ public class ControlController {
 
 	@Autowired
 	private ControlRepository controlRepository;
+	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required = true) int page, 
 			@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
 			@RequestParam(required = false) String sortDirection) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlService.findAll(PageRequest.of(page, pageLimit, 
+				.body(new ResponseMessage("success", 200, "", controlRepository.findAll(PageRequest.of(page, pageLimit, 
 						Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));
 	}
 

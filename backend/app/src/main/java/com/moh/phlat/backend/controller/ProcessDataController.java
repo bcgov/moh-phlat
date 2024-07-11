@@ -78,7 +78,9 @@ public class ProcessDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ParamProcess pProcess) {
+		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required = true) int page, 
+		@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
+		@RequestParam(required = false) String sortDirection, @RequestBody ParamProcess pProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);

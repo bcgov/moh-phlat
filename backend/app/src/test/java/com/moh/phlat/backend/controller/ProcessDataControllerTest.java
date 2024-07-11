@@ -115,9 +115,8 @@ public class ProcessDataControllerTest {
     	Pageable page = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),page)).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),null,page)).thenReturn(processDataList);
         //when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class))).thenReturn(processDataList);
-        when(processDataService.getProcessDataWithMessages(anyLong(), null, null)).thenReturn(processDataList);
 
         // Perform GET request and validate response
         ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")
@@ -139,7 +138,7 @@ public class ProcessDataControllerTest {
         verify(controlRepository, times(1)).findById(anyLong());
         //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),page);
         //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class));
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),page);
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),null,page);
 
     }
 
