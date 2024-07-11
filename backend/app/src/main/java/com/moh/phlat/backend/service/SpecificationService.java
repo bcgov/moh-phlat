@@ -4,16 +4,19 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.SourceData;
 
 public interface SpecificationService {
 	
-	public <T> Specification<T> hasDataWithMessages(Long controlId);
+	public Specification<ProcessData> getDataWithMessagesForProcessData(Long controlId);
 	
-	public <T> Specification<T> buildSpecificationWhereEqual(String columnKey, String value);
-	public <T> Specification<T> buildSpecificationAnd(Specification<T> spec, String columnKey, String value);
-	public <T> Specification<T> buildSpecificationAnd(Specification<T> spec, String columnKey, List<String> values);
+	public Specification<ProcessData> buildSpecificationWhereEqualForProcessData(String columnKey, String value);
+	public Specification<ProcessData> buildSpecificationAndForProcessData(Specification<ProcessData> spec, String columnKey, String value);
+	public Specification<ProcessData> buildSpecificationAndForProcessData(Specification<ProcessData> spec, String columnKey, List<String> values);
+	
+	public Specification<SourceData> buildSpecificationWhereEqualForSourceData(String columnKey, String value);
+	public Specification<SourceData> buildSpecificationAndForSourceData(Specification<SourceData> spec, String columnKey, String value);
+	public Specification<SourceData> buildSpecificationAndForSourceData(Specification<SourceData> spec, String columnKey, List<String> values);
 	
 }

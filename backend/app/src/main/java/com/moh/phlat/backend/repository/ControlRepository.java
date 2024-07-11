@@ -9,11 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.moh.phlat.backend.model.Control;
 
-@Repository
-public interface ControlRepository extends JpaRepository<Control, Long> {
 
-	public List<Control> findAllById(Long id);
-	
+public interface ControlRepository extends JpaRepository<Control, Long> {
 	public List<Control> findByFileName(String fileName);
 	
 	/* According to these:

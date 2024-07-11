@@ -117,7 +117,7 @@ public class ProcessDataControllerTest {
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
         when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),page)).thenReturn(processDataList);
         //when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class))).thenReturn(processDataList);
-        //when(processDataService.getProcessDataWithMessages(anyLong())).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(), null, null)).thenReturn(processDataList);
 
         // Perform GET request and validate response
         ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")

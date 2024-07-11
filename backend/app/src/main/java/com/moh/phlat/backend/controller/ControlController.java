@@ -1,7 +1,7 @@
+
 package com.moh.phlat.backend.controller;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.moh.phlat.backend.model.Control;
@@ -33,10 +32,6 @@ public class ControlController {
 
 	@Autowired
 	private ControlRepository controlRepository;
-	
-	@Autowired
-	private ControlService controlService;
-	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required = true) int page, 
@@ -51,21 +46,21 @@ public class ControlController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/{id}")
 	public ResponseEntity<ResponseMessage> getControlById(@PathVariable Long id) {
-		List<Control> controlTable = controlService.findById(id);
+		Optional<Control> controlTable = controlRepository.findById(id);
 		if (controlTable.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ResponseMessage("success", 404, "Control table not found with id: " + id, "[]"));
 		}
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlService.findById(id)));
+				.body(new ResponseMessage("success", 200, "", controlRepository.findById(id)));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/filename/{fileName}")
 	public ResponseEntity<ResponseMessage> getControlByFileName(@PathVariable String fileName) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlService.findByFileName(fileName)));
+				.body(new ResponseMessage("success", 200, "", controlRepository.findByFileName(fileName)));
 
 	}
 
@@ -73,7 +68,7 @@ public class ControlController {
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ResponseMessage> updateControl(@PathVariable("id") long id,
 			@RequestBody Control requestControl) {
-		List<Control> controlTableData = controlService.findById(id);
+		Optional<Control> controlTableData = controlRepository.findById(id);
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -82,7 +77,7 @@ public class ControlController {
 
 		try {
 
-			Control _controlTable = controlTableData.get(0);
+			Control _controlTable = controlTableData.get();
 
 			_controlTable.setFileName(requestControl.getFileName());
 			_controlTable.setUserId(AuthenticationUtils.getAuthenticatedUserId());
@@ -142,4 +137,6 @@ public class ControlController {
 					"Internal error encountered while approving constrol table with id: " + id, "[]"));
 		}
 	}
+
+	
 }
