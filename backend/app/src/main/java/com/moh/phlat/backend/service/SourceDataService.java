@@ -20,5 +20,5 @@ public interface SourceDataService {
 
 	public List<SourceData> getSourceData(Long controlId,  ParamSource pSource);
 	
-	public List<String> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
+	public List<String> getUniqueColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
 }

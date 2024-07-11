@@ -310,7 +310,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 	}
 
 	@Override
-	public List<String> getDistinctColumnValues(Long controlTableId, String columnKey) {
+	public List<String> getUniqueColumnValues(Long controlTableId, String columnKey) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<String> query = cb.createQuery(String.class);

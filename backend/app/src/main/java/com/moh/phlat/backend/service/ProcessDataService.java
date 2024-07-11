@@ -24,5 +24,5 @@ public interface ProcessDataService {
 	
 	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ParamProcess pProcess);
 	
-	public List<String> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
+	public List<String> getUniqueColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
 }
