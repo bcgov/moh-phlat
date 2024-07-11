@@ -2,26 +2,15 @@ package com.moh.phlat.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.SourceData;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Root;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class SpecificationServiceImpl implements SpecificationService {
-	
-	@Autowired
-	private EntityManager entityManager;
 	
 	public Specification<ProcessData> getDataWithMessagesForProcessData(Long controlId){
 		return (root, query, builder) -> {
