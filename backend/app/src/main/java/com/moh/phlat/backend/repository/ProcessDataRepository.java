@@ -1,12 +1,13 @@
 package com.moh.phlat.backend.repository;
 
-import com.moh.phlat.backend.model.ProcessData;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.moh.phlat.backend.model.ProcessData;
 
 @Repository
 public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> {
@@ -28,5 +29,9 @@ public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> 
 
 	long countAllByControlTableIdAndRowstatusCode(Long controlTableId, String string);
 
-	long countByControlTableId(Long controlTableId);   
+	long countByControlTableId(Long controlTableId);
+
+    @Query("SELECT md.id, md.messageCode from ProcessData pd LEFT JOIN pd.messages md WHERE pd.id = :processDataId")
+    List<Object[]> getAllMessagesForProcessDataId(Long processDataId);
+
 }

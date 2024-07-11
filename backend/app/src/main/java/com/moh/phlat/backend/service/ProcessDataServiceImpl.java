@@ -17,6 +17,7 @@ import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.MessageRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.dto.ReportSummary;
 
@@ -27,9 +28,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 	@Autowired
 	private MessageService messageService;
 
-	// @Autowired
-	// private ProcessDataService processDataService;
-
     @Autowired
     private MessageSource messageSource;
 
@@ -38,6 +36,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 
 	@Autowired
 	private ControlRepository controlRepository;
+
+	@Autowired
+	private MessageRepository messageRepository;
 
 	@Autowired
 	private ControlService controlService;
@@ -147,10 +148,19 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
 		Boolean isValid = true;
 
+		// delete all exsisting messages associated with the process_data.id first 
+        List<Object[]> messages = processDataRepository.getAllMessagesForProcessDataId(processData.getId());
+		for (Object[] msg : messages) {
+			String code = (String) msg[1];
+			if (StringUtils.hasText(code)) {
+            	messageRepository.deleteById((Long) msg[0]);
+		   }
+		}
+
 		List<String> columnnDisplayNames = new ArrayList();
 		columnnDisplayNames.add("HDS Name");
 		
-		// mandatoryired checks
+		// mandatory checks
 		if (!StringUtils.hasText(processData.getHdsName())) {
 			isValid = false;
 			logger.info("Required check failed on process data id: {}", processData.getId());
@@ -198,7 +208,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 			messageService.createMessage(msg);
 		}
 
-
 		if (!StringUtils.hasText(processData.getPhysicalCity())) {
 			columnnDisplayNames.clear();
 			columnnDisplayNames.add("Physical Addr City");
@@ -214,8 +223,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 								 .build();
 			messageService.createMessage(msg);
 		}
-
-
 
 		if (control.getLoadTypeHds()) {
 			// mandoary checks for HDS run type
@@ -268,7 +275,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 									 .build();
 				messageService.createMessage(msg);
 			}
-
 
 		}
 

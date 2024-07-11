@@ -419,7 +419,7 @@ public class ProcessDataController {
 				
 				controlService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_IN_PROGRESS,authenticatedUserId );
 				
-				if ((!processData.getDoNotLoadFlag().equals("Y")) && (!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals(RowStatusService.COMPLETED))) {
+				if ((!processData.getRowstatusCode().equals("DO_NOT_LOAD")) && (!processData.getRowstatusCode().equals(RowStatusService.COMPLETED))) {
 					logger.info("validate process data with id: {}", id);
 				    // run asyn process
 					processDataService.validateProcessData(control, processData,authenticatedUserId);
