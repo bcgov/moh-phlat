@@ -605,16 +605,36 @@ export default {
               density="compact"
               solid
               variant="outlined"
-              class="me-2"
+              class="me-2 width-max-content"
               :hide-details="true"
             ></v-select>
             <div class="d-flex flex-column justify-content-center">
-              <v-icon size="small" v-on="on" @click="saveNewStatus()">
-                mdi-floppy
-              </v-icon>
-              <v-icon size="small" v-on="on" @click="closeEditStatus()">
-                mdi-close
-              </v-icon>
+              <v-tooltip location="right">
+                <template #activator="{ props }">
+                  <v-icon
+                    v-bind="props"
+                    size="small"
+                    v-on="on"
+                    @click="saveNewStatus()"
+                  >
+                    mdi-floppy
+                  </v-icon>
+                </template>
+                <span>Save</span>
+              </v-tooltip>
+              <v-tooltip location="right">
+                <template #activator="{ props }">
+                  <v-icon
+                    v-bind="props"
+                    size="small"
+                    v-on="on"
+                    @click="closeEditStatus()"
+                  >
+                    mdi-close
+                  </v-icon>
+                </template>
+                <span>Cancel</span>
+              </v-tooltip>
             </div>
           </div>
 
@@ -755,5 +775,8 @@ export default {
 }
 .style-2 {
   background-color: rgb(114, 114, 67);
+}
+.width-max-content {
+  width: max-content;
 }
 </style>
