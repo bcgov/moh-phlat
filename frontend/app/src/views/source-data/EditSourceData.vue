@@ -233,7 +233,13 @@ export default {
             RowStatusCode.POTENTIAL_DUPLICATE,
           ];
         case RowStatusCode.POTENTIAL_DUPLICATE:
-          return [RowStatusCode.VALID, RowStatusCode.DO_NOT_LOAD];
+          return [
+            RowStatusCode.VALID,
+            RowStatusCode.ON_HOLD,
+            RowStatusCode.DO_NOT_LOAD,
+          ];
+        case RowStatusCode.LOADERROR:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.ON_HOLD];
         default:
           return [];
       }
@@ -389,6 +395,10 @@ export default {
 
       this.loading = false;
       this.close();
+      this.editStatusItem = {};
+      this.editStatusNewItem = '';
+    },
+    closeEditStatus() {
       this.editStatusItem = {};
       this.editStatusNewItem = '';
     },
@@ -580,68 +590,62 @@ export default {
         class="submissions-table"
       >
         <template #item.rowstatusCode="{ item }">
-          <div>
-            <div
-              v-if="editStatusItem.id === item.raw.id"
-              class="d-flex align-center"
-            >
-              <v-select
-                v-model="editStatusNewItem"
-                :items="
-                  fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
-                "
-                label="Status"
-                density="compact"
-                solid
-                variant="outlined"
-                class="d-flex align-center"
-              ></v-select>
-              <v-tooltip location="right">
-                <template #activator="{ on }">
-                  <v-icon
-                    size="small"
-                    class="me-2"
-                    v-on="on"
-                    @click="saveNewStatus()"
-                  >
-                    mdi-floppy
-                  </v-icon>
-                </template>
-                <span>Save</span>
-              </v-tooltip>
+          <div
+            v-if="editStatusItem.id === item.raw.id"
+            class="d-flex align-center"
+          >
+            <v-select
+              v-model="editStatusNewItem"
+              :items="
+                fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
+              "
+              label="Status"
+              density="compact"
+              solid
+              variant="outlined"
+              class="me-2"
+              :hide-details="true"
+            ></v-select>
+            <div class="d-flex flex-column justify-content-center">
+              <v-icon size="small" v-on="on" @click="saveNewStatus()">
+                mdi-floppy
+              </v-icon>
+              <v-icon size="small" v-on="on" @click="closeEditStatus()">
+                mdi-close
+              </v-icon>
             </div>
+          </div>
 
-            <div
-              v-else
-              class="d-flex align-center"
-              @mouseenter="isHovering = item.raw.id"
-              @mouseleave="isHovering = false"
+          <div
+            v-else
+            class="d-flex align-center"
+            @mouseenter="isHovering = item.raw.id"
+            @mouseleave="isHovering = false"
+          >
+            <span class="d-flex align-center">
+              {{ item.raw.rowstatusCode }}
+            </span>
+            <v-tooltip
+              v-if="
+                isHovering === item.raw.id &&
+                fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
+                  .length
+              "
+              location="right"
+              :open-on-hover="isHovering === item.raw.id"
             >
-              <span class="d-flex align-center">
-                {{ item.raw.rowstatusCode }}
-              </span>
-              <v-tooltip
-                v-if="
-                  isHovering === item.raw.id &&
-                  fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
-                    .length
-                "
-                location="right"
-                :open-on-hover="isHovering === item.raw.id"
-              >
-                <template #activator="{ on }">
-                  <v-icon
-                    size="small"
-                    class="me-2"
-                    v-on="on"
-                    @click="editStatus(item)"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                </template>
-                <span>Update Status</span>
-              </v-tooltip>
-            </div>
+              <template #activator="{ on }">
+                <v-icon
+                  size="small"
+                  class="me-2"
+                  v-on="on"
+                  @click="editStatus(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+              </template>
+              <span>Update Status</span>
+            </v-tooltip>
           </div>
         </template>
         <template #item.messages="{ item }">
