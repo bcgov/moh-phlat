@@ -9,7 +9,7 @@ import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { ViewNames, RowStatusCode } from '~/utils/constants';
+import { ViewNames, RowStatusCode, ControlStatusCode } from '~/utils/constants';
 import BaseChips from '../../components/base/BaseChips.vue';
 import _ from 'lodash';
 
@@ -124,6 +124,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
+    IS_CONTROL_STATUS_APPROVED_OR_PREVALIDATED() {
+      return (
+        this.singleControlTableData.statusCode ===
+          ControlStatusCode.PREVALIDATIONCOMPLETED ||
+        this.singleControlTableData.statusCode === ControlStatusCode.APPROVED
+      );
+    },
     BASE_FILTER_HEADERS() {
       let headers = this.BASE_HEADERS.filter(
         (h) => !this.filterIgnore.some((fd) => fd.key === h.key)
@@ -237,6 +244,12 @@ export default {
       }
       return data.some(
         (item) => item.messageType === 'WARNING' || item.messageType === 'ERROR'
+      );
+    },
+    canRecordBeEdited(rowStatusCode) {
+      return (
+        this.IS_CONTROL_STATUS_APPROVED_OR_PREVALIDATED &&
+        rowStatusCode !== RowStatusCode.COMPLETED
       );
     },
     async populateControlTable() {
@@ -636,7 +649,7 @@ export default {
         </template>
         <template #item.actions="{ item }">
           <v-tooltip
-            v-if="havingIssueOrWarning(parseMessages(item.raw.messages))"
+            v-if="canRecordBeEdited(item.raw.rowstatusCode)"
             location="bottom"
           >
             <template #activator="{ props }">
