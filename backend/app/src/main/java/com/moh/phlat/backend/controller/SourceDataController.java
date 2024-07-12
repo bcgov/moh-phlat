@@ -66,8 +66,6 @@ public class SourceDataController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseMessage("success", 200, "", sourceDataRepository.findAll()));
-		// return sourceDataRepository.findAll();
-
 	}
 
 	// get specific row by id
@@ -98,8 +96,8 @@ public class SourceDataController {
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
 					"Source Data not found for control_id: " + controlTableId, "[]"));
-		}		
-		
+		}
+
 		Pageable currentPage = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
