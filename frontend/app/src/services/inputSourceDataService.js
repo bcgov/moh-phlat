@@ -18,7 +18,7 @@ export default {
     return appAxios().delete(`sourcedata/delete/all`);
   },
   async serviceGetFormFields() {
-    return appAxios().get(`sourcedata/getformfields/header`);
+    return appAxios().get(`sourcedata/column-display-names`);
   },
   async servicePostFileUpload(data) {
     return appAxios().post(`sourcedata/upload`, data);

@@ -11,7 +11,7 @@ export default {
     return appAxios().post(`processdata/controltable/${id + makeQuery}`);
   },
   async serviceGetFormFieldsFromProcessData() {
-    return appAxios().get(`processdata/getformfields/header`);
+    return appAxios().get(`processdata/column-display-names`);
   },
   async servicePutProcessDataById(id, data) {
     return appAxios().put(`processdata/update/${id}`, data);

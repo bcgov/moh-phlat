@@ -42,7 +42,9 @@ export default {
 
 <template>
   <v-card>
-    <v-card-title class="text-h5 pb-0">Summary report #{{ id }}</v-card-title>
+    <v-card-title class="text-h5 pb-0"
+      >File #{{ id }} - Summary Report</v-card-title
+    >
     <v-card-text>
       <hr />
       <v-table class="bg-grey-lighten-5 mb-3">
