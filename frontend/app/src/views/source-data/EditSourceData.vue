@@ -210,6 +210,8 @@ export default {
     },
     fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
       switch (thiseditStatusNewItem) {
+        case RowStatusCode.INITIAL:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.ON_HOLD];
         case RowStatusCode.ON_HOLD:
           return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.INITIAL];
         case RowStatusCode.DO_NOT_LOAD:
