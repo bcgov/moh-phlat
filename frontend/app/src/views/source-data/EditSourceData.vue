@@ -9,7 +9,7 @@ import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { useStatusDataStore } from '~/store/statusdata';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
-import { ViewNames, RowStatusCode } from '~/utils/constants';
+import { ViewNames, RowStatusCode, ControlStatusCode } from '~/utils/constants';
 import BaseChips from '../../components/base/BaseChips.vue';
 import _ from 'lodash';
 
@@ -124,6 +124,13 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
     },
+    IS_CONTROL_STATUS_APPROVED_OR_PREVALIDATED() {
+      return (
+        this.singleControlTableData.statusCode ===
+          ControlStatusCode.PREVALIDATIONCOMPLETED ||
+        this.singleControlTableData.statusCode === ControlStatusCode.APPROVED
+      );
+    },
     BASE_FILTER_HEADERS() {
       let headers = this.BASE_HEADERS.filter(
         (h) => !this.filterIgnore.some((fd) => fd.key === h.key)
@@ -210,6 +217,8 @@ export default {
     },
     fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
       switch (thiseditStatusNewItem) {
+        case RowStatusCode.INITIAL:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.ON_HOLD];
         case RowStatusCode.ON_HOLD:
           return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.INITIAL];
         case RowStatusCode.DO_NOT_LOAD:
@@ -226,7 +235,13 @@ export default {
             RowStatusCode.POTENTIAL_DUPLICATE,
           ];
         case RowStatusCode.POTENTIAL_DUPLICATE:
-          return [RowStatusCode.VALID, RowStatusCode.DO_NOT_LOAD];
+          return [
+            RowStatusCode.VALID,
+            RowStatusCode.ON_HOLD,
+            RowStatusCode.DO_NOT_LOAD,
+          ];
+        case RowStatusCode.LOADERROR:
+          return [RowStatusCode.DO_NOT_LOAD, RowStatusCode.ON_HOLD];
         default:
           return [];
       }
@@ -237,6 +252,12 @@ export default {
       }
       return data.some(
         (item) => item.messageType === 'WARNING' || item.messageType === 'ERROR'
+      );
+    },
+    canRecordBeEdited(rowStatusCode) {
+      return (
+        this.IS_CONTROL_STATUS_APPROVED_OR_PREVALIDATED &&
+        rowStatusCode !== RowStatusCode.COMPLETED
       );
     },
     async populateControlTable() {
@@ -376,6 +397,10 @@ export default {
 
       this.loading = false;
       this.close();
+      this.editStatusItem = {};
+      this.editStatusNewItem = '';
+    },
+    closeEditStatus() {
       this.editStatusItem = {};
       this.editStatusNewItem = '';
     },
@@ -567,27 +592,28 @@ export default {
         class="submissions-table"
       >
         <template #item.rowstatusCode="{ item }">
-          <div>
-            <div
-              v-if="editStatusItem.id === item.raw.id"
-              class="d-flex align-center"
-            >
-              <v-select
-                v-model="editStatusNewItem"
-                :items="
-                  fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
-                "
-                label="Status"
-                density="compact"
-                solid
-                variant="outlined"
-                class="d-flex align-center"
-              ></v-select>
+          <div
+            v-if="editStatusItem.id === item.raw.id"
+            class="d-flex align-center"
+          >
+            <v-select
+              v-model="editStatusNewItem"
+              :items="
+                fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
+              "
+              label="Status"
+              density="compact"
+              solid
+              variant="outlined"
+              class="me-2 width-max-content"
+              :hide-details="true"
+            ></v-select>
+            <div class="d-flex flex-column justify-content-center">
               <v-tooltip location="right">
-                <template #activator="{ on }">
+                <template #activator="{ props }">
                   <v-icon
+                    v-bind="props"
                     size="small"
-                    class="me-2"
                     v-on="on"
                     @click="saveNewStatus()"
                   >
@@ -596,39 +622,52 @@ export default {
                 </template>
                 <span>Save</span>
               </v-tooltip>
-            </div>
-
-            <div
-              v-else
-              class="d-flex align-center"
-              @mouseenter="isHovering = item.raw.id"
-              @mouseleave="isHovering = false"
-            >
-              <span class="d-flex align-center">
-                {{ item.raw.rowstatusCode }}
-              </span>
-              <v-tooltip
-                v-if="
-                  isHovering === item.raw.id &&
-                  fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
-                    .length
-                "
-                location="right"
-                :open-on-hover="isHovering === item.raw.id"
-              >
-                <template #activator="{ on }">
+              <v-tooltip location="right">
+                <template #activator="{ props }">
                   <v-icon
+                    v-bind="props"
                     size="small"
-                    class="me-2"
                     v-on="on"
-                    @click="editStatus(item)"
+                    @click="closeEditStatus()"
                   >
-                    mdi-pencil
+                    mdi-close
                   </v-icon>
                 </template>
-                <span>Update Status</span>
+                <span>Cancel</span>
               </v-tooltip>
             </div>
+          </div>
+
+          <div
+            v-else
+            class="d-flex align-center"
+            @mouseenter="isHovering = item.raw.id"
+            @mouseleave="isHovering = false"
+          >
+            <span class="d-flex align-center">
+              {{ item.raw.rowstatusCode }}
+            </span>
+            <v-tooltip
+              v-if="
+                isHovering === item.raw.id &&
+                fetchRowStatusCodesAvailableToSwitch(item.raw.rowstatusCode)
+                  .length
+              "
+              location="right"
+              :open-on-hover="isHovering === item.raw.id"
+            >
+              <template #activator="{ on }">
+                <v-icon
+                  size="small"
+                  class="me-2"
+                  v-on="on"
+                  @click="editStatus(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+              </template>
+              <span>Update Status</span>
+            </v-tooltip>
           </div>
         </template>
         <template #item.messages="{ item }">
@@ -636,7 +675,7 @@ export default {
         </template>
         <template #item.actions="{ item }">
           <v-tooltip
-            v-if="havingIssueOrWarning(parseMessages(item.raw.messages))"
+            v-if="canRecordBeEdited(item.raw.rowstatusCode)"
             location="bottom"
           >
             <template #activator="{ props }">
@@ -736,5 +775,8 @@ export default {
 }
 .style-2 {
   background-color: rgb(114, 114, 67);
+}
+.width-max-content {
+  width: max-content;
 }
 </style>
