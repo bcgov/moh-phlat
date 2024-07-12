@@ -594,10 +594,6 @@ export default {
               :hide-details="true"
             ></v-select>
             <div class="d-flex flex-column justify-content-center">
-              <!-- <span v-on="on" @click="saveNewStatus()">Save</span> -->
-              <!-- <v-btn variant="text" v-on="on" @click="saveNewStatus()">
-                  Save
-                </v-btn> -->
               <v-icon size="small" v-on="on" @click="saveNewStatus()">
                 mdi-floppy
               </v-icon>
