@@ -1,15 +1,15 @@
 import { appAxios } from '~/services/interceptors';
-import { objectToQueryParams } from '~/utils/filters';
+// import { objectToQueryParams } from '~/utils/filters';
 
 export default {
   async serviceGetAllInputSourceData() {
     return appAxios().get(`sourcedata/view/all`);
   },
   async serviceGetInputSourceDataById(id, filter = {}) {
-    const { rowStatus, ...filtered } = filter; // eslint-disable-line no-unused-vars
-    const queryString = objectToQueryParams(filtered);
-    const makeQuery = queryString ? `?${queryString}` : '';
-    return appAxios().post(`sourcedata/view/controltableid/${id + makeQuery}`);
+    // const { rowStatus, ...filtered } = filter; // eslint-disable-line no-unused-vars
+    // const queryString = objectToQueryParams(filtered);
+    // const makeQuery = queryString ? `?${queryString}` : '';
+    return appAxios().post(`sourcedata/controltableid/${id}`, filter);
   },
   async serviceDeleteInputSourceDataById(id) {
     return appAxios().delete(`sourcedata/delete/${id}`);
