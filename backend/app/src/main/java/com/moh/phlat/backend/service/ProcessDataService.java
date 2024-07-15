@@ -7,8 +7,6 @@ import com.moh.phlat.backend.service.dto.ReportSummary;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PathVariable;
-
 public interface ProcessDataService {
 	
 	List<String> PROCESS_DATA_COLUMNS = Arrays.asList("id", "controlTableId", "do_not_load", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
