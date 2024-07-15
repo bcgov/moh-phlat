@@ -28,6 +28,11 @@ module "api_gateway" {
         "append:header.SourceIp"       = "$request.header.X-Forwarded-For"
         "append:header.clientSourceIP" = "$context.identity.sourceIp"
       }
+
+      response_parameters = {
+        "overwrite:header.Content-Security-Policy" = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/"
+      }
+
     }
   }
 
