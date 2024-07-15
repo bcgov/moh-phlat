@@ -20,7 +20,7 @@ public interface ProcessDataService {
 
     List<ReportSummary> getReportSummary(Long controlTableId);
 	
-	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ProcessDataFilterParams pProcess);
+	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess);
 	
 	List<String> getUniqueColumnValues(Long controlTableId, String columnKey);
 }

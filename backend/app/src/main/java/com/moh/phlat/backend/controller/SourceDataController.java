@@ -88,7 +88,7 @@ public class SourceDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceData(
-			@PathVariable Long controlTableId, @RequestBody SourceDataFilterParams pSource) {
+			@PathVariable Long controlTableId, @RequestBody SourceDataFilterParams filterProcess) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
@@ -97,7 +97,7 @@ public class SourceDataController {
 		}		
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				sourceDataService.getSourceData(controlTableId, pSource)));
+				sourceDataService.getSourceData(controlTableId, filterProcess)));
 
 	}
 

@@ -3,9 +3,9 @@ package com.moh.phlat.backend.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.model.SourceData;
+import org.springframework.util.StringUtils;
 
+import com.moh.phlat.backend.model.ProcessData;
 import jakarta.persistence.criteria.JoinType;
 import lombok.NoArgsConstructor;
 
@@ -20,13 +20,8 @@ public class ProcessDataFilterSpecificationImpl implements ProcessDataFilterSpec
 	}
 	
 	@Override
-	public Specification<ProcessData> buildSpecificationWhereEqual(String columnKey, String value){
-		return Specification.where((root, query, builder) -> builder.equal(root.get(columnKey), value));
-	}
-	
-	@Override
 	public Specification<ProcessData> buildSpecificationAnd(Specification<ProcessData> spec, String columnKey, String value){
-		if (value != null) {
+		if (StringUtils.hasText(value)) {
 			spec = spec.and((root,query, builder) -> root.get(columnKey).in(value));
 		}
 		return spec;

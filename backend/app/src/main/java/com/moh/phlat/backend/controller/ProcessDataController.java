@@ -71,7 +71,7 @@ public class ProcessDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ProcessDataFilterParams pProcess) {
+		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ProcessDataFilterParams filterProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -83,7 +83,7 @@ public class ProcessDataController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
 				processDataService.getProcessDataWithMessages(
-						controlTableId, rowStatus, pProcess)));
+						controlTableId, rowStatus, filterProcess)));
 	}
 
 	// get specific row by id

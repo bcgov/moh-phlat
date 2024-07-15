@@ -17,7 +17,7 @@ public interface SourceDataService {
 			"physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate", "mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "nailCity",
 			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate");
 
-	List<SourceData> getSourceData(Long controlId,  SourceDataFilterParams pSource);
+	List<SourceData> getSourceData(Long controlId,  SourceDataFilterParams filterProcess);
 	
 	List<String> getUniqueColumnValues(Long controlTableId, String columnKey);
 }
