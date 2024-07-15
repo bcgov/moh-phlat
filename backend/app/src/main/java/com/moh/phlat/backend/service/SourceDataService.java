@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.moh.phlat.backend.model.ParamSource;
+import com.moh.phlat.backend.model.SourceDataFilterParams;
 import com.moh.phlat.backend.model.SourceData;
 
 public interface SourceDataService {
@@ -18,7 +18,7 @@ public interface SourceDataService {
 			"physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate", "mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "nailCity",
 			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate");
 
-	public List<SourceData> getSourceData(Long controlId,  ParamSource pSource);
+	List<SourceData> getSourceData(Long controlId,  SourceDataFilterParams pSource);
 	
-	public List<String> getUniqueColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
+	List<String> getUniqueColumnValues(Long controlTableId, String columnKey);
 }

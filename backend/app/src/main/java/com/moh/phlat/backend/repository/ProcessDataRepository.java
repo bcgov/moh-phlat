@@ -21,6 +21,6 @@ public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> 
 
 	long countByControlTableId(Long controlTableId);   
 	
-	public List<ProcessData> findAll(Specification<ProcessData> spec);
+	List<ProcessData> findAll(Specification<ProcessData> spec);
 
 }

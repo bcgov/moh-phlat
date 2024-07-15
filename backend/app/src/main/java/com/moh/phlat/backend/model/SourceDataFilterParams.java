@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ParamSource {
+public class SourceDataFilterParams {
 	private List<String> id;
 	private List<String> doNotLoad;
 	private List<String> stakeholder;
@@ -75,5 +75,4 @@ public class ParamSource {
 	private List<String> mailPcode;
 	private List<String> mailCountry;
 	private List<String> mailAddrIsPriv;
-	private List<String> messages;
 }

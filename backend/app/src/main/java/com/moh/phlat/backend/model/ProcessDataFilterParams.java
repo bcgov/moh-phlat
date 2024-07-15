@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ParamProcess{
+public class ProcessDataFilterParams{
 	 private List<String> id;
 	 private List<String> actions;
 	 private List<String> rowStatusCode;
@@ -77,5 +77,4 @@ public class ParamProcess{
 	 private List<String> mailPcode;
 	 private List<String> mailCountry;
 	 private List<String> mailAddrIsPriv;
-	 private List<String> messages;
 }

@@ -1,7 +1,7 @@
 package com.moh.phlat.backend.service;
 
-import com.moh.phlat.backend.model.ParamProcess;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.service.dto.ReportSummary;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public interface ProcessDataService {
 
     List<ReportSummary> getReportSummary(Long controlTableId);
 	
-	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ParamProcess pProcess);
+	List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ProcessDataFilterParams pProcess);
 	
-	public List<String> getUniqueColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey);
+	List<String> getUniqueColumnValues(Long controlTableId, String columnKey);
 }

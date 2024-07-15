@@ -1,7 +1,6 @@
 package com.moh.phlat.backend.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ParamProcess;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
@@ -72,7 +71,7 @@ public class ProcessDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ParamProcess pProcess) {
+		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ProcessDataFilterParams pProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);

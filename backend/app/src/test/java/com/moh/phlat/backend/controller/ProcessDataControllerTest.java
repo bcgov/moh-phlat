@@ -110,7 +110,6 @@ public class ProcessDataControllerTest {
     public void testGetAllProcessDataByControlTableId() throws Exception {
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        //when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class))).thenReturn(processDataList);
         when(processDataService.getProcessDataWithMessages(anyLong(), null, null)).thenReturn(processDataList);
 
         // Perform GET request and validate response
@@ -131,7 +130,6 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class));
         verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), null, null);
 
     }

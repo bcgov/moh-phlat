@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import com.moh.phlat.backend.model.ParamSource;
+import com.moh.phlat.backend.model.SourceDataFilterParams;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.SourceDataRepository;
@@ -29,191 +30,191 @@ public class SourceDataServiceImpl implements SourceDataService {
 	private SpecificationService specificationService = new SpecificationServiceImpl();
 	
 	@Override
-	public List<SourceData> getSourceData(Long controlId, ParamSource pSource) {
+	public List<SourceData> getSourceData(Long controlId, SourceDataFilterParams pSource) {
 		
 		Specification<SourceData> combinedSpecification = specificationService.buildSpecificationWhereEqualForSourceData("controlTableId", controlId.toString());
 
-		if(pSource.getId() != null) {
+		if(StringUtils.hasText(pSource.getId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "id", pSource.getId());
 		}
-		if(pSource.getDoNotLoad() != null) {
+		if(StringUtils.hasText(pSource.getDoNotLoad())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "doNotLoad", pSource.getDoNotLoad());
 		}
-		if(pSource.getStakeholder() != null) {
+		if(StringUtils.hasText(pSource.getStakeholder())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "stakeholder", pSource.getStakeholder());
 		}
-		if(pSource.getHdsLpcId() != null) {
+		if(StringUtils.hasText(pSource.getHdsLpcId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsLpcId", pSource.getHdsLpcId());
 		}
-		if(pSource.getHdsCpnId() != null) {
+		if(StringUtils.hasText(pSource.getHdsCpnId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsCpnId", pSource.getHdsCpnId());
 		}
-		if(pSource.getHdsProviderId1() != null) {
+		if(StringUtils.hasText(pSource.getHdsProviderId1())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsProviderId1", pSource.getHdsProviderId1());
 		}
-		if(pSource.getHdsProviderId2() != null) {
+		if(StringUtils.hasText(pSource.getHdsProviderId2())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsProviderId2", pSource.getHdsProviderId2());
 		}
-		if(pSource.getHdsProviderId3() != null) {
+		if(StringUtils.hasText(pSource.getHdsProviderId3())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsProviderId3", pSource.getHdsProviderId3());
 		}
-		if(pSource.getHdsProviderIdType1() != null) {
+		if(StringUtils.hasText(pSource.getHdsProviderIdType1())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsProviderIdType1", pSource.getHdsProviderIdType1());
 		}
-		if(pSource.getHdsProviderIdType2() != null) {
+		if(StringUtils.hasText(pSource.getHdsProviderIdType2())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsProviderIdType2", pSource.getHdsProviderIdType2());
 		}
-		if(pSource.getHdsProviderIdType3() != null) {
+		if(StringUtils.hasText(pSource.getHdsProviderIdType3())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsProviderIdType3", pSource.getHdsProviderIdType3());
 		}
-		if(pSource.getHdsHibcFacId() != null) {
+		if(StringUtils.hasText(pSource.getHdsHibcFacId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsHibcFacId", pSource.getHdsHibcFacId());
 		}
-		if(pSource.getHdsType() != null) {
+		if(StringUtils.hasText(pSource.getHdsType())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsType", pSource.getHdsType());
 		}
-		if(pSource.getHdsName() != null) {
+		if(StringUtils.hasText(pSource.getHdsName())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsName", pSource.getHdsName());
 		}
-		if(pSource.getHdsNameAlias() != null) {
+		if(StringUtils.hasText(pSource.getHdsNameAlias())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsNameAlias", pSource.getHdsNameAlias());
 		}
-		if(pSource.getHdsPrefNameFlag() != null) {
+		if(StringUtils.hasText(pSource.getHdsPrefNameFlag())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsPrefNameFlag", pSource.getHdsPrefNameFlag());
 		}
-		if(pSource.getHdsEmail() != null) {
+		if(StringUtils.hasText(pSource.getHdsEmail())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsEmail", pSource.getHdsEmail());
 		}
-		if(pSource.getHdsWebsite() != null) {
+		if(StringUtils.hasText(pSource.getHdsWebsite())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsWebsite", pSource.getHdsWebsite());
 		}
-		if(pSource.getHdsBusTelAreaCode() != null) {
+		if(StringUtils.hasText(pSource.getHdsBusTelAreaCode())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsBusTelAreaCode", pSource.getHdsBusTelAreaCode());
 		}
-		if(pSource.getHdsBusTelNum() != null) {
+		if(StringUtils.hasText(pSource.getHdsBusTelNum())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsBusTelNum", pSource.getHdsBusTelNum());
 		}
-		if(pSource.getHdsTelExt() != null) {
+		if(StringUtils.hasText(pSource.getHdsTelExt())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsTelExt", pSource.getHdsTelExt());
 		}
-		if(pSource.getHdsCellAreaCode() != null) {
+		if(StringUtils.hasText(pSource.getHdsCellAreaCode())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsCellAreaCode", pSource.getHdsCellAreaCode());
 		}
-		if(pSource.getHdsCellNum() != null) {
+		if(StringUtils.hasText(pSource.getHdsCellNum())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsCellNum", pSource.getHdsCellNum());
 		}
-		if(pSource.getHdsFaxAreaCode() != null) {
+		if(StringUtils.hasText(pSource.getHdsFaxAreaCode())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsFaxAreaCode", pSource.getHdsFaxAreaCode());
 		}
-		if(pSource.getHdsFaxNum() != null) {
+		if(StringUtils.hasText(pSource.getHdsFaxNum())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsFaxNum", pSource.getHdsFaxNum());
 		}
-		if(pSource.getHdsServiceDelType() != null) {
+		if(StringUtils.hasText(pSource.getHdsServiceDelType())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsServiceDelType", pSource.getHdsServiceDelType());
 		}
-		if(pSource.getPcnCLinicType() != null) {
+		if(StringUtils.hasText(pSource.getPcnCLinicType())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "pcnCLinicType", pSource.getPcnCLinicType());
 		}
-		if(pSource.getPcnPciFlag() != null) {
+		if(StringUtils.hasText(pSource.getPcnPciFlag())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "pcnPciFlag", pSource.getPcnPciFlag());
 		}
-		if(pSource.getHdsHoursOfOp() != null) {
+		if(StringUtils.hasText(pSource.getHdsHoursOfOp())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsHoursOfOp", pSource.getHdsHoursOfOp());
 		}
-		if(pSource.getHdsContactName() != null) {
+		if(StringUtils.hasText(pSource.getHdsContactName())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsContactName", pSource.getHdsContactName());
 		}
-		if(pSource.getHdsIsForProfitFlag() != null) {
+		if(StringUtils.hasText(pSource.getHdsIsForProfitFlag())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsIsForProfitFlag", pSource.getHdsIsForProfitFlag());
 		}
-		if(pSource.getSourceStatus() != null) {
+		if(StringUtils.hasText(pSource.getSourceStatus())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "sourceStatus", pSource.getSourceStatus());
 		}
-		if(pSource.getHdsParentIpcId() != null) {
+		if(StringUtils.hasText(pSource.getHdsParentIpcId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "hdsParentIpcId", pSource.getHdsParentIpcId());
 		}
-		if(pSource.getBusIpcId() != null) {
+		if(StringUtils.hasText(pSource.getBusIpcId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busIpcId", pSource.getBusIpcId());
 		}
-		if(pSource.getBusCpnId() != null) {
+		if(StringUtils.hasText(pSource.getBusCpnId())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busCpnId", pSource.getBusCpnId());
 		}
-		if(pSource.getBusName() != null) {
+		if(StringUtils.hasText(pSource.getBusName())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busName", pSource.getBusName());
 		}
-		if(pSource.getBusLegalName() != null) {
+		if(StringUtils.hasText(pSource.getBusLegalName())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busLegalName", pSource.getBusLegalName());
 		}
-		if(pSource.getBusPayeeNum() != null) {
+		if(StringUtils.hasText(pSource.getBusPayeeNum())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busPayeeNum", pSource.getBusPayeeNum());
 		}
-		if(pSource.getBusOwnerName() != null) {
+		if(StringUtils.hasText(pSource.getBusOwnerName())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busOwnerName", pSource.getBusOwnerName());
 		}
-		if(pSource.getBusOwnerType() != null) {
+		if(StringUtils.hasText(pSource.getBusOwnerType())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busOwnerType", pSource.getBusOwnerType());
 		}
-		if(pSource.getBusOwnerTypeOther() != null) {
+		if(StringUtils.hasText(pSource.getBusOwnerTypeOther())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "busOwnerTypeOther", pSource.getBusOwnerTypeOther());
 		}
-		if(pSource.getFacBuildingName() != null) {
+		if(StringUtils.hasText(pSource.getFacBuildingName())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "facBuildingName", pSource.getFacBuildingName());
 		}
-		if(pSource.getFacHdsDetailAddInfo() != null) {
+		if(StringUtils.hasText(pSource.getFacHdsDetailAddInfo())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "facHdsDetailAddInfo", pSource.getFacHdsDetailAddInfo());
 		}
-		if(pSource.getPhysAddr1() != null) {
+		if(StringUtils.hasText(pSource.getPhysAddr1())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physAddr1", pSource.getPhysAddr1());
 		}
-		if(pSource.getPhysAddr2() != null) {
+		if(StringUtils.hasText(pSource.getPhysAddr2())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physAddr2", pSource.getPhysAddr2());
 		}
-		if(pSource.getPhysAddr3() != null) {
+		if(StringUtils.hasText(pSource.getPhysAddr3())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physAddr3", pSource.getPhysAddr3());
 		}
-		if(pSource.getPhysAddr4() != null) {
+		if(StringUtils.hasText(pSource.getPhysAddr4())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physAddr4", pSource.getPhysAddr4());
 		}
-		if(pSource.getPhysCity() != null) {
+		if(StringUtils.hasText(pSource.getPhysCity())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physCity", pSource.getPhysCity());
 		}
-		if(pSource.getPhysProv() != null) {
+		if(StringUtils.hasText(pSource.getPhysProv())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physProv", pSource.getPhysProv());
 		}
-		if(pSource.getPhysPCode() != null) {
+		if(StringUtils.hasText(pSource.getPhysPCode())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physPCode", pSource.getPhysPCode());
 		}
-		if(pSource.getPhysCountry() != null) {
+		if(StringUtils.hasText(pSource.getPhysCountry())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physCountry", pSource.getPhysCountry());
 		}
-		if(pSource.getPhysAddrIsPrivate() != null) {
+		if(StringUtils.hasText(pSource.getPhysAddrIsPrivate())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "physAddrIsPrivate", pSource.getPhysAddrIsPrivate());
 		}
-		if(pSource.getMailAddr1() != null) {
+		if(StringUtils.hasText(pSource.getMailAddr1())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailAddr1", pSource.getMailAddr1());
 		}
-		if(pSource.getMailAddr2() != null) {
+		if(StringUtils.hasText(pSource.getMailAddr2())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailAddr2", pSource.getMailAddr2());
 		}
-		if(pSource.getMailAddr3() != null) {
+		if(StringUtils.hasText(pSource.getMailAddr3())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailAddr3", pSource.getMailAddr3());
 		}
-		if(pSource.getMailAddr4() != null) {
+		if(StringUtils.hasText(pSource.getMailAddr4())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailAddr4", pSource.getMailAddr4());
 		}
-		if(pSource.getMailCity() != null) {
+		if(StringUtils.hasText(pSource.getMailCity())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailCity", pSource.getMailCity());
 		}
-		if(pSource.getMailBc() != null) {
+		if(StringUtils.hasText(pSource.getMailBc())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailBc", pSource.getMailBc());
 		}
-		if(pSource.getMailPcode() != null) {
+		if(StringUtils.hasText(pSource.getMailPcode())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailPcode", pSource.getMailPcode());
 		}
-		if(pSource.getMailCountry() != null) {
+		if(StringUtils.hasText(pSource.getMailCountry())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailCountry", pSource.getMailCountry());
 		}
-		if(pSource.getMailAddrIsPriv() != null) {
+		if(StringUtils.hasText(pSource.getMailAddrIsPriv())) {
 			combinedSpecification = specificationService.buildSpecificationAndForSourceData(combinedSpecification, "mailAddrIsPriv", pSource.getMailAddrIsPriv());
 		}
 		

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ParamSource;
+import com.moh.phlat.backend.model.SourceDataFilterParams;
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.SourceDataRepository;
@@ -88,7 +88,7 @@ public class SourceDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceData(
-			@PathVariable Long controlTableId, @RequestBody ParamSource pSource) {
+			@PathVariable Long controlTableId, @RequestBody SourceDataFilterParams pSource) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
