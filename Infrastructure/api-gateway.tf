@@ -41,12 +41,12 @@ module "api_gateway" {
       }
 
       response_parameters = jsonencode([
-        for status_code in local.http_status_codes : {
+        for status_code in toset(local.http_status_codes) : {
           # generate this block for each status code
           status_code = status_code
           mappings = {
             for k, v in local.response_headers :
-            # overwrite same header if coming from back end
+            # send this header in response and also overwrite if same header is coming from back end
             "overwrite:header.${k}" => v
           }
         }
