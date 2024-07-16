@@ -6,7 +6,7 @@
 
 locals {
   response_headers = {
-    "Content-Security-Policy"   = "'default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/'"
+    "Content-Security-Policy"   = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/"
     "Strict-Transport-Security" = "max-age=31536000"  # one year
     # Restricts access to geolocation, microphone, and camera features.
     "Permissions-Policy"        = "geolocation=(), microphone=(), camera=()"
