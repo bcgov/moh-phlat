@@ -7,9 +7,9 @@
 locals {
   response_headers = {
     "Content-Security-Policy"   = "'default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/'"
-    "Strict-Transport-Security" = "'max-age=31536000'"  # one year
+    "Strict-Transport-Security" = "max-age=31536000"  # one year
     # Restricts access to geolocation, microphone, and camera features.
-    "Permissions-Policy"        = "'geolocation=(), microphone=(), camera=()'"
+    "Permissions-Policy"        = "geolocation=(), microphone=(), camera=()"
   }
   # for the http codes, return above security headers
   http_status_codes = [200, 201, 204, 301, 302, 304, 400, 401, 403, 404, 429, 500, 502, 503, 504]
@@ -46,6 +46,7 @@ module "api_gateway" {
           status_code = status_code
           mappings = {
             for k, v in local.response_headers :
+            # overwrite same header if coming from back end
             "overwrite:header.${k}" => v
           }
         }
