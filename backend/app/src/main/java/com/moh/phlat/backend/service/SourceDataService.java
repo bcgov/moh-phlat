@@ -15,7 +15,7 @@ public interface SourceDataService {
 			"hdsContactName", "hdsIsForProfitFlag", "sourceStatus", "hdaParentIpcId", "busIpcId", "busCpnId", "busName",  "busLegalName", "busPayeeNumber", "busOwnerName",
 			"busOwnerType", "busOwnerTypeOther", "facBuildingName", "facilityHdsDetailsAdditionalInfo", "physicalAddr1", "physicalAddr2", "physicalAddr3", "physicalAddr",
 			"physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate", "mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "nailCity",
-			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate");
+			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate","hdsSubType");
 
 	List<SourceData> getSourceData(Long controlId,  SourceDataFilterParams filterProcess);
 	
