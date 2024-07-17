@@ -87,6 +87,7 @@ export default {
       'singleControlTableData',
       'allControlTableData',
       'deletedControlTableData',
+      'processingControlTable',
     ]),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser', 'userCurrentRoles']),
@@ -146,6 +147,9 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    processingControlTable(isLoading) {
+      this.loading = isLoading;
+    },
   },
 
   mounted() {
@@ -155,7 +159,6 @@ export default {
   methods: {
     ...mapActions(useControlTableDataStore, [
       'fetchGetAllControlTable',
-      'fetchDeleteControlTableById',
       'fetchUpdateApproveControlTable',
       'updateLoadToPlrl',
     ]),

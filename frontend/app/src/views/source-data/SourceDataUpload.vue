@@ -114,7 +114,10 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationStore, ['addNotification']),
-    ...mapActions(useInputSourceDataStore, ['postFileUpload']),
+    ...mapActions(useInputSourceDataStore, [
+      'postFileUpload',
+      'processingSourceData',
+    ]),
     redirectToView(id) {
       this.loading = true;
       this.$router.push({
@@ -208,6 +211,11 @@ export default {
     },
     checkForm: function (e) {
       e.preventDefault();
+    },
+  },
+  watch: {
+    processingSourceData(isLoading) {
+      this.loading = isLoading;
     },
   },
 };

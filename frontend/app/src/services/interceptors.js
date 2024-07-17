@@ -23,7 +23,9 @@ export function appAxios(timeout = 10000) {
       if (authStore?.ready && authStore?.authenticated) {
         cfg.headers.Authorization = `Bearer ${authStore.keycloak.token}`;
       }
-      return Promise.resolve(cfg);
+      // return Promise.resolve(cfg);
+      console.log('test', cfg.url);
+      return new Promise((resolve) => setTimeout(() => resolve(cfg), 5000));
     },
     (error) => {
       return Promise.reject(error);

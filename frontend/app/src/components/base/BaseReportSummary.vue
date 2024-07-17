@@ -14,10 +14,14 @@ export default {
     return {
       id: this.controlId,
       summaryData: {},
+      loading: false,
     };
   },
   computed: {
-    ...mapState(useReportSummaryStore, ['reportSummaryData']),
+    ...mapState(useReportSummaryStore, [
+      'reportSummaryData',
+      'processingReportSummary',
+    ]),
   },
   mounted() {
     this.initialize();
@@ -37,6 +41,11 @@ export default {
       this.$emit('close-view-report-summary');
     },
   },
+  watch: {
+    processingReportSummary(isLoading) {
+      this.loading = isLoading;
+    },
+  },
 };
 </script>
 
@@ -47,14 +56,16 @@ export default {
     >
     <v-card-text>
       <hr />
-      <v-table class="bg-grey-lighten-5 mb-3">
-        <tbody>
-          <tr v-for="(item, index) in summaryData" :key="index" align="right">
-            <th>{{ item.attribute }}:</th>
-            <td>{{ item.count }}</td>
-          </tr>
-        </tbody>
-      </v-table>
+      <v-skeleton-loader :loading="loading" type="list-item-two-line">
+        <v-table class="bg-grey-lighten-5 mb-3">
+          <tbody>
+            <tr v-for="(item, index) in summaryData" :key="index" align="right">
+              <th>{{ item.attribute }}:</th>
+              <td>{{ item.count }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-skeleton-loader>
       <v-btn
         data-test="cancel-btn"
         class="mt-3 text-primary"

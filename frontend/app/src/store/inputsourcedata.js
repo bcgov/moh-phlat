@@ -9,6 +9,7 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
     deletedInputSourceData: undefined,
     formFieldHeaders: [],
     fileUploadStatus: undefined,
+    processingSourceData: false,
   }),
   getters: {},
   actions: {
@@ -22,6 +23,7 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
       }
     },
     async fetchInputSourceDataByControlId(id) {
+      this.processingSourceData = true;
       try {
         const { data } =
           await inputSourceDataService.serviceGetInputSourceDataById(id);
@@ -33,6 +35,9 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingSourceData = false;
       }
     },
     async deleteInputSourceDataById(id) {
@@ -51,6 +56,7 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
       }
     },
     async fetchFormFieldHeaders() {
+      this.processingSourceData = true;
       try {
         const { data } = await inputSourceDataService.serviceGetFormFields();
         if (data.data) {
@@ -68,9 +74,13 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
         }
       } catch (error) {
         console.log('Something went wrong. (DJDSUU#396)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingSourceData = false;
       }
     },
     async postFileUpload(payload) {
+      this.processingSourceData = true;
       try {
         const { data } = await inputSourceDataService.servicePostFileUpload(
           payload
@@ -79,9 +89,13 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
       } catch (error) {
         this.fileUploadStatus = error;
         console.log('Something went wrong. (HSILKJ#457)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingSourceData = false;
       }
     },
     async updateSingleSourceRecord(id, payload) {
+      this.processingSourceData = true;
       try {
         const { data } = await inputSourceDataService.servicePutSourceDataById(
           id,
@@ -91,6 +105,9 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
       } catch (error) {
         this.updatedInputSourceData = error;
         console.log('Something went wrong. (JHSJD#4657)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingSourceData = false;
       }
     },
   },

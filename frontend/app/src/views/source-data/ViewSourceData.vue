@@ -134,6 +134,9 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    processingSourceData(isLoading) {
+      this.loading = isLoading;
+    },
   },
 
   async mounted() {
@@ -145,6 +148,7 @@ export default {
       'fetchInputSourceDataByControlId',
       'fetchFormFieldHeaders',
       'updateSingleSourceRecord',
+      'processingSourceData',
     ]),
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
