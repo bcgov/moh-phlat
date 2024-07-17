@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,10 +29,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.DbUtilityService;
@@ -110,11 +113,18 @@ public class ProcessDataControllerTest {
     public void testGetAllProcessDataByControlTableId() throws Exception {
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(), null, null)).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class))).thenReturn(processDataList);
 
         // Perform GET request and validate response
-        ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")
-                                                              .with(csrf()).contentType(MediaType.APPLICATION_JSON));
+        /*ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")
+                                                              .with(csrf()).contentType(MediaType.APPLICATION_JSON));*/
+        ResultActions resultActions = mockMvc.perform(post("/processdata/controltable/1")
+        		// something I tried, thought the changes didn't work.  Left in to track.  Same with the code just above.  Can be removed when this is working.
+        		/*.param("controlTableId", "1")
+        		.param("rowStatus",  "VALID")
+        		.param("filterProcess", "")*/
+                .with(csrf()).contentType(MediaType.APPLICATION_JSON));
+        
         resultActions.andExpect(status().isOk())
                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                      //check basic stuff
@@ -130,7 +140,7 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), null, null);
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class));
 
     }
 
