@@ -1,14 +1,15 @@
 import { appAxios } from '~/services/interceptors';
-//import { objectToQueryParams } from '~/utils/filters';
+import { cleanFilter } from '~/utils/filters';
 
 export default {
   async serviceGetAllProcessData() {
     return appAxios().get(`processdata/view/all`);
   },
   async serviceGetProcessDataById(id, filter = {}) {
-    //const queryString = objectToQueryParams(filter);
-    //const makeQuery = queryString ? `?${queryString}` : '';
-    return appAxios().post(`processdata/controltable/${id}`, filter);
+    return appAxios().post(
+      `processdata/controltable/${id}`,
+      cleanFilter(filter)
+    );
   },
   async serviceGetFormFieldsFromProcessData() {
     return appAxios().get(`processdata/column-display-names`);

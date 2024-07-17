@@ -47,3 +47,12 @@ export function objectToQueryParams(obj) {
   }
   return queryParams.join('&');
 }
+
+export function cleanFilter(filter) {
+  Object.keys(filter).forEach((key) => {
+    if (Array.isArray(filter[key]) && filter[key].length === 0) {
+      delete filter[key];
+    }
+  });
+  return filter;
+}
