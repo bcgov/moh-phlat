@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ParamSource;
+import com.moh.phlat.backend.model.SourceDataFilterParams;
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.SourceDataRepository;
@@ -90,7 +90,7 @@ public class SourceDataController {
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int pageLimit, 
 			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection,
-			@RequestBody ParamSource pSource) {
+			@RequestBody SourceDataFilterParams filterSource) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
@@ -101,7 +101,7 @@ public class SourceDataController {
 		Pageable currentPage = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				sourceDataService.getSourceData(controlTableId, pSource, currentPage)));
+				sourceDataService.getSourceData(controlTableId, filterSource, currentPage)));
 
 	}
 

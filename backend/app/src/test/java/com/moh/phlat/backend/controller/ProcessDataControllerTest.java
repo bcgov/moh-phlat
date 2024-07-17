@@ -1,25 +1,20 @@
 package com.moh.phlat.backend.controller;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
+import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.ProcessDataService;
+import com.moh.phlat.backend.service.TableColumnInfoService;
+import com.moh.phlat.backend.service.dto.ColumnDisplayName;
+import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
+import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
+import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
+import com.moh.phlat.backend.testsupport.factories.UserRoles;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -32,19 +27,23 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.ProcessDataService;
-import com.moh.phlat.backend.service.TableColumnInfoService;
-import com.moh.phlat.backend.service.dto.ColumnDisplayName;
-import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
-import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
-import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
-import com.moh.phlat.backend.testsupport.factories.UserRoles;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
@@ -115,12 +114,20 @@ public class ProcessDataControllerTest {
     	Pageable page = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),null,page)).thenReturn(processDataList);
-        //when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class))).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),nullable(ProcessDataFilterParams.class),page)).thenReturn(processDataList);
 
-        // Perform GET request and validate response
-        ResultActions resultActions = mockMvc.perform(get("/processdata/controltable/1")
-                                                              .with(csrf()).contentType(MediaType.APPLICATION_JSON));
+        /*
+        Generate an empty JSON to satisfy the request. Since the controller method doesn't process filterParams
+        and the service method is mocked, we can pass an empty JSON. Otherwise, if the logic depends on the filterParams
+        JSON, some values might need to be set.
+         */
+        String filterParamsJson = getFilterParamsJsonContent();
+
+        ResultActions resultActions = mockMvc.perform(post("/processdata/controltable/1")
+        		.param("rowStatus",  "VALID")
+                .content(filterParamsJson)
+                .with(csrf()).contentType(MediaType.APPLICATION_JSON));
+        
         resultActions.andExpect(status().isOk())
                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                      //check basic stuff
@@ -136,10 +143,16 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),page);
-        //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class));
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),null,page);
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),nullable(ProcessDataFilterParams.class),page);
 
+    }
+
+    private String getFilterParamsJsonContent() throws JsonProcessingException {
+
+        ProcessDataFilterParams filterParams = new ProcessDataFilterParams();
+        // Convert filterParams to JSON string
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(filterParams);
     }
 
 

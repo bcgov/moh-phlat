@@ -1,7 +1,6 @@
 package com.moh.phlat.backend.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.ParamProcess;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
@@ -80,7 +79,7 @@ public class ProcessDataController {
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
 		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required = true) int page, 
 		@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
-		@RequestParam(required = false) String sortDirection, @RequestBody ParamProcess pProcess) {
+		@RequestParam(required = false) String sortDirection, @RequestBody ProcessDataFilterParams filterProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -94,7 +93,7 @@ public class ProcessDataController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
 				processDataService.getProcessDataWithMessages(
-						controlTableId, rowStatus, pProcess, currentPage)));
+						controlTableId, rowStatus, filterProcess, currentPage)));
 	}
 
 	// get specific row by id
