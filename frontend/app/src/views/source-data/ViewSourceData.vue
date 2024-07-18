@@ -1,8 +1,10 @@
 <script>
 import BaseFilter from '../../components/base/BaseFilter.vue';
+import BaseColumnFilter from '../../components/base/BaseColumnFilter.vue';
 import BaseEditRecord from '../../components/base/BaseEditRecord.vue';
 import { mapActions, mapState } from 'pinia';
 import { useInputSourceDataStore } from '~/store/inputsourcedata';
+import { useFilterDataStore } from '~/store/filtersDataStore';
 import { useControlTableDataStore } from '~/store/controltabledata';
 import { useNotificationStore } from '~/store/notification';
 import { usePreferenceDataStore } from '~/store/displayColumnsPreference';
@@ -12,6 +14,7 @@ export default {
   components: {
     BaseFilter,
     BaseEditRecord,
+    BaseColumnFilter,
   },
   props: {
     id: {
@@ -81,6 +84,7 @@ export default {
       'deleteInputSourceDataById',
       'updatedInputSourceData',
     ]),
+    ...mapState(useFilterDataStore, ['viewSourceSelectedFiltersData']),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
@@ -134,6 +138,12 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    viewSourceSelectedFiltersData: {
+      async handler() {
+        await this.populateInputSource();
+      },
+      deep: true,
+    },
   },
 
   async mounted() {
@@ -180,7 +190,10 @@ export default {
 
     async populateInputSource() {
       // Get the submissions for this form
-      await this.fetchInputSourceDataByControlId(this.id);
+      await this.fetchInputSourceDataByControlId(
+        this.id,
+        this.viewSourceSelectedFiltersData
+      );
       this.inputSrcData = this.inputSourceData;
     },
 
@@ -373,6 +386,31 @@ export default {
         class="submissions-table"
         :search="search"
       >
+        <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
+          <tr>
+            <template v-for="column in columns" :key="column.key">
+              <th class="">
+                <div class="v-data-table-header__content cursor-pointer">
+                  <span class="mr-2" @click="() => toggleSort(column)"
+                    >{{ column.title }}
+                  </span>
+                  <template v-if="isSorted(column)">
+                    <v-icon
+                      :icon="getSortIcon(column)"
+                      @click="() => toggleSort(column)"
+                    ></v-icon>
+                  </template>
+                  <BaseColumnFilter
+                    v-if="column.filterable"
+                    source-type="viewSrcData"
+                    :control-id="id"
+                    :column="column"
+                  />
+                </div>
+              </th>
+            </template>
+          </tr>
+        </template>
         <template #top>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
