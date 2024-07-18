@@ -4,6 +4,17 @@
 #  most_recent = true
 #}
 
+locals {
+  response_headers = {
+    "Content-Security-Policy"   = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/"
+    "Strict-Transport-Security" = "max-age=31536000"  # one year
+    # Restricts access to geolocation, microphone, and camera features.
+    "Permissions-Policy"        = "geolocation=(), microphone=(), camera=()"
+  }
+  # for the http codes, return above security headers
+  http_status_codes = [200, 201, 204, 301, 302, 304, 400, 401, 403, 404, 429, 500, 502, 503, 504]
+}
+
 module "api_gateway" {
   source  = "terraform-aws-modules/apigateway-v2/aws"
   version = "2.2.2"
@@ -28,6 +39,19 @@ module "api_gateway" {
         "append:header.SourceIp"       = "$request.header.X-Forwarded-For"
         "append:header.clientSourceIP" = "$context.identity.sourceIp"
       }
+
+      response_parameters = jsonencode([
+        for status_code in toset(local.http_status_codes) : {
+          # generate this block for each status code
+          status_code = status_code
+          mappings = {
+            for k, v in local.response_headers :
+            # send this header in response and also overwrite if same header is coming from back end
+            "overwrite:header.${k}" => v
+          }
+        }
+      ])
+
     }
   }
 
