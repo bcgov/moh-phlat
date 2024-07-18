@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PathVariable;
 
 public interface ProcessDataService {
 	
@@ -19,7 +18,8 @@ public interface ProcessDataService {
 			"hdsHoursOfOperation", "hdsContactName", "hdsIsForProfitFlag", "sourceStatus", "hdsParentIpcId", "busIpcId", "busCpnId", "busName", "busLegalName",
 			"busPayeeNumber", "busOwnerName", "busOwnerType", "busOwnerTypeOther", "facBuildingName", "facilityHdsDetailsAdditionalInfo", "physicalAddr1",
 			"physicalAddr2", "physicalAddr3", "physicalAddr", "physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate",
-			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate","rowstatusCode","hdsSubType");
+			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate","rowstatusCode","hdsSubType",
+			"facRelnType");
 
     List<ReportSummary> getReportSummary(Long controlTableId);
 

@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +32,9 @@ public class ControlController {
 	
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/all")
-	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls(@RequestParam(required = true) int page, 
-			@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
-			@RequestParam(required = false) String sortDirection) {
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findAll(PageRequest.of(page, pageLimit, 
-						Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy)))));
+				.body(new ResponseMessage("success", 200, "", controlRepository.findAll()));
 	}
 
 	// view specific file control

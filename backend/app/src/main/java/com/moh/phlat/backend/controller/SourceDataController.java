@@ -33,7 +33,6 @@ import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
-import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
 import com.moh.phlat.backend.service.SourceDataService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
@@ -98,10 +97,10 @@ public class SourceDataController {
 					"Source Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		Pageable currentPage = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		Pageable pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				sourceDataService.getSourceData(controlTableId, filterSource, currentPage)));
+				sourceDataService.getSourceData(controlTableId, filterSource, pageRequest)));
 
 	}
 

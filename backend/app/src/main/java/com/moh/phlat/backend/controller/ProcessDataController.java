@@ -89,11 +89,11 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		Pageable currentPage = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		Pageable pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
 				processDataService.getProcessDataWithMessages(
-						controlTableId, rowStatus, filterProcess, currentPage)));
+						controlTableId, rowStatus, filterProcess, pageRequest)));
 	}
 
 	// get specific row by id
