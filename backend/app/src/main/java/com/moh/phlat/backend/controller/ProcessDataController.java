@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
@@ -66,9 +69,9 @@ public class ProcessDataController {
 
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/controltable/{controlTableId}")
+	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
+		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ProcessDataFilterParams filterProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -78,10 +81,9 @@ public class ProcessDataController {
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		List<ProcessData> processData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus);
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success",
-																			 200, "",
-																			 processData));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
+				processDataService.getProcessDataWithMessages(
+						controlTableId, rowStatus, filterProcess)));
 	}
 
 	// get specific row by id
@@ -484,13 +486,25 @@ public class ProcessDataController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!", controlTable));
 	}
 
-@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-@GetMapping("/reportsummary/{controlTableId}")
-public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTableId(
-		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+	@GetMapping("/reportsummary/{controlTableId}")
+	public @ResponseBody ResponseEntity<ResponseMessage> getReportSummaryByControlTableId(
+			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus) {
+		
+		List<ReportSummary> list = processDataService.getReportSummary(controlTableId);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
+	}
+
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+	@GetMapping("/{controlTableId}/column-distinct-values/{columnKey}")
+	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
 	
-	List<ReportSummary> list = processDataService.getReportSummary(controlTableId);
-	
-	return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
+		if(ProcessDataService.PROCESS_DATA_COLUMNS.contains(columnKey)) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", processDataService.getUniqueColumnValues(controlTableId, columnKey)));
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));
+		
 	}
 }

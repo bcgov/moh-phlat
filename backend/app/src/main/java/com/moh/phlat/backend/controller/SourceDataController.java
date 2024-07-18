@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,12 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.SourceDataFilterParams;
 import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.response.ResponseMessage;
 import com.moh.phlat.backend.service.DbUtilityService;
 import com.moh.phlat.backend.service.FileService;
+import com.moh.phlat.backend.service.SourceDataService;
 import com.moh.phlat.backend.service.TableColumnInfoService;
 import com.moh.phlat.backend.service.dto.ColumnDisplayName;
 
@@ -47,6 +51,9 @@ public class SourceDataController {
 
 	@Autowired
 	private DbUtilityService dbUtilityService;
+	
+	@Autowired
+	private SourceDataService sourceDataService;
 
     @Autowired
     private TableColumnInfoService tableColumnInfoService;	
@@ -79,19 +86,18 @@ public class SourceDataController {
 
 	// get source data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
-	@GetMapping("/view/controltableid/{controlTableId}")
-	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
-			@PathVariable Long controlTableId) {
+	@PostMapping("/controltableid/{controlTableId}")
+	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceData(
+			@PathVariable Long controlTableId, @RequestBody SourceDataFilterParams filterProcess) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
-		if (controlTableData.isPresent()) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-					sourceDataRepository.getAllSourceDataByControlTableId(controlTableId)));
-			// return sourceDataRepository.getAllSourceDataByControlTableId(controlTableId);
-		} else {
+		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
-					"Source Data not found for control id: " + controlTableId, "[]"));
-		}
+					"Source Data not found for control_id: " + controlTableId, "[]"));
+		}		
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				sourceDataService.getSourceData(controlTableId, filterProcess)));
 
 	}
 
@@ -184,4 +190,15 @@ public class SourceDataController {
 				new ResponseMessage("error", 400, "Please upload a non-empty CSV file with the standard format!", 0));
 	}
 
+	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
+	@GetMapping("/{controlTableId}/column-distinct-values/{columnKey}")
+	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
+
+		if(SourceDataService.SOURCE_DATA_COLUMNS.contains(columnKey)) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.getUniqueColumnValues(controlTableId, columnKey)));
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));
+		
+	}
 }
