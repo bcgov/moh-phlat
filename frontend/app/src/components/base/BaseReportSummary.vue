@@ -23,6 +23,11 @@ export default {
       'processingReportSummary',
     ]),
   },
+  watch: {
+    processingReportSummary(isLoading) {
+      this.loading = isLoading;
+    },
+  },
   mounted() {
     this.initialize();
   },
@@ -39,11 +44,6 @@ export default {
     },
     closeViewReportSummary() {
       this.$emit('close-view-report-summary');
-    },
-  },
-  watch: {
-    processingReportSummary(isLoading) {
-      this.loading = isLoading;
     },
   },
 };

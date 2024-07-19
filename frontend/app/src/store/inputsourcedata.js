@@ -22,11 +22,14 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
         console.log('Something went wrong. (DJDSUU#366)', error); // eslint-disable-line no-console
       }
     },
-    async fetchInputSourceDataByControlId(id) {
+    async fetchInputSourceDataByControlId(id, filter = {}) {
       this.processingSourceData = true;
       try {
         const { data } =
-          await inputSourceDataService.serviceGetInputSourceDataById(id);
+          await inputSourceDataService.serviceGetInputSourceDataById(
+            id,
+            filter
+          );
         this.inputSourceData = data.data;
       } catch (error) {
         console.log('Something went wrong. (DFSAD#326)', error); // eslint-disable-line no-console

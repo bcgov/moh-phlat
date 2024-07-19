@@ -2,46 +2,52 @@ package com.moh.phlat.backend.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.moh.phlat.backend.service.dto.ReportSummary;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import com.moh.phlat.backend.model.SourceDataFilterParams;
+import com.moh.phlat.backend.controller.ControlController;
+import com.moh.phlat.backend.model.SourceData;
+import com.moh.phlat.backend.repository.SourceDataFilterSpecification;
+import com.moh.phlat.backend.repository.SourceDataFilterSpecificationImpl;
+import com.moh.phlat.backend.repository.SourceDataRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
-import com.moh.phlat.backend.service.RowStatusService;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.model.ProcessDataFilterParams;
-import com.moh.phlat.backend.model.SourceData;
-import com.moh.phlat.backend.repository.ProcessDataFilterSpecification;
-import com.moh.phlat.backend.repository.ProcessDataFilterSpecificationImpl;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 @Service
-public class ProcessDataServiceImpl implements ProcessDataService {
-
-    @Autowired
-    ProcessDataRepository processDataRepository;
-    
-	@Autowired
-	EntityManager entityManager;
+public class SourceDataServiceImpl implements SourceDataService {
 	
-	private ProcessDataFilterSpecification specificationService = new ProcessDataFilterSpecificationImpl();
-    
-    @Override
-    public List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess) {
-    	
-    	Specification<ProcessData> combinedSpecification = specificationService.getDataWithMessages(controlId);
+	private static final Logger logger = LoggerFactory.getLogger(SourceDataServiceImpl.class);
 
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", reqRowStatusCode);
+	@Autowired
+	private SourceDataRepository sourceDataRepository;
+	
+	@Autowired
+	private EntityManager entityManager;
+    
+	private SourceDataFilterSpecification specificationService = new SourceDataFilterSpecificationImpl();
+	
+	@Override
+	public List<SourceData> getSourceData(Long controlId, SourceDataFilterParams filterProcess) {
+		
+		Specification<SourceData> combinedSpecification;
+		
+		try {
+			combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
+		} catch (Exception e) {
+			logger.error("Error occured: {}", e.getMessage(), e);
+			
+			return new ArrayList();
+		}
+
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", filterProcess.getId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "actions", filterProcess.getActions());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowStatusCode", filterProcess.getRowStatusCode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "doNotLoad", filterProcess.getDoNotLoad());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "stakeholder", filterProcess.getStakeholder());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsLpcId", filterProcess.getHdsLpcId());
@@ -67,7 +73,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxAreaCode", filterProcess.getHdsFaxAreaCode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxNum", filterProcess.getHdsFaxNum());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsServiceDelType", filterProcess.getHdsServiceDelType());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnCLinicType", filterProcess.getPcnClinicType());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnCLinicType", filterProcess.getPcnCLinicType());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnPciFlag", filterProcess.getPcnPciFlag());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHoursOfOp", filterProcess.getHdsHoursOfOp());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsContactName", filterProcess.getHdsContactName());
@@ -103,90 +109,16 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", filterProcess.getMailCountry());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", filterProcess.getMailAddrIsPriv());
 		
-		return processDataRepository.findAll(combinedSpecification);
-    }
-
-    private static ReportSummary createReportSummaryData(String reportAttributeName, Long reportAttributeValue) {
-        return ReportSummary.builder()
-						  .attribute(reportAttributeName)
-                          .count(reportAttributeValue)
-                          .build();
-    }
-
-    public List<ReportSummary> getReportSummary(Long controlTableId) {
-		String reportAttributeName;
-		Long reportAttributeValue;
-
-		List<ReportSummary> items = new ArrayList<ReportSummary>();
-
-		reportAttributeName ="TOTAL INPUT RECORDS";
-		reportAttributeValue = processDataRepository.countByControlTableId(controlTableId);
-     	ReportSummary rs1 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs1);
-		
-		reportAttributeName = "TOTAL INITIAL ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.INITIAL);
-     	ReportSummary rs2 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs2);
-
-		reportAttributeName = "TOTAL DO_NOT_LOAD ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.DO_NOT_LOAD);
-     	ReportSummary rs3 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs3);		
-		
-		reportAttributeName ="TOTAL INVALID ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.INVALID);
-     	ReportSummary rs4 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs4);	
-
-		reportAttributeName ="TOTAL VALID ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.VALID);
-		ReportSummary rs5 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs5);	
-		
-		reportAttributeName ="TOTAL WARNING ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId,RowStatusService.WARNING);
-     	ReportSummary rs6 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs6);	
-
-		reportAttributeName ="TOTAL COMPLETED ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.COMPLETED);
-     	ReportSummary rs7 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs7);
-
-		reportAttributeName = "TOTAL POTENTIAL_DUPLICATE ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.POTENTIAL_DUPLICATE);
-     	ReportSummary rs8 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs8);
-		
-		reportAttributeName = "TOTAL LOAD_ERROR ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.LOAD_ERROR);
-     	ReportSummary rs9 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs9);			
-		
-		// adding message code and desc to the list
-
-		List<Object[]> listMsg = processDataRepository.getProcessDataWithMessageCodeCount(controlTableId);
-
-		for (Object[] msg : listMsg){
-			String code = (String) msg[1];
-			if (StringUtils.hasText(code)) {
-				reportAttributeName = (String) msg[0] + " " + (String) msg[1] + " " + (String) msg[2];
-				reportAttributeValue = (Long) msg[3];
-				ReportSummary rsMessage = createReportSummaryData(reportAttributeName, reportAttributeValue);
-				items.add(rsMessage);	
-			}	
-		}   
-		return items;
+		return sourceDataRepository.findAll(combinedSpecification);
 	}
 
 	@Override
 	public List<String> getUniqueColumnValues(Long controlTableId, String columnKey) {
-
+		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<String> query = cb.createQuery(String.class);
         
-        Root<ProcessData> root = query.from(ProcessData.class);
+        Root<SourceData> root = query.from(SourceData.class);
 	        
 	    query.select(root.get(columnKey)).distinct(true);
 	    query.where(cb.equal(root.get("controlTableId"), controlTableId));
@@ -195,4 +127,5 @@ public class ProcessDataServiceImpl implements ProcessDataService {
         return entityManager.createQuery(query).getResultList();
 		
 	}
+
 }
