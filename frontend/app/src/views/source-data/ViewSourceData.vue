@@ -83,9 +83,13 @@ export default {
       'formFieldHeaders',
       'deleteInputSourceDataById',
       'updatedInputSourceData',
+      'processingSourceData',
     ]),
     ...mapState(useFilterDataStore, ['viewSourceSelectedFiltersData']),
-    ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
+    ...mapState(usePreferenceDataStore, [
+      'displayColumnsPreferenceData',
+      'processignPreferenceData',
+    ]),
     ...mapState(useControlTableDataStore, ['singleControlTableData']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -137,6 +141,12 @@ export default {
     },
     dialogDelete(val) {
       val || this.closeDelete();
+    },
+    processingSourceData(isLoading) {
+      this.loading = isLoading;
+    },
+    processignPreferenceData(isLoading) {
+      this.loading = isLoading;
     },
     viewSourceSelectedFiltersData: {
       async handler() {
@@ -208,8 +218,6 @@ export default {
     },
 
     async updateFilter(data, changeDisplayColumnsPreference = true) {
-      this.showColumnsDialog = false;
-      this.filterData = data;
       let preferences = {
         columns: [],
       };
@@ -222,7 +230,9 @@ export default {
           ViewNames.SOURCEVIEW,
           preferences.columns
         ));
-      await this.populateInputSource();
+      this.showColumnsDialog = false;
+      this.filterData = data;
+      //await this.populateInputSource();
     },
 
     editItem(item) {
@@ -449,6 +459,7 @@ export default {
 
       <v-dialog v-model="showColumnsDialog" width="700">
         <BaseFilter
+          :loading="loading"
           input-filter-placeholder="Search Columns"
           input-save-button-text="Save"
           :input-data="BASE_FILTER_HEADERS_FOR_MANAGE_COLUMNS"

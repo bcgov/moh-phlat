@@ -7,10 +7,12 @@ export const useStatusDataStore = defineStore('statusdata', {
     singleStatusData: [],
     allStatusData: [],
     deletedStatusData: undefined,
+    processingStatusData: false,
   }),
   getters: {},
   actions: {
     async fetchGetAllStatus(includeDeleted = false) {
+      this.processingStatusData = true;
       try {
         const { data } = await rowStatusService.serviceGetAllStatus(
           includeDeleted
@@ -23,6 +25,9 @@ export const useStatusDataStore = defineStore('statusdata', {
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
         console.log('Something went wrong. (STKSDOD#5965)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingStatusData = false;
       }
     },
   },

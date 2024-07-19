@@ -7,6 +7,7 @@ export const useControlTableDataStore = defineStore('controltabledata', {
     singleControlTableData: [],
     allControlTableData: [],
     deletedControlTableData: undefined,
+    processingControlTable: false,
   }),
   getters: {},
   actions: {
@@ -22,6 +23,7 @@ export const useControlTableDataStore = defineStore('controltabledata', {
       }
     },
     async updateLoadToPlrl(id) {
+      this.processingControlTable = true;
       const notificationStore = useNotificationStore();
       try {
         const { data } = await controlTableService.servicePutLoadToPlrl(id);
@@ -43,9 +45,13 @@ export const useControlTableDataStore = defineStore('controltabledata', {
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingControlTable = false;
       }
     },
     async fetchUpdateApproveControlTable(id) {
+      this.processingControlTable = true;
       const notificationStore = useNotificationStore();
       try {
         const { data } =
@@ -68,6 +74,9 @@ export const useControlTableDataStore = defineStore('controltabledata', {
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
         console.log('Something went wrong. (SJHQD#3126)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingControlTable = false;
       }
     },
     async fetchAddControlTable(payload) {
@@ -104,6 +113,7 @@ export const useControlTableDataStore = defineStore('controltabledata', {
       }
     },
     async fetchGetAllControlTable() {
+      this.processingControlTable = true;
       const notificationStore = useNotificationStore();
       try {
         const { data } = await controlTableService.serviceGetAllControlTable();
@@ -121,6 +131,9 @@ export const useControlTableDataStore = defineStore('controltabledata', {
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingControlTable = false;
       }
     },
     async fetchDeleteControlTableById(id) {

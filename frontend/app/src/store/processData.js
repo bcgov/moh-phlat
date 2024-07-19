@@ -10,6 +10,7 @@ export const useProcessDataStore = defineStore('processdata', {
     formFieldHeaders: [],
     fileUploadStatus: undefined,
     validateAllStatus: undefined,
+    processingProcessData: false,
   }),
   getters: {},
   actions: {
@@ -22,6 +23,7 @@ export const useProcessDataStore = defineStore('processdata', {
       }
     },
     async fetchProcessDataByControlId(id, filter = {}) {
+      this.processingProcessData = true;
       try {
         const { data } = await processDataService.serviceGetProcessDataById(
           id,
@@ -35,6 +37,9 @@ export const useProcessDataStore = defineStore('processdata', {
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processingProcessData = false;
       }
     },
     async updateValidateAll(id) {

@@ -120,6 +120,7 @@ export default {
       'deleteProcessDataById',
       'updatedProcessData',
       'validateAllStatus',
+      'processingProcessData',
     ]),
     ...mapState(useFilterDataStore, ['editSourceSelectedFiltersData']),
     ...mapState(usePreferenceDataStore, ['displayColumnsPreferenceData']),
@@ -192,6 +193,12 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    processingProcessData(isLoading) {
+      this.loading = isLoading;
+    },
+    processignPreferenceData(isLoading) {
+      this.loading = isLoading;
+    },
     editSourceSelectedFiltersData: {
       async handler() {
         await this.populateInputSource();
@@ -215,14 +222,15 @@ export default {
     ...mapActions(usePreferenceDataStore, [
       'updateUserColumnsDisplayPreference',
       'fetchUserPreference',
+      'processignPreferenceData',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
     initialize() {
       this.loading = true;
-      this.populateControlTable();
-      this.populateHeaders();
       this.populateInputSource();
+      this.populateHeaders();
+      this.populateControlTable();
       this.populateStatus();
       this.loading = false;
     },
@@ -338,6 +346,7 @@ export default {
     },
 
     async requestValidateAll() {
+      this.loading = true;
       await this.updateValidateAll(this.id);
       if (
         this.validateAllStatus &&
@@ -347,6 +356,7 @@ export default {
           name: 'TaskManagement',
         });
       }
+      this.loading = true;
     },
     validateAll() {
       this.requestValidateAll();
@@ -362,7 +372,8 @@ export default {
     },
 
     async updateFilter(data, changeDisplayColumnsPreference = true) {
-      this.showColumnsDialog = false;
+      this.loading = true;
+      this.filterData = data;
       let preferences = {
         columns: [],
       };
@@ -375,7 +386,9 @@ export default {
           ViewNames.PROCESSVIEW,
           preferences.columns
         ));
-      await this.populateInputSource();
+      this.showColumnsDialog = false;
+      this.loading = false;
+      // await this.populateInputSource();
     },
 
     editItem(item) {
@@ -604,11 +617,12 @@ export default {
         :headers="HEADERS"
         fixed-header
         :items="inputSrcData"
-        :items-length="inputSrcData.length"
         density="compact"
         :search="search"
         :sort-by="sortOrderCriteria"
         class="submissions-table"
+        no-data-text="No data found"
+        item-key="id"
       >
         <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
           <tr>
@@ -742,12 +756,14 @@ export default {
       <v-dialog v-model="showValidateAllDialog" width="700">
         <BasePrompt
           prompt-body-text="Are you sure you want to validate all records?"
+          :loading="loading"
           @do-action="validateAll"
           @abort-action="showValidateAllDialog = false"
         />
       </v-dialog>
       <v-dialog v-model="showColumnsDialog" width="700">
         <BaseFilter
+          :loading="loading"
           input-filter-placeholder="Search Columns"
           input-save-button-text="Save"
           :input-data="BASE_FILTER_HEADERS_FOR_MANAGE_COLUMNS"

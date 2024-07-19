@@ -5,10 +5,12 @@ import { useNotificationStore } from '~/store/notification';
 export const usePreferenceDataStore = defineStore('preferencedata', {
   state: () => ({
     displayColumnsPreferenceData: [],
+    processignPreferenceData: false,
   }),
   getters: {},
   actions: {
     async updateUserColumnsDisplayPreference(viewName, payload) {
+      this.processignPreferenceData = true;
       const notificationStore = useNotificationStore();
       try {
         const { data } =
@@ -36,9 +38,13 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
         console.log('Something went wrong. (STJ6SLL#2426)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processignPreferenceData = false;
       }
     },
     async fetchUserPreference(viewName) {
+      this.processignPreferenceData = true;
       try {
         const { data } =
           await userPreferenceService.fetchColumnsDisplayPreference(viewName);
@@ -55,6 +61,9 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
       } catch (error) {
         this.displayColumnsPreferenceData = [];
         console.log('Something went wrong. (STO1MDJ#20d261)', error); // eslint-disable-line no-console
+      } finally {
+        // This will execute regardless of the try/catch outcome
+        this.processignPreferenceData = false;
       }
     },
   },
