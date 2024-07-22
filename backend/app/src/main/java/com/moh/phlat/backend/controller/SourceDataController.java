@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -97,7 +98,13 @@ public class SourceDataController {
 					"Source Data not found for control_id: " + controlTableId, "[]"));
 		}
 
-		Pageable pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		Pageable pageRequest;
+		
+		if (StringUtils.hasText(sortBy) && StringUtils.hasText(sortDirection)) {
+			pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		} else {
+			pageRequest = PageRequest.of(page, pageLimit);
+		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
 				sourceDataService.getSourceData(controlTableId, filterSource, pageRequest)));

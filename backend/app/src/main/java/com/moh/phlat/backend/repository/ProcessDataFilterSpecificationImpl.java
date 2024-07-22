@@ -14,7 +14,9 @@ public class ProcessDataFilterSpecificationImpl implements ProcessDataFilterSpec
 	
 	public Specification<ProcessData> getDataWithMessages(Long controlId){
 		return (root, query, builder) -> {
-			root.fetch("messages",JoinType.LEFT);
+			//root.fetch("messages",JoinType.LEFT);
+			//root.fetch("messages",JoinType.INNER);
+			//root.fetch("messages",JoinType.RIGHT);
 			return builder.equal(root.get("controlTableId"), controlId);
 		};
 	}

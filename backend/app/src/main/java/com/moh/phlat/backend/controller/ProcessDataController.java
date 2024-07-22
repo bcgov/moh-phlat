@@ -88,9 +88,15 @@ public class ProcessDataController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
 					"Process Data not found for control_id: " + controlTableId, "[]"));
 		}
-
-		Pageable pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 		
+		Pageable pageRequest;
+		
+		if (StringUtils.hasText(sortBy) && StringUtils.hasText(sortDirection)) {
+			pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		} else {
+			pageRequest = PageRequest.of(page, pageLimit);
+		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
 				processDataService.getProcessDataWithMessages(
 						controlTableId, rowStatus, filterProcess, pageRequest)));

@@ -12,6 +12,6 @@ import com.moh.phlat.backend.model.SourceData;
 @Repository
 public interface SourceDataRepository extends CrudRepository<SourceData, Long> {
 	
-List<SourceData> getAllSourceDataByControlTableId(Long controlTableId);
-List<SourceData> findAll(Specification<SourceData> spec, Pageable pageable);
+	List<SourceData> getAllSourceDataByControlTableId(Long controlTableId);
+	List<SourceData> findAll(Specification<SourceData> spec, Pageable pageable);
 }
