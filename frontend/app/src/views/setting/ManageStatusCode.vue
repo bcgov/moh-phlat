@@ -19,7 +19,7 @@ export default {
   }),
 
   computed: {
-    ...mapState(useStatusDataStore, ['allStatusData']),
+    ...mapState(useStatusDataStore, ['allStatusData', 'processingStatusData']),
     ...mapState(useAuthStore, ['isRegAdmin', 'isRegUser']),
     PerformActions: () => PerformActions,
     BASE_HEADERS() {
@@ -41,6 +41,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.close();
+    },
+    processingStatusData(isLoading) {
+      this.loading = isLoading;
     },
   },
 
