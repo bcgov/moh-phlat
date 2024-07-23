@@ -1,6 +1,10 @@
 <script>
 export default {
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     inputHeaders: {
       type: Array,
       default: () => [
@@ -119,6 +123,7 @@ export default {
         v-model="selectedData"
         data-test="filter-table"
         fixed-header
+        :loading="loading"
         show-select
         hide-default-footer
         height="300px"
@@ -135,6 +140,7 @@ export default {
       <v-btn
         data-test="save-btn"
         block
+        :loading="loading"
         class="bg-primary"
         size="x-large"
         @click="savingFilterData"
