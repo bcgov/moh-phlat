@@ -88,7 +88,7 @@ public class SourceDataController {
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
-			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int pageLimit, 
+			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int itemsPerPage, 
 			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection,
 			@RequestBody SourceDataFilterParams filterSource) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -101,9 +101,9 @@ public class SourceDataController {
 		Pageable pageRequest;
 		
 		if (StringUtils.hasText(sortBy) && StringUtils.hasText(sortDirection)) {
-			pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 		} else {
-			pageRequest = PageRequest.of(page, pageLimit);
+			pageRequest = PageRequest.of(page - 1, itemsPerPage);
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",

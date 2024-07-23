@@ -78,7 +78,7 @@ public class ProcessDataController {
 	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
 		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required = true) int page, 
-		@RequestParam(required = true) int pageLimit, @RequestParam(required = false) String sortBy, 
+		@RequestParam(required = true) int itemsPerPage, @RequestParam(required = false) String sortBy, 
 		@RequestParam(required = false) String sortDirection, @RequestBody ProcessDataFilterParams filterProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
@@ -92,9 +92,9 @@ public class ProcessDataController {
 		Pageable pageRequest;
 		
 		if (StringUtils.hasText(sortBy) && StringUtils.hasText(sortDirection)) {
-			pageRequest = PageRequest.of(page, pageLimit, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
 		} else {
-			pageRequest = PageRequest.of(page, pageLimit);
+			pageRequest = PageRequest.of(page - 1, itemsPerPage);
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
