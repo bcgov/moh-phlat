@@ -21,5 +21,7 @@ public interface SourceDataService {
 
 	List<SourceData> getSourceData(Long controlId,  SourceDataFilterParams filterSource, Pageable pageable);
 	
+	Long countSourceData(Long controlId,  SourceDataFilterParams filterSource);
+	
 	List<String> getUniqueColumnValues(Long controlTableId, String columnKey);
 }

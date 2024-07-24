@@ -36,7 +36,15 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     
     @Override
     public List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess, Pageable pageable) {
-    	
+    			
+		return processDataRepository.findAll(buildSpecification(controlId, reqRowStatusCode, filterProcess), pageable);
+    }
+    
+    public Long countProcessData(Long controlId, ProcessDataFilterParams filterProcess) {
+    	return processDataRepository.count(buildSpecification(controlId, null, filterProcess));
+    }
+    
+    private Specification<ProcessData> buildSpecification(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess) {
     	Specification<ProcessData> combinedSpecification = specificationService.getDataWithMessages(controlId);
 
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", reqRowStatusCode);
@@ -104,7 +112,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", filterProcess.getMailCountry());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", filterProcess.getMailAddrIsPriv());
 		
-		return processDataRepository.findAll(combinedSpecification, pageable);
+		return combinedSpecification;
     }
 
     private static ReportSummary createReportSummaryData(String reportAttributeName, Long reportAttributeValue) {

@@ -38,14 +38,34 @@ public class SourceDataServiceImpl implements SourceDataService {
 	@Override
 	public List<SourceData> getSourceData(Long controlId, SourceDataFilterParams filterSource, Pageable pageable) {
 		
+		try {
+			return sourceDataRepository.findAll(buildSpecification(controlId, filterSource), pageable);
+		} catch (Exception e) {
+			logger.error("Error occured: {}", e.getMessage(), e);
+			
+			return new ArrayList();
+		}
+	}
+	
+	@Override
+	public Long countSourceData(Long controlId,  SourceDataFilterParams filterSource) {
+		try{
+			return sourceDataRepository.count(buildSpecification(controlId, filterSource));
+		} catch (Exception e) {
+			logger.error("Error occured: {}", e.getMessage(), e);
+			
+			return null;
+		}
+	}
+	
+	private Specification<SourceData> buildSpecification(Long controlId, SourceDataFilterParams filterSource) throws Exception{
+		
 		Specification<SourceData> combinedSpecification;
 		
 		try {
 			combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
 		} catch (Exception e) {
-			logger.error("Error occured: {}", e.getMessage(), e);
-			
-			return new ArrayList();
+			throw new Exception(e);
 		}
 
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", filterSource.getId());
@@ -110,7 +130,7 @@ public class SourceDataServiceImpl implements SourceDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", filterSource.getMailCountry());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", filterSource.getMailAddrIsPriv());
 		
-		return sourceDataRepository.findAll(combinedSpecification, pageable);
+		return combinedSpecification;
 	}
 
 	@Override

@@ -87,6 +87,9 @@ public class ProcessDataController {
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
 					"Process Data not found for control_id: " + controlTableId, "[]"));
+		} else if (page < 1) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("success", 400,
+					"Page needs to be larger than 0.", "[]"));
 		}
 		
 		Pageable pageRequest;
@@ -97,7 +100,7 @@ public class ProcessDataController {
 			pageRequest = PageRequest.of(page - 1, itemsPerPage);
 		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, processDataService.countProcessData(controlTableId, filterProcess).toString(), 
 				processDataService.getProcessDataWithMessages(
 						controlTableId, rowStatus, filterProcess, pageRequest)));
 	}
