@@ -40,6 +40,12 @@ export default {
     showColumnsDialog: false,
     deleteSingleItem: {},
     filterData: {},
+    pagination: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: 'id',
+      sortDirection: 'asc',
+    },
     filterIgnore: [],
     filterIgnoreColumns: [
       {
@@ -87,7 +93,7 @@ export default {
     editStatusNewItem: '',
     statusCodes: [],
     sortOrder: 'default',
-    sortOrderCriteria: [{ key: 'id', order: 'asc' }],
+    sortOrderCriteria: [], //{ key: 'id', order: 'asc' }
     sortOrderTypes: [
       {
         text: 'Row ID#',
@@ -116,6 +122,7 @@ export default {
   computed: {
     ...mapState(useProcessDataStore, [
       'processData',
+      'totalItems',
       'formFieldHeaders',
       'deleteProcessDataById',
       'updatedProcessData',
@@ -228,7 +235,7 @@ export default {
     ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
     initialize() {
       this.loading = true;
-      this.populateInputSource();
+      // this.populateInputSource();
       this.populateHeaders();
       this.populateControlTable();
       this.populateStatus();
@@ -305,11 +312,15 @@ export default {
         ({ key }) => key !== 'controlTableId'
       );
     },
-
+    loadItems(pageData) {
+      this.pagination = pageData;
+      this.populateInputSource();
+    },
     async populateInputSource() {
       await this.fetchProcessDataByControlId(
         this.id,
-        this.editSourceSelectedFiltersData
+        this.editSourceSelectedFiltersData,
+        this.pagination
       );
       this.inputSrcData = this.processData;
     },
@@ -610,19 +621,28 @@ export default {
 
     <div>
       <div></div>
-      <v-data-table
+      <v-data-table-server
         key="forceTableRefresh"
         :loading="loading"
         height="70vh"
         :headers="HEADERS"
         fixed-header
         :items="inputSrcData"
+        :items-length="totalItems"
+        :items-per-page-options="[
+          { value: 10, title: '10' },
+          { value: 25, title: '25' },
+          { value: 50, title: '50' },
+          { value: 100, title: '100' },
+          { value: 99999999, title: 'All' },
+        ]"
         density="compact"
         :search="search"
         :sort-by="sortOrderCriteria"
         class="submissions-table"
         no-data-text="No data found"
         item-key="id"
+        @update:options="loadItems"
       >
         <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
           <tr>
@@ -752,7 +772,7 @@ export default {
         <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
         </template>
-      </v-data-table>
+      </v-data-table-server>
       <v-dialog v-model="showValidateAllDialog" width="700">
         <BasePrompt
           prompt-body-text="Are you sure you want to validate all records?"

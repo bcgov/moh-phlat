@@ -5,12 +5,14 @@ import { processDataService } from '~/services';
 export const useProcessDataStore = defineStore('processdata', {
   state: () => ({
     processData: [],
+    totalItems: 0,
     updatedProcessData: [],
     deletedProcessData: undefined,
     formFieldHeaders: [],
     fileUploadStatus: undefined,
     validateAllStatus: undefined,
     processingProcessData: false,
+    nonFilterableColumns: ['id', 'actions', 'messages'],
   }),
   getters: {},
   actions: {
@@ -22,14 +24,16 @@ export const useProcessDataStore = defineStore('processdata', {
         console.log('Something went wrong. (DJQSUU#396)', error); // eslint-disable-line no-console
       }
     },
-    async fetchProcessDataByControlId(id, filter = {}) {
+    async fetchProcessDataByControlId(id, filter = {}, pagination) {
       this.processingProcessData = true;
       try {
         const { data } = await processDataService.serviceGetProcessDataById(
           id,
-          filter
+          filter,
+          pagination
         );
         this.processData = data.data;
+        this.totalItems = data.totalItems || 10000;
       } catch (error) {
         console.log('Something went wrong. (DISAD#316)', error); // eslint-disable-line no-console
         const notificationStore = useNotificationStore();
@@ -73,7 +77,7 @@ export const useProcessDataStore = defineStore('processdata', {
         if (data.data) {
           this.formFieldHeaders = data.data.map((heading) => ({
             ...heading,
-            filterable: true, // set filterable to false
+            filterable: !this.nonFilterableColumns.includes(heading.key), // set filterable to false
             sortable: true, // set sortable to false
           }));
         } else {

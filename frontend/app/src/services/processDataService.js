@@ -1,13 +1,16 @@
 import { appAxios } from '~/services/interceptors';
-import { cleanFilter } from '~/utils/filters';
+import { cleanFilter, objectToQueryParams } from '~/utils/filters';
 
 export default {
   async serviceGetAllProcessData() {
     return appAxios().get(`processdata/view/all`);
   },
-  async serviceGetProcessDataById(id, filter = {}) {
+  async serviceGetProcessDataById(id, filter = {}, pagination) {
+    pagination.sortBy = 'id'; //Patch current sorting option
+    pagination.sortDirection = 'asc';
+    const paginationCriteria = objectToQueryParams(pagination);
     return appAxios().post(
-      `processdata/controltable/${id}`,
+      `processdata/controltable/${id}?${paginationCriteria}`,
       cleanFilter(filter)
     );
   },
