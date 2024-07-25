@@ -34,7 +34,7 @@ public class ControlController {
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllControls() {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findAll()));
+				.body(new ResponseMessage("success", 200, "", null, controlRepository.findAll()));
 	}
 
 	// view specific file control
@@ -44,18 +44,18 @@ public class ControlController {
 		Optional<Control> controlTable = controlRepository.findById(id);
 		if (controlTable.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("success", 404, "Control table not found with id: " + id, "[]"));
+					.body(new ResponseMessage("success", 404, "Control table not found with id: " + id, null, "[]"));
 		}
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findById(id)));
+				.body(new ResponseMessage("success", 200, "", null, controlRepository.findById(id)));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/view/filename/{fileName}")
 	public ResponseEntity<ResponseMessage> getControlByFileName(@PathVariable String fileName) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", controlRepository.findByFileName(fileName)));
+				.body(new ResponseMessage("success", 200, "", null, controlRepository.findByFileName(fileName)));
 
 	}
 
@@ -67,7 +67,7 @@ public class ControlController {
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("error", 404, "Control table not found with id: " + id, "[]"));
+					.body(new ResponseMessage("error", 404, "Control table not found with id: " + id, null, "[]"));
 		}
 
 		try {
@@ -94,12 +94,12 @@ public class ControlController {
 
 			controlRepository.save(_controlTable);
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", _controlTable));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null, _controlTable));
 
 		} catch (Exception e) {
 			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
-					"Internal error encountered while updating Control table with id: " + id, "[]"));
+					"Internal error encountered while updating Control table with id: " + id, null, "[]"));
 		}
 	}
 
@@ -110,7 +110,7 @@ public class ControlController {
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("error", 404, "Control table not found with id: " + id, "[]"));
+					.body(new ResponseMessage("error", 404, "Control table not found with id: " + id, null, "[]"));
 		}
 
 		try {
@@ -124,12 +124,12 @@ public class ControlController {
 
 			controlRepository.save(_controlTable);
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record approved successfully.", _controlTable));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record approved successfully.", null, _controlTable));
 
 		} catch (Exception e) {
 			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
-					"Internal error encountered while approving constrol table with id: " + id, "[]"));
+					"Internal error encountered while approving constrol table with id: " + id, null, "[]"));
 		}
 	}
 

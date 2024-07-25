@@ -2,7 +2,9 @@ package com.moh.phlat.backend.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map; 
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +68,7 @@ public class SourceDataController {
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDatas() {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", sourceDataRepository.findAll()));
+				.body(new ResponseMessage("success", 200, "", null, sourceDataRepository.findAll()));
 	}
 
 	// get specific row by id
@@ -76,11 +79,11 @@ public class SourceDataController {
 		Optional<SourceData> soureData = sourceDataRepository.findById(id);
 		if (soureData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("success", 404, "Source Data not found for id: " + id, "[]"));
+					.body(new ResponseMessage("success", 404, "Source Data not found for id: " + id, null, "[]"));
 		}
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", sourceDataRepository.findById(id)));
+				.body(new ResponseMessage("success", 200, "", null, sourceDataRepository.findById(id)));
 
 	}
 
@@ -89,27 +92,33 @@ public class SourceDataController {
 	@PostMapping("/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int itemsPerPage, 
-			@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection,
-			@RequestBody SourceDataFilterParams filterSource) {
+			@RequestBody SourceDataFilterParams filterSource, @RequestParam(required = false) Map<String,String> sort) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
-					"Source Data not found for control_id: " + controlTableId, "[]"));
+					"Source Data not found for control_id: " + controlTableId, null, "[]"));
 		} else if (page < 1) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("success", 400,
-					"Page needs to be larger than 0.", "[]"));
+					"Page needs to be larger than 0.", null, "[]"));
+		}
+		
+		List<Order> orders = new ArrayList<Order>();
+		for(Map.Entry<String,String> entry:sort.entrySet()) {
+			if(entry.getValue().equals("asc") || entry.getValue().equals("desc")) {
+				orders.add(new Order(entry.getValue().equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC, entry.getKey()));
+			}
 		}
 
 		Pageable pageRequest;
 		
-		if (StringUtils.hasText(sortBy) && StringUtils.hasText(sortDirection)) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by((sortDirection.equals("asc"))?Sort.Direction.ASC:Sort.Direction.DESC, sortBy));
+		if (orders.size() > 0) {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(orders));
 		} else {
 			pageRequest = PageRequest.of(page - 1, itemsPerPage);
 		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, sourceDataService.countSourceData(controlTableId, filterSource).toString(),
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.countSourceData(controlTableId, filterSource),
 				sourceDataService.getSourceData(controlTableId, filterSource, pageRequest)));
 
 	}
@@ -119,7 +128,7 @@ public class SourceDataController {
 	public ResponseEntity<ResponseMessage> getColumnDisplayNames() {
 	    List<ColumnDisplayName> list = null;
 		list = tableColumnInfoService.getColumnDisplayNames(TableColumnInfoService.SOURCE_DATA);
-	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null, list));
 	}
 
 	@PostMapping("/upload")
@@ -155,21 +164,21 @@ public class SourceDataController {
 				logger.info("File Name is required.");
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-						.body(new ResponseMessage("error", 400, "File Name is required.", 0));
+						.body(new ResponseMessage("error", 400, "File Name is required.", null, 0));
 			}
 
 			if (control.getBatchLabelName().trim().isEmpty()) {
 				logger.info("{} Batch Label Name is required.", _newFileName);
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-						.body(new ResponseMessage("error", 400, "Batch Label Name is required.", 0));
+						.body(new ResponseMessage("error", 400, "Batch Label Name is required.", null, 0));
 			}
 
 			if (control.getUserId().trim().isEmpty()) {
 				logger.info("Userid is required.");
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-						.body(new ResponseMessage("error", 400, "Userid is required.", 0));
+						.body(new ResponseMessage("error", 400, "Userid is required.", null, 0));
 			}
 
 			// File Name must be unique
@@ -188,7 +197,7 @@ public class SourceDataController {
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 400,
 						_newFileName + " file has already been uploaded before. Please upload a different data file.",
-						0));
+						null, 0));
 			}
 
 			controlRepository.save(control);
@@ -197,10 +206,10 @@ public class SourceDataController {
 			fileService.processAndSaveData(file, control.getId(),authenticateUserId);
 
 			return ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseMessage("success", 200, "File uploading started.", control.getId()));
+					.body(new ResponseMessage("success", 200, "File uploading started.", null, control.getId()));
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-				new ResponseMessage("error", 400, "Please upload a non-empty CSV file with the standard format!", 0));
+				new ResponseMessage("error", 400, "Please upload a non-empty CSV file with the standard format!", null, 0));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
@@ -208,10 +217,10 @@ public class SourceDataController {
 	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
 
 		if(SourceDataService.SOURCE_DATA_COLUMNS.contains(columnKey)) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.getUniqueColumnValues(controlTableId, columnKey)));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null, sourceDataService.getUniqueColumnValues(controlTableId, columnKey)));
 		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", null, new ArrayList<String>()));
 		
 	}
 }

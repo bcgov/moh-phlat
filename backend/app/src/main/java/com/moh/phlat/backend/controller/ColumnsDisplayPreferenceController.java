@@ -92,7 +92,7 @@ public class ColumnsDisplayPreferenceController {
             return ResponseEntity.status(HttpStatus.OK)
                                  .body(new ResponseMessage("success",
                                                            200,
-                                                           "", columnsDisplayPreference));
+                                                           "", null, columnsDisplayPreference));
 
         }
 
@@ -102,7 +102,7 @@ public class ColumnsDisplayPreferenceController {
                                                        404,
                                                        messageSource.getMessage(MESSAGE_KEY_PREFERENCE_NOT_FOUND,
                                                                                 null,
-                                                                                LocaleContextHolder.getLocale()), ""));
+                                                                                LocaleContextHolder.getLocale()), null, ""));
 
 
     }
@@ -114,17 +114,17 @@ public class ColumnsDisplayPreferenceController {
 
     private ResponseEntity<ResponseMessage> badRequestResponse(String message) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(new ResponseMessage("error", 400, message, ""));
+                             .body(new ResponseMessage("error", 400, message, null, ""));
     }
 
     private ResponseEntity<ResponseMessage> forbiddenResponse(String message) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                             .body(new ResponseMessage("error", 403, message, ""));
+                             .body(new ResponseMessage("error", 403, message, null, ""));
     }
 
     private ResponseEntity<ResponseMessage> okResponse(ColumnsDisplayPreference preference) {
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(new ResponseMessage("success", 200, "", preference));
+                             .body(new ResponseMessage("success", 200, "", null, preference));
     }
 
     private ColumnsDisplayPreference createPreference(
