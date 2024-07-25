@@ -413,6 +413,7 @@ export default {
         :sort-by="sortOrderCriteria"
         class="submissions-table"
         :search="search"
+        :multi-sort="true"
         @update:options="loadItems"
       >
         <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">

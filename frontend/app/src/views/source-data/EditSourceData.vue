@@ -642,6 +642,7 @@ export default {
         class="submissions-table"
         no-data-text="No data found"
         item-key="id"
+        :multi-sort="true"
         @update:options="loadItems"
       >
         <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">

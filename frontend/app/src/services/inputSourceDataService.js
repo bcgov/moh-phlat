@@ -1,17 +1,23 @@
 import { appAxios } from '~/services/interceptors';
-import { cleanFilter, objectToQueryParams } from '~/utils/filters';
+import {
+  cleanFilter,
+  objectToQueryParams,
+  transformSortBy,
+} from '~/utils/filters';
 
 export default {
   async serviceGetAllInputSourceData() {
     return appAxios().get(`sourcedata/view/all`);
   },
-  async serviceGetInputSourceDataById(id, filter = {}, pagination) {
-    pagination.sortBy = 'id'; //Patch current sorting option
-    pagination.sortDirection = 'asc';
-    const paginationCriteria = objectToQueryParams(pagination);
+  async serviceGetInputSourceDataById(
+    id,
+    filter = {},
+    { itemsPerPage, page, sortBy }
+  ) {
+    const paginationCriteria = objectToQueryParams({ itemsPerPage, page });
     return appAxios().post(
       `sourcedata/controltableid/${id}?${paginationCriteria}`,
-      cleanFilter(filter)
+      { ...cleanFilter(filter), sort: transformSortBy(sortBy) }
     );
   },
   async serviceDeleteInputSourceDataById(id) {
