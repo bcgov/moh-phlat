@@ -36,4 +36,12 @@ public class ApplicationExceptionHanler {
         errorMap.put("Message", ex.getMessage());
         return errorMap;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    public Map<String, String> handleOtherException(Exception ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("Message", "The server could not process the request. Please contact customer support");
+        return errorMap;
+    }
 }
