@@ -1,6 +1,10 @@
 <script>
 export default {
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     promptTitleText: {
       type: String,
       default: 'Are you sure?',
@@ -43,6 +47,7 @@ export default {
         block
         class="bg-primary"
         size="x-large"
+        :loading="loading"
         @click="doAction"
       >
         OK
