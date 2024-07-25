@@ -7,12 +7,9 @@ import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +21,8 @@ import com.moh.phlat.backend.model.ProcessData;
 public class MaintainHdsResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainHdsResponse.class);
 	
+	private ProcessData data;
+	
 	private String hdsId;
 	
 	private boolean isLoaded = false;
@@ -32,24 +31,24 @@ public class MaintainHdsResponse implements PlrResponse {
 	
 	private List<PlrError> plrErrors = new ArrayList<PlrError>();
 	
-	public MaintainHdsResponse(Control control) {
-		
+	public MaintainHdsResponse(Control control, ProcessData data) {
+		this.data = data;
 	}
 	
 	@Override
-	public void plrJsonToProcessData(String json, ProcessData data) {
+	public void plrJsonToProcessData(String json) {
 		try {
-			DateFormat df = JSON_DATE_FORMAT_OJDK11;
-			df.setTimeZone(TimeZone.getTimeZone("UTC"));
+			DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
+			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 			
-			ObjectMapper om = new ObjectMapper();
-			om.setDateFormat(df);
-			om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			om.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-			om.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-			om.setSerializationInclusion(Include.NON_NULL);
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.setDateFormat(dateFormat);
+			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+			objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+			objectMapper.setSerializationInclusion(Include.NON_NULL);
 			
-			JsonNode root = om.readTree(json);
+			JsonNode root = objectMapper.readTree(json);
 			for (JsonNode ack : root.get("acknowledgments")) {
 				if (ack.get("msgCode") != null && ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
 					hasError = true;

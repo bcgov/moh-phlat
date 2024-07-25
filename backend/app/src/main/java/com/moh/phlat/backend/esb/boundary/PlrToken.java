@@ -1,42 +1,31 @@
 package com.moh.phlat.backend.esb.boundary;
 
+import java.time.Instant;
+
+import lombok.Getter;
+import lombok.Setter;
+
 public class PlrToken {
+	
+	private Instant lastRequestTime = Instant.now();
+	@Getter
+	@Setter
 	private String accessToken;
-	private int expiry;
+	@Getter
+	@Setter
+	private long expiry;
+	@Getter
+	@Setter
 	private String refreshToken;
+	@Getter
+	@Setter
 	private String error;
+	@Getter
+	@Setter
 	private String errorDesc;
 	
-	public String getAccessToken() {
-		return accessToken;
+	public boolean isExpired() {
+		long difference = Instant.now().getEpochSecond() - lastRequestTime.getEpochSecond();
+		return difference >= expiry - 10;
 	}
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-	public int getExpiry() {
-		return expiry;
-	}
-	public void setExpiry(int expiry) {
-		this.expiry = expiry;
-	}
-	public String getRefreshToken() {
-		return refreshToken;
-	}
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
-	public String getError() {
-		return error;
-	}
-	public void setError(String error) {
-		this.error = error;
-	}
-	public String getErrorDesc() {
-		return errorDesc;
-	}
-	public void setErrorDesc(String errorDesc) {
-		this.errorDesc = errorDesc;
-	}
-	
-	
 }
