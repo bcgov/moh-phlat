@@ -1,6 +1,7 @@
 package com.moh.phlat.backend.model;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,4 +78,5 @@ public class ProcessDataFilterParams{
 	 private List<String> mailPcode;
 	 private List<String> mailCountry;
 	 private List<String> mailAddrIsPriv;
+	 private Map<String,String> sort;
 }

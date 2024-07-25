@@ -92,7 +92,7 @@ public class SourceDataController {
 	@PostMapping("/controltableid/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllSourceDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required = true) int page, @RequestParam(required = true) int itemsPerPage, 
-			@RequestBody SourceDataFilterParams filterSource, @RequestParam(required = false) Map<String,String> sort) {
+			@RequestBody SourceDataFilterParams filterSource) {
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
@@ -104,7 +104,7 @@ public class SourceDataController {
 		}
 		
 		List<Order> orders = new ArrayList<Order>();
-		for(Map.Entry<String,String> entry:sort.entrySet()) {
+		for(Map.Entry<String,String> entry:filterSource.getSort().entrySet()) {
 			if(entry.getValue().equals("asc") || entry.getValue().equals("desc")) {
 				orders.add(new Order(entry.getValue().equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC, entry.getKey()));
 			}

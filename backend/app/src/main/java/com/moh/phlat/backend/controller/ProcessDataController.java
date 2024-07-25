@@ -82,8 +82,7 @@ public class ProcessDataController {
 	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
 			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required = true) int page, 
-			@RequestParam(required = true) int itemsPerPage, @RequestBody ProcessDataFilterParams filterProcess,
-			@RequestParam(required = false) Map<String,String> sort) {
+			@RequestParam(required = true) int itemsPerPage, @RequestBody ProcessDataFilterParams filterProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
@@ -97,7 +96,7 @@ public class ProcessDataController {
 		}
 		
 		List<Order> orders = new ArrayList<Order>();
-		for(Map.Entry<String,String> entry:sort.entrySet()) {
+		for(Map.Entry<String,String> entry:filterProcess.getSort().entrySet()) {
 			if(entry.getValue().equals("asc") || entry.getValue().equals("desc")) {
 				orders.add(new Order(entry.getValue().equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC, entry.getKey()));
 			}
