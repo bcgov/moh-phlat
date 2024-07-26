@@ -101,11 +101,11 @@ export default {
         criteria: [{ key: 'id', order: 'asc' }],
       },
       {
-        text: 'Civic Address + HDS Name',
-        value: 'civicAddressPlusHDSName',
+        text: 'Fac Civic Address + HDS Name',
+        value: 'facCivicAddressPlusHDSName',
         criteria: [
           { key: 'hdsName', order: 'asc' },
-          { key: 'civicAddress', order: 'asc' },
+          { key: 'facCivicAddr', order: 'asc' },
         ],
       },
       {
