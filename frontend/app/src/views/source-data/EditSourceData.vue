@@ -534,7 +534,7 @@ export default {
       </div>
 
       <!-- search input -->
-      <v-text-field
+      <!-- <v-text-field
         v-model="search"
         density="compact"
         variant="underlined"
@@ -543,7 +543,7 @@ export default {
         single-line
         solid
         class="header-component"
-      ></v-text-field>
+      ></v-text-field> -->
       <v-select
         v-model="searchByStatus"
         :items="statusCodes"

@@ -344,14 +344,14 @@ export default {
 </script>
 <template>
   <div>
-    <div class="mt-6 d-flex flex-nowrap">
+    <div class="mt-6 d-flex flex-nowrap justify-content-sp-bt">
       <!-- page title -->
       <div class="page-title mw-50p">
         <h1>{{ fileName }} - View Source Data</h1>
       </div>
 
       <!-- search input -->
-      <v-text-field
+      <!-- <v-text-field
         v-model="search"
         density="compact"
         variant="underlined"
@@ -360,7 +360,7 @@ export default {
         single-line
         solid
         class="header-component"
-      ></v-text-field>
+      ></v-text-field> -->
       <v-select
         v-model="sortOrder"
         :items="sortOrderTypes"
@@ -541,5 +541,13 @@ export default {
 }
 .style-2 {
   background-color: rgb(114, 114, 67);
+}
+
+.justify-content-sp-bt {
+  justify-content: space-between;
+}
+
+.page-title {
+  width: 70% !important;
 }
 </style>
