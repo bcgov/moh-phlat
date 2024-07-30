@@ -23,14 +23,6 @@ const validationRules = [
     rules: [rules('HDS Name').required],
   },
   {
-    key: 'pcnServiceDeliveryType',
-    rules: [rules('PCN Srvc Delivery Type').required],
-  },
-  {
-    key: 'pcnClinicType',
-    rules: [rules('PCN Clinic Type').required],
-  },
-  {
     key: 'physicalAddr1',
     rules: [rules('Physical Addr 1').required],
   },
