@@ -35,7 +35,6 @@ export default {
     dialog: false,
     isHovering: false,
     search: null,
-    searchByStatus: null,
     dialogDelete: false,
     showColumnsDialog: false,
     deleteSingleItem: {},
@@ -91,7 +90,6 @@ export default {
     defaultItem: {},
     editStatusItem: {},
     editStatusNewItem: '',
-    statusCodes: [],
     sortOrder: 'default',
     sortOrderCriteria: [], //{ key: 'id', order: 'asc' }
     sortOrderTypes: [
@@ -232,13 +230,12 @@ export default {
       'processignPreferenceData',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
-    ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
     initialize() {
       this.loading = true;
       // this.populateInputSource();
       this.populateHeaders();
       this.populateControlTable();
-      this.populateStatus();
+      // this.populateStatus();
       this.loading = false;
     },
     fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
@@ -325,19 +322,6 @@ export default {
       this.inputSrcData = this.processData;
     },
 
-    async searchByStatusHandle() {
-      this.loading = true;
-      this.searchByStatus
-        ? this.updateSelectedFiltersData(
-            'rowstatusCode',
-            [this.searchByStatus],
-            'editSrcData'
-          )
-        : this.updateSelectedFiltersData('rowstatusCode', [], 'editSrcData');
-      await this.populateInputSource();
-      this.loading = false;
-    },
-
     async sortOrderHandle() {
       this.loading = true;
       const criteria = this.sortOrderTypes.find(
@@ -345,15 +329,6 @@ export default {
       ).criteria;
       this.sortOrderCriteria = criteria;
       this.loading = false;
-    },
-
-    async populateStatus() {
-      // Get the submissions for this form
-      await this.fetchGetAllStatus();
-      const tableRows = this.allStatusData.map((s) => {
-        return s.code;
-      });
-      this.statusCodes = tableRows;
     },
 
     async requestValidateAll() {
@@ -527,7 +502,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="mt-6 d-flex flex-nowrap">
+    <div class="mt-6 d-flex flex-nowrap justify-content-sp-bt">
       <!-- page title -->
       <div class="page-title mw-50p">
         <h1>{{ fileName }} - Edit Source Data</h1>
@@ -544,17 +519,6 @@ export default {
         solid
         class="header-component"
       ></v-text-field> -->
-      <v-select
-        v-model="searchByStatus"
-        :items="statusCodes"
-        :clearable="true"
-        label="Filter by status"
-        density="compact"
-        solid
-        variant="underlined"
-        class="header-component"
-        @update:modelValue="searchByStatusHandle"
-      ></v-select>
       <v-select
         v-model="sortOrder"
         :items="sortOrderTypes"
@@ -859,5 +823,13 @@ export default {
 }
 .width-max-content {
   width: max-content;
+}
+
+.justify-content-sp-bt {
+  justify-content: space-between;
+}
+
+.page-title {
+  width: 70% !important;
 }
 </style>
