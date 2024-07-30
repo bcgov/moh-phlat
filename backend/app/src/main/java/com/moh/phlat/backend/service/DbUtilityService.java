@@ -2,7 +2,6 @@ package com.moh.phlat.backend.service;
 
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
-import java.util.List;
 
 public interface DbUtilityService {
 	public String getVariablesByTableNameSortedById(String tableName);

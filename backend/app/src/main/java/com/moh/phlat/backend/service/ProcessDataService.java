@@ -1,14 +1,16 @@
 package com.moh.phlat.backend.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.service.dto.ReportSummary;
 
-import java.util.Arrays;
-import java.util.List;
-
 public interface ProcessDataService {
-	
+	String PHLAT_ERROR_TYPE = "ERROR";
+    String PHLAT_ERROR_CODE = "100";
+
 	List<String> PROCESS_DATA_COLUMNS = Arrays.asList("controlTableId", "do_not_load", "stakeholder", "hdsIpcId", "hdsCpnId", "hdsProviderIdentifier1",
 			"hdsProviderIdentifier2", "hdsProviderIdentifier3", "hdsProviderIdentifierType1", "hdsProviderIdentifierType2", "hdsProviderIdentifierType3", 
 			"hdsMspFacilityNumber", "hdsType", "hdsName", "hds_name_alias", "hdsPreferredNameFlag", "hdsEmail", "hdsWebsite", "hdsBusTelAreaCode", "hdsBusTelNumber",

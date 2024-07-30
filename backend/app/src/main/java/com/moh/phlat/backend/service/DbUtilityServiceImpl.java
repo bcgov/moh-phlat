@@ -1,33 +1,39 @@
 package com.moh.phlat.backend.service;
 
-import com.moh.phlat.backend.model.Control;
-import com.moh.phlat.backend.model.Message;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.model.TableColumnInfo;
-import com.moh.phlat.backend.repository.ControlRepository;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-import com.moh.phlat.backend.repository.TableColumnInfoRepository;
-import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.RowStatusService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.moh.phlat.backend.model.Control;
+import com.moh.phlat.backend.model.Message;
+import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.TableColumnInfo;
+import com.moh.phlat.backend.repository.ControlRepository;
+import com.moh.phlat.backend.repository.MessageRepository;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.repository.TableColumnInfoRepository;
+
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
+	private static final String PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME = "processData.mandatoryColumnDisplayName";
 
 	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
 	@Autowired
 	private MessageService messageService;
+
+    @Autowired
+    private MessageSource messageSource;
 	
 	@Autowired
 	private ControlRepository controlRepository;
@@ -37,6 +43,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Autowired
 	private ProcessDataRepository processDataRepository;
+
+	@Autowired
+	private MessageRepository messageRepository;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -129,31 +138,142 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
 		Boolean isValid = true;
+
+		// delete all exsisting messages associated with the process_data.id first 
+        List<Object[]> messages = processDataRepository.getAllMessagesForProcessDataId(processData.getId());
+		for (Object[] msg : messages) {
+			String code = (String) msg[1];
+			if (StringUtils.hasText(code)) {
+            	messageRepository.deleteById((Long) msg[0]);
+		   }
+		}
+
+		List<String> columnnDisplayNames = new ArrayList();
+		columnnDisplayNames.add("HDS Name");
 		
-		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
-			// required checks
-			if (!StringUtils.hasText(processData.getHdsName())) {
+		// mandatory checks
+		if (!StringUtils.hasText(processData.getHdsName())) {
+			isValid = false;
+			logger.info("Required check failed on process data id: {}", processData.getId());
+			Message msg = Message.builder()
+								 .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+								 .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+								 .messageDesc( messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+										 columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+								 .sourceSystemName(MessageSourceSystem.PHLAT)
+								 .processData(processData)
+								 .build();
+				messageService.createMessage(msg);
+		}
+
+
+		if (!StringUtils.hasText(processData.getStakeholder())) {
+			columnnDisplayNames.clear();
+			columnnDisplayNames.add("Stakeholder");
+			isValid = false;
+			logger.info("Required check failed on process data id: {}", processData.getId());
+			Message msg = Message.builder()
+								 .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+								 .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+								 .messageDesc(messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+										 columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+								 .sourceSystemName(MessageSourceSystem.PHLAT)
+								 .processData(processData)
+								 .build();
+			messageService.createMessage(msg);
+		}
+
+		if (!StringUtils.hasText(processData.getPhysicalAddr1())) {
+			columnnDisplayNames.clear();
+			columnnDisplayNames.add("Physical Addr 1");
+			isValid = false;
+			logger.info("Required check failed on process data id: {}", processData.getId());
+			Message msg = Message.builder()
+								 .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+								 .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+								 .messageDesc(messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+										 columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+								 .sourceSystemName(MessageSourceSystem.PHLAT)
+								 .processData(processData)
+								 .build();
+			messageService.createMessage(msg);
+		}
+
+		if (!StringUtils.hasText(processData.getPhysicalCity())) {
+			columnnDisplayNames.clear();
+			columnnDisplayNames.add("Physical Addr City");
+			isValid = false;
+			logger.info("Required check failed on process data id: {}", processData.getId());
+			Message msg = Message.builder()
+								 .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+								 .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+								 .messageDesc(messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+										 columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+								 .sourceSystemName(MessageSourceSystem.PHLAT)
+								 .processData(processData)
+								 .build();
+			messageService.createMessage(msg);
+		}
+
+		if (control.getLoadTypeHds()) {
+			// mandoary checks for HDS run type
+			if (!StringUtils.hasText(processData.getHdsType())) {
+				columnnDisplayNames.clear();
+				columnnDisplayNames.add("HDS Type");
 				isValid = false;
 				logger.info("Required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
-									 .messageType("ERROR")
-									 .messageCode("101")
-									 .messageDesc("HDS Name cannot be empty")
-									 .sourceSystemName(MessageSourceSystem.PLR)
+						             .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+						             .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+						             .messageDesc(messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+								            columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+									 .sourceSystemName(MessageSourceSystem.PHLAT)
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
+			}
 
+			// mandatory check for PCN Srvc Delivery Type
+			if (!StringUtils.hasText(processData.getPcnServiceDeliveryType()) && processData.getStakeholder().equals("PAS")) {
+				columnnDisplayNames.clear();
+				columnnDisplayNames.add("PCN Srvc Delivery Type");
+				isValid = false;
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+						             .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+						             .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+						             .messageDesc(messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+								            columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+									 .sourceSystemName(MessageSourceSystem.PHLAT)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
 			}
-			// error detection
-			
-			
-			if (isValid) { 
-				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
-			} else {
-				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+
+			// mandatory check for PCN Clinic  Type
+			if (!StringUtils.hasText(processData.getPcnClinicType()) && processData.getStakeholder().equals("PAS")) {
+				columnnDisplayNames.clear();
+				columnnDisplayNames.add("PCN Clinic Type");
+				isValid = false;
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+						             .messageType(ProcessDataService.PHLAT_ERROR_TYPE)
+						             .messageCode(ProcessDataService.PHLAT_ERROR_CODE)
+						             .messageDesc(messageSource.getMessage(PROCESS_DATA_MANDATORY_COLUMN_DISPLAY_NAME,
+								            columnnDisplayNames.toArray() , LocaleContextHolder.getLocale()))
+									 .sourceSystemName(MessageSourceSystem.PHLAT)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
 			}
+
+		}
+
 			
+		if (isValid) { 
+			setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
+		} else {
+			setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 		}
 	}
 
@@ -187,6 +307,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			logger.info(RowStatusService.PRE_VALIDATION_COMPLETED);
 		}
 	}
+
 
 	
 	@Async
