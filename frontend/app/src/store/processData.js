@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useNotificationStore } from '~/store/notification';
 import { processDataService } from '~/services';
+import { applyValidationRules } from '~/utils/validations';
 
 export const useProcessDataStore = defineStore('processdata', {
   state: () => ({
@@ -71,11 +72,14 @@ export const useProcessDataStore = defineStore('processdata', {
         const { data } =
           await processDataService.serviceGetFormFieldsFromProcessData();
         if (data.data) {
-          this.formFieldHeaders = data.data.map((heading) => ({
+          let nonValidatedformFieldHeaders = data.data.map((heading) => ({
             ...heading,
             filterable: true, // set filterable to false
             sortable: true, // set sortable to false
           }));
+          this.formFieldHeaders = applyValidationRules(
+            nonValidatedformFieldHeaders
+          );
         } else {
           const notificationStore = useNotificationStore();
           notificationStore.addNotification({
