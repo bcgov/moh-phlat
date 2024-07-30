@@ -17,9 +17,11 @@ public interface ProcessDataService {
 			"hdsTelExtension", "hdsCellAreaCode", "hdsCellNumber", "hdsFaxAreaCode", "hdsFaxNumber", "pcnServiceDeliveryType", "pcnClinicType", "pcnPciFlag",
 			"hdsHoursOfOperation", "hdsContactName", "hdsIsForProfitFlag", "sourceStatus", "hdsParentIpcId", "busIpcId", "busCpnId", "busName", "busLegalName",
 			"busPayeeNumber", "busOwnerName", "busOwnerType", "busOwnerTypeOther", "facBuildingName", "facilityHdsDetailsAdditionalInfo", "physicalAddr1",
-			"physicalAddr2", "physicalAddr3", "physicalAddr", "physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate",
-			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate","rowstatusCode","hdsSubType",
-			"facRelnType");
+			"physicalAddr2", "physicalAddr3", "physicalAddr4", "physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate",
+			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate", "rowstatusCode", "hdsSubType",
+			"facRelnType", "pcnClinicStatus", "hdsEffectiveStartDate", "plrFacilityId", "facAddressUnit", "facCivicAddr", "facLatitude", "facLongitude",
+			"facSiteId", "facScore", "facMatchPrecision", "facPrecisionPoints",    "facHsdaName", "facChsaStatus", "facPcnStatus", "facChsaCode", "facChsaName",
+			"facLhaName", "facHaName", "facPcnCode", "facPcnName", "physicalAddrPrpsTypeCd", "physicalAddrValidationStatus", "mailAddrPrpsTypeCd", "mailAddrValidationStatus");			
 
     List<ReportSummary> getReportSummary(Long controlTableId);
 
