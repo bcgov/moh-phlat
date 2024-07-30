@@ -329,11 +329,11 @@ export default {
       this.loading = true;
       this.searchByStatus
         ? this.updateSelectedFiltersData(
-            'rowStatus',
+            'rowstatusCode',
             [this.searchByStatus],
             'editSrcData'
           )
-        : this.updateSelectedFiltersData('rowStatus', [], 'editSrcData');
+        : this.updateSelectedFiltersData('rowstatusCode', [], 'editSrcData');
       await this.populateInputSource();
       this.loading = false;
     },
