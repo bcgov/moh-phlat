@@ -634,7 +634,7 @@ export default {
           { value: 25, title: '25' },
           { value: 50, title: '50' },
           { value: 100, title: '100' },
-          { value: 99999999, title: 'All' },
+          { value: totalItems, title: 'All' },
         ]"
         density="compact"
         :search="search"
