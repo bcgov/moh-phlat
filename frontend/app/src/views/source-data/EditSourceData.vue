@@ -206,9 +206,6 @@ export default {
   },
 
   watch: {
-    HEADERS() {
-      console.log('HEADERS--', this.HEADERS);
-    },
     dialog(val) {
       val || this.close();
     },

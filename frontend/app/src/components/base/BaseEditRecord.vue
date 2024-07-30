@@ -20,8 +20,6 @@ export default {
   },
   emits: ['handle-record-save', 'cancel-filter-data'],
   data() {
-    console.log('formFieldHeaders-', this.formFieldHeaders);
-    console.log('itemToEdit-', this.itemToEdit);
     return {
       loading: this.isLoading,
       idToEdit: this.itemToEdit.id,
