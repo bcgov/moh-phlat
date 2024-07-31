@@ -117,7 +117,7 @@ public class ProcessDataControllerTest {
     	Pageable page = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(),nullable(String.class),nullable(ProcessDataFilterParams.class),page)).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class), page)).thenReturn(processDataList);
 
         /*
         Generate an empty JSON to satisfy the request. Since the controller method doesn't process filterParams
@@ -146,7 +146,7 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(),nullable(String.class),nullable(ProcessDataFilterParams.class),page);
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class), page);
 
     }
 

@@ -103,17 +103,17 @@ public class SourceDataController {
 					"Page needs to be larger than 0.", null, "[]"));
 		}
 		
-		List<Order> orders = new ArrayList<Order>();
+		List<Order> sortOrders = new ArrayList<>();
 		for(Map.Entry<String,String> entry:filterSource.getSort().entrySet()) {
-			if(entry.getValue().equals("asc") || entry.getValue().equals("desc")) {
-				orders.add(new Order(entry.getValue().equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC, entry.getKey()));
+			if("asc".equals(entry.getValue()) || "desc".equals(entry.getValue())) {
+				sortOrders.add(new Order(entry.getValue().equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC, entry.getKey()));
 			}
 		}
 
 		Pageable pageRequest;
 		
-		if (orders.size() > 0) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(orders));
+		if (!sortOrders.isEmpty()) {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
 		} else {
 			pageRequest = PageRequest.of(page - 1, itemsPerPage);
 		}
