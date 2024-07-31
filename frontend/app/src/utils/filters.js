@@ -30,21 +30,35 @@ export function formatDateLong(value) {
 // Function to convert object to URL query parameters
 export function objectToQueryParams(obj) {
   const queryParams = [];
-  for (const key in obj) {
-    if (Object.hasOwnProperty.call(obj, key)) {
-      if (Array.isArray(obj[key])) {
-        obj[key].forEach((element) => {
-          queryParams.push(
-            `${encodeURIComponent(key)}=${encodeURIComponent(element)}`
-          );
-        });
-      } else {
-        queryParams.push(
-          `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`
-        );
+
+  function addQueryParam(key, value) {
+    queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+  }
+
+  function processObject(prefix, obj) {
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const newKey = prefix ? `${prefix}[${key}]` : key;
+
+        if (Array.isArray(value)) {
+          value.forEach((element, index) => {
+            if (typeof element === 'object' && element !== null) {
+              processObject(`${newKey}[${index}]`, element);
+            } else {
+              addQueryParam(`${newKey}[${index}]`, element);
+            }
+          });
+        } else if (typeof value === 'object' && value !== null) {
+          processObject(newKey, value);
+        } else {
+          addQueryParam(newKey, value);
+        }
       }
     }
   }
+
+  processObject('', obj);
   return queryParams.join('&');
 }
 
@@ -55,4 +69,14 @@ export function cleanFilter(filter) {
     }
   });
   return filter;
+}
+
+export function transformSortBy(sortBy) {
+  const transformed = {};
+  sortBy.forEach((item) => {
+    if (item.key && item.order) {
+      transformed[item.key] = item.order;
+    }
+  });
+  return transformed;
 }

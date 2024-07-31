@@ -35,11 +35,16 @@ export default {
     dialog: false,
     isHovering: false,
     search: null,
-    searchByStatus: null,
     dialogDelete: false,
     showColumnsDialog: false,
     deleteSingleItem: {},
     filterData: {},
+    pagination: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: 'id',
+      sortDirection: 'asc',
+    },
     filterIgnore: [],
     filterIgnoreColumns: [
       {
@@ -104,9 +109,8 @@ export default {
     defaultItem: {},
     editStatusItem: {},
     editStatusNewItem: '',
-    statusCodes: [],
     sortOrder: 'default',
-    sortOrderCriteria: [{ key: 'id', order: 'asc' }],
+    sortOrderCriteria: [], //{ key: 'id', order: 'asc' }
     sortOrderTypes: [
       {
         text: 'Row ID#',
@@ -114,11 +118,11 @@ export default {
         criteria: [{ key: 'id', order: 'asc' }],
       },
       {
-        text: 'Civic Address + HDS Name',
-        value: 'civicAddressPlusHDSName',
+        text: 'Fac Civic Address + HDS Name',
+        value: 'facCivicAddressPlusHDSName',
         criteria: [
           { key: 'hdsName', order: 'asc' },
-          { key: 'civicAddress', order: 'asc' },
+          { key: 'facCivicAddr', order: 'asc' },
         ],
       },
       {
@@ -135,6 +139,7 @@ export default {
   computed: {
     ...mapState(useProcessDataStore, [
       'processData',
+      'totalItems',
       'formFieldHeaders',
       'deleteProcessDataById',
       'updatedProcessData',
@@ -244,13 +249,12 @@ export default {
       'processignPreferenceData',
     ]),
     ...mapActions(useControlTableDataStore, ['fetchGetControlTableById']),
-    ...mapActions(useStatusDataStore, ['fetchGetAllStatus']),
     initialize() {
       this.loading = true;
-      this.populateInputSource();
+      // this.populateInputSource();
       this.populateHeaders();
       this.populateControlTable();
-      this.populateStatus();
+      // this.populateStatus();
       this.loading = false;
     },
     fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
@@ -324,26 +328,17 @@ export default {
         ({ key }) => key !== 'controlTableId'
       );
     },
-
+    loadItems(pageData) {
+      this.pagination = pageData;
+      this.populateInputSource();
+    },
     async populateInputSource() {
       await this.fetchProcessDataByControlId(
         this.id,
-        this.editSourceSelectedFiltersData
+        this.editSourceSelectedFiltersData,
+        this.pagination
       );
       this.inputSrcData = this.processData;
-    },
-
-    async searchByStatusHandle() {
-      this.loading = true;
-      this.searchByStatus
-        ? this.updateSelectedFiltersData(
-            'rowStatus',
-            [this.searchByStatus],
-            'editSrcData'
-          )
-        : this.updateSelectedFiltersData('rowStatus', [], 'editSrcData');
-      await this.populateInputSource();
-      this.loading = false;
     },
 
     async sortOrderHandle() {
@@ -353,15 +348,6 @@ export default {
       ).criteria;
       this.sortOrderCriteria = criteria;
       this.loading = false;
-    },
-
-    async populateStatus() {
-      // Get the submissions for this form
-      await this.fetchGetAllStatus();
-      const tableRows = this.allStatusData.map((s) => {
-        return s.code;
-      });
-      this.statusCodes = tableRows;
     },
 
     async requestValidateAll() {
@@ -535,14 +521,14 @@ export default {
 </script>
 <template>
   <div>
-    <div class="mt-6 d-flex flex-nowrap">
+    <div class="mt-6 d-flex flex-nowrap justify-content-sp-bt">
       <!-- page title -->
       <div class="page-title mw-50p">
         <h1>{{ fileName }} - Edit Source Data</h1>
       </div>
 
       <!-- search input -->
-      <v-text-field
+      <!-- <v-text-field
         v-model="search"
         density="compact"
         variant="underlined"
@@ -551,18 +537,7 @@ export default {
         single-line
         solid
         class="header-component"
-      ></v-text-field>
-      <v-select
-        v-model="searchByStatus"
-        :items="statusCodes"
-        :clearable="true"
-        label="Filter by status"
-        density="compact"
-        solid
-        variant="underlined"
-        class="header-component"
-        @update:modelValue="searchByStatusHandle"
-      ></v-select>
+      ></v-text-field> -->
       <v-select
         v-model="sortOrder"
         :items="sortOrderTypes"
@@ -629,19 +604,29 @@ export default {
 
     <div>
       <div></div>
-      <v-data-table
+      <v-data-table-server
         key="forceTableRefresh"
         :loading="loading"
         height="70vh"
         :headers="HEADERS"
         fixed-header
         :items="inputSrcData"
+        :items-length="totalItems"
+        :items-per-page-options="[
+          { value: 10, title: '10' },
+          { value: 25, title: '25' },
+          { value: 50, title: '50' },
+          { value: 100, title: '100' },
+          { value: totalItems, title: 'All' },
+        ]"
         density="compact"
         :search="search"
         :sort-by="sortOrderCriteria"
         class="submissions-table"
         no-data-text="No data found"
         item-key="id"
+        :multi-sort="true"
+        @update:options="loadItems"
       >
         <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
           <tr>
@@ -771,7 +756,7 @@ export default {
         <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
         </template>
-      </v-data-table>
+      </v-data-table-server>
       <v-dialog v-model="showValidateAllDialog" width="700">
         <BasePrompt
           prompt-body-text="Are you sure you want to validate all records?"
@@ -858,5 +843,13 @@ export default {
 }
 .width-max-content {
   width: max-content;
+}
+
+.justify-content-sp-bt {
+  justify-content: space-between;
+}
+
+.page-title {
+  width: 70% !important;
 }
 </style>
