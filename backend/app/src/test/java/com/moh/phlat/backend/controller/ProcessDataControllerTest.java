@@ -29,7 +29,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.data.domain.Sort.Order;
 
 /**
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
@@ -80,6 +83,8 @@ public class ProcessDataControllerTest {
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
     List<ColumnDisplayName> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getColumnDisplayNameList());
+    
+    Page entirePage;
                                                                 
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
@@ -114,10 +119,12 @@ public class ProcessDataControllerTest {
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessDataByControlTableId() throws Exception {
     	
-    	Pageable page = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
+    	//Pageable page = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class), page)).thenReturn(processDataList);
+        //when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class), page)).thenReturn(processDataList);
+        when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), 0, 10, nullable(ProcessDataFilterParams.class), 
+        		new ArrayList<Order>())).thenReturn(entirePage);
 
         /*
         Generate an empty JSON to satisfy the request. Since the controller method doesn't process filterParams
@@ -146,7 +153,8 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class), page);
+        //verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), nullable(ProcessDataFilterParams.class), page);
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), 0, 10, nullable(ProcessDataFilterParams.class), new ArrayList<Order>());
 
     }
 

@@ -23,6 +23,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+
 @Service
 public class ProcessDataServiceImpl implements ProcessDataService {
 
@@ -35,13 +41,17 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 	private ProcessDataFilterSpecification specificationService = new ProcessDataFilterSpecificationImpl();
     
     @Override
-    public List<ProcessData> getProcessDataWithMessages(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess, Pageable pageable) {
-    			
-		return processDataRepository.findAll(buildSpecification(controlId, reqRowStatusCode, filterProcess), pageable);
-    }
-    
-    public Long countProcessData(Long controlId, ProcessDataFilterParams filterProcess) {
-    	return processDataRepository.count(buildSpecification(controlId, null, filterProcess));
+    public Page<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, int page, int itemsPerPage, ProcessDataFilterParams filterProcess, 
+			List<Order> sortOrders){
+    	Pageable pageRequest;
+		
+		if (!sortOrders.isEmpty()) {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
+		} else {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage);
+		}
+		
+		return processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
     }
     
     private Specification<ProcessData> buildSpecification(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess) {

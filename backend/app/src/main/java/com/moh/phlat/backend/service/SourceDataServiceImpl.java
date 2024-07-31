@@ -6,7 +6,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -36,21 +40,17 @@ public class SourceDataServiceImpl implements SourceDataService {
 	private SourceDataFilterSpecification specificationService = new SourceDataFilterSpecificationImpl();
 	
 	@Override
-	public List<SourceData> getSourceData(Long controlId, SourceDataFilterParams filterSource, Pageable pageable) {
+	public Page<SourceData> getSourceData(Long controlTableId, int page, int itemsPerPage, SourceDataFilterParams filterSource, List<Order> sortOrders) {
+		Pageable pageRequest;
+		
+		if (!sortOrders.isEmpty()) {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
+		} else {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage);
+		}
 		
 		try {
-			return sourceDataRepository.findAll(buildSpecification(controlId, filterSource), pageable);
-		} catch (Exception e) {
-			logger.error("Error occured: {}", e.getMessage(), e);
-			
-			return new ArrayList();
-		}
-	}
-	
-	@Override
-	public Long countSourceData(Long controlId,  SourceDataFilterParams filterSource) {
-		try{
-			return sourceDataRepository.count(buildSpecification(controlId, filterSource));
+			return sourceDataRepository.findAll(buildSpecification(controlTableId, filterSource), pageRequest);
 		} catch (Exception e) {
 			logger.error("Error occured: {}", e.getMessage(), e);
 			
@@ -62,12 +62,7 @@ public class SourceDataServiceImpl implements SourceDataService {
 		
 		Specification<SourceData> combinedSpecification;
 		
-		try {
-			combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
-		} catch (Exception e) {
-			throw new Exception(e);
-		}
-
+		combinedSpecification = specificationService.buildSpecificationWhereEqual("controlTableId", controlId.toString());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", filterSource.getId());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "doNotLoadFlag", filterSource.getDoNotLoadFlag());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "stakeholder", filterSource.getStakeholder());

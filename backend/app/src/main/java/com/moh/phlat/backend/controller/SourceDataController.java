@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -110,16 +111,9 @@ public class SourceDataController {
 			}
 		}
 
-		Pageable pageRequest;
-		
-		if (!sortOrders.isEmpty()) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
-		} else {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage);
-		}
+		Page<SourceData> entirePage = sourceDataService.getSourceData(controlTableId, page, itemsPerPage, filterSource, sortOrders);
 
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", sourceDataService.countSourceData(controlTableId, filterSource),
-				sourceDataService.getSourceData(controlTableId, filterSource, pageRequest)));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", entirePage.getTotalElements(), entirePage.getContent()));
 
 	}
 

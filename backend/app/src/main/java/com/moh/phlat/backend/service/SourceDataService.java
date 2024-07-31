@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Order;
 
 import com.moh.phlat.backend.model.SourceDataFilterParams;
 import com.moh.phlat.backend.model.SourceData;
@@ -20,9 +22,7 @@ public interface SourceDataService {
 			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate","hdsSubType", "hdsMspFacilityNumber", "pcnServiceDeliveryType", "pcnClinicStatus",
 			"hdsEffectiveStartDate", "facAddressUnit", "physicalAddrPrpsTypeCd");
 
-	List<SourceData> getSourceData(Long controlId,  SourceDataFilterParams filterSource, Pageable pageable);
-	
-	Long countSourceData(Long controlId,  SourceDataFilterParams filterSource);
+	Page<SourceData> getSourceData(Long controlTableId, int page, int itemsPerPage, SourceDataFilterParams filterSource, List<Order> sortOrders);
 	
 	List<String> getUniqueColumnValues(Long controlTableId, String columnKey);
 }

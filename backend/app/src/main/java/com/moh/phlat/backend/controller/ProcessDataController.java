@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.moh.phlat.backend.service.ProcessDataService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -102,17 +103,10 @@ public class ProcessDataController {
 			}
 		}
 		
-		Pageable pageRequest;
-		
-		if (!sortOrders.isEmpty()) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
-		} else {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage);
-		}
+		Page<ProcessData> entirePage = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, page, itemsPerPage, filterProcess, sortOrders);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				processDataService.countProcessData(controlTableId, filterProcess), processDataService.getProcessDataWithMessages(
-						controlTableId, rowStatus, filterProcess, pageRequest)));
+				entirePage.getTotalElements(), entirePage.getContent()));
 	}
 
 	// get specific row by id
