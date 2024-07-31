@@ -1,9 +1,20 @@
 package com.moh.phlat.backend.controller;
 
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map; 
 import java.util.Optional;
+
+import com.moh.phlat.backend.service.ProcessDataService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,26 +75,38 @@ public class ProcessDataController {
 	@GetMapping("/view/all")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDatas() {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", processDataRepository.findAll()));
+				.body(new ResponseMessage("success", 200, "", null, processDataRepository.findAll()));
 	}
 
 	// get process data by control id
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@PostMapping("/controltable/{controlTableId}")
 	public @ResponseBody ResponseEntity<ResponseMessage> getAllProcessDataByControlTableId(
-		@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestBody ProcessDataFilterParams filterProcess) {
+			@PathVariable Long controlTableId, @RequestParam(required = false) String rowStatus, @RequestParam(required = true) int page, 
+			@RequestParam(required = true) int itemsPerPage, @RequestBody ProcessDataFilterParams filterProcess) {
 
 		//TODO this should be replaced by call to ControlService which is not yet introduced
 		Optional<Control> controlTableData = controlRepository.findById(controlTableId);
 
 		if (controlTableData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("success", 404,
-					"Process Data not found for control_id: " + controlTableId, "[]"));
+					"Process Data not found for control_id: " + controlTableId, null, "[]"));
+		} else if (page < 1) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("success", 400,
+					"Page needs to be larger than 0.", null, "[]"));
 		}
+		
+		List<Order> sortOrders = new ArrayList<>();
+		for(Map.Entry<String,String> entry:filterProcess.getSort().entrySet()) {
+			if("asc".equals(entry.getValue()) || "desc".equals(entry.getValue())) {
+				sortOrders.add(new Order(entry.getValue().equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC, entry.getKey()));
+			}
+		}
+		
+		Page<ProcessData> entirePage = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, page, itemsPerPage, filterProcess, sortOrders);
 
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", 
-				processDataService.getProcessDataWithMessages(
-						controlTableId, rowStatus, filterProcess)));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				entirePage.getTotalElements(), entirePage.getContent()));
 	}
 
 	// get specific row by id
@@ -93,11 +116,11 @@ public class ProcessDataController {
 		Optional<ProcessData> processData = processDataRepository.findById(id);
 		if (processData.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("success", 404, "Process Data not found for id: " + id, "[]"));
+					.body(new ResponseMessage("success", 404, "Process Data not found for id: " + id, null, "[]"));
 		}
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseMessage("success", 200, "", processDataRepository.findById(id)));
+				.body(new ResponseMessage("success", 200, "", null, processDataRepository.findById(id)));
 
 	}
 
@@ -112,7 +135,7 @@ public class ProcessDataController {
 
 		if (processDataTable.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseMessage("error", 404, "Process data not found with id: " + id, "[]"));
+					.body(new ResponseMessage("error", 404, "Process data not found with id: " + id, null, "[]"));
 		}
 
 		ProcessData processData = processDataTable.get();
@@ -387,11 +410,11 @@ public class ProcessDataController {
 		try {
 			processDataRepository.save(processData);
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record updated sucessfully.", processData));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record updated sucessfully.", null, processData));
 		} catch (Exception e) {
 			logger.error("Error occured: {}", e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("error", 500,
-					"Internal error encountered while updating Process Data with id: " + id, "[]"));
+					"Internal error encountered while updating Process Data with id: " + id, null, "[]"));
 		}
 	}
 
@@ -400,7 +423,7 @@ public class ProcessDataController {
 	public ResponseEntity<ResponseMessage> getColumnDisplayNames() {
 	    List<ColumnDisplayName> list = null;
 		list = tableColumnInfoService.getColumnDisplayNames(TableColumnInfoService.PROCESS_DATA);
-	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
+	    return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null, list));
 	}
 
 	// get specific row by id
@@ -429,12 +452,12 @@ public class ProcessDataController {
 				dbUtilityService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_COMPLETED,
 												  authenticatedUserId);
 				
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null,
 						controlRepository.findById(processData.getControlTableId())));
 			}
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body(new ResponseMessage("error", 404, "Control Id not found.", "[]"));
+				.body(new ResponseMessage("error", 404, "Control Id not found.", null, "[]"));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
@@ -445,7 +468,7 @@ public class ProcessDataController {
 		List<ProcessData> processDataList = processDataRepository.getAllProcessDataByControlTableId(id);
 		
 		if (processDataList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Nothing to validate.", "[]"));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Nothing to validate.", null, "[]"));
 			
 		}
 		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
@@ -456,7 +479,7 @@ public class ProcessDataController {
 
 		Optional<Control> control = controlRepository.findById(id);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Validation process started!", control));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Validation process started!", null, control));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
@@ -467,14 +490,14 @@ public class ProcessDataController {
 		if (controlTable.isPresent()) {
 			Control control = controlTable.get();
 			if (!control.getStatusCode().equals(RowStatusService.APPROVED)) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Missing approval from Reg Admin to load to PLR.", "[]"));
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Missing approval from Reg Admin to load to PLR.", null, "[]"));
 			}
 		}
 
 		List<ProcessData> processDataList = processDataRepository.getAllProcessDataByControlTableId(controlTableId);
 		
 		if (processDataList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Nothing to load to PLR.", "[]"));			
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Nothing to load to PLR.", null, "[]"));			
 		}
 		
 		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
@@ -483,7 +506,7 @@ public class ProcessDataController {
 		// asynchronous operation
 		dbUtilityService.loadProcessDataToPlr(controlTableId,authenticatedUserId);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!", controlTable));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "PLR load process started!", null, controlTable));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
@@ -493,18 +516,18 @@ public class ProcessDataController {
 		
 		List<ReportSummary> list = processDataService.getReportSummary(controlTableId);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", list));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null, list));
 	}
 
 	@PreAuthorize("hasAnyRole(@roleService.getAllRoles())")
 	@GetMapping("/{controlTableId}/column-distinct-values/{columnKey}")
 	public ResponseEntity<ResponseMessage> getDistinctColumnValues(@PathVariable Long controlTableId, @PathVariable String columnKey) {
-	
+			
 		if(ProcessDataService.PROCESS_DATA_COLUMNS.contains(columnKey)) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", processDataService.getUniqueColumnValues(controlTableId, columnKey)));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "", null, processDataService.getUniqueColumnValues(controlTableId, columnKey)));
 		}
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", new ArrayList<String>()));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Error", 404, "Column not found.", null, new ArrayList<String>()));
 		
 	}
 }
