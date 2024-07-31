@@ -1,6 +1,10 @@
 <script>
 export default {
   props: {
+    formFieldHeaders: {
+      type: Array,
+      default: () => [],
+    },
     itemToEdit: {
       type: Object,
       default: () => {},
@@ -23,11 +27,50 @@ export default {
     };
   },
   methods: {
+    getFieldAttributesByKey(key) {
+      const header = this.formFieldHeaders.find((item) => item.key === key);
+      const rules = header ? header.rules : [];
+      let title = header ? header.title : key;
+
+      // Check if the rules include a required validation
+      if (rules.some((rule) => rule.toString().includes('mandatory'))) {
+        title += '*';
+      }
+
+      return {
+        rules: rules,
+        title: title,
+      };
+    },
     handleSave() {
       if (this.valid) {
         this.$emit('handle-record-save', {
           ...this.selectedItemToEdit,
           id: this.idToEdit,
+        });
+      } else {
+        this.$refs.settingsForm.validate().then((success) => {
+          if (!success.valid) {
+            setTimeout(() => {
+              const errors = Object.entries(this.$refs.settingsForm.errors).map(
+                ([key, value]) => ({ key, value })
+              );
+              this.$nextTick(() => {
+                const element = document.getElementById(errors[0].value.id);
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                  });
+                }
+              });
+            }, 100);
+          } else {
+            this.$emit('handle-record-save', {
+              ...this.selectedItemToEdit,
+              id: this.idToEdit,
+            });
+          }
         });
       }
     },
@@ -66,9 +109,9 @@ export default {
             v-model="selectedItemToEdit[key]"
             :readonly="ignoreToEdit.some((item) => item.key === key)"
             density="compact"
-            :required="true"
+            :rules="getFieldAttributesByKey(key).rules"
             variant="outlined"
-            :label="key"
+            :label="getFieldAttributesByKey(key).title"
           ></v-text-field>
         </v-col>
         <v-btn

@@ -68,6 +68,25 @@ export default {
       { key: 'messages' },
       { key: 'doNotLoad' },
       { key: 'doNotLoadFlag' },
+      { key: 'stakeholderId' },
+      { key: 'hdsPauthId' },
+      { key: 'hdsCategoryCode' },
+      { key: 'hdsRoleTypeCode' },
+      { key: 'hdsUserChid' },
+      { key: 'hdsCreatedDts' },
+      { key: 'hdsInvalidatedDts' },
+      { key: 'hdsEffectiveEndDate' },
+      { key: 'facCivicAddrId' },
+      { key: 'facStreetDirection' },
+      { key: 'streetDirectionPrefix' },
+      { key: 'streetTypePrefix' },
+      { key: 'facCivicNumber' },
+      { key: 'facStreetName' },
+      { key: 'facStreetType' },
+      { key: 'facLocalityName' },
+      { key: 'facProvinceCode' },
+      { key: 'facDatabcResults' },
+      { key: 'facTypeCode' },
     ],
     headers: [
       {
@@ -778,6 +797,7 @@ export default {
 
       <v-dialog v-model="dialog" width="900">
         <BaseEditRecord
+          :form-field-headers="formFieldHeaders"
           :item-to-edit="editedItem.selectable"
           :ignore-to-edit="ignoreToEdit"
           :is-loading="loading"
