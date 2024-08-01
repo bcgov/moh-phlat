@@ -86,3 +86,25 @@ plr:
       provider-url: ${PLR_KEYCLOAK_PROVIDER_URL}
       client-id: ${PLR_KEYCLOAK_CLIENT_ID}
       client-secret: ${PLR_KEYCLOAK_CLIENT_SECRET}
+
+resilience4j:
+  circuitbreaker:
+    circuitBreakerAspectOrder: 1
+  retry:
+    retryAspectOrder: 2
+
+resilience4j.circuitbreaker:
+  instances:
+    callPlr:
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 3
+      minimumNumberOfCalls: 3
+      failureRateThreshold: 100
+
+resilience4j.retry:
+  instances:
+    callPlr:
+      maxAttempts: 3
+      waitDuration: 1000
+      retryExceptions:
+      - org.springframework.web.reactive.function.client.WebClientResponseException

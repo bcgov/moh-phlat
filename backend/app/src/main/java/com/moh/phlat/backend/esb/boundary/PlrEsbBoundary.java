@@ -70,49 +70,43 @@ public class PlrEsbBoundary {
 	public boolean isReadyToConnect() {
 		return webClient != null;
 	}
-
+	@CircuitBreaker(name="callPlr", fallbackMethod="fallback")
+	@Retry(name="callPlr")
 	public void maintainProvider(Control control, PlrRequest plrRequest, PlrResponse plrResponse) {
 		callPlr(control, plrRequest, plrResponse, MAINTAIN_ENDPOINT);
 	}
-
+	
+	@CircuitBreaker(name="callPlr", fallbackMethod="fallback")
+	@Retry(name="callPlr")
 	public void validateProvider(Control control, PlrRequest plrRequest, PlrResponse plrResponse) {
 		callPlr(control, plrRequest, plrResponse, VALIDATE_ENDPOINT);
 	}
 	
-	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallbackCallPlr")
-	@Retry(name="callProviderRetry")
 	private void callPlr(Control control, PlrRequest plrRequest, PlrResponse plrResponse, String endpoint) {
 		String jsonRequest = plrRequest.processDataToPlrJson();
 		
-		try {
-			PlrToken token = keyCloak.getToken();
-			Mono<String> mono = webClient.post()
-					.uri(plrBoundaryHost + endpoint)
-					.contentType(MediaType.APPLICATION_JSON)
-					.headers(header -> {
-						header.setBearerAuth(token.getAccessToken());
-						header.add("userID", control.getUserId());
-					})
-					.bodyValue(jsonRequest)
-					.retrieve()
-					.bodyToMono(String.class)
-					.timeout(Duration.ofSeconds(10))
-					.doOnError(WebClientResponseException.class, ex -> {
-	                    logger.error("HTTP Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
-	                });
-			
-			String jsonResponse = mono.block();
-			
-			plrResponse.plrJsonToProcessData(jsonResponse);
-			
-		} catch (Exception ex) {
-			logger.error("PLR request failed with error: ", ex);
-			plrResponse.handlePlrError(ex);
-		}
+		PlrToken token = keyCloak.getToken();
+		Mono<String> mono = webClient.post()
+				.uri(plrBoundaryHost + endpoint)
+				.contentType(MediaType.APPLICATION_JSON)
+				.headers(header -> {
+					header.setBearerAuth(token.getAccessToken());
+					header.add("userID", control.getUserId());
+				})
+				.bodyValue(jsonRequest)
+				.retrieve()
+				.bodyToMono(String.class)
+				.timeout(Duration.ofSeconds(10))
+				.doOnError(WebClientResponseException.class, ex -> {
+                    logger.error("HTTP Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
+                });
+		
+		String jsonResponse = mono.block();
+		plrResponse.plrJsonToProcessData(jsonResponse);
 	}
 	
-	private void fallbackCallPlr(Control control, PlrRequest plrRequest, PlrResponse plrResponse, String endpoint, Throwable throwable) {
-		logger.error("Fallback triggered on call to {}{} due to: {}", plrBoundaryHost, endpoint, throwable);
-		plrResponse.handlePlrError((Exception) throwable);
+	private void fallback(Control control, PlrRequest plrRequest, PlrResponse plrResponse, Exception exception) {
+		logger.error("Fallback triggered on call to {} due to: {}", plrBoundaryHost, exception.getMessage());
+		plrResponse.handlePlrError(exception);
 	}
 }
