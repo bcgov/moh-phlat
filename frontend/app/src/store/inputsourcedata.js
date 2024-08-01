@@ -5,11 +5,13 @@ import { inputSourceDataService } from '~/services';
 export const useInputSourceDataStore = defineStore('inputsourcedata', {
   state: () => ({
     inputSourceData: [],
+    totalItems: 0,
     updatedInputSourceData: [],
     deletedInputSourceData: undefined,
     formFieldHeaders: [],
     fileUploadStatus: undefined,
     processingSourceData: false,
+    nonFilterableColumns: ['id', 'actions', 'messages'],
   }),
   getters: {},
   actions: {
@@ -22,15 +24,17 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
         console.log('Something went wrong. (DJDSUU#366)', error); // eslint-disable-line no-console
       }
     },
-    async fetchInputSourceDataByControlId(id, filter = {}) {
+    async fetchInputSourceDataByControlId(id, filter = {}, pagination) {
       this.processingSourceData = true;
       try {
         const { data } =
           await inputSourceDataService.serviceGetInputSourceDataById(
             id,
-            filter
+            filter,
+            pagination
           );
         this.inputSourceData = data.data;
+        this.totalItems = data.totalItems || 10000;
       } catch (error) {
         console.log('Something went wrong. (DFSAD#326)', error); // eslint-disable-line no-console
         const notificationStore = useNotificationStore();
@@ -65,7 +69,7 @@ export const useInputSourceDataStore = defineStore('inputsourcedata', {
         if (data.data) {
           this.formFieldHeaders = data.data.map((heading) => ({
             ...heading,
-            filterable: true, // set filterable to false
+            filterable: !this.nonFilterableColumns.includes(heading.key), // set filterable to false            // set filterable to false
             sortable: true, // set sortable to false
           }));
         } else {
