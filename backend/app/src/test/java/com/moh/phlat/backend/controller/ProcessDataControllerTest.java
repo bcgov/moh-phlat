@@ -90,9 +90,7 @@ public class ProcessDataControllerTest {
     List<Control> controls = Collections.unmodifiableList(ControlTableFactory.createControlList());
 
     List<ColumnDisplayName> uiColumnNameList = Collections.unmodifiableList(TableColumnInfoFactory.getColumnDisplayNameList());
-    
-    Page<ProcessData> entirePage = new PageImpl<ProcessData>(new ArrayList<ProcessData>());
-                                                                
+                                                                   
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessData() throws Exception {
@@ -126,24 +124,29 @@ public class ProcessDataControllerTest {
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessDataByControlTableId() throws Exception {
     	
-    	/*ProcessDataFilterParams params = new ProcessDataFilterParams();
+    	Page<ProcessData> entirePage = new PageImpl<ProcessData>(new ArrayList<ProcessData>());
+    	
     	Map<String,String> sort = new HashMap<>();
-    	sort.put("id","desc");
+    	sort.put("id", "asc");
+    	
+    	ProcessDataFilterParams params = new ProcessDataFilterParams();
     	params.setSort(sort);
     	
     	when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
         when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(), 
         		eq(params), anyList())).thenReturn(entirePage);
-
+        System.out.println("In tester: " + entirePage + " " + entirePage.getTotalElements());
         /*
         Generate an empty JSON to satisfy the request. Since the controller method doesn't process filterParams
         and the service method is mocked, we can pass an empty JSON. Otherwise, if the logic depends on the filterParams
         JSON, some values might need to be set.
          */
-        /*String filterParamsJson = getFilterParamsJsonContent();
+        String filterParamsJson = getFilterParamsJsonContent();
 
         ResultActions resultActions = mockMvc.perform(post("/processdata/controltable/1")
         		.param("rowStatus",  "VALID")
+        		.param("page", "1")
+        		.param("itemsPerPage", "1")
                 .content(filterParamsJson)
                 .with(csrf()).contentType(MediaType.APPLICATION_JSON));
         
@@ -152,6 +155,7 @@ public class ProcessDataControllerTest {
                      //check basic stuff
                      .andExpect(jsonPath("$.status").value("success"))
                      .andExpect(jsonPath("$.message").isEmpty())
+                     .andExpect(jsonPath("$.totalItems").isNumber())
                      .andExpect(jsonPath("$.data").isArray())
                      .andExpect(jsonPath("$.data.length()").value(processDataList.size()));
 
@@ -163,13 +167,17 @@ public class ProcessDataControllerTest {
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
         verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(), 
-        		nullable(ProcessDataFilterParams.class), eq(new ArrayList<Order>()));*/
+        		eq(params), anyList());
 
     }
 
     private String getFilterParamsJsonContent() throws JsonProcessingException {
 
         ProcessDataFilterParams filterParams = new ProcessDataFilterParams();
+        Map<String,String> sort = new HashMap<>();
+    	sort.put("id", "asc");
+    	
+    	filterParams.setSort(sort);
         // Convert filterParams to JSON string
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(filterParams);

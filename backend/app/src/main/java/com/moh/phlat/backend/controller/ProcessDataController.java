@@ -1,6 +1,5 @@
 package com.moh.phlat.backend.controller;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -104,7 +103,7 @@ public class ProcessDataController {
 		}
 		
 		Page<ProcessData> entirePage = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, page, itemsPerPage, filterProcess, sortOrders);
-
+System.out.println("In controller: " + entirePage + " " + controlTableId + " " + rowStatus + " " + page + " " + itemsPerPage + " " + filterProcess + " " + sortOrders);
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
 				entirePage.getTotalElements(), entirePage.getContent()));
 	}
