@@ -633,13 +633,23 @@ export default {
             <template v-for="column in columns" :key="column.key">
               <th class="">
                 <div class="v-data-table-header__content cursor-pointer">
-                  <span class="mr-2" @click="() => toggleSort(column)"
+                  <span
+                    class="mr-2"
+                    @click="
+                      () => {
+                        column.sortable === true && toggleSort(column);
+                      }
+                    "
                     >{{ column.title }}
                   </span>
-                  <template v-if="isSorted(column)">
+                  <template v-if="isSorted(column) && column.sortable === true">
                     <v-icon
                       :icon="getSortIcon(column)"
-                      @click="() => toggleSort(column)"
+                      @click="
+                        () => {
+                          column.sortable === true && toggleSort(column);
+                        }
+                      "
                     ></v-icon>
                   </template>
                   <BaseColumnFilter
