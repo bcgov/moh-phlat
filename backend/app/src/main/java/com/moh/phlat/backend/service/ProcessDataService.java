@@ -3,19 +3,11 @@ package com.moh.phlat.backend.service;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.service.dto.ReportSummary;
-
-//import src.main.java.com.moh.phlat.backend.controller.Long;
-//import src.main.java.com.moh.phlat.backend.controller.Order;
-//import src.main.java.com.moh.phlat.backend.controller.RequestBody;
-//import src.main.java.com.moh.phlat.backend.controller.RequestParam;
-//import src.main.java.com.moh.phlat.backend.controller.String;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Order;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort.Order;
 
 public interface ProcessDataService {
 	

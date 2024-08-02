@@ -15,48 +15,45 @@ import com.moh.phlat.backend.testsupport.factories.ControlTableFactory;
 import com.moh.phlat.backend.testsupport.factories.ProcessDataFactory;
 import com.moh.phlat.backend.testsupport.factories.TableColumnInfoFactory;
 import com.moh.phlat.backend.testsupport.factories.UserRoles;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Order;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.data.domain.Sort.Order;
 
 /**
  * The role names are arbitrary. They are provided solely to meet the requirements of the Spring Security framework,
@@ -123,25 +120,19 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessDataByControlTableId() throws Exception {
-    	
-    	Page<ProcessData> entirePage = new PageImpl<ProcessData>(new ArrayList<ProcessData>());
-    	
-    	Map<String,String> sort = new HashMap<>();
-    	sort.put("id", "asc");
-    	
-    	ProcessDataFilterParams params = new ProcessDataFilterParams();
-    	params.setSort(sort);
-    	
+        Page<ProcessData> entirePage = new PageImpl<>(processDataList);
+
     	when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
-        when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(), 
-        		eq(params), anyList())).thenReturn(entirePage);
-        System.out.println("In tester: " + entirePage + " " + entirePage.getTotalElements());
+        when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(),
+                                                           any(ProcessDataFilterParams.class), anyList())).thenReturn(entirePage);
+
         /*
         Generate an empty JSON to satisfy the request. Since the controller method doesn't process filterParams
         and the service method is mocked, we can pass an empty JSON. Otherwise, if the logic depends on the filterParams
         JSON, some values might need to be set.
          */
         String filterParamsJson = getFilterParamsJsonContent();
+
 
         ResultActions resultActions = mockMvc.perform(post("/processdata/controltable/1")
         		.param("rowStatus",  "VALID")
@@ -163,11 +154,23 @@ public class ProcessDataControllerTest {
         resultActions.andExpect(jsonPath("$.data[0].createdAt").value("2024-02-01T00:00:00.000+00:00"));
         // assert the json elements of a single record, pick any of the two records.
         checkProcessDataJsonResult(resultActions, "$.data[0].", processDataList.get(0));
+        // Define the argument captor for List<SomeClass>
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Order>> listCaptor = ArgumentCaptor.forClass(List.class);
 
         //check if mocked methods were called
         verify(controlRepository, times(1)).findById(anyLong());
-        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(), 
-        		eq(params), anyList());
+
+        // Verify and capture the argument for sort order
+        verify(processDataService, times(1)).getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(),
+                                                                        any(ProcessDataFilterParams.class), listCaptor.capture());
+        List<Order> capturedList = listCaptor.getValue();
+        //checking if passed sort order list was not null
+        assertNotNull(capturedList);
+        //checking if each element in list is of expected type i.e. org.springframework.data.domain.Order
+        Assertions.assertThat(capturedList)
+                  .allSatisfy(item -> Assertions.assertThat(item).isInstanceOf(Order.class));
 
     }
 
@@ -176,7 +179,6 @@ public class ProcessDataControllerTest {
         ProcessDataFilterParams filterParams = new ProcessDataFilterParams();
         Map<String,String> sort = new HashMap<>();
     	sort.put("id", "asc");
-    	
     	filterParams.setSort(sort);
         // Convert filterParams to JSON string
         ObjectMapper objectMapper = new ObjectMapper();
@@ -214,7 +216,7 @@ public class ProcessDataControllerTest {
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void updateProcessDataById() throws Exception {
         when(processDataRepository.findById(anyLong())).thenReturn(Optional.of(processDataList.get(0)));
-        when(processDataRepository.save(Mockito.any(ProcessData.class))).thenReturn(processDataList.get(0));
+        when(processDataRepository.save(any(ProcessData.class))).thenReturn(processDataList.get(0));
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -242,7 +244,7 @@ public class ProcessDataControllerTest {
 
         //check if mocked methods were called
         verify(processDataRepository, times(1)).findById(anyLong());
-        verify(processDataRepository, times(1)).save(Mockito.any(ProcessData.class));
+        verify(processDataRepository, times(1)).save(any(ProcessData.class));
 
     }
 
@@ -274,7 +276,7 @@ public class ProcessDataControllerTest {
         when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
         doNothing().when(dbUtilityService).setControlStatus(anyLong(), anyString(), anyString());
         doNothing().when(dbUtilityService)
-                   .validateProcessData(Mockito.any(Control.class), Mockito.any(ProcessData.class), anyString());
+                   .validateProcessData(any(Control.class), any(ProcessData.class), anyString());
 
 
         // Perform Put request and validate response
@@ -298,8 +300,8 @@ public class ProcessDataControllerTest {
         verify(processDataRepository, times(1)).findById(anyLong());
         verify(controlRepository, times(2)).findById(anyLong());
         verify(dbUtilityService, times(2)).setControlStatus(anyLong(), anyString(), anyString());
-        verify(dbUtilityService, times(1)).validateProcessData(Mockito.any(Control.class),
-                                                               Mockito.any(ProcessData.class), anyString());
+        verify(dbUtilityService, times(1)).validateProcessData(any(Control.class),
+                                                               any(ProcessData.class), anyString());
 
     }
 

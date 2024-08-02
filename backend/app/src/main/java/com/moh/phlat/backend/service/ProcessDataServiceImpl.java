@@ -1,33 +1,27 @@
 package com.moh.phlat.backend.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.ProcessDataFilterParams;
+import com.moh.phlat.backend.repository.ProcessDataFilterSpecification;
+import com.moh.phlat.backend.repository.ProcessDataFilterSpecificationImpl;
+import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.dto.ReportSummary;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-
-import com.moh.phlat.backend.service.RowStatusService;
-import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.model.ProcessDataFilterParams;
-import com.moh.phlat.backend.model.SourceData;
-import com.moh.phlat.backend.repository.ProcessDataFilterSpecification;
-import com.moh.phlat.backend.repository.ProcessDataFilterSpecificationImpl;
-import com.moh.phlat.backend.repository.ProcessDataRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProcessDataServiceImpl implements ProcessDataService {
@@ -37,9 +31,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     
 	@Autowired
 	EntityManager entityManager;
-	
-	private ProcessDataFilterSpecification specificationService = new ProcessDataFilterSpecificationImpl();
-    
+
     @Override
     public Page<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, int page, int itemsPerPage, ProcessDataFilterParams filterProcess, 
 			List<Order> sortOrders){
@@ -56,7 +48,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
     }
     
     private Specification<ProcessData> buildSpecification(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess) {
-    	Specification<ProcessData> combinedSpecification = specificationService.getDataWithMessages(controlId);
+		ProcessDataFilterSpecification specificationService = new ProcessDataFilterSpecificationImpl();
+
+		Specification<ProcessData> combinedSpecification = specificationService.getDataWithMessages(controlId);
 
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", reqRowStatusCode);
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", filterProcess.getId());
@@ -162,7 +156,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		String reportAttributeName;
 		Long reportAttributeValue;
 
-		List<ReportSummary> items = new ArrayList<ReportSummary>();
+		List<ReportSummary> items = new ArrayList<>();
 
 		reportAttributeName ="TOTAL INPUT RECORDS";
 		reportAttributeValue = processDataRepository.countByControlTableId(controlTableId);
@@ -216,7 +210,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		for (Object[] msg : listMsg){
 			String code = (String) msg[1];
 			if (StringUtils.hasText(code)) {
-				reportAttributeName = (String) msg[0] + " " + (String) msg[1] + " " + (String) msg[2];
+				reportAttributeName = msg[0] + " " +  msg[1] + " " + msg[2];
 				reportAttributeValue = (Long) msg[3];
 				ReportSummary rsMessage = createReportSummaryData(reportAttributeName, reportAttributeValue);
 				items.add(rsMessage);	
