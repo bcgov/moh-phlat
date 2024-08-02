@@ -120,11 +120,11 @@ public class ProcessDataControllerTest {
     @Test
     @WithMockUser(roles = {UserRoles.ROLE_REG_USER, UserRoles.ROLE_REG_ADMIN})
     public void testGetAllProcessDataByControlTableId() throws Exception {
-        Page<ProcessData> processPageData = new PageImpl<>(processDataList);
+        Page<ProcessData> processDataPage = new PageImpl<>(processDataList);
 
     	when(controlRepository.findById(anyLong())).thenReturn(Optional.of(controls.get(0)));
         when(processDataService.getProcessDataWithMessages(anyLong(), nullable(String.class), anyInt(), anyInt(),
-                                                           any(ProcessDataFilterParams.class), anyList())).thenReturn(processPageData);
+                                                           any(ProcessDataFilterParams.class), anyList())).thenReturn(processDataPage);
 
         /*
         Generate an empty JSON to satisfy the request. Since the controller method doesn't process filterParams
@@ -148,12 +148,12 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath("$.message").isEmpty())
                      .andExpect(jsonPath("$.totalItems").isNumber())
                      .andExpect(jsonPath("$.data").isArray())
-                     .andExpect(jsonPath("$.data.length()").value(processPageData.getContent().size()));
+                     .andExpect(jsonPath("$.data.length()").value(processDataPage.getContent().size()));
 
         //checking date here and rest of the elements in method below.
         resultActions.andExpect(jsonPath("$.data[0].createdAt").value("2024-02-01T00:00:00.000+00:00"));
         // assert the json elements of a single record, pick any of the two records.
-        checkProcessDataJsonResult(resultActions, "$.data[0].", processPageData.getContent().get(0));
+        checkProcessDataJsonResult(resultActions, "$.data[0].", processDataPage.getContent().get(0));
         // Define the argument captor for List<SomeClass>
 
         @SuppressWarnings("unchecked")

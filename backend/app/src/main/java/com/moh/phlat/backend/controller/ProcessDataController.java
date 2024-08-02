@@ -94,10 +94,10 @@ public class ProcessDataController {
 			}
 		}
 		
-		Page<ProcessData> processPageData = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, page, itemsPerPage, filterProcess, sortOrders);
+		Page<ProcessData> processDataPage = processDataService.getProcessDataWithMessages(controlTableId, rowStatus, page, itemsPerPage, filterProcess, sortOrders);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "",
-				processPageData.getTotalElements(), processPageData.getContent()));
+				processDataPage.getTotalElements(), processDataPage.getContent()));
 	}
 
 	// get specific row by id
