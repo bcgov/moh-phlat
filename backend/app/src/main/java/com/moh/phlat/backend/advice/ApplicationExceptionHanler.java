@@ -41,7 +41,6 @@ public class ApplicationExceptionHanler {
     @ExceptionHandler(Exception.class)
     public Map<String, String> handleOtherException(Exception ex) {
         Map<String, String> errorMap = new HashMap<>();
-        System.out.println("The Error is: " + ex);
         errorMap.put("Message", "The server could not process the request. Please contact customer support");
         return errorMap;
     }
