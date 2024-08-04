@@ -30,13 +30,16 @@ public class PlrDataLoad {
 			MaintainFacilityResponse facilityResponse = createFacility(control, processData);
 			maintainResults.setFacilityResult(facilityResponse);
 		}
-		if (control.getLoadTypeHds()) {
+		if (maintainResults.getFacilityResult().verifyStatus()
+				&& control.getLoadTypeHds()) {
 			//MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 			//maintainResults.setHdsResult(hdsResponse);
-		}
-		if (control.getLoadTypeOFRelationship()) {
-			//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
-			//maintainResults.setOFResult(ofResponse);
+			
+			if (maintainResults.getHdsResult().verifyStatus()
+					&& control.getLoadTypeOFRelationship()) {
+				//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
+				//maintainResults.setOFResult(ofResponse);
+			}
 		}
 		return maintainResults;
 	}

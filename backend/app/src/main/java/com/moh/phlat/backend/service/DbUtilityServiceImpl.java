@@ -214,6 +214,11 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 						MaintainResults loadResults = plrDataLoad.loadPlrViaEsb(control, rec);
 					}
+					if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
+						setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
+						logger.error("PLR_LOAD HAS A PERSISTENT ISSUE. ENDING THIS RUN; RESOLVE AND TRY AGAIN LATER.");
+						return;
+					}
 				}
 				setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
 				logger.info("PLR_LOAD COMPLETED");

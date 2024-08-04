@@ -95,15 +95,17 @@ resilience4j:
 
 resilience4j.circuitbreaker:
   instances:
-    callPlr:
+    callPlrCircuitBreaker:
       slidingWindowType: COUNT_BASED
       slidingWindowSize: 3
       minimumNumberOfCalls: 3
       failureRateThreshold: 100
+      waitDurationInOpenState: 60000
+      permittedNumberOfCallsInHalfOpenState: 2
 
 resilience4j.retry:
   instances:
-    callPlr:
+    callPlrRetry:
       maxAttempts: 3
       waitDuration: 1000
       retryExceptions:

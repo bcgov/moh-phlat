@@ -81,12 +81,6 @@ public class MaintainHdsResponse implements PlrResponse {
 	}
 	
 	@Override
-	public void handleKeyCloakError(PlrToken token) {
-		hasError = true;
-		addError("KeyCloakError", "ERROR", token.getError() + " : " + token.getErrorDesc());
-	}
-	
-	@Override
 	public boolean verifyStatus() {
 		boolean pass = !hasError && (isLoaded || isDuplicate);
 		if (!pass && !hasError) {

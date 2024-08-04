@@ -18,6 +18,8 @@ import com.moh.phlat.backend.esb.boundary.PlrToken;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+
 public class MaintainFacilityResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainFacilityResponse.class);
 	
@@ -64,7 +66,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 			
 		} catch (Exception ex) {
 			hasError = true;
-			logger.error("PLR's response could not be parsed: ", ex);
+			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", ex, data.getId());
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
 		}
@@ -78,12 +80,11 @@ public class MaintainFacilityResponse implements PlrResponse {
 			addError("HTTP " + String.valueOf(webEx.getStatusCode().value()), "ERROR", 
 					"PLR is unreachable or could not process the request");
 		}
-	}
-	
-	@Override
-	public void handleKeyCloakError(PlrToken token) {
-		hasError = true;
-		addError("KeyCloakError", "ERROR", token.getError() + " : " + token.getErrorDesc());
+		if (ex instanceof CallNotPermittedException) {
+			CallNotPermittedException callEx = (CallNotPermittedException) ex;
+			addError(callEx.getClass().getName(), "ERROR",
+					"Too many load attempts have failed in succession; this is the last attempted record");
+		}
 	}
 	
 	@Override

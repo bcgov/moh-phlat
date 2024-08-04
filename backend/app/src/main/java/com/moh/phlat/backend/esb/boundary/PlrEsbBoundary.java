@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker.State;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 
@@ -35,6 +38,9 @@ public class PlrEsbBoundary {
 	private WebClient webClient;
 	
 	private SSLContext sslContext;
+	
+	@Autowired
+	private CircuitBreakerRegistry circuitBreakerRegistry;
 	
 	@Autowired
 	private PlrKeyCloak keyCloak;
@@ -70,14 +76,14 @@ public class PlrEsbBoundary {
 	public boolean isReadyToConnect() {
 		return webClient != null;
 	}
-	@CircuitBreaker(name="callPlr", fallbackMethod="fallback")
-	@Retry(name="callPlr")
+	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
+	@Retry(name="callPlrRetry")
 	public void maintainProvider(Control control, PlrRequest plrRequest, PlrResponse plrResponse) {
 		callPlr(control, plrRequest, plrResponse, MAINTAIN_ENDPOINT);
 	}
 	
-	@CircuitBreaker(name="callPlr", fallbackMethod="fallback")
-	@Retry(name="callPlr")
+	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
+	@Retry(name="callPlrRetry")
 	public void validateProvider(Control control, PlrRequest plrRequest, PlrResponse plrResponse) {
 		callPlr(control, plrRequest, plrResponse, VALIDATE_ENDPOINT);
 	}
@@ -107,6 +113,14 @@ public class PlrEsbBoundary {
 	
 	private void fallback(Control control, PlrRequest plrRequest, PlrResponse plrResponse, Exception exception) {
 		logger.error("Fallback triggered on call to {} due to: {}", plrBoundaryHost, exception.getMessage());
+		if (exception instanceof CallNotPermittedException) {
+			logger.error("CircuitBreaker has stopped this load run due to too many successive failures");
+		}
 		plrResponse.handlePlrError(exception);
+	}
+	
+	public boolean hasPersistentIssue() {
+		State state = circuitBreakerRegistry.circuitBreaker("callPlrCircuitBreaker").getState();
+		return !(state.equals(State.CLOSED) || state.equals(State.HALF_OPEN));
 	}
 }
