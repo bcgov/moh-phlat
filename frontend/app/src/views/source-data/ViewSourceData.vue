@@ -470,7 +470,7 @@ export default {
           <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
         <template #item.doNotLoadFlag="{ item }">
-          {{ item.raw.doNotLoad }}
+          {{ item.raw.doNotLoadFlag }}
         </template>
         <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
