@@ -30,6 +30,12 @@ export default {
     showColumnsDialog: false,
     deleteSingleItem: {},
     filterData: [],
+    pagination: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: 'id',
+      sortDirection: 'asc',
+    },
     filterIgnore: [],
     filterIgnoreColumns: [
       {
@@ -54,7 +60,7 @@ export default {
     editedItem: {},
     defaultItem: {},
     sortOrder: 'default',
-    sortOrderCriteria: [{ key: 'id', order: 'asc' }],
+    sortOrderCriteria: [],
     sortOrderTypes: [
       {
         text: 'Row ID#',
@@ -62,11 +68,11 @@ export default {
         criteria: [{ key: 'id', order: 'asc' }],
       },
       {
-        text: 'Civic Address + HDS Name',
-        value: 'civicAddressPlusHDSName',
+        text: 'Fac Civic Address + HDS Name',
+        value: 'facCivicAddressPlusHDSName',
         criteria: [
           { key: 'hdsName', order: 'asc' },
-          { key: 'civicAddress', order: 'asc' },
+          { key: 'facCivicAddr', order: 'asc' },
         ],
       },
       {
@@ -80,6 +86,7 @@ export default {
   computed: {
     ...mapState(useInputSourceDataStore, [
       'inputSourceData',
+      'totalItems',
       'formFieldHeaders',
       'deleteInputSourceDataById',
       'updatedInputSourceData',
@@ -176,7 +183,7 @@ export default {
       this.populateControlTable();
       this.populateHeaders();
       this.populateColumns();
-      this.populateInputSource();
+      // this.populateInputSource();
       this.loading = false;
     },
     async populateColumns() {
@@ -197,12 +204,16 @@ export default {
       const tableHeaders = this.formFieldHeaders;
       this.headers = [...tableHeaders, ...this.headers];
     },
-
+    loadItems(pageData) {
+      this.pagination = pageData;
+      this.populateInputSource();
+    },
     async populateInputSource() {
       // Get the submissions for this form
       await this.fetchInputSourceDataByControlId(
         this.id,
-        this.viewSourceSelectedFiltersData
+        this.viewSourceSelectedFiltersData,
+        this.pagination
       );
       this.inputSrcData = this.inputSourceData;
     },
@@ -333,14 +344,14 @@ export default {
 </script>
 <template>
   <div>
-    <div class="mt-6 d-flex flex-nowrap">
+    <div class="mt-6 d-flex flex-nowrap justify-content-sp-bt">
       <!-- page title -->
       <div class="page-title mw-50p">
         <h1>{{ fileName }} - View Source Data</h1>
       </div>
 
       <!-- search input -->
-      <v-text-field
+      <!-- <v-text-field
         v-model="search"
         density="compact"
         variant="underlined"
@@ -349,7 +360,7 @@ export default {
         single-line
         solid
         class="header-component"
-      ></v-text-field>
+      ></v-text-field> -->
       <v-select
         v-model="sortOrder"
         :items="sortOrderTypes"
@@ -383,18 +394,27 @@ export default {
 
     <div>
       <div></div>
-      <v-data-table
+      <v-data-table-server
         key="forceTableRefresh"
         :loading="loading"
         height="70vh"
         :headers="HEADERS"
         fixed-header
         :items="inputSrcData"
-        :items-length="inputSrcData.length"
+        :items-length="totalItems"
+        :items-per-page-options="[
+          { value: 10, title: '10' },
+          { value: 25, title: '25' },
+          { value: 50, title: '50' },
+          { value: 100, title: '100' },
+          { value: totalItems, title: 'All' },
+        ]"
         density="compact"
         :sort-by="sortOrderCriteria"
         class="submissions-table"
         :search="search"
+        :multi-sort="true"
+        @update:options="loadItems"
       >
         <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
           <tr>
@@ -450,12 +470,12 @@ export default {
           <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
         <template #item.doNotLoadFlag="{ item }">
-          {{ item.raw.doNotLoad }}
+          {{ item.raw.doNotLoadFlag }}
         </template>
         <template #no-data>
           <v-btn color="primary" @click="initialize"> Reset </v-btn>
         </template>
-      </v-data-table>
+      </v-data-table-server>
 
       <v-dialog v-model="showColumnsDialog" width="700">
         <BaseFilter
@@ -521,5 +541,13 @@ export default {
 }
 .style-2 {
   background-color: rgb(114, 114, 67);
+}
+
+.justify-content-sp-bt {
+  justify-content: space-between;
+}
+
+.page-title {
+  width: 70% !important;
 }
 </style>

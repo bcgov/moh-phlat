@@ -4,16 +4,18 @@ public class ResponseMessage {
 	private String status;
 	private Integer statusCode;
 	private String message;
+	private Long totalItems;
 	private Object data;
 	
 	public ResponseMessage() {
 	}
 
-	public ResponseMessage(String status, int statusCode, String message, Object data) {
+	public ResponseMessage(String status, int statusCode, String message, Long totalItems, Object data) {
 		super();
 		this.status= status;
 		this.statusCode = statusCode;
 		this.message = message;
+		this.totalItems = totalItems;
 		this.data = data;
 	}
 
@@ -31,6 +33,14 @@ public class ResponseMessage {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public Long getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(Long totalItems) {
+		this.totalItems = totalItems;
 	}
 
 	public Object getData() {

@@ -36,7 +36,7 @@ public class RowStatusController {
 
         List<RowStatus> rowStatuses = rowStatusService.getRowStatuses(isDeleted);
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(new ResponseMessage("success", 200, "", rowStatuses));
+                             .body(new ResponseMessage("success", 200, "", null, rowStatuses));
 
     }
 }

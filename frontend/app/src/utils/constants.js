@@ -125,3 +125,5 @@ export const ViewNames = Object.freeze({
   SOURCEVIEW: 'source-data-management',
   STATUSCODE: 'status-codes-management',
 });
+
+export const nonFilterableColumns = ['actions', 'messages'];
