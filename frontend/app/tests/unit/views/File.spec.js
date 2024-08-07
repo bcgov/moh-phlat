@@ -32,35 +32,36 @@ describe('File.vue', () => {
   //   await router.isReady();
   // });
 
-  // it('shows Login text and button if not logged in', async () => {
-  //   const wrapper = mount(File, {
-  //     global: {
-  //       plugins: [pinia],
-  //       stubs: {
-  //         RouterLink: true,
-  //       },
-  //     },
-  //   });
+  it('shows Login text and button if not logged in', async () => {
+    const wrapper = mount(File, {
+      global: {
+        plugins: [pinia],
+        stubs: {
+          RouterLink: true,
+        },
+      },
+    });
 
-  //   await nextTick();
-  //   expect(wrapper.text()).toMatch(
-  //     'Please login to your account'
-  //   );
-  // });
+    await nextTick();
+    expect(wrapper.text()).toMatch(
+      'Please login to your account'
+    );
+  });
 
-  // it('Shows 401 when User does not have any role', () => {
-  //   authStore.authenticated = true;
-  //   authStore.ready = true;
-  //   const wrapper = mount(File, {
-  //     global: {
-  //       plugins: [router, pinia],
-  //       stubs: {
-  //         RouterView: true,
-  //       },
-  //     },
-  //   });
-  //   expect(wrapper.text()).toMatch('401 UnAuthorizedYour account is not set up correctly.');
-  // });
+  it('Shows 401 when User does not have any role', async () => {
+    authStore.authenticated = true;
+    authStore.ready = true;
+    const wrapper = mount(File, {
+      global: {
+        plugins: [router, pinia],
+        stubs: {
+          RouterView: true,
+        },
+      },
+    });
+    await nextTick();
+    expect(wrapper.text()).toMatch('401 UnAuthorizedYour account is not set up correctly.');
+  });
 
   it('shows page content if already logged in and authenticated', async () => {
     const authStore = useAuthStore();
@@ -75,9 +76,9 @@ describe('File.vue', () => {
 
     authStore.keycloak = {
       tokenParsed: {
-        identity_provider: 'idir',
+        identity_provider: IdentityProviders.IDIR,
         resource_access: {
-          phlatWeb: {
+          [import.meta.env.VITE_KEYCLOAK_CLIENT_ID]: {
             roles: [RegRoles.REG_USER],
           },
         },
@@ -96,7 +97,6 @@ describe('File.vue', () => {
     });
 
     await nextTick();
-    console.log('wrapperwrapper====-==-=-=', wrapper.html());
     expect(wrapper.text()).toMatch(
       'File Task Management - Process File List'
     );

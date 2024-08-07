@@ -135,6 +135,16 @@ function loadKeycloak(config) {
     authStore.updateKeycloak(keycloak, authenticated);
     authStore.ready = true;
     typeof options.onReady === 'function' && options.onReady();
+    // console.log(
+    //   '=============================================================================================='
+    // );
+    // console.log('authStore.keycloak:', authStore.keycloak);
+    // console.log('authStore.redirectUri:', authStore.redirectUri);
+    // console.log('authStore.ready:', authStore.ready);
+    // console.log('authStore.authenticated:', authStore.authenticated);
+    // console.log(
+    //   '=============================================================================================='
+    // );
   };
   keycloak.onAuthSuccess = () => {
     // Check token validity every 10 seconds (10 000 ms) and, if necessary, update the token.
