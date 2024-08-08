@@ -2,7 +2,7 @@ include {
   path = find_in_parent_folders()
 }
 
-generate "stag_tfvars" {
+generate "stage_tfvars" {
   path              = "dev.auto.tfvars"
   if_exists         = "overwrite"
   disable_signature = true
@@ -11,9 +11,9 @@ generate "stag_tfvars" {
   fargate_memory = 1024
   app_port = 21000
   fam_console_idp_name = "PROD-IDIR"
-  application = "phlat-stag"
-  application_url = "phlat-stage.hlth.gov.bc.ca"
-  api_url = "phlat-stage.api.hlth.gov.bc.ca"
+  application = "phlat-stage"
+  application_url = "phlat-stg.hlth.gov.bc.ca"
+  api_url = "phlatapi-stg.hlth.gov.bc.ca"
   aurora_acu_min = 0.5
   aurora_acu_max = 1
   EOF

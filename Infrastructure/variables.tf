@@ -1,5 +1,5 @@
 variable "target_env" {
-  description = "AWS workload account env (e.g. dev, test, prod, stag, unclass)"
+  description = "AWS workload account env (e.g. dev, test, prod, stage, unclass)"
 }
 
 variable "aws_region" {
