@@ -14,11 +14,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.esb.boundary.PlrToken;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import lombok.Getter;
 
 public class MaintainFacilityResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainFacilityResponse.class);
@@ -31,6 +31,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
+	@Getter
 	private List<PlrError> plrErrors = new ArrayList<PlrError>();
 	
 	public MaintainFacilityResponse(Control control, ProcessData data) {
@@ -52,9 +53,21 @@ public class MaintainFacilityResponse implements PlrResponse {
 			
 			JsonNode root = objectMapper.readTree(json);
 			for (JsonNode ack : root.get("acknowledgments")) {
-				if (ack.get("msgCode") != null && ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
-					hasError = true;
-					break;
+				if (ack.get("msgCode") != null) {
+					if (ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
+						hasError = true;
+					}
+					if (hasError) {
+						if (ack.get("msgCode").asText().contains("PRS.SYS.ADR.UNK.1.0.7055")) {
+							logger.warn("{} was identifed as a duplicate facility by PLR: {}", data.getId(), ack.get("msgText").asText());
+							addError("PRS.SYS.ADR.UNK.1.0.7055", "WARNING", ack.get("msgText").asText());
+						} else if (!ack.get("msgCode").asText().contains("PRS.PRP.MTN.UNK.0.0.0000")
+								&& !ack.get("msgCode").asText().contains("PRS.PRV.OID.CRE.0.0.0003")
+								&& !ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
+							logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), ack.get("msgText").asText());
+							addError(ack.get("msgCode").asText(), "ERROR", ack.get("msgText").asText());
+						}
+					}
 				}
 			}
 			if (!hasError) {
@@ -90,7 +103,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 	@Override
 	public boolean verifyStatus() {
 		boolean pass = !hasError && (isLoaded || isDuplicate);
-		if (!pass && !hasError) {
+		if (!(pass || hasError)) {
 			addError("UNKNOWN", "ERROR", 
 					"An unknown error occured while trying to load this record");
 		}

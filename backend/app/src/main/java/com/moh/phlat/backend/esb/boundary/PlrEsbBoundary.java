@@ -16,18 +16,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import com.moh.phlat.backend.esb.json.PlrRequest;
+import com.moh.phlat.backend.esb.json.PlrResponse;
+import com.moh.phlat.backend.model.Control;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker.State;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-
-import com.moh.phlat.backend.esb.json.PlrRequest;
-import com.moh.phlat.backend.esb.json.PlrResponse;
-import com.moh.phlat.backend.model.Control;
-
 import jakarta.annotation.PostConstruct;
 import reactor.core.publisher.Mono;
 
@@ -54,6 +54,9 @@ public class PlrEsbBoundary {
 	@Value("${plr.boundary.host}")
 	private String plrBoundaryHost;
 	
+	@Value("${plr.boundary.timeout}")
+	private int timeout;
+	
 	private static final String MAINTAIN_ENDPOINT = "/HSA-web/rs/passthrough/maintain";
 	private static final String VALIDATE_ENDPOINT = "/HSA-web/rs/passthrough/validate";
 	
@@ -62,6 +65,7 @@ public class PlrEsbBoundary {
 		try {
 			HttpClient httpClient = HttpClient.newBuilder()
 					.sslContext(sslContext)
+					.connectTimeout(Duration.ofSeconds(timeout))
 					.build();
 			
 			webClient = WebClient.builder()
@@ -76,6 +80,7 @@ public class PlrEsbBoundary {
 	public boolean isReadyToConnect() {
 		return webClient != null;
 	}
+	
 	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
 	@Retry(name="callPlrRetry")
 	public void maintainProvider(Control control, PlrRequest plrRequest, PlrResponse plrResponse) {
@@ -102,9 +107,11 @@ public class PlrEsbBoundary {
 				.bodyValue(jsonRequest)
 				.retrieve()
 				.bodyToMono(String.class)
-				.timeout(Duration.ofSeconds(10))
+				.doOnError(WebClientRequestException.class, ex -> {
+                    logger.error("HTTP Request failed due to an error: {}", ex.getMessage());
+                })
 				.doOnError(WebClientResponseException.class, ex -> {
-                    logger.error("HTTP Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
+                    logger.error("HTTP Response Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
                 });
 		
 		String jsonResponse = mono.block();

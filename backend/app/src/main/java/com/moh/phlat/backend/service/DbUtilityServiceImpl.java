@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
+import com.moh.phlat.backend.esb.json.MaintainFacilityResponse.PlrError;
 import com.moh.phlat.backend.esb.json.MaintainResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
@@ -25,7 +26,7 @@ import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DbUtilityServiceImpl.class);
 
 	@Autowired
 	private MessageService messageService;
@@ -213,6 +214,16 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 						logger.info("loading process data with id: {} to PLR.", rec.getId());
 
 						MaintainResults loadResults = plrDataLoad.loadPlrViaEsb(control, rec);
+						for (PlrError plrError : loadResults.getFacilityResult().getPlrErrors()) {
+							Message msg = Message.builder()
+									 .messageType(plrError.getErrorType())
+									 .messageCode(plrError.getErrorCode())
+									 .messageDesc(plrError.getErrorMessage())
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(rec)
+									 .build();
+							messageService.createMessage(msg);
+						}
 					}
 					if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
 						setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);

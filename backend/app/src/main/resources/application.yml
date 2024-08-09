@@ -79,8 +79,7 @@ columns-display-preference:
 plr:
   boundary:
     host: ${PLR_API_HOST}
-    org-id: 00002855
-    role: REG_ADMIN
+    timeout: 30
 
     keycloak:
       provider-url: ${PLR_KEYCLOAK_PROVIDER_URL}
@@ -109,4 +108,5 @@ resilience4j.retry:
       maxAttempts: 3
       waitDuration: 1000
       retryExceptions:
+      - org.springframework.web.reactive.function.client.WebClientRequestException
       - org.springframework.web.reactive.function.client.WebClientResponseException
