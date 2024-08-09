@@ -3,7 +3,7 @@ package com.moh.phlat.backend.esb.json;
 import lombok.Getter;
 import lombok.Setter;
 
-public class MaintainResults implements PlrResults {
+public class MaintainResults {
 
 	@Getter
 	@Setter
