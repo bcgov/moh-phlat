@@ -55,6 +55,13 @@ spring:
           issuer-uri: ${KEYCLOAK_PROVIDER_URL}
           jwt-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
+  ssl:
+    bundle:
+      pem:
+        client:
+          truststore:
+            certificate: classpath:plr_tls_trust.cert
+
 # -------------- spring related config ends ---------------------------
 
 jwt:
@@ -69,3 +76,37 @@ jwt:
 columns-display-preference:
   allowed-viewNames: file-task-management,process-data-management,source-data-management,status-codes-management
 
+plr:
+  boundary:
+    host: ${PLR_API_HOST}
+    timeout: 30
+
+    keycloak:
+      provider-url: ${PLR_KEYCLOAK_PROVIDER_URL}
+      client-id: ${PLR_KEYCLOAK_CLIENT_ID}
+      client-secret: ${PLR_KEYCLOAK_CLIENT_SECRET}
+
+resilience4j:
+  circuitbreaker:
+    circuitBreakerAspectOrder: 1
+  retry:
+    retryAspectOrder: 2
+
+resilience4j.circuitbreaker:
+  instances:
+    callPlrCircuitBreaker:
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 3
+      minimumNumberOfCalls: 3
+      failureRateThreshold: 100
+      waitDurationInOpenState: 60000
+      permittedNumberOfCallsInHalfOpenState: 2
+
+resilience4j.retry:
+  instances:
+    callPlrRetry:
+      maxAttempts: 3
+      waitDuration: 1000
+      retryExceptions:
+      - org.springframework.web.reactive.function.client.WebClientRequestException
+      - org.springframework.web.reactive.function.client.WebClientResponseException

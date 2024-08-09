@@ -18,7 +18,16 @@ COPY pom.xml .
 #RUN mvn dependency:go-offline
 
 COPY src/ ./src/
-RUN mvn package 
+COPY ext-libs ./ext-libs
+
+ARG PLR_TLS_TRUST_CERT
+# RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
+#cert is base64 encoded. Decode it before writing to file
+RUN echo $PLR_TLS_TRUST_CERT | base64 -d > ./src/main/resources/plr_tls_trust.cert
+
+RUN chmod 640 ./src/main/resources/plr_tls_trust.cert
+
+RUN mvn -Dmaven.test.skip=true package
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
