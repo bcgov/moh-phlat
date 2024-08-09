@@ -23,6 +23,9 @@ import lombok.Getter;
 public class MaintainFacilityResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainFacilityResponse.class);
 	
+	private static final String DUPLICATE_FACILITY_RESPONSE_CODE = "PRS.SYS.ADR.UNK.1.0.7055";
+	private static final String FACILITY_LOADED_RESPONSE_CODE = "PRS.PRV.OID.CRE.0.0.0003";
+
 	private ProcessData data;
 	
 	private String facilityId;
@@ -52,20 +55,20 @@ public class MaintainFacilityResponse implements PlrResponse {
 			objectMapper.setSerializationInclusion(Include.NON_NULL);
 			
 			JsonNode root = objectMapper.readTree(json);
-			for (JsonNode ack : root.get("acknowledgments")) {
-				if (ack.get("msgCode") != null) {
-					if (ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
+			for (JsonNode ack : root.get(ACKNOWLEDGEMENTS)) {
+				if (ack.get(MSG_CODE) != null) {
+					if (ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
 						hasError = true;
 					}
 					if (hasError) {
-						if (ack.get("msgCode").asText().contains("PRS.SYS.ADR.UNK.1.0.7055")) {
-							logger.warn("{} was identifed as a duplicate facility by PLR: {}", data.getId(), ack.get("msgText").asText());
-							addError("PRS.SYS.ADR.UNK.1.0.7055", "WARNING", ack.get("msgText").asText());
-						} else if (!ack.get("msgCode").asText().contains("PRS.PRP.MTN.UNK.0.0.0000")
-								&& !ack.get("msgCode").asText().contains("PRS.PRV.OID.CRE.0.0.0003")
-								&& !ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
-							logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), ack.get("msgText").asText());
-							addError(ack.get("msgCode").asText(), "ERROR", ack.get("msgText").asText());
+						if (ack.get(MSG_CODE).asText().contains(DUPLICATE_FACILITY_RESPONSE_CODE)) {
+							logger.warn("{} was identifed as a duplicate facility by PLR: {}", data.getId(), ack.get(MSG_TEXT).asText());
+							addError(DUPLICATE_FACILITY_RESPONSE_CODE, "WARNING", ack.get(MSG_TEXT).asText());
+						} else if (!ack.get(MSG_CODE).asText().contains(SUCCESSFUL_RESPONSE_CODE)
+								&& !ack.get(MSG_CODE).asText().contains(FACILITY_LOADED_RESPONSE_CODE)
+								&& !ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
+							logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), ack.get(MSG_TEXT).asText());
+							addError(ack.get(MSG_CODE).asText(), "ERROR", ack.get(MSG_TEXT).asText());
 						}
 					}
 				}
