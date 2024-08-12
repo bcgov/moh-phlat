@@ -3,7 +3,7 @@ locals {
     dev     = "Dev"
     test    = "Test"
     prod    = "Prod"
-    stage = "Tools"
+    stag = "Tools"
     unclass = "UnClass"
   }
   environment        = local.env_map[lower(var.target_env)]

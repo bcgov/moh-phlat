@@ -2,7 +2,7 @@ include {
   path = find_in_parent_folders()
 }
 
-generate "stage_tfvars" {
+generate "stag_tfvars" {
   path              = "dev.auto.tfvars"
   if_exists         = "overwrite"
   disable_signature = true
