@@ -27,8 +27,8 @@ export const useControlTableDataStore = defineStore('controltabledata', {
       const notificationStore = useNotificationStore();
       try {
         const { data } = await controlTableService.servicePutLoadToPlrl(id);
-        this.singleControlTableData = data.data;
-        if (data.statusCode === 200) {
+        if (data.data) {
+          this.singleControlTableData = data.data;
           notificationStore.addNotification({
             text: data.message || 'Data loading to PLR successfully started.',
             type: data.statusCode != 200 ? 'warning' : 'success',
@@ -40,10 +40,9 @@ export const useControlTableDataStore = defineStore('controltabledata', {
           });
         }
       } catch (error) {
-        console.log('Something went wrong. (DWOHUU#301)', error); // eslint-disable-line no-console
         notificationStore.addNotification({
-          text: error.response.data.message || 'Something went wrong',
-          type: error.response.data.status != 200 ? 'error' : 'success',
+          text: error?.response?.data?.message || 'Something went wrong',
+          type: error?.response?.data?.status != 200 ? 'error' : 'success',
         });
       } finally {
         // This will execute regardless of the try/catch outcome
@@ -70,10 +69,9 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         }
       } catch (error) {
         notificationStore.addNotification({
-          text: error.response.data.message || 'Something went wrong',
-          type: error.response.data.status != 200 ? 'error' : 'success',
+          text: error?.response?.data?.message || 'Something went wrong',
+          type: error?.response?.data?.status != 200 ? 'error' : 'success',
         });
-        console.log('Something went wrong. (SJHQD#3126)', error); // eslint-disable-line no-console
       } finally {
         // This will execute regardless of the try/catch outcome
         this.processingControlTable = false;
@@ -95,7 +93,6 @@ export const useControlTableDataStore = defineStore('controltabledata', {
         const { data } = await controlTableService.serviceGetControlTableById(
           id
         );
-
         if (data.data) {
           this.singleControlTableData = data.data;
         } else {

@@ -36,8 +36,12 @@ describe('File.vue', () => {
     const wrapper = mount(File, {
       global: {
         plugins: [pinia],
+        mocks: {
+          $route: { path: '/' }, // Provide a mock $route object
+        },
         stubs: {
           RouterLink: true,
+          RouterView: true,
         },
       },
     });

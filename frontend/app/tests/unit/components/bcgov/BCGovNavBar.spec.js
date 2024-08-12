@@ -72,9 +72,7 @@ describe('BCGovNavBar.vue', () => {
       },
     });
     const admin = wrapper.find('[data-cy="admin"]');
-    // expect(admin.exists()).toBeTruthy();
-    console.log("admin.text()----", admin.text());
-    // expect(admin.text()).toContain('File Task Management - Process File List');
+    expect(admin.text()).toContain('File Task Management - Process File List  File Control / Upload');
     // expect(admin.text()).toContain('File Control / Upload');
   });
 });

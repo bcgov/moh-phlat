@@ -37,7 +37,6 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
-        console.log('Something went wrong. (STJ6SLL#2426)', error); // eslint-disable-line no-console
       } finally {
         // This will execute regardless of the try/catch outcome
         this.processignPreferenceData = false;
@@ -60,7 +59,6 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
         }
       } catch (error) {
         this.displayColumnsPreferenceData = [];
-        console.log('Something went wrong. (STO1MDJ#20d261)', error); // eslint-disable-line no-console
       } finally {
         // This will execute regardless of the try/catch outcome
         this.processignPreferenceData = false;
