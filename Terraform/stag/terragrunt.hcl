@@ -9,7 +9,7 @@ generate "stag_tfvars" {
   contents          = <<-EOF
   fargate_cpu = 512
   fargate_memory = 1024
-  app_port = 21000
+  app_port = 8088
   fam_console_idp_name = "PROD-IDIR"
   application = "phlat-stag"
   application_url = "phlat-stg.hlth.gov.bc.ca"
