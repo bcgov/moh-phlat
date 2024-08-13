@@ -5,3 +5,6 @@ class ResizeObserverStub {
 }
 
 window.ResizeObserver = window.ResizeObserver || ResizeObserverStub;
+
+const noop = () => {};
+Object.defineProperty(window, 'scrollTo', { value: noop, writable: true });

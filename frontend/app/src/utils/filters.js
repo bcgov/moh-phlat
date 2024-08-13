@@ -11,9 +11,10 @@ import moment from 'moment';
  * @returns {String} A string representation of `value`
  */
 export function formatDate(value) {
-  if (value) {
+  if (value && moment(value, moment.ISO_8601, true).isValid()) {
     return moment(String(value)).format('MMMM D YYYY');
   }
+  return undefined;
 }
 
 /**
@@ -23,9 +24,10 @@ export function formatDate(value) {
  * @returns {String} A string representation of `value`
  */
 export function formatDateLong(value) {
-  if (value) {
-    return moment(String(value)).format('YYYY-MM-DD hh:mm:ss a');
+  if (value && moment(value, moment.ISO_8601, true).isValid()) {
+    return moment.utc(String(value)).format('YYYY-MM-DD hh:mm:ss a');
   }
+  return undefined;
 }
 // Function to convert object to URL query parameters
 export function objectToQueryParams(obj) {

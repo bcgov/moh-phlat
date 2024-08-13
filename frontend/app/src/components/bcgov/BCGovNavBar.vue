@@ -42,7 +42,7 @@ export default {
     v-if="!hideNavBar"
     class="elevation-4 navigation-main d-print-none px-md-16 px-4"
   >
-    <div class="nav-holder">
+    <div class="nav-holder" data-cy="admin">
       <ul>
         <!-- <li>
           <router-link data-cy="aboutLinks" :to="{ name: 'Home' }">
@@ -54,7 +54,7 @@ export default {
             data-cy="TaskManagement"
             :to="{ name: 'TaskManagement' }"
           >
-            File Task Management – Process File List
+            File Task Management - Process File List
           </router-link>
         </li>
         <li>

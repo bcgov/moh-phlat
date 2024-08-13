@@ -7,7 +7,7 @@ import { useNotificationStore } from '~/store/notification';
 export default {
   props: {
     text: {
-      default: 'trans.error.somethingWentWrong',
+      default: 'Something went wrong',
       type: String,
     },
     translate: {
