@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
@@ -195,6 +196,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	
 	@Async
+	@Transactional
 	@Override
 	public void loadProcessDataToPlr(Long controlTableId, String authenticatedUserId) {
 		logger.info("START PLR LOAD IN ASYNC MODE");
@@ -207,36 +209,31 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
 
-			if (plrDataLoad.getPlrEsbBoundary() != null && plrDataLoad.getPlrEsbBoundary().isReadyToConnect()) {
-				for (ProcessData rec : processDataList) {
-					// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
-					if (!"Y".equals(rec.getDoNotLoadFlag()) && RowStatusService.VALID.equals(rec.getRowstatusCode())) {
-						logger.info("loading process data with id: {} to PLR.", rec.getId());
+			for (ProcessData processData : processDataList) {
+				// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
+				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
+					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
-						MaintainResults loadResults = plrDataLoad.loadPlrViaEsb(control, rec);
-						for (PlrError plrError : loadResults.getFacilityResult().getPlrErrors()) {
-							Message msg = Message.builder()
-									 .messageType(plrError.getErrorType())
-									 .messageCode(plrError.getErrorCode())
-									 .messageDesc(plrError.getErrorMessage())
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(rec)
-									 .build();
-							messageService.createMessage(msg);
-						}
-					}
-					if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
-						setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
-						logger.error("PLR_LOAD HAS A PERSISTENT ISSUE. ENDING THIS RUN; RESOLVE AND TRY AGAIN LATER.");
-						return;
+					MaintainResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
+					for (PlrError plrError : maintainResults.getFacilityResult().getPlrErrors()) {
+						Message msg = Message.builder()
+								 .messageType(plrError.getErrorType())
+								 .messageCode(plrError.getErrorCode())
+								 .messageDesc(plrError.getErrorMessage())
+								 .sourceSystemName(MessageSourceSystem.PLR)
+								 .processData(processData)
+								 .build();
+						messageService.createMessage(msg);
 					}
 				}
-				setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
-				logger.info("PLR_LOAD COMPLETED");
-			} else {
-				setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
-				logger.error("PLR_LOAD FAILED TO START");
+				if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
+					setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
+					logger.error("PLR Load has a persistent issue. Ending this run. Resolve and try again later.");
+					return;
+				}
 			}
+			setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
+			logger.info("PLR Load Completed");
 		}
 	}	
 }

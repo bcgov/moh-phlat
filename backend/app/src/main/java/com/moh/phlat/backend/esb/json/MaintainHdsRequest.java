@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
@@ -33,28 +32,23 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private ProcessData data;
 	
-	public MaintainHdsRequest(Control control, ProcessData data) {
+	public MaintainHdsRequest(ProcessData data) {
 		this.data = data;
 	}
 	
 	@Override
-	public String processDataToPlrJson() {
-		try {
-			DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-			
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.setDateFormat(dateFormat);
-			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-			objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-			objectMapper.setSerializationInclusion(Include.NON_NULL);
-			
-			return objectMapper.writeValueAsString(createMaintainProviderRequest());
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-		}
-		return null;
+	public String processDataToPlrJson() throws IOException {
+		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(dateFormat);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+		
+		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	
 	private MaintainProviderRequest createMaintainProviderRequest() {
@@ -99,12 +93,12 @@ public class MaintainHdsRequest implements PlrRequest {
 	}
 	
 	private List<AddressDto> createAddressDtos() {
-		List<AddressDto> output = new ArrayList<AddressDto>();
-		output.add(createPhysicalAddressDto());
+		List<AddressDto> addressList = new ArrayList<>();
+		addressList.add(createPhysicalAddressDto());
 		if (StringUtils.hasText(data.getMailAddr1()) && StringUtils.hasText(data.getMailBc())) {
-			//output.add(createMailingAddressDto(input));
+			//addressList.add(createMailingAddressDto(input));
 		}
-		return output;
+		return addressList;
 	}
 	
 	private AddressDto createPhysicalAddressDto() {
@@ -180,7 +174,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			return null;
 		}
 		
-		List<TelecommunicationDto> output = new ArrayList<TelecommunicationDto>();
+		List<TelecommunicationDto> telecomList = new ArrayList<>();
 		
 		if (StringUtils.hasText(data.getHdsBusTelNumber())) {
 			TelecommunicationDto hdsBusTelNumber = new TelecommunicationDto();
@@ -193,7 +187,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			hdsBusTelNumber.setCreatedDate(data.getCreatedAt());
 			hdsBusTelNumber.setEffectiveStartDate(data.getCreatedAt());
-			output.add(hdsBusTelNumber);
+			telecomList.add(hdsBusTelNumber);
 		}
 		
 		if (StringUtils.hasText(data.getHdsCellNumber())) {
@@ -204,7 +198,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			hdsBusCellNumber.setCreatedDate(data.getCreatedAt());
 			hdsBusCellNumber.setEffectiveStartDate(data.getCreatedAt());
-			output.add(hdsBusCellNumber);
+			telecomList.add(hdsBusCellNumber);
 		}
 		
 		if (StringUtils.hasText(data.getHdsFaxNumber())) {
@@ -215,9 +209,9 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			hdsBusFaxNumber.setCreatedDate(data.getCreatedAt());
 			hdsBusFaxNumber.setEffectiveStartDate(data.getCreatedAt());
-			output.add(hdsBusFaxNumber);
+			telecomList.add(hdsBusFaxNumber);
 		}
-		return output;
+		return telecomList;
 	}
 	
 	private List<ElectronicAddressDto> createElectronicAddressDtos() {
@@ -225,7 +219,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			return null;
 		}
 		
-		List<ElectronicAddressDto> output = new ArrayList<ElectronicAddressDto>();
+		List<ElectronicAddressDto> electronicAddressList = new ArrayList<>();
 		SimpleDateFormat startDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
 		SimpleDateFormat endDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		
@@ -242,7 +236,7 @@ public class MaintainHdsRequest implements PlrRequest {
 				hdsEmail.setEffectiveEndDate(endDateFormat.parse(data.getHdsEffectiveEndDate()));
 			} catch (ParseException ex) {
 			}
-			output.add(hdsEmail);
+			electronicAddressList.add(hdsEmail);
 		}
 		
 		if (StringUtils.hasText(data.getHdsWebsite())) {
@@ -258,9 +252,9 @@ public class MaintainHdsRequest implements PlrRequest {
 				hdsWebsite.setEffectiveEndDate(endDateFormat.parse(data.getHdsEffectiveEndDate()));
 			} catch (ParseException ex) {
 			}
-			output.add(hdsWebsite);
+			electronicAddressList.add(hdsWebsite);
 		}
 		
-		return output;
+		return electronicAddressList;
 	}
 }

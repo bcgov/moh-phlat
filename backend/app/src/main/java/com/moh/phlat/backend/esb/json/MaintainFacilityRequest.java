@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
@@ -32,28 +31,23 @@ public class MaintainFacilityRequest implements PlrRequest {
 	
 	private ProcessData data;
 	
-	public MaintainFacilityRequest(Control control, ProcessData data) {
+	public MaintainFacilityRequest(ProcessData data) {
 		this.data = data;
 	}
 	
 	@Override
-	public String processDataToPlrJson() {
-		try {
-			DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-			
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.setDateFormat(dateFormat);
-			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-			objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-			objectMapper.setSerializationInclusion(Include.NON_NULL);
-			
-			return objectMapper.writeValueAsString(createMaintainProviderRequest());
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-		}
-		return null;
+	public String processDataToPlrJson() throws IOException {
+		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(dateFormat);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+		
+		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	
 	private MaintainProviderRequest createMaintainProviderRequest() {
@@ -77,8 +71,7 @@ public class MaintainFacilityRequest implements PlrRequest {
 	}
 	
 	private ProviderDetails createProviderDetails() {
-		ProviderDetails providerDetails = new ProviderDetails();
-		return providerDetails;
+		return new ProviderDetails();
 	}
 	
 	private FacilityDto createFacilityDto() {
@@ -97,9 +90,9 @@ public class MaintainFacilityRequest implements PlrRequest {
 		facilityDetails.setType("BUILDING");
 		facilityDetails.setTypeCode("BUILDING");
 		
-		List<FacilityDetailsDto> output = new ArrayList<FacilityDetailsDto>();
-		output.add(facilityDetails);
-		return output;
+		List<FacilityDetailsDto> facilityDetailsList = new ArrayList<>();
+		facilityDetailsList.add(facilityDetails);
+		return facilityDetailsList;
 	}
 	
 	private List<FacilityNameDto> createFacilityNameDtos() {
@@ -114,18 +107,15 @@ public class MaintainFacilityRequest implements PlrRequest {
 		facilityName.setCreatedDate(data.getCreatedAt());
 		facilityName.setEffectiveStartDate(data.getCreatedAt());
 		
-		List<FacilityNameDto> output = new ArrayList<FacilityNameDto>();
-		output.add(facilityName);
-		return output;
+		List<FacilityNameDto> facilityNameList = new ArrayList<>();
+		facilityNameList.add(facilityName);
+		return facilityNameList;
 	}
 	
 	private List<AddressDto> createAddressDtos() {
-		List<AddressDto> output = new ArrayList<AddressDto>();
-		output.add(createPhysicalAddressDto());
-		if (StringUtils.hasText(data.getMailAddr1()) && StringUtils.hasText(data.getMailBc())) {
-			//output.add(createMailingAddressDto(input));
-		}
-		return output;
+		List<AddressDto> addressList = new ArrayList<>();
+		addressList.add(createPhysicalAddressDto());
+		return addressList;
 	}
 	
 	private AddressDto createPhysicalAddressDto() {
@@ -156,40 +146,6 @@ public class MaintainFacilityRequest implements PlrRequest {
 		if (StringUtils.hasText(data.getPhysicalProvince())) {
 			address.setProvinceOrStateTxt(data.getPhysicalProvince());
 		}
-		address.setUpdatable(true);
-		address.setValidCpc(true);
-		
-		return address;
-	}
-	
-	private AddressDto createMailingAddressDto() {
-		AddressDto address = new AddressDto();
-		address.setActive(true);
-		address.setAddressLineOne(data.getMailAddr1());
-		if (StringUtils.hasText(data.getMailAddr2())) {
-			address.setAddressLineTwo(data.getMailAddr2());
-		}
-		if (StringUtils.hasText(data.getMailAddr3())) {
-			address.setAddressLineThree(data.getMailAddr3());
-		}
-		if (StringUtils.hasText(data.getMailAddr4())) {
-			address.setAddressLineFour(data.getMailAddr4());
-		}
-		if (StringUtils.hasText(data.getMailCity())) {
-			address.setCity(data.getMailCity());
-		}
-		address.setTypeCode("M");
-		address.setCommunicationPurposeCode("FC");
-		address.setCountry(data.getMailCountry());
-		address.setCountryCode("CA");
-		address.setCreatedDate(data.getCreatedAt());
-		address.setDisplayActive(true);
-		address.setEffectiveStartDate(data.getCreatedAt());
-		address.setNoChangeOnUpdate(true);
-		if (StringUtils.hasText(data.getMailPcode())) {
-			address.setPostalCode(data.getMailPcode());
-		}
-		address.setProvinceOrStateTxt(data.getMailBc());
 		address.setUpdatable(true);
 		address.setValidCpc(true);
 		
@@ -285,8 +241,8 @@ public class MaintainFacilityRequest implements PlrRequest {
 			civicAddress.setIsTypePrefix(Boolean.valueOf(data.getStreetTypePrefix()));
 		}
 		
-		List<CivicAddressDto> output = new ArrayList<CivicAddressDto>();
-		output.add(civicAddress);
-		return output;
+		List<CivicAddressDto> civicAddressList = new ArrayList<>();
+		civicAddressList.add(civicAddress);
+		return civicAddressList;
 	}
 }

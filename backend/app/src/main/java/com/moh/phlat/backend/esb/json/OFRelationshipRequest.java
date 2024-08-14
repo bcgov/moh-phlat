@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
@@ -23,28 +22,23 @@ public class OFRelationshipRequest implements PlrRequest {
 	
 	private ProcessData data;
 	
-	public OFRelationshipRequest(Control control, ProcessData data) {
+	public OFRelationshipRequest(ProcessData data) {
 		this.data = data;
 	}
 	
 	@Override
-	public String processDataToPlrJson() {
-		try {
-			DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-			
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.setDateFormat(dateFormat);
-			objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-			objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-			objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-			objectMapper.setSerializationInclusion(Include.NON_NULL);
-			
-			return objectMapper.writeValueAsString(createMaintainProviderRequest());
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-		}
-		return null;
+	public String processDataToPlrJson() throws IOException {
+		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(dateFormat);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+		
+		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	
 	private MaintainProviderRequest createMaintainProviderRequest() {

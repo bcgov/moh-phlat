@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.esb.boundary;
 
+import java.io.IOException;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
@@ -23,7 +24,6 @@ import com.moh.phlat.backend.esb.json.PlrRequest;
 import com.moh.phlat.backend.esb.json.PlrResponse;
 import com.moh.phlat.backend.model.Control;
 
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker.State;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -62,23 +62,14 @@ public class PlrEsbBoundary {
 	
 	@PostConstruct
 	public void initPlrEsbBoundary() {
-		try {
-			HttpClient httpClient = HttpClient.newBuilder()
-					.sslContext(sslContext)
-					.connectTimeout(Duration.ofSeconds(timeout))
-					.build();
-			
-			webClient = WebClient.builder()
-					.clientConnector(new JdkClientHttpConnector(httpClient))
-					.build();
-			
-		} catch (Exception ex) {
-			logger.error("Could not build PlrEsbBoundary Connection: ", ex);
-		}
-	}
-	
-	public boolean isReadyToConnect() {
-		return webClient != null;
+		HttpClient httpClient = HttpClient.newBuilder()
+				.sslContext(sslContext)
+				.connectTimeout(Duration.ofSeconds(timeout))
+				.build();
+		
+		webClient = WebClient.builder()
+				.clientConnector(new JdkClientHttpConnector(httpClient))
+				.build();
 	}
 	
 	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
@@ -94,7 +85,15 @@ public class PlrEsbBoundary {
 	}
 	
 	private void callPlr(Control control, PlrRequest plrRequest, PlrResponse plrResponse, String endpoint) {
-		String jsonRequest = plrRequest.processDataToPlrJson();
+		
+		String jsonRequest;
+		try {
+			jsonRequest = plrRequest.processDataToPlrJson();
+		} catch (IOException ex) {
+			logger.error("Could not convert {} into JSON: ", ex, plrRequest.getClass().getName());
+			plrResponse.handlePlrError(ex);
+			return;
+		}
 		
 		PlrToken token = keyCloak.getToken();
 		Mono<String> mono = webClient.post()
@@ -108,7 +107,7 @@ public class PlrEsbBoundary {
 				.retrieve()
 				.bodyToMono(String.class)
 				.doOnError(WebClientRequestException.class, ex -> {
-                    logger.error("HTTP Request failed due to an error: {}", ex.getMessage());
+                    logger.error("HTTP Request failed due to an error: ", ex);
                 })
 				.doOnError(WebClientResponseException.class, ex -> {
                     logger.error("HTTP Response Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
@@ -119,10 +118,7 @@ public class PlrEsbBoundary {
 	}
 	
 	private void fallback(Control control, PlrRequest plrRequest, PlrResponse plrResponse, Exception exception) {
-		logger.error("Fallback triggered on call to {} due to: {}", plrBoundaryHost, exception.getMessage());
-		if (exception instanceof CallNotPermittedException) {
-			logger.error("CircuitBreaker has stopped this load run due to too many successive failures");
-		}
+		logger.error("Fallback triggered on call to {} due to: ", exception, plrBoundaryHost);
 		plrResponse.handlePlrError(exception);
 	}
 	

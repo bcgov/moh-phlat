@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.esb.json;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -35,9 +35,9 @@ public class MaintainFacilityResponse implements PlrResponse {
 	private boolean hasError = false;
 	
 	@Getter
-	private List<PlrError> plrErrors = new ArrayList<PlrError>();
+	private List<PlrError> plrErrors = new ArrayList<>();
 	
-	public MaintainFacilityResponse(Control control, ProcessData data) {
+	public MaintainFacilityResponse(ProcessData data) {
 		this.data = data;
 	}
 	
@@ -94,12 +94,14 @@ public class MaintainFacilityResponse implements PlrResponse {
 		if (ex instanceof WebClientResponseException) {
 			WebClientResponseException webEx = (WebClientResponseException) ex;
 			addError("HTTP " + String.valueOf(webEx.getStatusCode().value()), "ERROR", 
-					"PLR is unreachable or could not process the request");
-		}
-		if (ex instanceof CallNotPermittedException) {
+					"PLR is unreachable or could not process the request.");
+		} else if (ex instanceof CallNotPermittedException) {
 			CallNotPermittedException callEx = (CallNotPermittedException) ex;
 			addError(callEx.getClass().getName(), "ERROR",
-					"Too many load attempts have failed in succession; this is the last attempted record");
+					"Too many load attempts have failed in succession; this record's load attempt has been cancelled.");
+		} else if (ex instanceof IOException) {
+			addError("InputProblem", "ERROR",
+					"The input record was invalid or could not be converted into a PLR request.");
 		}
 	}
 	

@@ -14,8 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.esb.boundary.PlrToken;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 public class MaintainHdsResponse implements PlrResponse {
@@ -29,9 +27,9 @@ public class MaintainHdsResponse implements PlrResponse {
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
-	private List<PlrError> plrErrors = new ArrayList<PlrError>();
+	private List<PlrError> plrErrors = new ArrayList<>();
 	
-	public MaintainHdsResponse(Control control, ProcessData data) {
+	public MaintainHdsResponse(ProcessData data) {
 		this.data = data;
 	}
 	

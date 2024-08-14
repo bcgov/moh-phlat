@@ -1,7 +1,5 @@
 package com.moh.phlat.backend.esb.boundary;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +16,6 @@ import lombok.Getter;
 @Component
 public class PlrDataLoad {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PlrDataLoad.class);
-	
 	@Autowired
 	@Getter
 	private PlrEsbBoundary plrEsbBoundary;
@@ -32,11 +28,13 @@ public class PlrDataLoad {
 		}
 		if (maintainResults.getFacilityResult().verifyStatus()
 				&& control.getLoadTypeHds()) {
+			//*** WILL IMPLEMENT THIS AFTER FACILITY LOAD IS COMPLETE ***
 			//MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 			//maintainResults.setHdsResult(hdsResponse);
 			
 			if (maintainResults.getHdsResult().verifyStatus()
 					&& control.getLoadTypeOFRelationship()) {
+				//*** WILL IMPLEMENT THIS AFTER HDS LOAD IS COMPLETE ***
 				//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
 				//maintainResults.setOFResult(ofResponse);
 			}
@@ -46,8 +44,8 @@ public class PlrDataLoad {
 	
 	private MaintainFacilityResponse createFacility(Control control, ProcessData processData) {
 		
-		MaintainFacilityRequest maintainFacilityRequest = new MaintainFacilityRequest(control, processData);
-		MaintainFacilityResponse maintainFacilityResponse = new MaintainFacilityResponse(control, processData);
+		MaintainFacilityRequest maintainFacilityRequest = new MaintainFacilityRequest(processData);
+		MaintainFacilityResponse maintainFacilityResponse = new MaintainFacilityResponse(processData);
 		
 		plrEsbBoundary.maintainProvider(control, maintainFacilityRequest, maintainFacilityResponse);
 		
@@ -55,8 +53,8 @@ public class PlrDataLoad {
 	}
 	
 	private MaintainHdsResponse createHdsProvider(Control control, ProcessData processData) {
-		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(control, processData);
-		MaintainHdsResponse maintainHdsResponse = new MaintainHdsResponse(control, processData);
+		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(processData);
+		MaintainHdsResponse maintainHdsResponse = new MaintainHdsResponse(processData);
 		
 		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);		
 		return maintainHdsResponse;

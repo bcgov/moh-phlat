@@ -27,7 +27,7 @@ RUN echo $PLR_TLS_TRUST_CERT | base64 -d > ./src/main/resources/plr_tls_trust.ce
 
 RUN chmod 640 ./src/main/resources/plr_tls_trust.cert
 
-RUN mvn -Dmaven.test.skip=true package
+RUN mvn package
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 

@@ -14,8 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.esb.boundary.PlrToken;
-import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
 public class OFRelationshipResponse implements PlrResponse {
@@ -29,9 +27,9 @@ public class OFRelationshipResponse implements PlrResponse {
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
-	private List<PlrError> plrErrors = new ArrayList<PlrError>();
+	private List<PlrError> plrErrors = new ArrayList<>();
 	
-	public OFRelationshipResponse(Control control, ProcessData data) {
+	public OFRelationshipResponse(ProcessData data) {
 		this.data = data;
 	}
 	

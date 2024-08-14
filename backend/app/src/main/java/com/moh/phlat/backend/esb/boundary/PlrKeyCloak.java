@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
@@ -35,18 +33,13 @@ public class PlrKeyCloak {
 	
 	@PostConstruct
 	public void initPlrKeyCloak() {
-		try {
-			HttpClient httpClient = HttpClient.newBuilder()
-					.build();
-			
-			webClient = WebClient.builder()
-					.baseUrl(keyCloakUrl)
-					.clientConnector(new JdkClientHttpConnector(httpClient))
-					.build();
-			
-		} catch (Exception ex) {
-			logger.error("Could not build PlrKeyCloak Connection: ", ex);
-		}
+		HttpClient httpClient = HttpClient.newBuilder()
+				.build();
+		
+		webClient = WebClient.builder()
+				.baseUrl(keyCloakUrl)
+				.clientConnector(new JdkClientHttpConnector(httpClient))
+				.build();
 	}
 	
 	private void requestToken() {		
@@ -63,30 +56,22 @@ public class PlrKeyCloak {
 					.bodyToMono(String.class)
 					.block();
 			
-			JsonParser jsonParser = new ObjectMapper().createParser(jsonResponse);
+			JsonNode root = new ObjectMapper().readTree(jsonResponse);
 			token = new PlrToken();
-			while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-				if (StringUtils.hasText(jsonParser.getCurrentName())) {
-					switch (jsonParser.getCurrentName()) {
-						case "access_token":
-							token.setAccessToken(jsonParser.getValueAsString());
-							break;
-						case "expires_in":
-							token.setExpiry(jsonParser.getValueAsLong());
-							break;
-						case "refresh_token":
-							token.setRefreshToken(jsonParser.getValueAsString());
-							break;
-						case "error":
-							token.setError(jsonParser.getValueAsString());
-							break;
-						case "error_description":
-							token.setErrorDesc(jsonParser.getValueAsString());
-							break;
-						default:
-							break;
-					}
-				}
+			if (root.has("access_token")) {
+				token.setAccessToken(root.get("access_token").asText());
+			}
+			if (root.has("expires_in")) {
+				token.setExpiry(root.get("expires_in").asLong());
+			}
+			if (root.has("refresh_token")) {
+				token.setRefreshToken(root.get("refresh_token").asText());
+			}
+			if (root.has("error")) {
+				token.setError(root.get("error").asText());
+			}
+			if (root.has("error_description")) {
+				token.setErrorDesc(root.get("error_description").asText());
 			}
 		} catch (Exception ex) {
 			logger.error("Token request failed: ", ex);
