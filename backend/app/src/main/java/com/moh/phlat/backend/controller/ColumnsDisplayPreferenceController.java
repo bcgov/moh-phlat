@@ -69,12 +69,12 @@ public class ColumnsDisplayPreferenceController {
             logger.info("Preference record found...");
             ColumnsDisplayPreference savedPreference = updateDisplayColumns(existingDisplayPreference, columnsDisplayPreference, userId);
             logger.info("Updated Preference record ...");
-            return okResponse(savedPreference);
+            return okResponse("User's Column Preferences updated", savedPreference);
         } else {
             logger.info("Preference record not found. Creating ...");
             ColumnsDisplayPreference savedPreference = createPreference(viewName, columnsDisplayPreference, userId);
             logger.info("Preference record created...");
-            return okResponse(savedPreference);
+            return okResponse("User's Column Preferences created", savedPreference);
         }
     }
 
@@ -86,22 +86,16 @@ public class ColumnsDisplayPreferenceController {
     public ResponseEntity<ResponseMessage> getPreferences(@PathVariable String viewName) {
         String userId = AuthenticationUtils.getAuthenticatedUserId();
         ColumnsDisplayPreference columnsDisplayPreference = preferencesService.getPreferences(userId, viewName);
-        if (columnsDisplayPreference != null) {
-            logger.info("preference details found ...");
-            return ResponseEntity.status(HttpStatus.OK)
-                                 .body(new ResponseMessage("success",
-                                                           200,
-                                                           "Columns Dispalay Preference found", null, columnsDisplayPreference));
+        String message = (columnsDisplayPreference != null) ? "User saved column display preferences found" : "User saved column display preferences not found";
+        logger.info(message);
 
-        } else {
-            return ResponseEntity.status(HttpStatus.OK)
-                                 .body(new ResponseMessage("success",
-                                                           200,
-                                                           "Columns Dispalay Preference not found", null, "{}"));
+        ColumnsDisplayPreference preference = (columnsDisplayPreference != null) ? columnsDisplayPreference : new ColumnsDisplayPreference();
 
+        if (columnsDisplayPreference == null) {
+            preference.setDisplayColumns(List.of());
+            preference.setViewName(viewName);
         }
-
-
+        return okResponse(message, preference);
     }
 
 
@@ -115,9 +109,9 @@ public class ColumnsDisplayPreferenceController {
     }
 
 
-    private ResponseEntity<ResponseMessage> okResponse(ColumnsDisplayPreference preference) {
+    private ResponseEntity<ResponseMessage> okResponse(String message, ColumnsDisplayPreference preference) {
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(new ResponseMessage("success", 200, "", null, preference));
+                             .body(new ResponseMessage("success", 200, message, null, preference));
     }
 
     private ColumnsDisplayPreference createPreference(
