@@ -6,7 +6,9 @@ export default {
   props: {
     rolesCanAccess: {
       type: Array,
-      default: undefined,
+      default() {
+        return [];
+      },
     },
   },
   computed: {

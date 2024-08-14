@@ -20,7 +20,6 @@ export const useReportSummaryStore = defineStore('reportsummarydata', {
           text: error.response.data.message || 'Something went wrong',
           type: error.response.data.status != 200 ? 'error' : 'success',
         });
-        console.log('Something went wrong. (STKSD1D#5996)', error); // eslint-disable-line no-console
       } finally {
         // This will execute regardless of the try/catch outcome
         this.processingReportSummary = false;
