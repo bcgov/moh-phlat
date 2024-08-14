@@ -34,7 +34,6 @@ public class ColumnsDisplayPreferenceController {
 
     private static final Logger logger = LoggerFactory.getLogger(ColumnsDisplayPreferenceController.class);
     private static final String MESSAGE_KEY_PREFERENCE_INVALID_VIEW_NAME = "columns.displayPreference.invalidViewName";
-    private final String MESSAGE_KEY_PREFERENCE_NOT_FOUND = "columns.displayPreference.not.found";
 
 
     @Value("#{'${columns-display-preference.allowed-viewNames}'.split(',')}")
@@ -92,17 +91,15 @@ public class ColumnsDisplayPreferenceController {
             return ResponseEntity.status(HttpStatus.OK)
                                  .body(new ResponseMessage("success",
                                                            200,
-                                                           "", null, columnsDisplayPreference));
+                                                           "Columns Dispalay Preference found", null, columnsDisplayPreference));
+
+        } else {
+            return ResponseEntity.status(HttpStatus.OK)
+                                 .body(new ResponseMessage("success",
+                                                           200,
+                                                           "Columns Dispalay Preference not found", null, "{}"));
 
         }
-
-        logger.info("preference details not found ...");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(new ResponseMessage("error",
-                                                       404,
-                                                       messageSource.getMessage(MESSAGE_KEY_PREFERENCE_NOT_FOUND,
-                                                                                null,
-                                                                                LocaleContextHolder.getLocale()), null, ""));
 
 
     }
@@ -117,10 +114,6 @@ public class ColumnsDisplayPreferenceController {
                              .body(new ResponseMessage("error", 400, message, null, ""));
     }
 
-    private ResponseEntity<ResponseMessage> forbiddenResponse(String message) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                             .body(new ResponseMessage("error", 403, message, null, ""));
-    }
 
     private ResponseEntity<ResponseMessage> okResponse(ColumnsDisplayPreference preference) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -147,14 +140,6 @@ public class ColumnsDisplayPreferenceController {
 
     }
 
-    private boolean isOwner(ColumnsDisplayPreference preference, String userId) {
-        return userId.equals(preference.getUserId());
-    }
-
-
-    private boolean isllowedValue(String viewName) {
-        return allowedViewNames.contains(viewName);
-    }
 
     private void setAuditColumns(ColumnsDisplayPreference columnsDisplayPreference, String userId) {
         if (columnsDisplayPreference.getId() != null) {
