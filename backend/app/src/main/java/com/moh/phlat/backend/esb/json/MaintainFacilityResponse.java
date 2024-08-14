@@ -28,9 +28,12 @@ public class MaintainFacilityResponse implements PlrResponse {
 
 	private ProcessData data;
 	
+	@Getter
 	private String facilityId;
 	
+	@Getter
 	private boolean isLoaded = false;
+	@Getter
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
@@ -64,6 +67,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 						if (ack.get(MSG_CODE).asText().contains(DUPLICATE_FACILITY_RESPONSE_CODE)) {
 							logger.warn("{} was identifed as a duplicate facility by PLR: {}", data.getId(), ack.get(MSG_TEXT).asText());
 							addError(DUPLICATE_FACILITY_RESPONSE_CODE, "WARNING", ack.get(MSG_TEXT).asText());
+							isDuplicate = true;
 						} else if (!ack.get(MSG_CODE).asText().contains(SUCCESSFUL_RESPONSE_CODE)
 								&& !ack.get(MSG_CODE).asText().contains(FACILITY_LOADED_RESPONSE_CODE)
 								&& !ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
@@ -77,6 +81,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 				JsonNode facility = root.get("facility");
 				if (facility.get("facilityIdentifiers") != null && facility.get("facilityIdentifiers").findValue("identifier") != null) {
 					facilityId = facility.get("facilityIdentifiers").findValue("identifier").asText();
+					isLoaded = true;
 				}
 			}
 			
@@ -115,39 +120,18 @@ public class MaintainFacilityResponse implements PlrResponse {
 		return pass;
 	}
 	
-	public String getFacilityId() {
-		return facilityId;
-	}
-
-	public boolean isLoaded() {
-		return isLoaded;
-	}
-	
-	public boolean isDuplicate() {
-		return isDuplicate;
-	}
-	
 	public class PlrError {
+		@Getter
 		private String errorCode;
+		@Getter
 		private String errorType;
+		@Getter
 		private String errorMessage;
 		
 		public PlrError(String errorCode, String errorType, String errorMessage) {
 			this.errorCode = errorCode;
 			this.errorType = errorType;
 			this.errorMessage = errorMessage;
-		}
-
-		public String getErrorCode() {
-			return errorCode;
-		}
-
-		public String getErrorType() {
-			return errorType;
-		}
-
-		public String getErrorMessage() {
-			return errorMessage;
 		}
 	}
 	

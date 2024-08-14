@@ -152,6 +152,8 @@ public class MaintainFacilityRequest implements PlrRequest {
 		return address;
 	}
 	
+	// *** CURRENTLY NOT IN USE, BUT KEEPING HERE IN CASE WE NEED IT LATER ***
+	// *** FOR FACILITY LOAD OR POTENTIALLY FOR FACILITY VALIDATION.       ***
 	private List<CivicAddressDto> createCivicAddressDtos() {
 		CivicAddressDto civicAddress = new CivicAddressDto();
 		civicAddress.setActive(true);

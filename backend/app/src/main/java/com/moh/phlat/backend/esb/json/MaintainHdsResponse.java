@@ -16,14 +16,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.moh.phlat.backend.model.ProcessData;
 
+import lombok.Getter;
+
 public class MaintainHdsResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainHdsResponse.class);
 	
 	private ProcessData data;
 	
+	@Getter
 	private String hdsId;
 	
+	@Getter
 	private boolean isLoaded = false;
+	@Getter
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
@@ -47,8 +52,8 @@ public class MaintainHdsResponse implements PlrResponse {
 			objectMapper.setSerializationInclusion(Include.NON_NULL);
 			
 			JsonNode root = objectMapper.readTree(json);
-			for (JsonNode ack : root.get("acknowledgments")) {
-				if (ack.get("msgCode") != null && ack.get("msgCode").asText().contains("GRS.SYS.UNK.UNK.1.0.7071")) {
+			for (JsonNode ack : root.get(ACKNOWLEDGEMENTS)) {
+				if (ack.get(MSG_CODE) != null && ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
 					hasError = true;
 					break;
 				}
@@ -88,39 +93,18 @@ public class MaintainHdsResponse implements PlrResponse {
 		return pass;
 	}
 	
-	public String getHdsId() {
-		return hdsId;
-	}
-
-	public boolean isLoaded() {
-		return isLoaded;
-	}
-	
-	public boolean isDuplicate() {
-		return isDuplicate;
-	}
-	
 	public class PlrError {
+		@Getter
 		private String errorCode;
+		@Getter
 		private String errorType;
+		@Getter
 		private String errorMessage;
 		
 		public PlrError(String errorCode, String errorType, String errorMessage) {
 			this.errorCode = errorCode;
 			this.errorType = errorType;
 			this.errorMessage = errorMessage;
-		}
-
-		public String getErrorCode() {
-			return errorCode;
-		}
-
-		public String getErrorType() {
-			return errorType;
-		}
-
-		public String getErrorMessage() {
-			return errorMessage;
 		}
 	}
 	
