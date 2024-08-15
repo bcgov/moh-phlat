@@ -66,3 +66,4 @@ override.tf.json
 **/.env
 **/docker/imports/keycloak
 **/bin
+.settings
