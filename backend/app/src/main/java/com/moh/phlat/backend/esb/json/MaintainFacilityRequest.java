@@ -120,7 +120,7 @@ public class MaintainFacilityRequest implements PlrRequest {
 	
 	private AddressDto createPhysicalAddressDto() {
 		AddressDto address = new AddressDto();
-		address.setActive(true);
+		address.setActive(false);
 		if (StringUtils.hasText(data.getFacCivicAddr())) {
 			String addrLine1 = data.getFacCivicAddr().split(",")[0].trim();
 			address.setAddressLineOne(addrLine1);
@@ -137,16 +137,17 @@ public class MaintainFacilityRequest implements PlrRequest {
 		}
 		address.setCountryCode("CA");
 		address.setCreatedDate(data.getCreatedAt());
-		address.setDisplayActive(true);
+		address.setDisplayActive(false);
 		address.setEffectiveStartDate(data.getCreatedAt());
-		address.setNoChangeOnUpdate(true);
+		// Address is not updatable for a Facility - Flags are updated in PLR app
+		address.setNoChangeOnUpdate(false);
 		if (StringUtils.hasText(data.getPhysicalPcode())) {
 			address.setPostalCode(data.getPhysicalPcode());
 		}
 		if (StringUtils.hasText(data.getPhysicalProvince())) {
 			address.setProvinceOrStateTxt(data.getPhysicalProvince());
 		}
-		address.setUpdatable(true);
+		address.setUpdatable(false);
 		address.setValidCpc(true);
 		
 		return address;
