@@ -1,5 +1,21 @@
 package com.moh.phlat.backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
+import com.moh.phlat.backend.esb.json.MaintainFacilityResponse.PlrError;
+import com.moh.phlat.backend.esb.json.MaintainResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
@@ -7,24 +23,11 @@ import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
-import com.moh.phlat.backend.service.DbUtilityService;
-import com.moh.phlat.backend.service.RowStatusService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class DbUtilityServiceImpl implements DbUtilityService {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DbUtilityServiceImpl.class);
 
 	@Autowired
 	private MessageService messageService;
@@ -37,6 +40,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Autowired
 	private ProcessDataRepository processDataRepository;
+	
+	@Autowired
+	private PlrDataLoad plrDataLoad;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -190,6 +196,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	
 	@Async
+	@Transactional
 	@Override
 	public void loadProcessDataToPlr(Long controlTableId, String authenticatedUserId) {
 		logger.info("START PLR LOAD IN ASYNC MODE");
@@ -202,17 +209,31 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
 
-			for (ProcessData rec : processDataList) {
+			for (ProcessData processData : processDataList) {
 				// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
-				if (!"Y".equals(rec.getDoNotLoadFlag()) && RowStatusService.VALID.equals(rec.getRowstatusCode())) {
-					logger.info("loading process data with id: {} to PLR.", rec.getId());
+				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
+					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
-					// TO-DO call to PLR via ESB here
-					// loadPlrViaEsb(control, s);
+					MaintainResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
+					for (PlrError plrError : maintainResults.getFacilityResult().getPlrErrors()) {
+						Message msg = Message.builder()
+								 .messageType(plrError.getErrorType())
+								 .messageCode(plrError.getErrorCode())
+								 .messageDesc(plrError.getErrorMessage())
+								 .sourceSystemName(MessageSourceSystem.PLR)
+								 .processData(processData)
+								 .build();
+						messageService.createMessage(msg);
+					}
+				}
+				if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
+					setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
+					logger.error("PLR Load has a persistent issue. Ending this run. Resolve and try again later.");
+					return;
 				}
 			}
 			setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
-			logger.info("PLR_LOAD COMPLETED");
+			logger.info("PLR Load Completed");
 		}
 	}	
 }
