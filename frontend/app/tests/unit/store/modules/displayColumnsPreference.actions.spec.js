@@ -81,6 +81,7 @@ describe('usePreferenceDataStore', () => {
   it('should fetch user preference successfully', async () => {
     const mockResponse = {
       data: {
+        statusCode: 200,
         data: { displayColumns: ['column1', 'column2'] },
       },
     };

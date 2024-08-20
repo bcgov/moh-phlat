@@ -44,18 +44,27 @@ export const usePreferenceDataStore = defineStore('preferencedata', {
     },
     async fetchUserPreference(viewName) {
       this.processignPreferenceData = true;
+      const notificationStore = useNotificationStore();
       try {
         const { data } =
           await userPreferenceService.fetchColumnsDisplayPreference(viewName);
-        if (
-          data &&
-          data.data &&
-          Array.isArray(data.data.displayColumns) &&
-          data.data.displayColumns.length
-        ) {
-          this.displayColumnsPreferenceData = data.data.displayColumns || [];
+        if (data.statusCode === 200) {
+          if (
+            data &&
+            data.data &&
+            Array.isArray(data.data.displayColumns) &&
+            data.data.displayColumns.length
+          ) {
+            this.displayColumnsPreferenceData = data.data.displayColumns || [];
+          } else {
+            this.displayColumnsPreferenceData = [];
+          }
         } else {
           this.displayColumnsPreferenceData = [];
+          notificationStore.addNotification({
+            text: data.message || 'Something went wrong',
+            type: data.statusCode != 200 ? 'warning' : 'success',
+          });
         }
       } catch (error) {
         this.displayColumnsPreferenceData = [];
