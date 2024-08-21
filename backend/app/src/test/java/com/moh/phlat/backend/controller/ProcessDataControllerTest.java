@@ -132,8 +132,7 @@ public class ProcessDataControllerTest {
         JSON, some values might need to be set.
          */
         String filterParamsJson = getFilterParamsJsonContent();
-
-
+        
         ResultActions resultActions = mockMvc.perform(post("/processdata/controltable/1")
         		.param("rowStatus",  "VALID")
         		.param("page", "1")
