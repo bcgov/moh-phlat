@@ -21,7 +21,7 @@ COPY src/ ./src/
 COPY ext-libs ./ext-libs
 
 ARG PLR_TLS_TRUST_CERT
-RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
+#RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
 #cert is base64 encoded. Decode it before writing to file
 RUN echo $PLR_TLS_TRUST_CERT | base64 -d > ./src/main/resources/plr_tls_trust.cert
 
