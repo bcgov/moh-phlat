@@ -89,6 +89,8 @@ jobs:
           file: backend/app/docker/Dockerfile
           push: true
           tags: ${{ env.DOCKER_TAGS }}
+          build-args: |
+            PLR_TLS_TRUST_CERT=${{ secrets.PLR_TLS_TRUST_CERT_BASE64_ENCODED }}
 
   terraform_apply:
     name: Terraform Apply
