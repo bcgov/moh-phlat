@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.moh.phlat.backend.esb.boundary.PlrError;
 import com.moh.phlat.backend.model.ProcessData;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -118,21 +119,6 @@ public class MaintainFacilityResponse implements PlrResponse {
 					"An unknown error occured while trying to load this record");
 		}
 		return pass;
-	}
-	
-	public class PlrError {
-		@Getter
-		private String errorCode;
-		@Getter
-		private String errorType;
-		@Getter
-		private String errorMessage;
-		
-		public PlrError(String errorCode, String errorType, String errorMessage) {
-			this.errorCode = errorCode;
-			this.errorType = errorType;
-			this.errorMessage = errorMessage;
-		}
 	}
 	
 	private void addError(String errorCode, String errorType, String errorMessage) {

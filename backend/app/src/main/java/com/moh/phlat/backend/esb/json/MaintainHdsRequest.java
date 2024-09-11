@@ -96,7 +96,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		List<AddressDto> addressList = new ArrayList<>();
 		addressList.add(createPhysicalAddressDto());
 		if (StringUtils.hasText(data.getMailAddr1()) && StringUtils.hasText(data.getMailBc())) {
-			//addressList.add(createMailingAddressDto(input));
+			addressList.add(createMailingAddressDto());
 		}
 		return addressList;
 	}
