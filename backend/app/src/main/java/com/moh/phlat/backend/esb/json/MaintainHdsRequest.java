@@ -61,7 +61,6 @@ public class MaintainHdsRequest implements PlrRequest {
 		maintainProviderRequest.setRegistryUserOrgId("PHLAT");
 		maintainProviderRequest.setEsbMetadata(createEsbMetadata());
 		maintainProviderRequest.setProviderDetails(createProviderDetails());
-		maintainProviderRequest.setFacility(createFacilityDto());
 		return maintainProviderRequest;
 	}
 
@@ -79,11 +78,6 @@ public class MaintainHdsRequest implements PlrRequest {
 		providerDetails.setTelecommunication(createTelecomunicationDtos());
 		providerDetails.setElectronicAddresses(createElectronicAddressDtos());
 		return providerDetails;
-	}
-	
-	private FacilityDto createFacilityDto() {
-		FacilityDto facility = new FacilityDto();
-		return facility;
 	}
 	
 	private HdsTypeDto createHdsTypeDto() {

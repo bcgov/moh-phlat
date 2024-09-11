@@ -33,6 +33,7 @@ public class OFRelationshipResponse implements PlrResponse {
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
+	@Getter
 	private List<PlrError> plrErrors = new ArrayList<>();
 	
 	public OFRelationshipResponse(ProcessData data) {

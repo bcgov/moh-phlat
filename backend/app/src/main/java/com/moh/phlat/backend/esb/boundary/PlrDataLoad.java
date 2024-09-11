@@ -2,6 +2,7 @@ package com.moh.phlat.backend.esb.boundary;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.esb.json.MaintainFacilityRequest;
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
@@ -26,14 +27,15 @@ public class PlrDataLoad {
 			MaintainFacilityResponse facilityResponse = createFacility(control, processData);
 			maintainResults.setFacilityResult(facilityResponse);
 		}
-		if (maintainResults.getFacilityResult().verifyStatus()
-				&& control.getLoadTypeHds()) {
-			//*** WILL IMPLEMENT THIS AFTER FACILITY LOAD IS COMPLETE ***
-			//MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
-			//maintainResults.setHdsResult(hdsResponse);
-			
-			if (maintainResults.getHdsResult().verifyStatus()
-					&& control.getLoadTypeOFRelationship()) {
+		if (control.getLoadTypeHds()) {
+			if (StringUtils.hasText(processData.getPlrFacilityId())) {
+				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
+				maintainResults.setHdsResult(hdsResponse);
+			}
+		}	
+		if (control.getLoadTypeOFRelationship()) {
+			if (StringUtils.hasText(processData.getPlrFacilityId())
+					&& StringUtils.hasText(processData.getHdsPauthId())) {
 				//*** WILL IMPLEMENT THIS AFTER HDS LOAD IS COMPLETE ***
 				//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
 				//maintainResults.setOFResult(ofResponse);

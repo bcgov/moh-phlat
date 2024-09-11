@@ -82,6 +82,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 				JsonNode facility = root.get("facility");
 				if (facility.get("facilityIdentifiers") != null && facility.get("facilityIdentifiers").findValue("identifier") != null) {
 					facilityId = facility.get("facilityIdentifiers").findValue("identifier").asText();
+					data.setPlrFacilityId(facilityId);
 					isLoaded = true;
 				}
 			}

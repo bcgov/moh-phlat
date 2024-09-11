@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
-import com.moh.phlat.backend.esb.json.MaintainFacilityResponse.PlrError;
+import com.moh.phlat.backend.esb.boundary.PlrError;
+import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
+import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
 import com.moh.phlat.backend.esb.json.MaintainResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
@@ -215,7 +217,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
 					MaintainResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
-					for (PlrError plrError : maintainResults.getFacilityResult().getPlrErrors()) {
+					for (PlrError plrError : maintainResults.getPlrErrors()) {
 						Message msg = Message.builder()
 								 .messageType(plrError.getErrorType())
 								 .messageCode(plrError.getErrorCode())
@@ -225,6 +227,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 								 .build();
 						messageService.createMessage(msg);
 					}
+					processDataRepository.save(processData);
 				}
 				if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
 					setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);

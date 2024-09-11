@@ -33,6 +33,7 @@ public class MaintainHdsResponse implements PlrResponse {
 	private boolean isDuplicate = false;
 	private boolean hasError = false;
 	
+	@Getter
 	private List<PlrError> plrErrors = new ArrayList<>();
 	
 	public MaintainHdsResponse(ProcessData data) {
@@ -71,6 +72,8 @@ public class MaintainHdsResponse implements PlrResponse {
 				JsonNode hds = root.get("provider");
 				if (hds.get("facilityIdentifiers") != null && hds.get("facilityIdentifiers").findValue("identifier") != null) {
 					hdsId = hds.get("facilityIdentifiers").findValue("identifier").asText();
+					data.setHdsPauthId(hdsId);
+					isLoaded = true;
 				}
 			}
 			
