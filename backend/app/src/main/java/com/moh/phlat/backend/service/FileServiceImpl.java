@@ -148,7 +148,8 @@ public class FileServiceImpl implements FileService {
                                                  String pcnPciFlag, 
                                                  String sourceStatus, 
                                                  String pcnClinicStatus,
-                                                 String hdsEffectiveStartDate, 
+                                                 String hdsEffectiveStartDate,
+												 String facCivicAddress, 
                                                  String facAddressUnit,
                                                  String facBuildingName,
                                                  String physicalAddr1, String physicalAddr2, String physicalAddr3,
@@ -193,6 +194,7 @@ public class FileServiceImpl implements FileService {
                           .sourceStatus(sourceStatus)
                           .pcnClinicStatus(pcnClinicStatus)
                           .hdsEffectiveStartDate(hdsEffectiveStartDate)
+						  .facCivicAddress(facCivicAddress)
                           .facAddressUnit(facAddressUnit)
                           .facBuildingName(facBuildingName)
                           .physicalAddr1(physicalAddr1)
@@ -258,7 +260,8 @@ public class FileServiceImpl implements FileService {
 				 		csvRecords.get("PCN_PCI_FLAG"),
 				 		csvRecords.get("SOURCE_STATUS"),	
 				 		csvRecords.get("PCN_CLINIC_STATUS"),	
-				 		csvRecords.get("HDS_EFFECTIVE_START_DATE"),							
+						csvRecords.get("HDS_EFFECTIVE_START_DATE"),
+				 		csvRecords.get("FAC_CIVIC_ADDRESS"),															
 				 		csvRecords.get("FAC_ADDRESS_UNIT"),
 				 		csvRecords.get("FAC_BUILDING_NAME"),
 				 		csvRecords.get("PHYSICAL_ADDR1"),
@@ -342,7 +345,8 @@ public class FileServiceImpl implements FileService {
 	        processData.setPcnPciFlag(s.getPcnPciFlag());
 		    processData.setSourceStatus(s.getSourceStatus()); 
 		    processData.setPcnClinicStatus(s.getPcnClinicStatus());
-		    processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());   
+			processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());
+			processData.setFacCivicAddr(s.getFacCivicAddress()); 	  
 		    processData.setFacAddressUnit(s.getFacAddressUnit()); 			    
 		    processData.setFacBuildingName(s.getFacBuildingName()); 	
 	        processData.setPhysicalAddr1(s.getPhysicalAddr1());
