@@ -25,7 +25,10 @@ import ca.bc.gov.health.plr.dto.facility.esb.FacilityDto;
 import ca.bc.gov.health.plr.dto.provider.esb.AddressDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ElectronicAddressDto;
 import ca.bc.gov.health.plr.dto.provider.esb.HdsTypeDto;
+import ca.bc.gov.health.plr.dto.provider.esb.JurisdictionNameCodeDto;
+import ca.bc.gov.health.plr.dto.provider.esb.OrgNameDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
+import ca.bc.gov.health.plr.dto.provider.esb.StatusDto;
 import ca.bc.gov.health.plr.dto.provider.esb.TelecommunicationDto;
 
 public class MaintainHdsRequest implements PlrRequest {
@@ -72,18 +75,51 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private ProviderDetails createProviderDetails() {
 		ProviderDetails providerDetails = new ProviderDetails();
-		providerDetails.setProviderType(data.getHdsType());
+		providerDetails.setOrgNames(createOrgNameDtos());
+		providerDetails.setType("HDS");
+		providerDetails.setProviderType("ORG");
 		providerDetails.setHdsType(createHdsTypeDto());
+		providerDetails.setJurisdiction(createJurisdictionDto());
 		providerDetails.setAddresses(createAddressDtos());
 		providerDetails.setTelecommunication(createTelecomunicationDtos());
 		providerDetails.setElectronicAddresses(createElectronicAddressDtos());
 		return providerDetails;
 	}
 	
+	private List<OrgNameDto> createOrgNameDtos() {
+		List<OrgNameDto> orgNameList = new ArrayList<>();
+		
+		OrgNameDto orgName = new OrgNameDto();
+		orgName.setLongName(data.getHdsName());
+		orgName.setTypeCode("1147");
+		orgNameList.add(orgName);
+		
+		return orgNameList;
+	}
+	
 	private HdsTypeDto createHdsTypeDto() {
 		HdsTypeDto hdsType = new HdsTypeDto();
+		hdsType.setHdsType(data.getHdsType());
 		
 		return hdsType;
+	}
+	
+	private JurisdictionNameCodeDto createJurisdictionDto() {
+		JurisdictionNameCodeDto jursidictionDto = new JurisdictionNameCodeDto();
+		jursidictionDto.setJurisdicationNameCode(data.getPhysicalProvince());
+		
+		return jursidictionDto;
+	}
+	
+	private List<StatusDto> createStatusDtos() {
+		List<StatusDto> statusList = new ArrayList<>();
+		
+		StatusDto status = new StatusDto();
+		status.setType("ACTIVE");
+		status.setClassCode("LIC");
+		statusList.add(status);
+		
+		return statusList;
 	}
 	
 	private List<AddressDto> createAddressDtos() {
