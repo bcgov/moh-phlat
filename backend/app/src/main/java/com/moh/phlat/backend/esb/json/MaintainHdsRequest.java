@@ -80,6 +80,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		providerDetails.setProviderType("ORG");
 		providerDetails.setHdsType(createHdsTypeDto());
 		providerDetails.setJurisdiction(createJurisdictionDto());
+		providerDetails.setStatuses(createStatusDtos());
 		providerDetails.setAddresses(createAddressDtos());
 		providerDetails.setTelecommunication(createTelecomunicationDtos());
 		providerDetails.setElectronicAddresses(createElectronicAddressDtos());
@@ -90,8 +91,9 @@ public class MaintainHdsRequest implements PlrRequest {
 		List<OrgNameDto> orgNameList = new ArrayList<>();
 		
 		OrgNameDto orgName = new OrgNameDto();
-		orgName.setLongName(data.getHdsName());
-		orgName.setTypeCode("1147");
+		orgName.setName(data.getHdsName());
+		orgName.setTypeCode("CURR");
+		orgName.setEffectiveStartDate(data.getCreatedAt());
 		orgNameList.add(orgName);
 		
 		return orgNameList;
@@ -99,7 +101,8 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private HdsTypeDto createHdsTypeDto() {
 		HdsTypeDto hdsType = new HdsTypeDto();
-		hdsType.setHdsType(data.getHdsType());
+		hdsType.setHdsType("PHARMACY");
+		hdsType.setEffectiveStartDate(data.getCreatedAt());
 		
 		return hdsType;
 	}
@@ -115,8 +118,10 @@ public class MaintainHdsRequest implements PlrRequest {
 		List<StatusDto> statusList = new ArrayList<>();
 		
 		StatusDto status = new StatusDto();
-		status.setType("ACTIVE");
-		status.setClassCode("LIC");
+		status.setTypeCode("ACTIVE");
+		status.setClassCode("AE");
+		status.setReasonCode("ORG");
+		status.setEffectiveStartDate(data.getCreatedAt());
 		statusList.add(status);
 		
 		return statusList;

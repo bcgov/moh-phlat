@@ -69,9 +69,9 @@ public class MaintainHdsResponse implements PlrResponse {
 				}
 			}
 			if (!hasError) {
-				JsonNode hds = root.get("provider");
-				if (hds.get("facilityIdentifiers") != null && hds.get("facilityIdentifiers").findValue("identifier") != null) {
-					hdsId = hds.get("facilityIdentifiers").findValue("identifier").asText();
+				JsonNode hds = root.get("providerDetails");
+				if (hds.findValue("pauthId") != null) {
+					hdsId = hds.findValue("pauthId").asText();
 					data.setHdsPauthId(hdsId);
 					isLoaded = true;
 				}
