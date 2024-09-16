@@ -139,7 +139,7 @@ public class FileServiceImpl implements FileService {
                                                  String hdsProviderIdentifierType1, String hdsProviderIdentifierType2, 
                                                  String hdsProviderIdentifierType3, String hdsMspFacilityNumber,
                                                  String hdsType, String hdsSubType, 
-												 String hdsName,
+                                                 String hdsName,
                                                  String hdsPreferredNameFlag, String hdsEmail, String hdsWebsite,
                                                  String hdsBusTelAreaCode, String hdsBusTelNumber, String hdsTelExtension,
                                                  String hdsCellAreaCode, String hdsCellNumber, String hdsFaxAreaCode, String hdsFaxNumber, 
@@ -148,7 +148,8 @@ public class FileServiceImpl implements FileService {
                                                  String pcnPciFlag, 
                                                  String sourceStatus, 
                                                  String pcnClinicStatus,
-                                                 String hdsEffectiveStartDate, 
+                                                 String hdsEffectiveStartDate,
+                                                 String facCivicAddress, 
                                                  String facAddressUnit,
                                                  String facBuildingName,
                                                  String physicalAddr1, String physicalAddr2, String physicalAddr3,
@@ -161,7 +162,7 @@ public class FileServiceImpl implements FileService {
                                                  String mailPcode, String mailCountry, 
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
         return SourceData.builder()
-						  .controlTableId(controlTableId)
+                          .controlTableId(controlTableId)
                           .doNotLoadFlag(doNotLoadFlag)
                           .stakeholder(stakeholder)
                           .stakeholderId(stakeholderId)
@@ -193,6 +194,7 @@ public class FileServiceImpl implements FileService {
                           .sourceStatus(sourceStatus)
                           .pcnClinicStatus(pcnClinicStatus)
                           .hdsEffectiveStartDate(hdsEffectiveStartDate)
+                          .facCivicAddress(facCivicAddress)
                           .facAddressUnit(facAddressUnit)
                           .facBuildingName(facBuildingName)
                           .physicalAddr1(physicalAddr1)
@@ -258,7 +260,8 @@ public class FileServiceImpl implements FileService {
 				 		csvRecords.get("PCN_PCI_FLAG"),
 				 		csvRecords.get("SOURCE_STATUS"),	
 				 		csvRecords.get("PCN_CLINIC_STATUS"),	
-				 		csvRecords.get("HDS_EFFECTIVE_START_DATE"),							
+						csvRecords.get("HDS_EFFECTIVE_START_DATE"),
+				 		csvRecords.get("FAC_CIVIC_ADDRESS"),															
 				 		csvRecords.get("FAC_ADDRESS_UNIT"),
 				 		csvRecords.get("FAC_BUILDING_NAME"),
 				 		csvRecords.get("PHYSICAL_ADDR1"),
@@ -309,62 +312,63 @@ public class FileServiceImpl implements FileService {
     	Iterable<SourceData> inputSourceData = sourceDataRepository.getAllSourceDataByControlTableId(controlTableId);
     	
     	for (SourceData  s : inputSourceData ) {
-	        ProcessData processData = new ProcessData();
-	        processData.setId(s.getId());
-	        processData.setControlTableId(s.getControlTableId());
-	        processData.setDoNotLoadFlag(s.getDoNotLoadFlag());
-	        processData.setStakeholderId(s.getStakeholderId());
-	        processData.setStakeholder(s.getStakeholder());
-	        processData.setHdsIpcId(s.getHdsIpcId());
-	        processData.setHdsCpnId(s.getHdsCpnId());
-	        processData.setHdsProviderIdentifier1(s.getHdsProviderIdentifier1());
-	        processData.setHdsProviderIdentifier2(s.getHdsProviderIdentifier2());	        
-	        processData.setHdsProviderIdentifier3(s.getHdsProviderIdentifier3());
-	        processData.setHdsProviderIdentifierType1(s.getHdsProviderIdentifierType1());
-	        processData.setHdsProviderIdentifierType2(s.getHdsProviderIdentifierType2());	        
-	        processData.setHdsProviderIdentifierType3(s.getHdsProviderIdentifierType3());
-	        processData.setHdsMspFacilityNumber(s.getHdsMspFacilityNumber());
-	        processData.setHdsType(s.getHdsType());
-	        processData.setHdsSubType(s.getHdsSubType());
-	        processData.setHdsName(s.getHdsName());        
-	        processData.setHdsPreferredNameFlag(s.getHdsPreferredNameFlag());    
-	        processData.setHdsEmail(s.getHdsEmail());  
-	        processData.setHdsWebsite(s.getHdsWebsite());  
-	        processData.setHdsBusTelAreaCode(s.getHdsBusTelAreaCode()); 
-	        processData.setHdsBusTelNumber(s.getHdsBusTelNumber());  	     
-	        processData.setHdsTelExtension(s.getHdsTelExtension());  	
-	        processData.setHdsCellAreaCode(s.getHdsCellAreaCode());  	
-	        processData.setHdsCellNumber(s.getHdsCellNumber());          
-	        processData.setHdsFaxAreaCode(s.getHdsFaxAreaCode());  	
-	        processData.setHdsFaxNumber(s.getHdsFaxNumber());   
-	        processData.setPcnServiceDeliveryType(s.getPcnServiceDeliveryType());   
-	        processData.setPcnClinicType(s.getPcnClinicType());
-	        processData.setPcnPciFlag(s.getPcnPciFlag());
-		    processData.setSourceStatus(s.getSourceStatus()); 
-		    processData.setPcnClinicStatus(s.getPcnClinicStatus());
-		    processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());   
-		    processData.setFacAddressUnit(s.getFacAddressUnit()); 			    
-		    processData.setFacBuildingName(s.getFacBuildingName()); 	
-	        processData.setPhysicalAddr1(s.getPhysicalAddr1());
-	        processData.setPhysicalAddr2(s.getPhysicalAddr2());	  
-	        processData.setPhysicalAddr3(s.getPhysicalAddr3());
-	        processData.setPhysicalAddr4(s.getPhysicalAddr4());
-	        processData.setPhysicalCity(s.getPhysicalCity());        
-	        processData.setPhysicalProvince(s.getPhysicalProvince());      
-	        processData.setPhysicalPcode(s.getPhysicalPcode());      
-	        processData.setPhysicalCountry(s.getPhysicalCountry()); 
-	        processData.setPhysicalAddrPrpsTypeCd(s.getPhysicalAddrPrpsTypeCd()); 
-	        processData.setMailAddr1(s.getMailAddr1());
-	        processData.setMailAddr2(s.getMailAddr2());	        
-	        processData.setMailAddr3(s.getMailAddr3());
-	        processData.setMailAddr4(s.getMailAddr4());
-	        processData.setMailCity(s.getMailCity());        
-	        processData.setMailBc(s.getMailBc());      
-	        processData.setMailPcode(s.getMailPcode());      
-	        processData.setMailCountry(s.getMailCountry());
-	        processData.setMailAddrValidationStatus("");
-	        processData.setCreatedAt(s.getCreatedAt());
-	        processData.setCreatedBy(authenticateUserId);
+            ProcessData processData = new ProcessData();
+            processData.setId(s.getId());
+            processData.setControlTableId(s.getControlTableId());
+            processData.setDoNotLoadFlag(s.getDoNotLoadFlag());
+            processData.setStakeholderId(s.getStakeholderId());
+            processData.setStakeholder(s.getStakeholder());
+            processData.setHdsIpcId(s.getHdsIpcId());
+            processData.setHdsCpnId(s.getHdsCpnId());
+            processData.setHdsProviderIdentifier1(s.getHdsProviderIdentifier1());
+            processData.setHdsProviderIdentifier2(s.getHdsProviderIdentifier2());	        
+            processData.setHdsProviderIdentifier3(s.getHdsProviderIdentifier3());
+            processData.setHdsProviderIdentifierType1(s.getHdsProviderIdentifierType1());
+            processData.setHdsProviderIdentifierType2(s.getHdsProviderIdentifierType2());	        
+            processData.setHdsProviderIdentifierType3(s.getHdsProviderIdentifierType3());
+            processData.setHdsMspFacilityNumber(s.getHdsMspFacilityNumber());
+            processData.setHdsType(s.getHdsType());
+            processData.setHdsSubType(s.getHdsSubType());
+            processData.setHdsName(s.getHdsName());        
+            processData.setHdsPreferredNameFlag(s.getHdsPreferredNameFlag());    
+            processData.setHdsEmail(s.getHdsEmail());  
+            processData.setHdsWebsite(s.getHdsWebsite());  
+            processData.setHdsBusTelAreaCode(s.getHdsBusTelAreaCode()); 
+            processData.setHdsBusTelNumber(s.getHdsBusTelNumber());  	     
+            processData.setHdsTelExtension(s.getHdsTelExtension());  	
+            processData.setHdsCellAreaCode(s.getHdsCellAreaCode());  	
+            processData.setHdsCellNumber(s.getHdsCellNumber());          
+            processData.setHdsFaxAreaCode(s.getHdsFaxAreaCode());  	
+            processData.setHdsFaxNumber(s.getHdsFaxNumber());   
+            processData.setPcnServiceDeliveryType(s.getPcnServiceDeliveryType());   
+            processData.setPcnClinicType(s.getPcnClinicType());
+            processData.setPcnPciFlag(s.getPcnPciFlag());
+            processData.setSourceStatus(s.getSourceStatus()); 
+            processData.setPcnClinicStatus(s.getPcnClinicStatus());
+            processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());
+            processData.setFacCivicAddr(s.getFacCivicAddress()); 	  
+            processData.setFacAddressUnit(s.getFacAddressUnit()); 			    
+            processData.setFacBuildingName(s.getFacBuildingName()); 	
+            processData.setPhysicalAddr1(s.getPhysicalAddr1());
+            processData.setPhysicalAddr2(s.getPhysicalAddr2());	  
+			processData.setPhysicalAddr3(s.getPhysicalAddr3());
+            processData.setPhysicalAddr4(s.getPhysicalAddr4());
+            processData.setPhysicalCity(s.getPhysicalCity());        
+            processData.setPhysicalProvince(s.getPhysicalProvince());      
+            processData.setPhysicalPcode(s.getPhysicalPcode());      
+            processData.setPhysicalCountry(s.getPhysicalCountry()); 
+            processData.setPhysicalAddrPrpsTypeCd(s.getPhysicalAddrPrpsTypeCd()); 
+            processData.setMailAddr1(s.getMailAddr1());
+            processData.setMailAddr2(s.getMailAddr2());	        
+            processData.setMailAddr3(s.getMailAddr3());
+            processData.setMailAddr4(s.getMailAddr4());
+            processData.setMailCity(s.getMailCity());        
+            processData.setMailBc(s.getMailBc());      
+            processData.setMailPcode(s.getMailPcode());      
+            processData.setMailCountry(s.getMailCountry());
+            processData.setMailAddrValidationStatus("");
+            processData.setCreatedAt(s.getCreatedAt());
+            processData.setCreatedBy(authenticateUserId);
 	        
 	        // set default values
 		    if (controlTable.getLoadTypeHds()) {
