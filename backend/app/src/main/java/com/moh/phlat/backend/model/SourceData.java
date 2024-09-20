@@ -117,7 +117,10 @@ public class SourceData {
     private String pcnClinicStatus;  
 
     @Column(name="hds_effective_start_date")
-    private String hdsEffectiveStartDate;  
+    private String hdsEffectiveStartDate;
+
+    @Column(name="fac_civic_address")
+    private String facCivicAddress;  
 
     @Column(name="fac_address_unit")
     private String facAddressUnit;  
@@ -186,7 +189,5 @@ public class SourceData {
     private Date updatedAt;
 
 	@Column(name="updated_by")
-    private String updatedBy;
-
-	
+    private String updatedBy;	
 }
