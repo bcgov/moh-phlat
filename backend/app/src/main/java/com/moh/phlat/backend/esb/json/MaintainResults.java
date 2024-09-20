@@ -16,6 +16,29 @@ public class MaintainResults {
 	private MaintainHdsResponse hdsResult;
 	private OFRelationshipResponse oFResult;
 	
+	public boolean isAllLoaded() {
+		if (facilityResult != null && !facilityResult.isLoaded()) {
+			return false;
+		}
+		if (hdsResult != null && !hdsResult.isLoaded()) {
+			return false;
+		}
+		if (oFResult != null && !oFResult.isLoaded()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean hasAnyDuplicates() {
+		if (facilityResult != null && facilityResult.isDuplicate()) {
+			return true;
+		}
+		if (hdsResult != null && hdsResult.isDuplicate()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public List<PlrError> getPlrErrors() {
 		
 		List<PlrError> plrErrors = new ArrayList<>();

@@ -14,5 +14,4 @@ public interface PlrResponse {
 	
 	public void plrJsonToProcessData(String json);
 	public void handlePlrError(Exception ex);
-	public boolean verifyStatus();
 }

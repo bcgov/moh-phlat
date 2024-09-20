@@ -24,11 +24,14 @@ public class PlrDataLoad {
 	public MaintainResults loadPlrViaEsb(Control control, ProcessData processData) {
 		MaintainResults maintainResults = new MaintainResults();
 		if (control.getLoadTypeFacility()) {
-			MaintainFacilityResponse facilityResponse = createFacility(control, processData);
-			maintainResults.setFacilityResult(facilityResponse);
+			if (!StringUtils.hasText(processData.getPlrFacilityId())) {
+				MaintainFacilityResponse facilityResponse = createFacility(control, processData);
+				maintainResults.setFacilityResult(facilityResponse);
+			}
 		}
 		if (control.getLoadTypeHds()) {
-			if (StringUtils.hasText(processData.getPlrFacilityId())) {
+			if (StringUtils.hasText(processData.getPlrFacilityId())
+					&& !StringUtils.hasText(processData.getHdsPauthId())) {
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
 			}
@@ -58,7 +61,8 @@ public class PlrDataLoad {
 		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(processData);
 		MaintainHdsResponse maintainHdsResponse = new MaintainHdsResponse(processData);
 		
-		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);		
+		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);
+		
 		return maintainHdsResponse;
 	}
 }

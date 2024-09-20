@@ -30,13 +30,9 @@ public class MaintainFacilityResponse implements PlrResponse {
 	private ProcessData data;
 	
 	@Getter
-	private String facilityId;
-	
+	private boolean loaded = false;
 	@Getter
-	private boolean isLoaded = false;
-	@Getter
-	private boolean isDuplicate = false;
-	private boolean hasError = false;
+	private boolean duplicate = false;
 	
 	@Getter
 	private List<PlrError> plrErrors = new ArrayList<>();
@@ -58,6 +54,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 			objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 			objectMapper.setSerializationInclusion(Include.NON_NULL);
 			
+			boolean hasError = false;
 			JsonNode root = objectMapper.readTree(json);
 			for (JsonNode ack : root.get(ACKNOWLEDGEMENTS)) {
 				if (ack.get(MSG_CODE) != null) {
@@ -68,7 +65,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 						if (ack.get(MSG_CODE).asText().contains(DUPLICATE_FACILITY_RESPONSE_CODE)) {
 							logger.warn("{} was identifed as a duplicate facility by PLR: {}", data.getId(), ack.get(MSG_TEXT).asText());
 							addError(DUPLICATE_FACILITY_RESPONSE_CODE, "WARNING", ack.get(MSG_TEXT).asText());
-							isDuplicate = true;
+							duplicate = true;
 						} else if (!ack.get(MSG_CODE).asText().contains(SUCCESSFUL_RESPONSE_CODE)
 								&& !ack.get(MSG_CODE).asText().contains(FACILITY_LOADED_RESPONSE_CODE)
 								&& !ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
@@ -81,14 +78,12 @@ public class MaintainFacilityResponse implements PlrResponse {
 			if (!hasError) {
 				JsonNode facility = root.get("facility");
 				if (facility.get("facilityIdentifiers") != null && facility.get("facilityIdentifiers").findValue("identifier") != null) {
-					facilityId = facility.get("facilityIdentifiers").findValue("identifier").asText();
-					data.setPlrFacilityId(facilityId);
-					isLoaded = true;
+					data.setPlrFacilityId(facility.get("facilityIdentifiers").findValue("identifier").asText());
+					loaded = true;
 				}
 			}
 			
 		} catch (Exception ex) {
-			hasError = true;
 			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", ex, data.getId());
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
@@ -97,7 +92,6 @@ public class MaintainFacilityResponse implements PlrResponse {
 	
 	@Override
 	public void handlePlrError(Exception ex) {
-		hasError = true;
 		if (ex instanceof WebClientResponseException) {
 			WebClientResponseException webEx = (WebClientResponseException) ex;
 			addError("HTTP " + String.valueOf(webEx.getStatusCode().value()), "ERROR", 
@@ -110,16 +104,6 @@ public class MaintainFacilityResponse implements PlrResponse {
 			addError("InputProblem", "ERROR",
 					"The input record was invalid or could not be converted into a PLR request.");
 		}
-	}
-	
-	@Override
-	public boolean verifyStatus() {
-		boolean pass = !hasError && (isLoaded || isDuplicate);
-		if (!(pass || hasError)) {
-			addError("UNKNOWN", "ERROR", 
-					"An unknown error occured while trying to load this record");
-		}
-		return pass;
 	}
 	
 	private void addError(String errorCode, String errorType, String errorMessage) {

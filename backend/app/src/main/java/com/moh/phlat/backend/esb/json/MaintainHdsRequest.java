@@ -2,8 +2,6 @@ package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,8 +19,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
-import ca.bc.gov.health.plr.dto.facility.esb.FacilityDto;
 import ca.bc.gov.health.plr.dto.provider.esb.AddressDto;
+import ca.bc.gov.health.plr.dto.provider.esb.CollegeIdentifierDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ElectronicAddressDto;
 import ca.bc.gov.health.plr.dto.provider.esb.HdsTypeDto;
 import ca.bc.gov.health.plr.dto.provider.esb.JurisdictionNameCodeDto;
@@ -79,6 +77,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		providerDetails.setType("HDS");
 		providerDetails.setProviderType("ORG");
 		providerDetails.setHdsType(createHdsTypeDto());
+		providerDetails.setIdentifiers(createIdentifierDtos());
 		providerDetails.setJurisdiction(createJurisdictionDto());
 		providerDetails.setStatuses(createStatusDtos());
 		providerDetails.setAddresses(createAddressDtos());
@@ -92,6 +91,9 @@ public class MaintainHdsRequest implements PlrRequest {
 		
 		OrgNameDto orgName = new OrgNameDto();
 		orgName.setName(data.getHdsName());
+		if (data.getHdsPreferredNameFlag() != null) {
+			orgName.setPreferred(Boolean.parseBoolean(data.getHdsPreferredNameFlag()));
+		}
 		orgName.setTypeCode("CURR");
 		orgName.setEffectiveStartDate(data.getCreatedAt());
 		orgNameList.add(orgName);
@@ -101,10 +103,45 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private HdsTypeDto createHdsTypeDto() {
 		HdsTypeDto hdsType = new HdsTypeDto();
-		hdsType.setHdsType("PHARMACY");
+		hdsType.setHdsType(data.getHdsType());
 		hdsType.setEffectiveStartDate(data.getCreatedAt());
 		
 		return hdsType;
+	}
+	
+	private List<CollegeIdentifierDto> createIdentifierDtos() {
+		
+		List<CollegeIdentifierDto> identifierList = new ArrayList<>();
+		
+		if (StringUtils.hasText(data.getHdsProviderIdentifier1())
+				&& StringUtils.hasText(data.getHdsProviderIdentifierType1())) {
+			CollegeIdentifierDto identifier1 = new CollegeIdentifierDto();
+			identifier1.setIdentifier(data.getHdsProviderIdentifier1());
+			identifier1.setType(data.getHdsProviderIdentifierType1());
+			identifier1.setEffectiveStartDate(data.getCreatedAt());
+			identifierList.add(identifier1);
+		}
+		if (StringUtils.hasText(data.getHdsProviderIdentifier2())
+				&& StringUtils.hasText(data.getHdsProviderIdentifierType2())) {
+			CollegeIdentifierDto identifier2 = new CollegeIdentifierDto();
+			identifier2.setIdentifier(data.getHdsProviderIdentifier2());
+			identifier2.setType(data.getHdsProviderIdentifierType2());
+			identifier2.setEffectiveStartDate(data.getCreatedAt());
+			identifierList.add(identifier2);
+		}
+		if (StringUtils.hasText(data.getHdsProviderIdentifier3())
+				&& StringUtils.hasText(data.getHdsProviderIdentifierType3())) {
+			CollegeIdentifierDto identifier3 = new CollegeIdentifierDto();
+			identifier3.setIdentifier(data.getHdsProviderIdentifier3());
+			identifier3.setType(data.getHdsProviderIdentifierType3());
+			identifier3.setEffectiveStartDate(data.getCreatedAt());
+			identifierList.add(identifier3);
+		}
+		
+		if (identifierList.isEmpty()) {
+			return null;
+		}
+		return identifierList;
 	}
 	
 	private JurisdictionNameCodeDto createJurisdictionDto() {
@@ -214,6 +251,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (StringUtils.hasText(data.getHdsBusTelNumber())) {
 			TelecommunicationDto hdsBusTelNumber = new TelecommunicationDto();
 			hdsBusTelNumber.setNumber(data.getHdsBusTelNumber());
+			hdsBusTelNumber.setTypeCode("T");
+			hdsBusTelNumber.setCommunicationPurposeCode("BC");
 			if (StringUtils.hasText(data.getHdsTelExtension())) {
 				hdsBusTelNumber.setExtension(data.getHdsTelExtension());
 			}
@@ -228,6 +267,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (StringUtils.hasText(data.getHdsCellNumber())) {
 			TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
 			hdsBusCellNumber.setNumber(data.getHdsCellNumber());
+			hdsBusCellNumber.setTypeCode("MB");
+			hdsBusCellNumber.setCommunicationPurposeCode("BC");
 			if (StringUtils.hasText(data.getHdsCellAreaCode())) {
 				hdsBusCellNumber.setAreaCode(data.getHdsCellAreaCode());
 			}
@@ -239,6 +280,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (StringUtils.hasText(data.getHdsFaxNumber())) {
 			TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
 			hdsBusFaxNumber.setNumber(data.getHdsFaxNumber());
+			hdsBusFaxNumber.setTypeCode("FAX");
+			hdsBusFaxNumber.setCommunicationPurposeCode("BC");
 			if (StringUtils.hasText(data.getHdsFaxAreaCode())) {
 				hdsBusFaxNumber.setAreaCode(data.getHdsFaxAreaCode());
 			}
@@ -255,38 +298,24 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		
 		List<ElectronicAddressDto> electronicAddressList = new ArrayList<>();
-		SimpleDateFormat startDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
-		SimpleDateFormat endDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		
 		if (StringUtils.hasText(data.getHdsEmail())) {
 			ElectronicAddressDto hdsEmail = new ElectronicAddressDto();
 			hdsEmail.setAddress(data.getHdsEmail());
+			hdsEmail.setTypeCode("E");
+			hdsEmail.setCommunicationPurposeCode("BC");
 			hdsEmail.setCreatedDate(data.getCreatedAt());
-			try {
-				hdsEmail.setEffectiveStartDate(startDateFormat.parse(data.getHdsEffectiveStartDate()));
-			} catch (ParseException ex) {
-				hdsEmail.setEffectiveStartDate(data.getCreatedAt());
-			}
-			try {
-				hdsEmail.setEffectiveEndDate(endDateFormat.parse(data.getHdsEffectiveEndDate()));
-			} catch (ParseException ex) {
-			}
+			hdsEmail.setEffectiveStartDate(data.getCreatedAt());
 			electronicAddressList.add(hdsEmail);
 		}
 		
 		if (StringUtils.hasText(data.getHdsWebsite())) {
 			ElectronicAddressDto hdsWebsite = new ElectronicAddressDto();
 			hdsWebsite.setAddress(data.getHdsWebsite());
+			hdsWebsite.setTypeCode("H");
+			hdsWebsite.setCommunicationPurposeCode("BC");
 			hdsWebsite.setCreatedDate(data.getCreatedAt());
-			try {
-				hdsWebsite.setEffectiveStartDate(startDateFormat.parse(data.getHdsEffectiveStartDate()));
-			} catch (ParseException ex) {
-				hdsWebsite.setEffectiveStartDate(data.getCreatedAt());
-			}
-			try {
-				hdsWebsite.setEffectiveEndDate(endDateFormat.parse(data.getHdsEffectiveEndDate()));
-			} catch (ParseException ex) {
-			}
+			hdsWebsite.setEffectiveStartDate(data.getCreatedAt());
 			electronicAddressList.add(hdsWebsite);
 		}
 		
