@@ -57,7 +57,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 			boolean hasError = false;
 			JsonNode root = objectMapper.readTree(json);
 			for (JsonNode ack : root.get(ACKNOWLEDGEMENTS)) {
-				if (ack.get(MSG_CODE) != null) {
+				if (ack.has(MSG_CODE)) {
 					if (ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
 						hasError = true;
 					}
@@ -77,7 +77,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 			}
 			if (!hasError) {
 				JsonNode facility = root.get("facility");
-				if (facility.get("facilityIdentifiers") != null && facility.get("facilityIdentifiers").findValue("identifier") != null) {
+				if (facility.hasNonNull("facilityIdentifiers") && facility.get("facilityIdentifiers").has("identifier")) {
 					data.setPlrFacilityId(facility.get("facilityIdentifiers").findValue("identifier").asText());
 					loaded = true;
 				}

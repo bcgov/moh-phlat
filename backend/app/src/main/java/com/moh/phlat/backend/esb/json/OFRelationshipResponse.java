@@ -31,8 +31,6 @@ public class OFRelationshipResponse implements PlrResponse {
 	
 	@Getter
 	private boolean loaded = false;
-	@Getter
-	private boolean duplicate = false;
 	
 	@Getter
 	private List<PlrError> plrErrors = new ArrayList<>();
@@ -57,7 +55,7 @@ public class OFRelationshipResponse implements PlrResponse {
 			boolean hasError = false;
 			JsonNode root = objectMapper.readTree(json);
 			for (JsonNode ack : root.get(ACKNOWLEDGEMENTS)) {
-				if (ack.get(MSG_CODE) != null && ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
+				if (ack.has(MSG_CODE) && ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
 					hasError = true;
 					break;
 				}

@@ -8,7 +8,6 @@ import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -29,8 +28,6 @@ public class MaintainHdsResponse implements PlrResponse {
 	
 	@Getter
 	private boolean loaded = false;
-	@Getter
-	private boolean duplicate = false;
 	
 	@Getter
 	private List<PlrError> plrErrors = new ArrayList<>();
@@ -55,7 +52,7 @@ public class MaintainHdsResponse implements PlrResponse {
 			boolean hasError = false;
 			JsonNode root = objectMapper.readTree(json);
 			for (JsonNode ack : root.get(ACKNOWLEDGEMENTS)) {
-				if (ack.get(MSG_CODE) != null) {
+				if (ack.has(MSG_CODE)) {
 					if (ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
 						hasError = true;
 					}
@@ -70,12 +67,18 @@ public class MaintainHdsResponse implements PlrResponse {
 			}
 			if (!hasError) {
 				JsonNode hds = root.get("providerDetails");
-				if (hds.findValue("pauthId") != null
-						&& hds.get("registryIdentifiers") != null
-						&& hds.get("registryIdentifiers").findValue("identifier") != null) {
-					data.setHdsPauthId(hds.findValue("pauthId").asText());
-					data.setHdsCpnId(hds.get("registryIdentifiers").findValue("identifier").asText());
-					loaded = true;
+				data.setHdsPauthId(hds.findValue("pauthId").asText());
+				if (hds.hasNonNull("registryIdentifiers")) {
+					hds.get("registryIdentifiers").forEach(regId -> {
+						if ("CPN".equals(regId.findValue("typeCode").asText())) {
+							data.setHdsCpnId(regId.findValue("identifier").asText());
+							loaded = true;
+						}
+						if ("IPC".equals(regId.findValue("typeCode").asText())) {
+							data.setHdsIpcId(regId.findValue("identifier").asText());
+							loaded = true;
+						}
+					});
 				}
 			}
 			

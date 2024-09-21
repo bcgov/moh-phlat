@@ -31,14 +31,18 @@ public class PlrDataLoad {
 		}
 		if (control.getLoadTypeHds()) {
 			if (StringUtils.hasText(processData.getPlrFacilityId())
-					&& !StringUtils.hasText(processData.getHdsPauthId())) {
+					&& !(StringUtils.hasText(processData.getHdsPauthId())
+					&& StringUtils.hasText(processData.getHdsCpnId())
+					&& StringUtils.hasText(processData.getHdsIpcId()))) {
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
 			}
 		}	
 		if (control.getLoadTypeOFRelationship()) {
 			if (StringUtils.hasText(processData.getPlrFacilityId())
-					&& StringUtils.hasText(processData.getHdsPauthId())) {
+					&& StringUtils.hasText(processData.getHdsPauthId())
+					&& StringUtils.hasText(processData.getHdsCpnId())
+					&& StringUtils.hasText(processData.getHdsIpcId())) {
 				//*** WILL IMPLEMENT THIS AFTER HDS LOAD IS COMPLETE ***
 				//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
 				//maintainResults.setOFResult(ofResponse);

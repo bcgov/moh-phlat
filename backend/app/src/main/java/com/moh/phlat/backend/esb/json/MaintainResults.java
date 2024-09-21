@@ -30,11 +30,8 @@ public class MaintainResults {
 	}
 	
 	public boolean hasAnyDuplicates() {
-		if (facilityResult != null && facilityResult.isDuplicate()) {
-			return true;
-		}
-		if (hdsResult != null && hdsResult.isDuplicate()) {
-			return true;
+		if (facilityResult != null) {
+			return facilityResult.isDuplicate();
 		}
 		return false;
 	}
