@@ -31,6 +31,8 @@ import ca.bc.gov.health.plr.dto.provider.esb.TelecommunicationDto;
 
 public class MaintainHdsRequest implements PlrRequest {
 	
+	private static final String COMMUNICATION_PURPOSE_CODE = "BC";
+	
 	private ProcessData data;
 	
 	public MaintainHdsRequest(ProcessData data) {
@@ -175,7 +177,7 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private AddressDto createPhysicalAddressDto() {
 		AddressDto address = new AddressDto();
-		address.setActive(true);
+		address.setActive(false);
 		if (StringUtils.hasText(data.getFacCivicAddr())) {
 			String addrLine1 = data.getFacCivicAddr().split(",")[0].trim();
 			address.setAddressLineOne(addrLine1);
@@ -186,22 +188,22 @@ public class MaintainHdsRequest implements PlrRequest {
 			address.setCity(data.getPhysicalCity());
 		}
 		address.setTypeCode("P");
-		address.setCommunicationPurposeCode("FC");
+		address.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 		if (StringUtils.hasText(data.getPhysicalCountry())) {
 			address.setCountry(data.getPhysicalCountry());
 		}
 		address.setCountryCode("CA");
 		address.setCreatedDate(data.getCreatedAt());
-		address.setDisplayActive(true);
+		address.setDisplayActive(false);
 		address.setEffectiveStartDate(data.getCreatedAt());
-		address.setNoChangeOnUpdate(true);
+		address.setNoChangeOnUpdate(false);
 		if (StringUtils.hasText(data.getPhysicalPcode())) {
 			address.setPostalCode(data.getPhysicalPcode());
 		}
 		if (StringUtils.hasText(data.getPhysicalProvince())) {
 			address.setProvinceOrStateTxt(data.getPhysicalProvince());
 		}
-		address.setUpdatable(true);
+		address.setUpdatable(false);
 		address.setValidCpc(true);
 		
 		return address;
@@ -224,7 +226,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			address.setCity(data.getMailCity());
 		}
 		address.setTypeCode("M");
-		address.setCommunicationPurposeCode("FC");
+		address.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 		address.setCountry(data.getMailCountry());
 		address.setCountryCode("CA");
 		address.setCreatedDate(data.getCreatedAt());
@@ -252,7 +254,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			TelecommunicationDto hdsBusTelNumber = new TelecommunicationDto();
 			hdsBusTelNumber.setNumber(data.getHdsBusTelNumber());
 			hdsBusTelNumber.setTypeCode("T");
-			hdsBusTelNumber.setCommunicationPurposeCode("BC");
+			hdsBusTelNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			if (StringUtils.hasText(data.getHdsTelExtension())) {
 				hdsBusTelNumber.setExtension(data.getHdsTelExtension());
 			}
@@ -268,7 +270,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
 			hdsBusCellNumber.setNumber(data.getHdsCellNumber());
 			hdsBusCellNumber.setTypeCode("MB");
-			hdsBusCellNumber.setCommunicationPurposeCode("BC");
+			hdsBusCellNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			if (StringUtils.hasText(data.getHdsCellAreaCode())) {
 				hdsBusCellNumber.setAreaCode(data.getHdsCellAreaCode());
 			}
@@ -281,7 +283,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
 			hdsBusFaxNumber.setNumber(data.getHdsFaxNumber());
 			hdsBusFaxNumber.setTypeCode("FAX");
-			hdsBusFaxNumber.setCommunicationPurposeCode("BC");
+			hdsBusFaxNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			if (StringUtils.hasText(data.getHdsFaxAreaCode())) {
 				hdsBusFaxNumber.setAreaCode(data.getHdsFaxAreaCode());
 			}
@@ -303,7 +305,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			ElectronicAddressDto hdsEmail = new ElectronicAddressDto();
 			hdsEmail.setAddress(data.getHdsEmail());
 			hdsEmail.setTypeCode("E");
-			hdsEmail.setCommunicationPurposeCode("BC");
+			hdsEmail.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			hdsEmail.setCreatedDate(data.getCreatedAt());
 			hdsEmail.setEffectiveStartDate(data.getCreatedAt());
 			electronicAddressList.add(hdsEmail);
@@ -313,7 +315,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			ElectronicAddressDto hdsWebsite = new ElectronicAddressDto();
 			hdsWebsite.setAddress(data.getHdsWebsite());
 			hdsWebsite.setTypeCode("H");
-			hdsWebsite.setCommunicationPurposeCode("BC");
+			hdsWebsite.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			hdsWebsite.setCreatedDate(data.getCreatedAt());
 			hdsWebsite.setEffectiveStartDate(data.getCreatedAt());
 			electronicAddressList.add(hdsWebsite);

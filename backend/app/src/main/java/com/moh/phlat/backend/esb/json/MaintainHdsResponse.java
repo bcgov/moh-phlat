@@ -24,6 +24,8 @@ import lombok.Getter;
 public class MaintainHdsResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainHdsResponse.class);
 	
+	private static final String HDS_LOADED_RESPONSE_CODE = "PRS.PRV.OID.CRE.0.0.0003";
+
 	private ProcessData data;
 	
 	@Getter
@@ -58,8 +60,9 @@ public class MaintainHdsResponse implements PlrResponse {
 					}
 					if (hasError) {
 						if (!ack.get(MSG_CODE).asText().contains(SUCCESSFUL_RESPONSE_CODE)
+								&& !ack.get(MSG_CODE).asText().contains(HDS_LOADED_RESPONSE_CODE)
 								&& !ack.get(MSG_CODE).asText().contains(FAILED_RESPONSE_CODE)) {
-							logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), ack.get(MSG_TEXT).asText());
+							logger.error("PLR returned with an hds load error for ProcessData ID {}: {}", data.getId(), ack.get(MSG_TEXT).asText());
 							addError(ack.get(MSG_CODE).asText(), "ERROR", ack.get(MSG_TEXT).asText());
 						}
 					}
