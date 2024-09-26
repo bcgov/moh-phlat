@@ -2,8 +2,10 @@ package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
 import ca.bc.gov.health.plr.dto.facility.esb.FacilityDto;
+import ca.bc.gov.health.plr.dto.facility.esb.FacilityRelationshipDto;
 import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 
 public class OFRelationshipRequest implements PlrRequest {
@@ -63,12 +66,25 @@ public class OFRelationshipRequest implements PlrRequest {
 	
 	private ProviderDetails createProviderDetails() {
 		ProviderDetails providerDetails = new ProviderDetails();
-		providerDetails.setProviderType(data.getHdsType());
+		providerDetails.setFacilityRelationships(createFacilityRelationshipDtos());
 		return providerDetails;
 	}
 	
 	private FacilityDto createFacilityDto() {
 		FacilityDto facility = new FacilityDto();
 		return facility;
+	}
+	
+	private List<FacilityRelationshipDto> createFacilityRelationshipDtos() {
+		List<FacilityRelationshipDto> relationshipList = new ArrayList<>();
+		
+		FacilityRelationshipDto relationship = new FacilityRelationshipDto();
+		relationship.setFacilityIdentifier(data.getPlrFacilityId());
+		relationship.setFacilityIdentifierTypeCode("IFC");
+		relationship.setFacilityRelationshipTypeCode("LOCATION");
+		relationship.setPauthId(Long.valueOf(data.getHdsPauthId()));
+		relationship.setProviderRelationshipTypeCode("LOCATED");
+		
+		return relationshipList;
 	}
 }

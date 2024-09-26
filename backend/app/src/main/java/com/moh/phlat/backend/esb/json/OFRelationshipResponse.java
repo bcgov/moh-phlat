@@ -31,6 +31,8 @@ public class OFRelationshipResponse implements PlrResponse {
 	
 	@Getter
 	private boolean loaded = false;
+	@Getter
+	private boolean isDuplicate = false;
 	
 	@Getter
 	private List<PlrError> plrErrors = new ArrayList<>();
