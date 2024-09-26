@@ -1,7 +1,6 @@
 package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +19,18 @@ import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 
 public class OFRelationshipRequest implements PlrRequest {
 	
+	private static ObjectMapper objectMapper;
+	static {
+		JSON_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(JSON_DATE_FORMAT);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+	}
+	
 	private ProcessData data;
 	
 	public OFRelationshipRequest(ProcessData data) {
@@ -28,16 +39,6 @@ public class OFRelationshipRequest implements PlrRequest {
 	
 	@Override
 	public String processDataToPlrJson() throws IOException {
-		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(dateFormat);
-		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		
 		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	

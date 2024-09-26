@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
-import com.moh.phlat.backend.esb.boundary.PlrError;
-import com.moh.phlat.backend.esb.json.MaintainResults;
+import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
@@ -216,7 +215,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
 					// Load the ProcessData record
-					MaintainResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
+					PlrLoadResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
 					
 					// Set the RowStatusCode of the ProcessData record
 					if (maintainResults.isAllLoaded()) {
@@ -227,17 +226,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 						processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 					}
 					
-					// Collect and add any error messages into the Messages table for display on the ProcessData record
-					for (PlrError plrError : maintainResults.getPlrErrors()) {
-						Message msg = Message.builder()
-								 .messageType(plrError.getErrorType())
-								 .messageCode(plrError.getErrorCode())
-								 .messageDesc(plrError.getErrorMessage())
-								 .sourceSystemName(MessageSourceSystem.PLR)
-								 .processData(processData)
-								 .build();
-						messageService.createMessage(msg);
-					}
+					// Save all changes to this ProcessData record
 					processDataRepository.save(processData);
 				}
 				// Check if there has been repeated issues with loading records

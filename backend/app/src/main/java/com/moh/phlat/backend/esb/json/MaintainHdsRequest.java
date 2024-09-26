@@ -1,7 +1,6 @@
 package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +32,18 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private static final String COMMUNICATION_PURPOSE_CODE = "BC";
 	
+	private static ObjectMapper objectMapper;
+	static {
+		JSON_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(JSON_DATE_FORMAT);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+	}
+	
 	private ProcessData data;
 	
 	public MaintainHdsRequest(ProcessData data) {
@@ -41,16 +52,6 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	@Override
 	public String processDataToPlrJson() throws IOException {
-		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(dateFormat);
-		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
-		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		
 		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	
@@ -115,35 +116,24 @@ public class MaintainHdsRequest implements PlrRequest {
 		
 		List<CollegeIdentifierDto> identifierList = new ArrayList<>();
 		
-		if (StringUtils.hasText(data.getHdsProviderIdentifier1())
-				&& StringUtils.hasText(data.getHdsProviderIdentifierType1())) {
-			CollegeIdentifierDto identifier1 = new CollegeIdentifierDto();
-			identifier1.setIdentifier(data.getHdsProviderIdentifier1());
-			identifier1.setType(data.getHdsProviderIdentifierType1());
-			identifier1.setEffectiveStartDate(data.getCreatedAt());
-			identifierList.add(identifier1);
-		}
-		if (StringUtils.hasText(data.getHdsProviderIdentifier2())
-				&& StringUtils.hasText(data.getHdsProviderIdentifierType2())) {
-			CollegeIdentifierDto identifier2 = new CollegeIdentifierDto();
-			identifier2.setIdentifier(data.getHdsProviderIdentifier2());
-			identifier2.setType(data.getHdsProviderIdentifierType2());
-			identifier2.setEffectiveStartDate(data.getCreatedAt());
-			identifierList.add(identifier2);
-		}
-		if (StringUtils.hasText(data.getHdsProviderIdentifier3())
-				&& StringUtils.hasText(data.getHdsProviderIdentifierType3())) {
-			CollegeIdentifierDto identifier3 = new CollegeIdentifierDto();
-			identifier3.setIdentifier(data.getHdsProviderIdentifier3());
-			identifier3.setType(data.getHdsProviderIdentifierType3());
-			identifier3.setEffectiveStartDate(data.getCreatedAt());
-			identifierList.add(identifier3);
-		}
-		
+		addHdsProviderIdentifier(identifierList, data.getHdsProviderIdentifier1(), data.getHdsProviderIdentifierType1());
+		addHdsProviderIdentifier(identifierList, data.getHdsProviderIdentifier2(), data.getHdsProviderIdentifierType2());
+		addHdsProviderIdentifier(identifierList, data.getHdsProviderIdentifier3(), data.getHdsProviderIdentifierType3());
+				
 		if (identifierList.isEmpty()) {
 			return null;
 		}
 		return identifierList;
+	}
+	
+	private void addHdsProviderIdentifier(List<CollegeIdentifierDto> identifierList, String hdsId, String hdsIdType) {
+		if (StringUtils.hasText(hdsId) && StringUtils.hasText(hdsIdType)) {
+			CollegeIdentifierDto identifierDto = new CollegeIdentifierDto();
+			identifierDto.setIdentifier(hdsId);
+			identifierDto.setTypeCode(hdsIdType);
+			identifierDto.setEffectiveStartDate(data.getCreatedAt());
+			identifierList.add(identifierDto);
+		}
 	}
 	
 	private JurisdictionNameCodeDto createJurisdictionDto() {

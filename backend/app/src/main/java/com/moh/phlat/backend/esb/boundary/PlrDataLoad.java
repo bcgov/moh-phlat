@@ -8,7 +8,7 @@ import com.moh.phlat.backend.esb.json.MaintainFacilityRequest;
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
 import com.moh.phlat.backend.esb.json.MaintainHdsRequest;
 import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
-import com.moh.phlat.backend.esb.json.MaintainResults;
+import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
@@ -21,8 +21,8 @@ public class PlrDataLoad {
 	@Getter
 	private PlrEsbBoundary plrEsbBoundary;
 	
-	public MaintainResults loadPlrViaEsb(Control control, ProcessData processData) {
-		MaintainResults maintainResults = new MaintainResults();
+	public PlrLoadResults loadPlrViaEsb(Control control, ProcessData processData) {
+		PlrLoadResults maintainResults = new PlrLoadResults();
 		if (control.getLoadTypeFacility()) {
 			if (!StringUtils.hasText(processData.getPlrFacilityId())) {
 				MaintainFacilityResponse facilityResponse = createFacility(control, processData);
