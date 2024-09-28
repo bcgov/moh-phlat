@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
-import com.moh.phlat.backend.esb.json.MaintainFacilityResponse.PlrError;
-import com.moh.phlat.backend.esb.json.MaintainResults;
+import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
@@ -209,29 +208,36 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
 
+			// Begin load process
 			for (ProcessData processData : processDataList) {
-				// skip record marked as DO_NOT_LOAD and send to PLR VALID records only
+				// Skip record marked as DO_NOT_LOAD and send to PLR VALID records only
 				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
-					MaintainResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
-					for (PlrError plrError : maintainResults.getFacilityResult().getPlrErrors()) {
-						Message msg = Message.builder()
-								 .messageType(plrError.getErrorType())
-								 .messageCode(plrError.getErrorCode())
-								 .messageDesc(plrError.getErrorMessage())
-								 .sourceSystemName(MessageSourceSystem.PLR)
-								 .processData(processData)
-								 .build();
-						messageService.createMessage(msg);
+					// Load the ProcessData record
+					PlrLoadResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
+					
+					// Set the RowStatusCode of the ProcessData record
+					if (maintainResults.isAllLoaded()) {
+						processData.setRowstatusCode(RowStatusService.COMPLETED);
+					} else if (maintainResults.hasAnyDuplicates()) {
+						processData.setRowstatusCode(RowStatusService.POTENTIAL_DUPLICATE);
+					} else {
+						processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 					}
+					
+					// Save all changes to this ProcessData record
+					processDataRepository.save(processData);
 				}
+				// Check if there has been repeated issues with loading records
 				if (plrDataLoad.getPlrEsbBoundary().hasPersistentIssue()) {
+					// Too many errors are happening back to back; stop the load process
 					setControlStatus(control.getId(), RowStatusService.LOAD_ERROR, authenticatedUserId);
 					logger.error("PLR Load has a persistent issue. Ending this run. Resolve and try again later.");
 					return;
 				}
 			}
+			// Load completed successfully
 			setControlStatus(control.getId(), RowStatusService.PLR_LOAD_COMPLETED, authenticatedUserId);
 			logger.info("PLR Load Completed");
 		}

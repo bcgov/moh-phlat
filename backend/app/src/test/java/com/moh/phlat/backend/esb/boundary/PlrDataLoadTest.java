@@ -1,6 +1,7 @@
 package com.moh.phlat.backend.esb.boundary;
 
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
+import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -45,6 +46,23 @@ class PlrDataLoadTest {
         MaintainFacilityResponse facilityResponse = (MaintainFacilityResponse) m.invoke(underTest, control, processData);
         assertNotNull(facilityResponse);
     }
+    
+    @Test
+    public void testCreateHds() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        PlrDataLoad underTest = new PlrDataLoad();
+        PlrEsbBoundary mockEsbBoundary = mock(PlrEsbBoundary.class);
+        Control control = createControlData();
+        ProcessData processData = createProcessData();
+
+        FieldUtils.writeField(underTest, "plrEsbBoundary", mockEsbBoundary, true);
+        doNothing().when(mockEsbBoundary).maintainProvider(Mockito.any(), Mockito.any(), Mockito.any());
+
+        Method m = PlrDataLoad.class
+                .getDeclaredMethod("createHdsProvider", Control.class, ProcessData.class);
+        m.setAccessible(true);
+        MaintainHdsResponse hdsResponse = (MaintainHdsResponse) m.invoke(underTest, control, processData);
+        assertNotNull(hdsResponse);
+    }
 
     private Control createControlData(){
         Control control = new Control();
@@ -68,9 +86,21 @@ class PlrDataLoadTest {
         ProcessData processData = new ProcessData();
         processData.setId(1664L);
         processData.setControlTableId(5L);
-        processData.setStakeholder("HOSPITAL");
-        processData.setHdsType("HOSPITAL");
+        processData.setStakeholder("CP");
+        processData.setHdsCategoryCode("ORGANIZATION");
+        processData.setHdsType("PHARMACY");
         processData.setHdsName("Northern Haida Gwaii Hospital and Health Centre");
+        processData.setHdsProviderIdentifier1("12345");
+        processData.setHdsProviderIdentifierType1("PHYID");
+        processData.setHdsBusTelAreaCode("999");
+        processData.setHdsBusTelNumber("9999");
+        processData.setHdsTelExtension("999");
+        processData.setHdsCellAreaCode("999");
+        processData.setHdsCellNumber("9999");
+        processData.setHdsFaxAreaCode("999");
+        processData.setHdsFaxNumber("9999");
+        processData.setHdsEmail("XXX@email.com");
+        processData.setHdsWebsite("WEBSITE");
         processData.setFacRelnType("LOCATION OF");
         processData.setFacTypeCode("BUILDING");
         processData.setPhysicalAddr1("12680 HARRISON AVE");
