@@ -13,6 +13,6 @@ public interface PlrResponse {
 	String MSG_CODE = "msgCode";
 	String MSG_TEXT = "msgText";
 	
-	public void plrJsonToProcessData(String json);
+	public void plrJsonToProcessData(String plrJsonResponse);
 	public void handlePlrError(Exception ex);
 }

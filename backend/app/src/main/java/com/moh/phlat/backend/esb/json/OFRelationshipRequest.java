@@ -31,10 +31,10 @@ public class OFRelationshipRequest implements PlrRequest {
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
 	}
 	
-	private ProcessData data;
+	private ProcessData processData;
 	
-	public OFRelationshipRequest(ProcessData data) {
-		this.data = data;
+	public OFRelationshipRequest(ProcessData processData) {
+		this.processData = processData;
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class OFRelationshipRequest implements PlrRequest {
 	
 	private ProviderDetails createProviderDetails() {
 		ProviderDetails providerDetails = new ProviderDetails();
-		providerDetails.setProviderType(data.getHdsType());
+		providerDetails.setProviderType(processData.getHdsType());
 		return providerDetails;
 	}
 	

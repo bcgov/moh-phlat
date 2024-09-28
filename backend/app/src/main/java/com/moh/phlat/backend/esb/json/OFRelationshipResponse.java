@@ -36,7 +36,7 @@ public class OFRelationshipResponse implements PlrResponse {
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
 	}
 	
-	private ProcessData data;
+	private ProcessData processData;
 	
 	@Getter
 	private String hdsId;
@@ -44,15 +44,15 @@ public class OFRelationshipResponse implements PlrResponse {
 	@Getter
 	private boolean loaded = false;
 	
-	public OFRelationshipResponse(ProcessData data) {
-		this.data = data;
+	public OFRelationshipResponse(ProcessData processData) {
+		this.processData = processData;
 	}
 	
 	@Override
-	public void plrJsonToProcessData(String json) {
+	public void plrJsonToProcessData(String oFJsonResponse) {
 		try {			
 			boolean hasError = false;
-			JsonNode root = objectMapper.readTree(json);
+			JsonNode root = objectMapper.readTree(oFJsonResponse);
 			for (JsonNode ack : root.path(ACKNOWLEDGEMENTS)) {
 				
 				// Find the message code and text of each acknowledgement node
@@ -68,7 +68,7 @@ public class OFRelationshipResponse implements PlrResponse {
 						&& !msgCode.contains(OF_LOADED_RESPONSE_CODE)
 						&& !msgCode.contains(FAILED_RESPONSE_CODE)) {
 					// PLR gave this error response; mark this ProcessData record as a failed load
-					logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), msgText);
+					logger.error("PLR returned with an error for ProcessData ID {}: {}", processData.getId(), msgText);
 					addError(msgCode, "ERROR", msgText);
 				}
 			}
@@ -79,7 +79,7 @@ public class OFRelationshipResponse implements PlrResponse {
 			
 		} catch (Exception ex) {
 			// The JSON message could not be parsed
-			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", data.getId(), ex);
+			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", processData.getId(), ex);
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
 		}
@@ -106,8 +106,8 @@ public class OFRelationshipResponse implements PlrResponse {
 				 .messageCode(errorCode)
 				 .messageDesc(errorMessage)
 				 .sourceSystemName(MessageSourceSystem.PLR)
-				 .processData(data)
+				 .processData(processData)
 				 .build();
-		data.getMessages().add(msg);
+		processData.getMessages().add(msg);
 	}
 }

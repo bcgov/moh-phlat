@@ -36,20 +36,20 @@ public class MaintainHdsResponse implements PlrResponse {
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
 	}
 	
-	private ProcessData data;
+	private ProcessData processData;
 	
 	@Getter
 	private boolean loaded = false;
 	
-	public MaintainHdsResponse(ProcessData data) {
-		this.data = data;
+	public MaintainHdsResponse(ProcessData processData) {
+		this.processData = processData;
 	}
 	
 	@Override
-	public void plrJsonToProcessData(String json) {
+	public void plrJsonToProcessData(String hdsJsonResponse) {
 		try {			
 			boolean hasError = false;
-			JsonNode root = objectMapper.readTree(json);
+			JsonNode root = objectMapper.readTree(hdsJsonResponse);
 			for (JsonNode ack : root.path(ACKNOWLEDGEMENTS)) {
 				
 				// Find the message code and text of each acknowledgement node
@@ -65,21 +65,21 @@ public class MaintainHdsResponse implements PlrResponse {
 						&& !msgCode.contains(HDS_LOADED_RESPONSE_CODE)
 						&& !msgCode.contains(FAILED_RESPONSE_CODE)) {
 					// PLR gave this error response; mark this ProcessData record as a failed load
-					logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), msgText);
+					logger.error("PLR returned with an error for ProcessData ID {}: {}", processData.getId(), msgText);
 					addError(msgCode, "ERROR", msgText);
 				}
 			}
 			if (!hasError) {
 				JsonNode hds = root.path("providerDetails");
-				data.setHdsPauthId(hds.path("pauthId").asText());
+				processData.setHdsPauthId(hds.path("pauthId").asText());
 				hds.path("registryIdentifiers").forEach(regId -> {
 					String typeCode = regId.path("typeCode").asText();
 					String identifier = regId.path("identifier").asText();
 					if ("CPN".equals(typeCode)) {
-						data.setHdsCpnId(identifier);
+						processData.setHdsCpnId(identifier);
 						loaded = true;
 					} else if ("IPC".equals(typeCode)) {
-						data.setHdsIpcId(identifier);
+						processData.setHdsIpcId(identifier);
 						loaded = true;
 					}
 				});
@@ -87,7 +87,7 @@ public class MaintainHdsResponse implements PlrResponse {
 			
 		} catch (Exception ex) {
 			// The JSON message could not be parsed
-			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", data.getId(), ex);
+			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", processData.getId(), ex);
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
 		}
@@ -114,8 +114,8 @@ public class MaintainHdsResponse implements PlrResponse {
 				 .messageCode(errorCode)
 				 .messageDesc(errorMessage)
 				 .sourceSystemName(MessageSourceSystem.PLR)
-				 .processData(data)
+				 .processData(processData)
 				 .build();
-		data.getMessages().add(msg);
+		processData.getMessages().add(msg);
 	}
 }

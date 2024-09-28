@@ -37,22 +37,22 @@ public class MaintainFacilityResponse implements PlrResponse {
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
 	}
 	
-	private ProcessData data;
+	private ProcessData processData;
 	
 	@Getter
 	private boolean loaded = false;
 	@Getter
 	private boolean duplicate = false;
 	
-	public MaintainFacilityResponse(ProcessData data) {
-		this.data = data;
+	public MaintainFacilityResponse(ProcessData processData) {
+		this.processData = processData;
 	}
 	
 	@Override
-	public void plrJsonToProcessData(String json) {
+	public void plrJsonToProcessData(String facilityJsonResponse) {
 		try {			
 			boolean hasError = false;
-			JsonNode root = objectMapper.readTree(json);
+			JsonNode root = objectMapper.readTree(facilityJsonResponse);
 			for (JsonNode ack : root.path(ACKNOWLEDGEMENTS)) {
 				
 				// Find the message code and text of each acknowledgement node
@@ -65,7 +65,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 					
 				} else if (msgCode.contains(DUPLICATE_FACILITY_RESPONSE_CODE)) {
 					// PLR found a duplicate facility record; set duplicate to true and mark this ProcessData record as a duplicate
-					logger.warn("{} was identifed as a duplicate facility by PLR: {}", data.getId(), msgText);
+					logger.warn("{} was identifed as a duplicate facility by PLR: {}", processData.getId(), msgText);
 					addError(DUPLICATE_FACILITY_RESPONSE_CODE, "WARNING", msgText);
 					duplicate = true;
 					
@@ -74,20 +74,20 @@ public class MaintainFacilityResponse implements PlrResponse {
 						&& !msgCode.contains(FACILITY_LOADED_RESPONSE_CODE)
 						&& !msgCode.contains(FAILED_RESPONSE_CODE)) {
 					// PLR gave this error response; mark this ProcessData record as a failed load
-					logger.error("PLR returned with an error for ProcessData ID {}: {}", data.getId(), msgText);
+					logger.error("PLR returned with an error for ProcessData ID {}: {}", processData.getId(), msgText);
 					addError(msgCode, "ERROR", msgText);
 				} 
 			}
 			if (!hasError) {
 				// No errors were found; find the facility identifier
 				JsonNode facilityIdentifiers = root.path("facility").path("facilityIdentifiers");
-				data.setPlrFacilityId(facilityIdentifiers.path("identifier").asText());
+				processData.setPlrFacilityId(facilityIdentifiers.path("identifier").asText());
 				loaded = true;
 			}
 			
 		} catch (Exception ex) {
 			// The JSON message could not be parsed
-			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", data.getId(), ex);
+			logger.error("PLR's response to load attempt for record #{} could not be parsed: ", processData.getId(), ex);
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
 		}
@@ -114,8 +114,8 @@ public class MaintainFacilityResponse implements PlrResponse {
 				 .messageCode(errorCode)
 				 .messageDesc(errorMessage)
 				 .sourceSystemName(MessageSourceSystem.PLR)
-				 .processData(data)
+				 .processData(processData)
 				 .build();
-		data.getMessages().add(msg);
+		processData.getMessages().add(msg);
 	}
 }
