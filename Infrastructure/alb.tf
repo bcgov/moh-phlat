@@ -31,9 +31,9 @@ resource "aws_alb_target_group" "app" {
     interval            = "40"
     protocol            = "HTTP"
     matcher             = "200"
-    timeout             = "10"
+    timeout             = "15"
     path                = var.health_check_path
-    unhealthy_threshold = "2"
+    unhealthy_threshold = "3"
   }
 
   tags = local.common_tags
