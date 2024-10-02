@@ -1,7 +1,6 @@
 package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,24 +22,26 @@ import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 
 public class OFRelationshipRequest implements PlrRequest {
 	
-	private ProcessData data;
-	
-	public OFRelationshipRequest(ProcessData data) {
-		this.data = data;
-	}
-	
-	@Override
-	public String processDataToPlrJson() throws IOException {
-		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	private static ObjectMapper objectMapper;
+	static {
+		JSON_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(dateFormat);
+		objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(JSON_DATE_FORMAT);
 		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
 		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		
+	}
+	
+	private ProcessData processData;
+	
+	public OFRelationshipRequest(ProcessData processData) {
+		this.processData = processData;
+	}
+	
+	@Override
+	public String processDataToPlrJson() throws IOException {
 		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	
@@ -79,10 +80,10 @@ public class OFRelationshipRequest implements PlrRequest {
 		List<FacilityRelationshipDto> relationshipList = new ArrayList<>();
 		
 		FacilityRelationshipDto relationship = new FacilityRelationshipDto();
-		relationship.setFacilityIdentifier(data.getPlrFacilityId());
+		relationship.setFacilityIdentifier(processData.getPlrFacilityId());
 		relationship.setFacilityIdentifierTypeCode("IFC");
 		relationship.setFacilityRelationshipTypeCode("LOCATION");
-		relationship.setPauthId(Long.valueOf(data.getHdsPauthId()));
+		relationship.setPauthId(Long.valueOf(processData.getHdsPauthId()));
 		relationship.setProviderRelationshipTypeCode("LOCATED");
 		
 		return relationshipList;

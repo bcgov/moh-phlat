@@ -86,7 +86,7 @@ class PlrDataLoadTest {
         ProcessData processData = new ProcessData();
         processData.setId(1664L);
         processData.setControlTableId(5L);
-        processData.setStakeholder("HOSPITAL");
+        processData.setStakeholder("CP");
         processData.setHdsCategoryCode("ORGANIZATION");
         processData.setHdsType("PHARMACY");
         processData.setHdsName("Northern Haida Gwaii Hospital and Health Centre");

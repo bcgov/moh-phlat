@@ -2,7 +2,6 @@ package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,24 +28,26 @@ import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 
 public class MaintainFacilityRequest implements PlrRequest {
 	
-	private ProcessData data;
-	
-	public MaintainFacilityRequest(ProcessData data) {
-		this.data = data;
-	}
-	
-	@Override
-	public String processDataToPlrJson() throws IOException {
-		DateFormat dateFormat = JSON_DATE_FORMAT_OJDK11;
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	private static ObjectMapper objectMapper;
+	static {
+		JSON_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(dateFormat);
+		objectMapper = new ObjectMapper();
+		objectMapper.setDateFormat(JSON_DATE_FORMAT);
 		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		objectMapper.disable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
 		objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		
+	}
+	
+	private ProcessData processData;
+	
+	public MaintainFacilityRequest(ProcessData processData) {
+		this.processData = processData;
+	}
+	
+	@Override
+	public String processDataToPlrJson() throws IOException {
 		return objectMapper.writeValueAsString(createMaintainProviderRequest());
 	}
 	
@@ -85,8 +86,8 @@ public class MaintainFacilityRequest implements PlrRequest {
 	private List<FacilityDetailsDto> createFacilityDetailsDtos() {
 		
 		FacilityDetailsDto facilityDetails = new FacilityDetailsDto();
-		facilityDetails.setCreatedDate(data.getCreatedAt());
-		facilityDetails.setEffectiveStartDate(data.getCreatedAt());
+		facilityDetails.setCreatedDate(processData.getCreatedAt());
+		facilityDetails.setEffectiveStartDate(processData.getCreatedAt());
 		facilityDetails.setType("BUILDING");
 		facilityDetails.setTypeCode("BUILDING");
 		
@@ -98,14 +99,14 @@ public class MaintainFacilityRequest implements PlrRequest {
 	private List<FacilityNameDto> createFacilityNameDtos() {
 		
 		FacilityNameDto facilityName = new FacilityNameDto();
-		if (StringUtils.hasText(data.getFacBuildingName())) {
-			facilityName.setName(data.getFacBuildingName());
+		if (StringUtils.hasText(processData.getFacBuildingName())) {
+			facilityName.setName(processData.getFacBuildingName());
 		} else {
 			return null;
 		}
 		
-		facilityName.setCreatedDate(data.getCreatedAt());
-		facilityName.setEffectiveStartDate(data.getCreatedAt());
+		facilityName.setCreatedDate(processData.getCreatedAt());
+		facilityName.setEffectiveStartDate(processData.getCreatedAt());
 		
 		List<FacilityNameDto> facilityNameList = new ArrayList<>();
 		facilityNameList.add(facilityName);
@@ -121,31 +122,31 @@ public class MaintainFacilityRequest implements PlrRequest {
 	private AddressDto createPhysicalAddressDto() {
 		AddressDto address = new AddressDto();
 		address.setActive(false);
-		if (StringUtils.hasText(data.getFacCivicAddr())) {
-			String addrLine1 = data.getFacCivicAddr().split(",")[0].trim();
+		if (StringUtils.hasText(processData.getFacCivicAddr())) {
+			String addrLine1 = processData.getFacCivicAddr().split(",")[0].trim();
 			address.setAddressLineOne(addrLine1);
-		} else if (StringUtils.hasText(data.getPhysicalAddr1())) {
-			address.setAddressLineOne(data.getPhysicalAddr1());
+		} else if (StringUtils.hasText(processData.getPhysicalAddr1())) {
+			address.setAddressLineOne(processData.getPhysicalAddr1());
 		}
-		if (StringUtils.hasText(data.getPhysicalCity())) {
-			address.setCity(data.getPhysicalCity());
+		if (StringUtils.hasText(processData.getPhysicalCity())) {
+			address.setCity(processData.getPhysicalCity());
 		}
 		address.setTypeCode("P");
 		address.setCommunicationPurposeCode("FC");
-		if (StringUtils.hasText(data.getPhysicalCountry())) {
-			address.setCountry(data.getPhysicalCountry());
+		if (StringUtils.hasText(processData.getPhysicalCountry())) {
+			address.setCountry(processData.getPhysicalCountry());
 		}
 		address.setCountryCode("CA");
-		address.setCreatedDate(data.getCreatedAt());
+		address.setCreatedDate(processData.getCreatedAt());
 		address.setDisplayActive(false);
-		address.setEffectiveStartDate(data.getCreatedAt());
+		address.setEffectiveStartDate(processData.getCreatedAt());
 		// Address is not updatable for a Facility - Flags are updated in PLR app
 		address.setNoChangeOnUpdate(false);
-		if (StringUtils.hasText(data.getPhysicalPcode())) {
-			address.setPostalCode(data.getPhysicalPcode());
+		if (StringUtils.hasText(processData.getPhysicalPcode())) {
+			address.setPostalCode(processData.getPhysicalPcode());
 		}
-		if (StringUtils.hasText(data.getPhysicalProvince())) {
-			address.setProvinceOrStateTxt(data.getPhysicalProvince());
+		if (StringUtils.hasText(processData.getPhysicalProvince())) {
+			address.setProvinceOrStateTxt(processData.getPhysicalProvince());
 		}
 		address.setUpdatable(false);
 		address.setValidCpc(true);
@@ -159,89 +160,89 @@ public class MaintainFacilityRequest implements PlrRequest {
 		CivicAddressDto civicAddress = new CivicAddressDto();
 		civicAddress.setActive(true);
 		
-		if (StringUtils.hasText(data.getFacCivicAddr())) {
-			civicAddress.setAddressLineOne(data.getFacCivicAddr());
+		if (StringUtils.hasText(processData.getFacCivicAddr())) {
+			civicAddress.setAddressLineOne(processData.getFacCivicAddr());
 		} else {
-			civicAddress.setAddressLineOne(data.getPhysicalAddr1());
+			civicAddress.setAddressLineOne(processData.getPhysicalAddr1());
 		}
 		
-		if (StringUtils.hasText(data.getPhysicalAddr2())) {
-			civicAddress.setAddressLineTwo(data.getPhysicalAddr2());
+		if (StringUtils.hasText(processData.getPhysicalAddr2())) {
+			civicAddress.setAddressLineTwo(processData.getPhysicalAddr2());
 		}
-		if (StringUtils.hasText(data.getPhysicalAddr3())) {
-			civicAddress.setAddressLineThree(data.getPhysicalAddr3());
+		if (StringUtils.hasText(processData.getPhysicalAddr3())) {
+			civicAddress.setAddressLineThree(processData.getPhysicalAddr3());
 		}
-		if (StringUtils.hasText(data.getPhysicalCity())) {
-			civicAddress.setCity(data.getPhysicalCity());
+		if (StringUtils.hasText(processData.getPhysicalCity())) {
+			civicAddress.setCity(processData.getPhysicalCity());
 		}
-		if (StringUtils.hasText(data.getPhysicalProvince())) {
-			civicAddress.setProvinceOrStateTxt(data.getPhysicalProvince());
+		if (StringUtils.hasText(processData.getPhysicalProvince())) {
+			civicAddress.setProvinceOrStateTxt(processData.getPhysicalProvince());
 		}
 		civicAddress.setCountryCode("CA");
-		civicAddress.setCreatedDate(data.getCreatedAt());
+		civicAddress.setCreatedDate(processData.getCreatedAt());
 		civicAddress.setDisplayActive(true);
-		civicAddress.setEffectiveStartDate(data.getCreatedAt());
+		civicAddress.setEffectiveStartDate(processData.getCreatedAt());
 		civicAddress.setNoChangeOnUpdate(false);
-		if (StringUtils.hasText(data.getFacStreetType())) {
-			civicAddress.setStreetType(data.getFacStreetType());
+		if (StringUtils.hasText(processData.getFacStreetType())) {
+			civicAddress.setStreetType(processData.getFacStreetType());
 		}
 		civicAddress.setUpdatable(true);
-		if (StringUtils.hasText(data.getFacChsaCode())) {
-			civicAddress.setChsaNameCode(data.getFacChsaCode());
+		if (StringUtils.hasText(processData.getFacChsaCode())) {
+			civicAddress.setChsaNameCode(processData.getFacChsaCode());
 		}
-		if (StringUtils.hasText(data.getFacChsaName())) {
-			civicAddress.setChsaDescTxt(data.getFacChsaName());
+		if (StringUtils.hasText(processData.getFacChsaName())) {
+			civicAddress.setChsaDescTxt(processData.getFacChsaName());
 		}
-		if (StringUtils.hasText(data.getFacChsaStatus())) {
-			civicAddress.setChsaStatus(data.getFacChsaStatus());
+		if (StringUtils.hasText(processData.getFacChsaStatus())) {
+			civicAddress.setChsaStatus(processData.getFacChsaStatus());
 		}
-		if (StringUtils.hasText(data.getFacDatabcResults())) {
-			civicAddress.setDataBCResult(data.getFacDatabcResults());
+		if (StringUtils.hasText(processData.getFacDatabcResults())) {
+			civicAddress.setDataBCResult(processData.getFacDatabcResults());
 		}
-		if (StringUtils.hasText(data.getFacHaName())) {
-			civicAddress.setHaDescTxt(data.getFacHaName());
+		if (StringUtils.hasText(processData.getFacHaName())) {
+			civicAddress.setHaDescTxt(processData.getFacHaName());
 		}
-		if (StringUtils.hasText(data.getFacHsdaName())) {
-			civicAddress.setHsdaDescTxt(data.getFacHsdaName());
+		if (StringUtils.hasText(processData.getFacHsdaName())) {
+			civicAddress.setHsdaDescTxt(processData.getFacHsdaName());
 		}
-		if (StringUtils.hasText(data.getFacLatitude())) {
-			civicAddress.setLatitude(BigDecimal.valueOf(Double.valueOf(data.getFacLatitude())));
+		if (StringUtils.hasText(processData.getFacLatitude())) {
+			civicAddress.setLatitude(BigDecimal.valueOf(Double.valueOf(processData.getFacLatitude())));
 		}
-		if (StringUtils.hasText(data.getFacLongitude())) {
-			civicAddress.setLongitude(BigDecimal.valueOf(Double.valueOf(data.getFacLongitude())));
+		if (StringUtils.hasText(processData.getFacLongitude())) {
+			civicAddress.setLongitude(BigDecimal.valueOf(Double.valueOf(processData.getFacLongitude())));
 		}
-		if (StringUtils.hasText(data.getFacLhaName())) {
-			civicAddress.setLhaDescTxt(data.getFacLhaName());
+		if (StringUtils.hasText(processData.getFacLhaName())) {
+			civicAddress.setLhaDescTxt(processData.getFacLhaName());
 		}
-		if (StringUtils.hasText(data.getFacMatchPrecision())) {
-			civicAddress.setMatchPrecision(data.getFacMatchPrecision());
+		if (StringUtils.hasText(processData.getFacMatchPrecision())) {
+			civicAddress.setMatchPrecision(processData.getFacMatchPrecision());
 		}
-		if (StringUtils.hasText(data.getFacPcnName())) {
+		if (StringUtils.hasText(processData.getFacPcnName())) {
 			civicAddress.setPcnDescTxt(null);
 		}
-		if (StringUtils.hasText(data.getFacPcnCode())) {
-			civicAddress.setPcnNameCode(data.getFacPcnCode());
+		if (StringUtils.hasText(processData.getFacPcnCode())) {
+			civicAddress.setPcnNameCode(processData.getFacPcnCode());
 		}
-		if (StringUtils.hasText(data.getFacPcnStatus())) {
-			civicAddress.setPcnStatus(data.getFacPcnStatus());
+		if (StringUtils.hasText(processData.getFacPcnStatus())) {
+			civicAddress.setPcnStatus(processData.getFacPcnStatus());
 		}
-		if (StringUtils.hasText(data.getFacPrecisionPoints())) {
-			civicAddress.setPrecisionPoints(Integer.valueOf(data.getFacPrecisionPoints()));
+		if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
+			civicAddress.setPrecisionPoints(Integer.valueOf(processData.getFacPrecisionPoints()));
 		}
-		if (StringUtils.hasText(data.getFacScore())) {
-			civicAddress.setScore(Integer.valueOf(data.getFacScore()));
+		if (StringUtils.hasText(processData.getFacScore())) {
+			civicAddress.setScore(Integer.valueOf(processData.getFacScore()));
 		}
-		if (StringUtils.hasText(data.getFacSiteId())) {
-			civicAddress.setSiteID(data.getFacSiteId());
+		if (StringUtils.hasText(processData.getFacSiteId())) {
+			civicAddress.setSiteID(processData.getFacSiteId());
 		}
-		if (StringUtils.hasText(data.getFacStreetDirection())) {
-			civicAddress.setStreetDirection(data.getFacStreetDirection());
+		if (StringUtils.hasText(processData.getFacStreetDirection())) {
+			civicAddress.setStreetDirection(processData.getFacStreetDirection());
 		}
-		if (StringUtils.hasText(data.getStreetDirectionPrefix())) {
-			civicAddress.setIsDirectionPrefix(Boolean.valueOf(data.getStreetDirectionPrefix()));
+		if (StringUtils.hasText(processData.getStreetDirectionPrefix())) {
+			civicAddress.setIsDirectionPrefix(Boolean.valueOf(processData.getStreetDirectionPrefix()));
 		}
-		if (StringUtils.hasText(data.getStreetTypePrefix())) {
-			civicAddress.setIsTypePrefix(Boolean.valueOf(data.getStreetTypePrefix()));
+		if (StringUtils.hasText(processData.getStreetTypePrefix())) {
+			civicAddress.setIsTypePrefix(Boolean.valueOf(processData.getStreetTypePrefix()));
 		}
 		
 		List<CivicAddressDto> civicAddressList = new ArrayList<>();
