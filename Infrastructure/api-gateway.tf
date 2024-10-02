@@ -1,9 +1,3 @@
-#data "aws_acm_certificate" "phlat_api_certificate" {
-#  domain      = var.api_url
-#  statuses    = ["ISSUED"]
-#  most_recent = true
-#}
-
 locals {
   response_headers = {
     "Content-Security-Policy"   = "default-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com/; connect-src 'self' https://*.hlth.gov.bc.ca/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; script-src 'self' 'unsafe-eval'; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.hlth.gov.bc.ca/"
@@ -23,9 +17,7 @@ module "api_gateway" {
   description            = "HTTP API Gateway"
   protocol_type          = "HTTP"
   create_api_domain_name = false
-
   domain_name                              = var.api_url
-  #domain_name_certificate_arn              = data.aws_acm_certificate.phlat_api_certificate.arn
 
   integrations = {
     "ANY /{proxy+}" = {
