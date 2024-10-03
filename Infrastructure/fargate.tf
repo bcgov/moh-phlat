@@ -110,7 +110,7 @@ resource "aws_ecs_service" "main" {
   cluster                           = aws_ecs_cluster.phlat_cluster.arn
   task_definition                   = aws_ecs_task_definition.phlat_td.arn
   desired_count                     = var.app_count
-  health_check_grace_period_seconds = 30
+  health_check_grace_period_seconds = 75 # should be 3 times the ALB health check interval
   wait_for_steady_state             = false
   force_new_deployment              = true
 
