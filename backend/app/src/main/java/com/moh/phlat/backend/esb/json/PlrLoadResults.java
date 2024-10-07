@@ -1,5 +1,7 @@
 package com.moh.phlat.backend.esb.json;
 
+import com.moh.phlat.backend.model.Control;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,23 +13,16 @@ public class PlrLoadResults {
 	private MaintainHdsResponse hdsResult;
 	private OFRelationshipResponse oFResult;
 	
-	public boolean isAllLoaded() {
-		if (facilityResult != null && !facilityResult.isLoaded()) {
+	public boolean isAllLoaded(Control control) {
+		if (control.getLoadTypeFacility() && !facilityResult.isLoaded()) {
 			return false;
 		}
-		if (hdsResult != null && !hdsResult.isLoaded()) {
+		if (control.getLoadTypeHds() && !hdsResult.isLoaded()) {
 			return false;
 		}
-		if (oFResult != null && !oFResult.isLoaded()) {
+		if (control.getLoadTypeOFRelationship() && !oFResult.isLoaded()) {
 			return false;
 		}
 		return true;
-	}
-	
-	public boolean hasAnyDuplicates() {
-		if (facilityResult != null) {
-			return facilityResult.isDuplicate();
-		}
-		return false;
 	}
 }
