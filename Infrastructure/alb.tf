@@ -28,12 +28,12 @@ resource "aws_alb_target_group" "app" {
 
   health_check {
     healthy_threshold   = "3"
-    interval            = "40"
+    interval            = "25"
     protocol            = "HTTP"
     matcher             = "200"
-    timeout             = "10"
+    timeout             = "15" # seconds. should be less than interval
     path                = var.health_check_path
-    unhealthy_threshold = "2"
+    unhealthy_threshold = "3"
   }
 
   tags = local.common_tags
