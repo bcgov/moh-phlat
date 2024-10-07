@@ -27,23 +27,23 @@ public class PlrDataLoad {
 		
 		// Facility Load
 		if (control.getLoadTypeFacility()) {
-			// If this record already has a facility ID, mark it as loaded and skip
 			if (!StringUtils.hasText(processData.getPlrFacilityId())) {
 				MaintainFacilityResponse facilityResponse = createFacility(control, processData);
 				maintainResults.setFacilityResult(facilityResponse);
 			} else {
+				// If this record already has a facility ID, mark it as loaded and skip
 				maintainResults.setFacilityResult(new MaintainFacilityResponse(true));
 			}
 		}
 		// HDS Load
 		if (control.getLoadTypeHds() && StringUtils.hasText(processData.getPlrFacilityId())) {
-			// If this record already has HDS IDs, mark it as loaded and skip
 			if (!StringUtils.hasText(processData.getHdsPauthId())
 					&& !StringUtils.hasText(processData.getHdsCpnId())
 					&& !StringUtils.hasText(processData.getHdsIpcId())) {
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
 			} else {
+				// If this record already has HDS IDs, mark it as loaded and skip
 				maintainResults.setHdsResult(new MaintainHdsResponse(true));
 			}
 		}
