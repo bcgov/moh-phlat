@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.service.MessageSourceSystem;
+import com.moh.phlat.backend.service.RowStatusService;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.Getter;
@@ -43,8 +44,7 @@ public class OFRelationshipResponse implements PlrResponse {
 	
 	@Getter
 	private boolean loaded = false;
-	@Getter
-	private boolean isDuplicate = false;
+	private boolean hasError = false;
 	
 	public OFRelationshipResponse(ProcessData processData) {
 		this.processData = processData;
@@ -52,8 +52,7 @@ public class OFRelationshipResponse implements PlrResponse {
 	
 	@Override
 	public void plrJsonToProcessData(String oFJsonResponse) {
-		try {			
-			boolean hasError = false;
+		try {
 			JsonNode root = objectMapper.readTree(oFJsonResponse);
 			for (JsonNode ack : root.path(ACKNOWLEDGEMENTS)) {
 				
@@ -85,10 +84,12 @@ public class OFRelationshipResponse implements PlrResponse {
 			addError("ParsingError", "ERROR", 
 					"An error occurred when trying to parse PLR's response to this load request");
 		}
+		setRowStatusCode();
 	}
 	
 	@Override
 	public void handlePlrError(Exception ex) {
+		hasError = true;
 		if (ex instanceof WebClientResponseException webEx) {
 			addError("HTTP " + webEx.getStatusCode().value(), "ERROR", 
 					"PLR is unreachable or could not process the request.");
@@ -99,6 +100,7 @@ public class OFRelationshipResponse implements PlrResponse {
 			addError("InputProblem", "ERROR",
 					"The input record was invalid or could not be converted into a PLR request.");
 		}
+		setRowStatusCode();
 	}
 	
 	private void addError(String errorCode, String errorType, String errorMessage) {
@@ -111,5 +113,11 @@ public class OFRelationshipResponse implements PlrResponse {
 				 .processData(processData)
 				 .build();
 		processData.getMessages().add(msg);
+	}
+	
+	private void setRowStatusCode() {
+		if (hasError) {
+			processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
+		}
 	}
 }

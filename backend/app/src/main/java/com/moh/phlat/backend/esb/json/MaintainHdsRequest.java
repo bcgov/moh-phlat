@@ -119,14 +119,21 @@ public class MaintainHdsRequest implements PlrRequest {
 	private List<PropertyDto> createPropertyDtos() {
 		List<PropertyDto> propertyList = new ArrayList<>();
 		
+		addHdsProperty(propertyList, processData.getHdsSubType(), "HDS_SUB_TYPE");
+		if (StringUtils.hasText(processData.getFacAddressUnit())) {
+			addHdsProperty(propertyList, processData.getFacAddressUnit(), "ADDRESS_UNIT");
+		}
+		
+		return propertyList;
+	}
+	
+	private void addHdsProperty(List<PropertyDto> propertyList, String propertyValue, String propertyType) {
 		PropertyDto hdsSubTypeProp = new PropertyDto();
-		hdsSubTypeProp.setPropertyValue(processData.getHdsSubType());
-		hdsSubTypeProp.setPropertyTypeCode("HDS_SUB_TYPE");
+		hdsSubTypeProp.setPropertyValue(propertyValue);
+		hdsSubTypeProp.setPropertyTypeCode(propertyType);
 		hdsSubTypeProp.setDataOwnerCode(processData.getStakeholder());
 		hdsSubTypeProp.setEffectiveStartDate(processData.getCreatedAt());
 		propertyList.add(hdsSubTypeProp);
-		
-		return propertyList;
 	}
 	
 	private List<CollegeIdentifierDto> createIdentifierDtos() {
@@ -186,11 +193,15 @@ public class MaintainHdsRequest implements PlrRequest {
 	private AddressDto createPhysicalAddressDto() {
 		AddressDto address = new AddressDto();
 		address.setActive(false);
-		if (StringUtils.hasText(processData.getFacCivicAddr())) {
-			String addrLine1 = processData.getFacCivicAddr().split(",")[0].trim();
-			address.setAddressLineOne(addrLine1);
-		} else if (StringUtils.hasText(processData.getPhysicalAddr1())) {
-			address.setAddressLineOne(processData.getPhysicalAddr1());
+		address.setAddressLineOne(processData.getPhysicalAddr1());
+		if (StringUtils.hasText(processData.getPhysicalAddr2())) {
+			address.setAddressLineTwo(processData.getPhysicalAddr2());
+		}
+		if (StringUtils.hasText(processData.getPhysicalAddr3())) {
+			address.setAddressLineThree(processData.getPhysicalAddr3());
+		}
+		if (StringUtils.hasText(processData.getPhysicalAddr4())) {
+			address.setAddressLineFour(processData.getPhysicalAddr4());
 		}
 		if (StringUtils.hasText(processData.getPhysicalCity())) {
 			address.setCity(processData.getPhysicalCity());
