@@ -50,6 +50,10 @@ public class OFRelationshipResponse implements PlrResponse {
 		this.processData = processData;
 	}
 	
+	public OFRelationshipResponse(boolean loaded) {
+		this.loaded = loaded;
+	}
+	
 	@Override
 	public void plrJsonToProcessData(String oFJsonResponse) {
 		try {
