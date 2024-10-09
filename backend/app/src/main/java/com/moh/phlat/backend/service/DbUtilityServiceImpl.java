@@ -210,20 +210,16 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			// Begin load process
 			for (ProcessData processData : processDataList) {
-				// Skip record marked as DO_NOT_LOAD and send to PLR VALID records only
+				// Skip record marked as DO_NOT_LOAD and send to PLR VALID or POTENTIAL_DUPLICATE records only
 				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
 					// Load the ProcessData record
 					PlrLoadResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
 					
-					// Set the RowStatusCode of the ProcessData record
-					if (maintainResults.isAllLoaded()) {
+					// If all load types succeeded, set the RowStatusCode to COMPLETED
+					if (maintainResults.isAllLoaded(control)) {
 						processData.setRowstatusCode(RowStatusService.COMPLETED);
-					} else if (maintainResults.hasAnyDuplicates()) {
-						processData.setRowstatusCode(RowStatusService.POTENTIAL_DUPLICATE);
-					} else {
-						processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 					}
 					
 					// Save all changes to this ProcessData record

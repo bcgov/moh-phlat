@@ -22,31 +22,40 @@ public class PlrDataLoad {
 	private PlrEsbBoundary plrEsbBoundary;
 	
 	public PlrLoadResults loadPlrViaEsb(Control control, ProcessData processData) {
+		
 		PlrLoadResults maintainResults = new PlrLoadResults();
+		
+		// Facility Load
 		if (control.getLoadTypeFacility()) {
 			if (!StringUtils.hasText(processData.getPlrFacilityId())) {
 				MaintainFacilityResponse facilityResponse = createFacility(control, processData);
 				maintainResults.setFacilityResult(facilityResponse);
+			} else {
+				// If this record already has a facility ID, mark it as loaded and skip
+				maintainResults.setFacilityResult(new MaintainFacilityResponse(true));
 			}
 		}
-		if (control.getLoadTypeHds()) {
-			if (StringUtils.hasText(processData.getPlrFacilityId())
-					&& !(StringUtils.hasText(processData.getHdsPauthId())
-					&& StringUtils.hasText(processData.getHdsCpnId())
-					&& StringUtils.hasText(processData.getHdsIpcId()))) {
+		// HDS Load
+		if (control.getLoadTypeHds() && StringUtils.hasText(processData.getPlrFacilityId())) {
+			if (!StringUtils.hasText(processData.getHdsPauthId())
+					&& !StringUtils.hasText(processData.getHdsCpnId())
+					&& !StringUtils.hasText(processData.getHdsIpcId())) {
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
+			} else {
+				// If this record already has HDS IDs, mark it as loaded and skip
+				maintainResults.setHdsResult(new MaintainHdsResponse(true));
 			}
-		}	
-		if (control.getLoadTypeOFRelationship()) {
-			if (StringUtils.hasText(processData.getPlrFacilityId())
-					&& StringUtils.hasText(processData.getHdsPauthId())
-					&& StringUtils.hasText(processData.getHdsCpnId())
-					&& StringUtils.hasText(processData.getHdsIpcId())) {
-				//*** WILL IMPLEMENT THIS AFTER HDS LOAD IS COMPLETE ***
-				//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
-				//maintainResults.setOFResult(ofResponse);
-			}
+		}
+		//OF Relationship Load
+		if (control.getLoadTypeOFRelationship()
+				&& StringUtils.hasText(processData.getPlrFacilityId())
+				&& StringUtils.hasText(processData.getHdsPauthId())
+				&& StringUtils.hasText(processData.getHdsCpnId())
+				&& StringUtils.hasText(processData.getHdsIpcId())) {
+			//*** WILL IMPLEMENT THIS AFTER HDS LOAD IS COMPLETE ***
+			//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
+			//maintainResults.setOFResult(ofResponse);
 		}
 		return maintainResults;
 	}

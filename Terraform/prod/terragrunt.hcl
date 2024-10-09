@@ -16,5 +16,6 @@ generate "prod_tfvars" {
   api_url = "phlatapi.hlth.gov.bc.ca"
   aurora_acu_min = 0.5
   aurora_acu_max = 3
+  app_count=2
   EOF
 }
