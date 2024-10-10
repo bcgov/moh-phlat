@@ -14,7 +14,7 @@ secrets in the secret manager. The secret names are mentioned in the description
 | DB_PASSWORD                | Database password                                                                                                        | refer to `backend/app/compose.yaml` |
 | DB_PORT                    | Database port                                                                                                            | refer to `backend/app/compose.yaml` |
 | DB_DATABASE                | Database name                                                                                                            | refer to `backend/app/compose.yaml` |
-| DB_HOST                    | name of the DB container running Postgress DB. Should match with<br/>the name given in compose.yml file (phlat_postgres) | my_postgress_db                     |
+| DB_HOST                    | name of the DB container running Postgress DB. Should match with<br/>the name given in compose.yml file (phlat_postgres) | refer to `backend/app/compose.yaml` |
 | SPRING_PROFILES_ACTIVE     | For local provide value 'local'                                                                                          | local                               |
 | PLR_KEYCLOAK_PROVIDER_URL  | PLR Keycloak provider URL. Retrieve the value from secret 'phlat_plr_keycloak_provider_url'                              |
 | PLR_KEYCLOAK_CLIENT_SECRET | PLR Keycloak client secret. Retrieve the value from secret 'phlat_keycloak_client_secret'                                |
