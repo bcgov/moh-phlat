@@ -19,6 +19,8 @@ services:
     ports:
       - '5432:5432'
     restart: unless-stopped
+    networks:
+      - common-network
 
   pgadmin:
     container_name: phlat_pgadmin
@@ -38,3 +40,5 @@ services:
       - "/bin/sh"
       - "-c"
       - "/bin/echo 'postgres:5432:*:dvega:password' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
+    networks:
+      - common-network
