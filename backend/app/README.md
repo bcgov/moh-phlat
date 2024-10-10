@@ -1,9 +1,6 @@
-## About
-The PHLAT tool is a new tool used to load Healthcare Delivery Site (HDS) data into the PLR.<br> 
-The backend application for PHLAT provides APIs for the frontend application to carry out the business logic.<br>
-The technical stack includes Spring Boot, Java, Docker, and PostgreSQL.
 
-## Local setup
+
+## Backend Local setup
 Following environment variables are required to run the application locally. Ask the team for the values of the following<br> 
 environment variables. These values can be retrieved by login in to the cloud dev account and checking the appropriate<br>
 secrets in the secret manager. The secret names are mentioned in the description below.
