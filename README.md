@@ -1,13 +1,7 @@
-[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<Redirect-URL>)  
-This is a template for MoH repositories. All repositories should meet the following requirements:
-* Check the total lines of change of pull request (PR); over the 200–400-line range (of change)
-* Check for one or more lifecycle badges
-* Check for a compliance file, and compliance status
-* Check for a license file
-* Check for ReadMe
-* Check for CONTRIBUTING file
-* Close issues that are stale
-* Close pull requests that are stale
-* Request for topic of ministry code
-* Request for words matter topic
-* It is highly recommended that all repositories contain a Contributors Code of Conduct file, which contains guidelines on how to collaborate on the repository
+## About
+The PHLAT tool is a new tool used to load Healthcare Delivery Site (HDS) data into the PLR.The backend application for<br>
+PHLAT provides APIs for the frontend application to carry out the business logic. The technical stack includes<br>
+Spring Boot, Java, Docker, and PostgreSQL.
+
+For running the Frontend application, refer to the [Frontend README](../moh-phlat/frontend/app/README.md).
+For running the backend application, refer to the [Backend README](../moh-phlat/backend/app/README.md).
