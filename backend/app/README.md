@@ -5,20 +5,20 @@ Following environment variables are required to run the application locally. Ask
 environment variables. These values can be retrieved by login in to the cloud dev account and checking the appropriate<br>
 secrets in the secret manager. The secret names are mentioned in the description below.
 
-| Name                       | Description                                                                                                              | Example                             |
-|----------------------------|--------------------------------------------------------------------------------------------------------------------------|-------------------------------------|
+| Name                       | Description                                                                                                              |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------------|
 | KEYCLOAK_PROVIDER_URL      | The URL to KEYCLOAK AUTH. Retrieve the value from secret 'phlat_keycloak_provider_url'                                   |
 | KEYCLOAK_CLIENT_ID_WEB     | Client ID for web application. Retrieve the value from secret 'phlat_keycloak_client_id_web'                             |
 | PLR_KEYCLOAK_CLIENT_ID     | Client ID to call PLR API. Retrieve the value from secret 'phlat_keycloak_client_id'                                     |
-| DB_USERNAME                | Database username                                                                                                        | refer to `backend/app/compose.yaml` |
-| DB_PASSWORD                | Database password                                                                                                        | refer to `backend/app/compose.yaml` |
-| DB_PORT                    | Database port                                                                                                            | refer to `backend/app/compose.yaml` |
-| DB_DATABASE                | Database name                                                                                                            | refer to `backend/app/compose.yaml` |
-| DB_HOST                    | name of the DB container running Postgress DB. Should match with<br/>the name given in compose.yml file (phlat_postgres) | refer to `backend/app/compose.yaml` |
-| SPRING_PROFILES_ACTIVE     | For local provide value 'local'                                                                                          | local                               |
+| DB_USERNAME                | Database username. Refer to `backend/app/compose.yaml`                                                                   |
+| DB_PASSWORD                | Database password. Refer to `backend/app/compose.yaml`                                                                   |
+| DB_PORT                    | Database port. Refer to `backend/app/compose.yaml`                                                                       |
+| DB_DATABASE                | Database name. Refer to `backend/app/compose.yaml`                                                                       |
+| DB_HOST                    | name of the DB container running Postgress DB. Should match with<br/>the name given in compose.yml file (phlat_postgres) |
+| SPRING_PROFILES_ACTIVE     | For local provide value 'local'                                                                                          |
 | PLR_KEYCLOAK_PROVIDER_URL  | PLR Keycloak provider URL. Retrieve the value from secret 'phlat_plr_keycloak_provider_url'                              |
 | PLR_KEYCLOAK_CLIENT_SECRET | PLR Keycloak client secret. Retrieve the value from secret 'phlat_keycloak_client_secret'                                |
-| PLR_API_HOST               | PLR API host. Retrieve the value from the secret 'phlat_plr_api_host'                                                    | https://abc.com                     |
+| PLR_API_HOST               | PLR API host. Retrieve the value from the secret 'phlat_plr_api_host'                                                    |
 
 ## Pre-requisites
 1. Keep the PLR trust certificate in the `backend/app/src/main/resources` folder. The certificate is required to call the PLR API. <br>
