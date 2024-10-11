@@ -25,6 +25,10 @@ secrets in the secret manager. The secret names are mentioned in the description
 The name of the certificate should be `plr_tls_trust.cert` or as configured in application.yml file.
 2. Encode the PLR trust certificate in base64 format to be used as input to build docker image if you are running the application in Docker.
 3. Install the Docker Desktop and start the Docker service.
+<br><br>
+**Note:** When you run the application, or follow the instructions for running it in Docker, a database named phlat, with
+the user phlat, and a host/container named phlat_postgres will be created. These details are required to connect to the
+database using the pgAdmin client, which is accessible from another container at http://localhost:5050/. 
 
 ## Running using the IDE
 1. For running through your favorite editor Visual Studio Code or IntelliJ, you can run the application by running the main class `BackendApplication`.
@@ -55,8 +59,9 @@ especially when any configuration related to Docker or application properties ar
 
 ### Steps
 1. Start the postgres DB and Postgres Admin containers if not running already using the following command.<br>
-This command will also create a network if not existing already, to communicate between the containers. The name of the network<br>
-is "folder/project name where compose file is present"_common-network (app_common-network).
+This command will also create a network if not existing already, to communicate between the containers. 
+The network name follows the format: "folder/project name where the compose file is located"_common-network (in our case it should be app_common-network)
+as compose file is located in the app folder.
    ```sh
    docker-compose -f "<absolute/relative path to your compose file>" up -d
    ```
