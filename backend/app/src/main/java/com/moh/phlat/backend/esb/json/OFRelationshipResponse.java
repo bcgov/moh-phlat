@@ -78,7 +78,6 @@ public class OFRelationshipResponse implements PlrResponse {
 				}
 			}
 			if (!hasError) {
-				JsonNode ofRelationship = root.path("facility");
 				loaded = true;
 			}
 			
