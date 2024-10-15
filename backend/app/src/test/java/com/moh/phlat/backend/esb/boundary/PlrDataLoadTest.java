@@ -2,6 +2,7 @@ package com.moh.phlat.backend.esb.boundary;
 
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
 import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
+import com.moh.phlat.backend.esb.json.OFRelationshipResponse;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -35,6 +36,7 @@ class PlrDataLoadTest {
         PlrDataLoad underTest = new PlrDataLoad();
         PlrEsbBoundary mockEsbBoundary = mock(PlrEsbBoundary.class);
         Control control = createControlData();
+        control.setLoadTypeFacility(true);
         ProcessData processData = createProcessData();
 
         FieldUtils.writeField(underTest, "plrEsbBoundary", mockEsbBoundary, true);
@@ -52,7 +54,9 @@ class PlrDataLoadTest {
         PlrDataLoad underTest = new PlrDataLoad();
         PlrEsbBoundary mockEsbBoundary = mock(PlrEsbBoundary.class);
         Control control = createControlData();
+        control.setLoadTypeHds(true);
         ProcessData processData = createProcessData();
+        processData.setPlrFacilityId("IFC.XXXXXXXX.BC.PRS");
 
         FieldUtils.writeField(underTest, "plrEsbBoundary", mockEsbBoundary, true);
         doNothing().when(mockEsbBoundary).maintainProvider(Mockito.any(), Mockito.any(), Mockito.any());
@@ -63,6 +67,28 @@ class PlrDataLoadTest {
         MaintainHdsResponse hdsResponse = (MaintainHdsResponse) m.invoke(underTest, control, processData);
         assertNotNull(hdsResponse);
     }
+    
+    @Test
+    public void testCreateOFRelationship() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        PlrDataLoad underTest = new PlrDataLoad();
+        PlrEsbBoundary mockEsbBoundary = mock(PlrEsbBoundary.class);
+        Control control = createControlData();
+        control.setLoadTypeOFRelationship(true);
+        ProcessData processData = createProcessData();
+        processData.setPlrFacilityId("IFC.XXXXXXXX.BC.PRS");
+        processData.setHdsPauthId("999999");
+        processData.setHdsIpcId("IPC.XXXXXXXX.BC.PRS");
+        processData.setHdsCpnId("CPN.XXXXXXXX.BC.PRS");
+
+        FieldUtils.writeField(underTest, "plrEsbBoundary", mockEsbBoundary, true);
+        doNothing().when(mockEsbBoundary).maintainProvider(Mockito.any(), Mockito.any(), Mockito.any());
+
+        Method m = PlrDataLoad.class
+                .getDeclaredMethod("createOFRelationship", Control.class, ProcessData.class);
+        m.setAccessible(true);
+        OFRelationshipResponse oFResponse = (OFRelationshipResponse) m.invoke(underTest, control, processData);
+        assertNotNull(oFResponse);
+    }
 
     private Control createControlData(){
         Control control = new Control();
@@ -70,8 +96,8 @@ class PlrDataLoadTest {
         control.setFileName("Test Facility");
         control.setUserId("XXX@idir");
         control.setBatchLabelName("Test Facility");
-        control.setLoadTypeFacility(true);
-        control.setLoadTypeHds(true);
+        control.setLoadTypeFacility(false);
+        control.setLoadTypeHds(false);
         control.setLoadTypeOrg(false);
         control.setLoadTypeOFRelationship(false);
         control.setLoadTypeOORelationship(false);
@@ -103,6 +129,7 @@ class PlrDataLoadTest {
         processData.setHdsWebsite("WEBSITE");
         processData.setFacRelnType("LOCATION OF");
         processData.setFacTypeCode("BUILDING");
+        processData.setFacCivicAddr("12680 HARRISON AVE, RICHMOND, BC, V6V 2R7");
         processData.setPhysicalAddr1("12680 HARRISON AVE");
         processData.setPhysicalCity("RICHMOND");
         processData.setPhysicalProvince("BC");

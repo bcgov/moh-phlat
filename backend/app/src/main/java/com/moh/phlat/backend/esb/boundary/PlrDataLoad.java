@@ -8,6 +8,8 @@ import com.moh.phlat.backend.esb.json.MaintainFacilityRequest;
 import com.moh.phlat.backend.esb.json.MaintainFacilityResponse;
 import com.moh.phlat.backend.esb.json.MaintainHdsRequest;
 import com.moh.phlat.backend.esb.json.MaintainHdsResponse;
+import com.moh.phlat.backend.esb.json.OFRelationshipRequest;
+import com.moh.phlat.backend.esb.json.OFRelationshipResponse;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
@@ -53,9 +55,11 @@ public class PlrDataLoad {
 				&& StringUtils.hasText(processData.getHdsPauthId())
 				&& StringUtils.hasText(processData.getHdsCpnId())
 				&& StringUtils.hasText(processData.getHdsIpcId())) {
-			//*** WILL IMPLEMENT THIS AFTER HDS LOAD IS COMPLETE ***
-			//OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
-			//maintainResults.setOFResult(ofResponse);
+			OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
+			maintainResults.setOFResult(ofResponse);
+		} else {
+			// Facility and/or HDS is missing; mark as not loaded and skip
+			maintainResults.setOFResult(new OFRelationshipResponse(false));
 		}
 		return maintainResults;
 	}
@@ -77,5 +81,14 @@ public class PlrDataLoad {
 		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);
 		
 		return maintainHdsResponse;
+	}
+	
+	private OFRelationshipResponse createOFRelationship(Control control, ProcessData processData) {
+		OFRelationshipRequest oFRelationshipRequest = new OFRelationshipRequest(processData);
+		OFRelationshipResponse oFRelationshipResponse = new OFRelationshipResponse(processData);
+		
+		plrEsbBoundary.maintainProvider(control, oFRelationshipRequest, oFRelationshipResponse);
+		
+		return oFRelationshipResponse;
 	}
 }
