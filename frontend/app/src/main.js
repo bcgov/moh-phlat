@@ -111,7 +111,7 @@ function loadKeycloak(config) {
         flow: 'standard',
         onLoad: 'check-sso',
         pkceMethod: 'S256',
-        // enableLogging: true,
+        enableLogging: true,
         redirectUri: window.location.href,
         // checkLoginIframe: false,
       },
