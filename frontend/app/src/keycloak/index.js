@@ -6,7 +6,7 @@ let keycloak = new Keycloak({
   url: import.meta.env.VITE_KEYCLOAK_PROVIDER_AUTH_URL,
   realm: import.meta.env.VITE_KEYCLOAK_REALM_NAME,
   clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
-  silentCheckSsoFallback: false
+  silentCheckSsoFallback: false,
 });
 
 // For some reason idpHint cannot be specified in the Keycloak constructor or init options.
