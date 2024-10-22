@@ -301,6 +301,9 @@ public class ProcessData {
     @Column(name="plr_facility_id")
     private String plrFacilityId ; 
 
+    @Column(name="fac_ifc_id")
+    private String facIfcId ; 
+
     @Column(name="rowstatus_code")
     private String rowstatusCode; 
 
