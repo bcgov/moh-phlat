@@ -5,6 +5,7 @@ import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -84,9 +85,23 @@ public class MaintainFacilityResponse implements PlrResponse {
 			}
 			if (!hasError) {
 				// No errors were found; find the facility identifier
-				JsonNode facilityIdentifiers = root.path("facility").path("facilityIdentifiers");
-				processData.setPlrFacilityId(facilityIdentifiers.path("identifier").asText());
-				loaded = true;
+				JsonNode facility = root.path("facility");
+				facility.path("facilityIdentifiers").forEach(facIdentifier -> {
+					String typeCode = facIdentifier.path("typeCode").asText();
+					if ("IFC".equals(typeCode)) {
+						processData.setPlrFacilityId(facIdentifier.path("facilityId").asText());
+						processData.setFacIfcId(facIdentifier.path("identifier").asText());
+					}
+				});
+				
+				if (StringUtils.hasText(processData.getPlrFacilityId()) && StringUtils.hasText(processData.getFacIfcId())) {
+					loaded = true;
+				} else {
+					// The facility identifiers were not given or could not be found
+					hasError = true;
+					logger.error("PHLAT could not find all facility identifiers for ProcessData ID {}", processData.getId());
+					addError("ParsingError", "ERROR", "PHLAT could not verify from PLR's response if this record's facility was loaded");
+				}
 			}
 			
 		} catch (Exception ex) {

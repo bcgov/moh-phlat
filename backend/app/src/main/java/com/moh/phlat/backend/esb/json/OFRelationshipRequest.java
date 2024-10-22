@@ -131,7 +131,7 @@ public class OFRelationshipRequest implements PlrRequest {
 		List<FacilityRelationshipDto> relationshipList = new ArrayList<>();
 		
 		FacilityRelationshipDto relationship = new FacilityRelationshipDto();
-		relationship.setFacilityIdentifier(processData.getPlrFacilityId());
+		relationship.setFacilityIdentifier(processData.getFacIfcId());
 		relationship.setFacilityIdentifierTypeCode("IFC");
 		relationship.setPauthId(pauthId);
 		relationship.setProviderIdentifier(processData.getHdsIpcId());

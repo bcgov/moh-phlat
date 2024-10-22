@@ -5,6 +5,7 @@ import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -75,6 +76,7 @@ public class MaintainHdsResponse implements PlrResponse {
 				}
 			}
 			if (!hasError) {
+				// No errors were found; find the HDS identifiers
 				JsonNode hds = root.path("providerDetails");
 				processData.setHdsPauthId(hds.path("pauthId").asText());
 				hds.path("registryIdentifiers").forEach(regId -> {
@@ -82,12 +84,21 @@ public class MaintainHdsResponse implements PlrResponse {
 					String identifier = regId.path("identifier").asText();
 					if ("CPN".equals(typeCode)) {
 						processData.setHdsCpnId(identifier);
-						loaded = true;
 					} else if ("IPC".equals(typeCode)) {
 						processData.setHdsIpcId(identifier);
-						loaded = true;
 					}
 				});
+				
+				if (StringUtils.hasText(processData.getHdsPauthId())
+						&& StringUtils.hasText(processData.getHdsCpnId())
+						&& StringUtils.hasText(processData.getHdsIpcId())) {
+					loaded = true;
+				} else {
+					// The HDS identifiers were not given or could not be found
+					hasError = true;
+					logger.error("PHLAT could not find all HDS identifiers for ProcessData ID {}", processData.getId());
+					addError("ParsingError", "ERROR", "PHLAT could not verify from PLR's response if this record's HDS was loaded");
+				}
 			}
 			
 		} catch (Exception ex) {

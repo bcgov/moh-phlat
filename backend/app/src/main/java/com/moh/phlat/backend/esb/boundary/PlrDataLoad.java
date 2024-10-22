@@ -29,7 +29,7 @@ public class PlrDataLoad {
 		
 		// Facility Load
 		if (control.getLoadTypeFacility()) {
-			if (!StringUtils.hasText(processData.getPlrFacilityId())) {
+			if (!StringUtils.hasText(processData.getFacIfcId())) {
 				MaintainFacilityResponse facilityResponse = createFacility(control, processData);
 				maintainResults.setFacilityResult(facilityResponse);
 			} else {
@@ -38,7 +38,7 @@ public class PlrDataLoad {
 			}
 		}
 		// HDS Load
-		if (control.getLoadTypeHds() && StringUtils.hasText(processData.getPlrFacilityId())) {
+		if (control.getLoadTypeHds() && StringUtils.hasText(processData.getFacIfcId())) {
 			if (!StringUtils.hasText(processData.getHdsPauthId())
 					&& !StringUtils.hasText(processData.getHdsCpnId())
 					&& !StringUtils.hasText(processData.getHdsIpcId())) {
@@ -51,7 +51,7 @@ public class PlrDataLoad {
 		}
 		//OF Relationship Load
 		if (control.getLoadTypeOFRelationship()
-				&& StringUtils.hasText(processData.getPlrFacilityId())
+				&& StringUtils.hasText(processData.getFacIfcId())
 				&& StringUtils.hasText(processData.getHdsPauthId())
 				&& StringUtils.hasText(processData.getHdsCpnId())
 				&& StringUtils.hasText(processData.getHdsIpcId())) {
