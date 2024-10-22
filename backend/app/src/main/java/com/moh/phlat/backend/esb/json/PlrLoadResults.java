@@ -14,13 +14,13 @@ public class PlrLoadResults {
 	private OFRelationshipResponse oFResult;
 	
 	public boolean isAllLoaded(Control control) {
-		if (control.getLoadTypeFacility() && !facilityResult.isLoaded()) {
+		if (control.getLoadTypeFacility() && (facilityResult == null || !facilityResult.isLoaded())) {
 			return false;
 		}
-		if (control.getLoadTypeHds() && !hdsResult.isLoaded()) {
+		if (control.getLoadTypeHds() && (hdsResult == null || !hdsResult.isLoaded())) {
 			return false;
 		}
-		if (control.getLoadTypeOFRelationship() && !oFResult.isLoaded()) {
+		if (control.getLoadTypeOFRelationship() && (oFResult == null || !oFResult.isLoaded())) {
 			return false;
 		}
 		return true;
