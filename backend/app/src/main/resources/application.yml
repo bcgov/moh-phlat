@@ -61,6 +61,12 @@ spring:
         client:
           truststore:
             certificate: classpath:plr_tls_trust.cert
+      jks:
+        addressdoctor:
+          key:
+            alias: 
+          keystore:
+            location: 
 
 # -------------- spring related config ends ---------------------------
 
