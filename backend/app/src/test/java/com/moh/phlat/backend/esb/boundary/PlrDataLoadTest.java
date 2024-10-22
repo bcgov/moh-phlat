@@ -56,7 +56,8 @@ class PlrDataLoadTest {
         Control control = createControlData();
         control.setLoadTypeHds(true);
         ProcessData processData = createProcessData();
-        processData.setPlrFacilityId("IFC.XXXXXXXX.BC.PRS");
+        processData.setPlrFacilityId("999999");
+        processData.setFacIfcId("IFC.XXXXXXXX.BC.PRS");
 
         FieldUtils.writeField(underTest, "plrEsbBoundary", mockEsbBoundary, true);
         doNothing().when(mockEsbBoundary).maintainProvider(Mockito.any(), Mockito.any(), Mockito.any());
@@ -75,7 +76,8 @@ class PlrDataLoadTest {
         Control control = createControlData();
         control.setLoadTypeOFRelationship(true);
         ProcessData processData = createProcessData();
-        processData.setPlrFacilityId("IFC.XXXXXXXX.BC.PRS");
+        processData.setPlrFacilityId("999999");
+        processData.setFacIfcId("IFC.XXXXXXXX.BC.PRS");
         processData.setHdsPauthId("999999");
         processData.setHdsIpcId("IPC.XXXXXXXX.BC.PRS");
         processData.setHdsCpnId("CPN.XXXXXXXX.BC.PRS");
