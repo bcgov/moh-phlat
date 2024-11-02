@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.addressdoctor.service;
 
+import java.io.StringWriter;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
@@ -28,6 +29,9 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.annotation.PostConstruct;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -35,6 +39,7 @@ public class AddressDoctorService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddressDoctorService.class);
 	private WebClient webClient;
+	private Marshaller marshaller;
 	
 	private SSLContext sslContext;
 	
@@ -54,7 +59,7 @@ public class AddressDoctorService {
 	private int timeout;
 	
 	@PostConstruct
-	public void initPlrEsbBoundary() {
+	public void initAddressDoctorService() throws JAXBException {
 		HttpClient httpClient = HttpClient.newBuilder()
 				.sslContext(sslContext)
 				.connectTimeout(Duration.ofSeconds(timeout))
@@ -63,6 +68,9 @@ public class AddressDoctorService {
 		webClient = WebClient.builder()
 				.clientConnector(new JdkClientHttpConnector(httpClient))
 				.build();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Process.class);
+		marshaller = jaxbContext.createMarshaller();
 	}
 	
 	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
@@ -73,10 +81,20 @@ public class AddressDoctorService {
 	
 	private ProcessResponse callAddressDoctor(Control control, Process addressDoctorRequest) {
 		
+		String xml;
+		try {
+			StringWriter stringWriter = new StringWriter();
+			marshaller.marshal(addressDoctorRequest, stringWriter);
+			xml = stringWriter.toString(); 
+		} catch (JAXBException ex) {
+			logger.error("Could not convert Process object into SOAP XML due to: ", ex);
+			return null;
+		}
+		
 		Mono<ProcessResponse> mono = webClient.post()
 				.uri(addressDoctorHost)
-				.contentType(MediaType.APPLICATION_XML)
-				.bodyValue(addressDoctorRequest)
+				.contentType(MediaType.TEXT_XML)
+				.bodyValue(xml)
 				.retrieve()
 				.bodyToMono(ProcessResponse.class)
 				.doOnError(WebClientRequestException.class, ex -> {

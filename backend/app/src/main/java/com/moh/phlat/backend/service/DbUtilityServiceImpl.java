@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.moh.phlat.backend.addressdoctor.service.AddressDoctorValidation;
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
@@ -42,6 +43,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	
 	@Autowired
 	private PlrDataLoad plrDataLoad;
+	
+	@Autowired
+	private AddressDoctorValidation addressDoctorValidation;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -151,7 +155,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			}
 			// error detection
-			
+			addressDoctorValidation.validateAddress(control, processData);
 			
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
