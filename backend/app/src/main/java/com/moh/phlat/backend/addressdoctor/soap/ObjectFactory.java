@@ -30,6 +30,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SOAPEnvelope }
+     * 
+     */
+    public SOAPEnvelope createSOAPEnvelope() {
+        return new SOAPEnvelope();
+    }
+
+    /**
+     * Create an instance of {@link SOAPBody }
+     * 
+     */
+    public SOAPBody createSOAPBody() {
+        return new SOAPBody();
+    }
+
+    /**
      * Create an instance of {@link Process }
      * 
      */

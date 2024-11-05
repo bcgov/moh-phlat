@@ -17,8 +17,6 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="login" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="parameters" type="{http://validator5.AddressDoctor.com/Webservice5/v4}Parameters" minOccurs="0"/>
  *         &lt;element name="addresses" type="{http://validator5.AddressDoctor.com/Webservice5/v4}ArrayOfAddress" minOccurs="0"/>
  *         &lt;element name="enrichments" type="{http://validator5.AddressDoctor.com/Webservice5/v4}ArrayOfEnrichment" minOccurs="0"/>
@@ -32,8 +30,6 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "login",
-    "password",
     "parameters",
     "addresses",
     "enrichments"
@@ -41,59 +37,9 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Process")
 public class Process {
 
-    protected String login;
-    protected String password;
     protected Parameters parameters;
     protected ArrayOfAddress addresses;
     protected ArrayOfEnrichment enrichments;
-
-    /**
-     * Gets the value of the login property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLogin() {
-        return login;
-    }
-
-    /**
-     * Sets the value of the login property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLogin(String value) {
-        this.login = value;
-    }
-
-    /**
-     * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPassword(String value) {
-        this.password = value;
-    }
 
     /**
      * Gets the value of the parameters property.

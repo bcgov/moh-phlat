@@ -7,8 +7,10 @@ import com.moh.phlat.backend.addressdoctor.soap.Address;
 import com.moh.phlat.backend.addressdoctor.soap.ArrayOfAddress;
 import com.moh.phlat.backend.addressdoctor.soap.ArrayOfString;
 import com.moh.phlat.backend.addressdoctor.soap.ObjectFactory;
+import com.moh.phlat.backend.addressdoctor.soap.Parameters;
 import com.moh.phlat.backend.addressdoctor.soap.Process;
-import com.moh.phlat.backend.addressdoctor.soap.ProcessResponse;
+import com.moh.phlat.backend.addressdoctor.soap.SOAPBody;
+import com.moh.phlat.backend.addressdoctor.soap.SOAPEnvelope;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
 
@@ -28,9 +30,9 @@ public class AddressDoctorValidation {
 	
 	public void validateAddress(Control control, ProcessData processData) {
 		
-		Process addressDoctorRequest = objectFactory.createProcess();
+		Process process = objectFactory.createProcess();
+		
 		Address address = objectFactory.createAddress();
-		ArrayOfAddress arrayOfAddress = objectFactory.createArrayOfAddress();
 		ArrayOfString deliveryLines = objectFactory.createArrayOfString();
 		ArrayOfString locality = objectFactory.createArrayOfString();
 		ArrayOfString province = objectFactory.createArrayOfString();
@@ -49,11 +51,20 @@ public class AddressDoctorValidation {
 		address.setCountry(country);
 		address.setPostalCode(postalCode);
 		
+		ArrayOfAddress arrayOfAddress = objectFactory.createArrayOfAddress();
 		arrayOfAddress.getAddress().add(address);
-		addressDoctorRequest.setAddresses(arrayOfAddress);
+		process.setAddresses(arrayOfAddress);
 		
-		ProcessResponse addressDoctorResponse = addressDoctorService.validateAddress(control, addressDoctorRequest);
+		Parameters parameters = objectFactory.createParameters();
+		parameters.setProcessMode("CERTIFIED");
+		process.setParameters(parameters);
 		
+		SOAPEnvelope addressDoctorRequest = objectFactory.createSOAPEnvelope();
+		SOAPBody body = objectFactory.createSOAPBody();
+		body.setProcess(process);
+		addressDoctorRequest.setSoapBody(body);
+		
+		String addressDoctorResponse = addressDoctorService.validateAddress(control, addressDoctorRequest);
 	}
 	
 }

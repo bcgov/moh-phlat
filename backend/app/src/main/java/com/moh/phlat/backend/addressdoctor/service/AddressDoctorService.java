@@ -20,8 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.moh.phlat.backend.addressdoctor.soap.Process;
-import com.moh.phlat.backend.addressdoctor.soap.ProcessResponse;
+import com.moh.phlat.backend.addressdoctor.soap.SOAPEnvelope;
 import com.moh.phlat.backend.model.Control;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker.State;
@@ -69,17 +68,17 @@ public class AddressDoctorService {
 				.clientConnector(new JdkClientHttpConnector(httpClient))
 				.build();
 		
-		JAXBContext jaxbContext = JAXBContext.newInstance(Process.class);
+		JAXBContext jaxbContext = JAXBContext.newInstance(SOAPEnvelope.class);
 		marshaller = jaxbContext.createMarshaller();
 	}
 	
 	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
 	@Retry(name="callPlrRetry")
-	public ProcessResponse validateAddress(Control control, Process addressDoctorRequest) {
+	public String validateAddress(Control control, SOAPEnvelope addressDoctorRequest) {
 		return callAddressDoctor(control, addressDoctorRequest);
 	}
 	
-	private ProcessResponse callAddressDoctor(Control control, Process addressDoctorRequest) {
+	private String callAddressDoctor(Control control, SOAPEnvelope addressDoctorRequest) {
 		
 		String xml;
 		try {
@@ -87,16 +86,16 @@ public class AddressDoctorService {
 			marshaller.marshal(addressDoctorRequest, stringWriter);
 			xml = stringWriter.toString(); 
 		} catch (JAXBException ex) {
-			logger.error("Could not convert Process object into SOAP XML due to: ", ex);
+			logger.error("Could not convert AddressDoctor request object into SOAP XML due to: ", ex);
 			return null;
 		}
 		
-		Mono<ProcessResponse> mono = webClient.post()
+		Mono<String> mono = webClient.post()
 				.uri(addressDoctorHost)
 				.contentType(MediaType.TEXT_XML)
 				.bodyValue(xml)
 				.retrieve()
-				.bodyToMono(ProcessResponse.class)
+				.bodyToMono(String.class)
 				.doOnError(WebClientRequestException.class, ex -> {
                     logger.error("HTTP Request failed due to an error: ", ex);
                 })
@@ -107,7 +106,7 @@ public class AddressDoctorService {
 		return mono.block();
 	}
 	
-	private ProcessResponse fallback(Control control, Process addressDoctorRequest, Exception exception) {
+	private String fallback(Control control, SOAPEnvelope addressDoctorRequest, Exception exception) {
 		logger.error("Fallback triggered on call to {} due to: ", exception, addressDoctorHost);
 		return null;
 	}
