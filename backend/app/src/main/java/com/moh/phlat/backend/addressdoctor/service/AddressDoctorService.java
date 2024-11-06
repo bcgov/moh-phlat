@@ -1,6 +1,5 @@
 package com.moh.phlat.backend.addressdoctor.service;
 
-import java.io.StringWriter;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
@@ -20,7 +19,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.moh.phlat.backend.addressdoctor.soap.SOAPEnvelope;
+import com.moh.phlat.backend.addressdoctor.soap.SOAPEnvelopeInput;
+import com.moh.phlat.backend.addressdoctor.soap.SOAPEnvelopeOutput;
 import com.moh.phlat.backend.model.Control;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker.State;
@@ -28,9 +28,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.annotation.PostConstruct;
-import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -38,9 +36,11 @@ public class AddressDoctorService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddressDoctorService.class);
 	private WebClient webClient;
-	private Marshaller marshaller;
 	
 	private SSLContext sslContext;
+	
+	@Autowired
+	private AddressDoctorXmlTransformer xmlTransformer;
 	
 	@Autowired
 	private CircuitBreakerRegistry circuitBreakerRegistry;
@@ -67,33 +67,22 @@ public class AddressDoctorService {
 		webClient = WebClient.builder()
 				.clientConnector(new JdkClientHttpConnector(httpClient))
 				.build();
-		
-		JAXBContext jaxbContext = JAXBContext.newInstance(SOAPEnvelope.class);
-		marshaller = jaxbContext.createMarshaller();
 	}
 	
-	@CircuitBreaker(name="callPlrCircuitBreaker", fallbackMethod="fallback")
-	@Retry(name="callPlrRetry")
-	public String validateAddress(Control control, SOAPEnvelope addressDoctorRequest) {
+	@CircuitBreaker(name="addressDoctorCircuitBreaker", fallbackMethod="fallback")
+	@Retry(name="addressDoctorRetry")
+	public SOAPEnvelopeOutput validateAddress(Control control, SOAPEnvelopeInput addressDoctorRequest) {
 		return callAddressDoctor(control, addressDoctorRequest);
 	}
 	
-	private String callAddressDoctor(Control control, SOAPEnvelope addressDoctorRequest) {
+	private SOAPEnvelopeOutput callAddressDoctor(Control control, SOAPEnvelopeInput addressDoctorRequest) {
 		
-		String xml;
-		try {
-			StringWriter stringWriter = new StringWriter();
-			marshaller.marshal(addressDoctorRequest, stringWriter);
-			xml = stringWriter.toString(); 
-		} catch (JAXBException ex) {
-			logger.error("Could not convert AddressDoctor request object into SOAP XML due to: ", ex);
-			return null;
-		}
+		String xmlRequest = xmlTransformer.toXml(addressDoctorRequest);
 		
 		Mono<String> mono = webClient.post()
 				.uri(addressDoctorHost)
 				.contentType(MediaType.TEXT_XML)
-				.bodyValue(xml)
+				.bodyValue(xmlRequest)
 				.retrieve()
 				.bodyToMono(String.class)
 				.doOnError(WebClientRequestException.class, ex -> {
@@ -103,16 +92,17 @@ public class AddressDoctorService {
                     logger.error("HTTP Response Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
                 });
 		
-		return mono.block();
+		String xmlResponse = mono.block();
+		return xmlTransformer.fromXml(xmlResponse);
 	}
 	
-	private String fallback(Control control, SOAPEnvelope addressDoctorRequest, Exception exception) {
+	private SOAPEnvelopeOutput fallback(Control control, SOAPEnvelopeInput addressDoctorRequest, Exception exception) {
 		logger.error("Fallback triggered on call to {} due to: ", exception, addressDoctorHost);
 		return null;
 	}
 	
 	public boolean hasPersistentIssue() {
-		State state = circuitBreakerRegistry.circuitBreaker("callPlrCircuitBreaker").getState();
+		State state = circuitBreakerRegistry.circuitBreaker("addressDoctorCircuitBreaker").getState();
 		return !(state.equals(State.CLOSED) || state.equals(State.HALF_OPEN));
 	}
 }

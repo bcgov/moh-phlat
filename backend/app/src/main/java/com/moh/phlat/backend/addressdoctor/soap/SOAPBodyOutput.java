@@ -11,11 +11,11 @@ import lombok.Setter;
 @Setter
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Body", propOrder = {
-    "process"
+    "processResponse"
 })
-public class SOAPBody {
+public class SOAPBodyOutput {
 
-	@XmlElement(name = "Process")
-	protected Process process;
+	@XmlElement(name = "ProcessResponse")
+	protected ProcessResponse processResponse;
 	
 }

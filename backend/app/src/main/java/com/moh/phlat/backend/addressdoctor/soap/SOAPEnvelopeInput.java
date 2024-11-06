@@ -15,9 +15,9 @@ import lombok.Setter;
     "soapBody"
 })
 @XmlRootElement(name = "Envelope", namespace = "http://schemas.xmlsoap.org/soap/envelope/")
-public class SOAPEnvelope {
+public class SOAPEnvelopeInput {
 
 	@XmlElement(name = "Body", namespace = "http://schemas.xmlsoap.org/soap/envelope/")
-    protected SOAPBody soapBody;
+    protected SOAPBodyInput soapBody;
 	
 }

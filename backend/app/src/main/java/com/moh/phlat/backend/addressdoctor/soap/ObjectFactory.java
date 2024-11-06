@@ -30,19 +30,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SOAPEnvelope }
+     * Create an instance of {@link SOAPEnvelopeInput }
      * 
      */
-    public SOAPEnvelope createSOAPEnvelope() {
-        return new SOAPEnvelope();
+    public SOAPEnvelopeInput createSOAPEnvelopeInput() {
+        return new SOAPEnvelopeInput();
     }
 
     /**
-     * Create an instance of {@link SOAPBody }
+     * Create an instance of {@link SOAPBodyInput }
      * 
      */
-    public SOAPBody createSOAPBody() {
-        return new SOAPBody();
+    public SOAPBodyInput createSOAPBodyInput() {
+        return new SOAPBodyInput();
+    }
+
+    /**
+     * Create an instance of {@link SOAPEnvelopeOutput }
+     * 
+     */
+    public SOAPEnvelopeOutput createSOAPEnvelopeOutput() {
+        return new SOAPEnvelopeOutput();
+    }
+
+    /**
+     * Create an instance of {@link SOAPBodyOutput }
+     * 
+     */
+    public SOAPBodyOutput createSOAPBodyOutput() {
+        return new SOAPBodyOutput();
     }
 
     /**
