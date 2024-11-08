@@ -10,16 +10,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Body", propOrder = {
-    "processResponse",
-    "fault"
+@XmlType(name = "Fault", propOrder = {
+    "faultcode",
+    "faultstring"
 })
-public class SOAPBodyOutput {
+public class SOAPFault {
 
-	@XmlElement(name = "ProcessResponse")
-	protected ProcessResponse processResponse;
+	@XmlElement(name = "faultcode")
+	protected String faultcode;
 
-	@XmlElement(name = "Fault")
-	protected SOAPFault fault;
+	@XmlElement(name = "faultstring")
+	protected String faultstring;
 	
 }

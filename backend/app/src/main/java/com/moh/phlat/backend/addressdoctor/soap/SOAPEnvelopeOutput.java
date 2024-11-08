@@ -14,10 +14,10 @@ import lombok.Setter;
 @XmlType(name = "", propOrder = {
     "soapBody"
 })
-@XmlRootElement(name = "Envelope")
+@XmlRootElement(name = "Envelope", namespace = "http://schemas.xmlsoap.org/soap/envelope/")
 public class SOAPEnvelopeOutput {
 
-	@XmlElement(name = "Body")
+	@XmlElement(name = "Body", namespace = "http://schemas.xmlsoap.org/soap/envelope/")
     protected SOAPBodyOutput soapBody;
 	
 }

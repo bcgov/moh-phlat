@@ -62,6 +62,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SOAPFault }
+     * 
+     */
+    public SOAPFault createSOAPFault() {
+        return new SOAPFault();
+    }
+
+    /**
      * Create an instance of {@link Process }
      * 
      */
