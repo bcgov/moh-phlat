@@ -137,6 +137,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
+		
+		clearMessagesFromProcessData(processData);
+		
 		Boolean isValid = true;
 		
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
@@ -167,6 +170,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	}
 
 	@Async
+	@Transactional
 	@Override
 	public void validateProcessDataByControlTableId(Long controlTableId, String authenticatedUserId) {
 		logger.info("START VALIDATE ASYNC");
@@ -218,6 +222,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
+					clearMessagesFromProcessData(processData);
+					
 					// Load the ProcessData record
 					PlrLoadResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
 					
@@ -242,4 +248,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			logger.info("PLR Load Completed");
 		}
 	}	
+	
+	public void clearMessagesFromProcessData(ProcessData processData) {
+		if (processData.getMessages() != null && !processData.getMessages().isEmpty()) {
+			messageService.deleteMessages(processData.getMessages());
+			processData.getMessages().clear();
+			processDataRepository.save(processData);
+		}
+	}
 }
