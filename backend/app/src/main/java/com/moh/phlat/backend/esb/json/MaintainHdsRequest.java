@@ -119,11 +119,16 @@ public class MaintainHdsRequest implements PlrRequest {
 	private List<PropertyDto> createPropertyDtos() {
 		List<PropertyDto> propertyList = new ArrayList<>();
 		
-		addHdsProperty(propertyList, processData.getHdsSubType(), "HDS_SUB_TYPE");
+		if (StringUtils.hasText(processData.getHdsSubType())) {
+			addHdsProperty(propertyList, processData.getHdsSubType(), "HDS_SUB_TYPE");
+		}
 		if (StringUtils.hasText(processData.getFacAddressUnit())) {
 			addHdsProperty(propertyList, processData.getFacAddressUnit(), "ADDRESS_UNIT");
 		}
 		
+		if (propertyList.isEmpty()) {
+			return null;
+		}
 		return propertyList;
 	}
 	
