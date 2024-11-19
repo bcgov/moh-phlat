@@ -24,8 +24,19 @@ ARG PLR_TLS_TRUST_CERT
 #RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
 #cert is base64 encoded. Decode it before writing to file
 RUN echo $PLR_TLS_TRUST_CERT | base64 -d > ./src/main/resources/plr_tls_trust.cert
-
 RUN chmod 640 ./src/main/resources/plr_tls_trust.cert
+
+ARG ADDRESS_DOCTOR_KEYSTORE
+#RUN echo "Value of ADDRESS_DOCTOR_KEYSTORE is: $ADDRESS_DOCTOR_KEYSTORE"
+#keystore is base64 encoded. Decode it before writing to file
+RUN echo $ADDRESS_DOCTOR_KEYSTORE | base64 -d > ./src/main/resources/addressdoctor_keystore.jks
+RUN chmod 640 ./src/main/resources/addressdoctor_keystore.jks
+
+ARG ADDRESS_DOCTOR_TRUSTSTORE
+#RUN echo "Value of ADDRESS_DOCTOR_TRUSTSTORE is: $ADDRESS_DOCTOR_TRUSTSTORE"
+#keystore is base64 encoded. Decode it before writing to file
+RUN echo $ADDRESS_DOCTOR_TRUSTSTORE | base64 -d > ./src/main/resources/addressdoctor_truststore.jks
+RUN chmod 640 ./src/main/resources/addressdoctor_truststore.jks
 
 RUN mvn package
 # Rename jar file to have  predictable name
