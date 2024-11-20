@@ -91,6 +91,8 @@ jobs:
           tags: ${{ env.DOCKER_TAGS }}
           build-args: |
             PLR_TLS_TRUST_CERT=${{ secrets.PLR_TLS_TRUST_CERT_BASE64_ENCODED }}
+            ADDRESS_DOCTOR_KEYSTORE=${{ secrets.ADDRESS_DOCTOR_KEYSTORE_BASE64_ENCODED }}
+            ADDRESS_DOCTOR_TRUSTSTORE=${{ secrets.ADDRESS_DOCTOR_TRUSTSTORE_BASE64_ENCODED }}
 
   terraform_apply:
     name: Terraform Apply
