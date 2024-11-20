@@ -71,6 +71,11 @@ resource "aws_secretsmanager_secret_version" "phlat_plr_api_host" {
   secret_string = "changeme"
 }
 
+resource "aws_secretsmanager_secret_version" "phlat_address_doctor_host" {
+  secret_id     = aws_secretsmanager_secret.phlat_address_doctor_host.id
+  secret_string = "changeme"
+}
+
 resource "aws_secretsmanager_secret_version" "rds_credentials" {
   secret_id     = aws_secretsmanager_secret.phlat_proxy_user.id
   secret_string = <<EOF
