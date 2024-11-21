@@ -102,6 +102,12 @@ public class AddressDoctorValidation {
 		
 		AddressDoctorResults addressDoctorResults = new AddressDoctorResults();
 		
+		if (addressDoctorResponse == null) {
+			addError(processData, "ValidationError", "ERROR", "Could not reach or get a response from the AddressDoctor service");
+			addressDoctorResults.setError(true);
+			return addressDoctorResults;
+		}
+		
 		SOAPBodyOutput soapBody = addressDoctorResponse.getSoapBody();
 		if (soapBody == null) {
 			logger.error("The SOAP Body message is missing due to a possible PHLAT misconfiguration or an issue with AddressDoctor");
