@@ -99,6 +99,9 @@ plr:
 addressdoctor:
   host: ${ADDRESS_DOCTOR_HOST}
   timeout: 30
+  
+databc:
+  timeout: 30
 
 resilience4j:
   circuitbreaker:

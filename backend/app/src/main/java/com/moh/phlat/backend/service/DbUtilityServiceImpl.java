@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.moh.phlat.backend.addressdoctor.service.AddressDoctorValidation;
+import com.moh.phlat.backend.databc.service.DataBCValidation;
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
@@ -46,6 +47,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	
 	@Autowired
 	private AddressDoctorValidation addressDoctorValidation;
+	
+	@Autowired
+	private DataBCValidation dataBCValidation;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -159,6 +163,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 			// error detection
 			addressDoctorValidation.validateAddress(control, processData);
+			dataBCValidation.getDataBCResults(processData);
 			
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
