@@ -130,10 +130,13 @@ public class AddressDoctorValidation {
 		processData.setPhysicalAddrValidationStatus(result.getProcessStatus());
 		
 		ResultData resultData = result.getResultDataSet().getResultData().get(0);
-		// TODO: SAVE MAILABILITYSCORE
+		processData.setPhysicalAddrMailabilityScore(resultData.getMailabilityScore());
 		
 		Address address = resultData.getAddress();
-		processData.setPhysicalAddr1(address.getDeliveryAddressLines().getString().get(0));
+		// Address Lines
+		if (!address.getDeliveryAddressLines().getString().isEmpty()) {
+			processData.setPhysicalAddr1(address.getDeliveryAddressLines().getString().get(0));
+		}
 		if (address.getDeliveryAddressLines().getString().size() > 1) {
 			processData.setPhysicalAddr2(address.getDeliveryAddressLines().getString().get(1));
 		}
@@ -143,16 +146,30 @@ public class AddressDoctorValidation {
 		if (address.getDeliveryAddressLines().getString().size() > 3) {
 			processData.setPhysicalAddr4(address.getDeliveryAddressLines().getString().get(3));
 		}
-		processData.setPhysicalCity(address.getLocality().getString().get(0));
-		processData.setPhysicalProvince(address.getProvince().getString().get(0));
-		processData.setPhysicalCountry(address.getCountry().getString().get(0));
-		processData.setPhysicalPcode(address.getPostalCode().getString().get(0));
-		
-		String civicAddress = address.getHouseNumber().getString().get(0) + " "
-				+ address.getStreet().getString().get(0) + ", "
-				+ address.getLocality().getString().get(0) + ", "
-				+ address.getProvince().getString().get(0);
-		processData.setFacCivicAddr(civicAddress);
+		// City, Province, Country and PostalCode
+		if (!address.getLocality().getString().isEmpty()) {
+			processData.setPhysicalCity(address.getLocality().getString().get(0));
+		}
+		if (!address.getProvince().getString().isEmpty()) {
+			processData.setPhysicalProvince(address.getProvince().getString().get(0));
+		}
+		if (!address.getCountry().getString().isEmpty()) {
+			processData.setPhysicalCountry(address.getCountry().getString().get(0));
+		}
+		if (!address.getPostalCode().getString().isEmpty()) {
+			processData.setPhysicalPcode(address.getPostalCode().getString().get(0));
+		}
+		// Civic Address
+		if (!address.getHouseNumber().getString().isEmpty()
+				&& !address.getStreet().getString().isEmpty()
+				&& !address.getLocality().getString().isEmpty()
+				&& !address.getProvince().getString().isEmpty()) {
+			String civicAddress = address.getHouseNumber().getString().get(0) + " "
+					+ address.getStreet().getString().get(0) + ", "
+					+ address.getLocality().getString().get(0) + ", "
+					+ address.getProvince().getString().get(0);
+			processData.setFacCivicAddr(civicAddress);
+		}
 		if (!address.getBuilding().getString().isEmpty()) {
 			processData.setFacBuildingName(address.getBuilding().getString().get(0));
 		}
@@ -170,10 +187,13 @@ public class AddressDoctorValidation {
 		processData.setMailAddrValidationStatus(result.getProcessStatus());
 		
 		ResultData resultData = result.getResultDataSet().getResultData().get(0);
-		// TODO: SAVE MAILABILITYSCORE
+		processData.setMailAddrMailabilityScore(resultData.getMailabilityScore());
 		
 		Address address = resultData.getAddress();
-		processData.setMailAddr1(address.getDeliveryAddressLines().getString().get(0));
+		// Address Lines
+		if (!address.getDeliveryAddressLines().getString().isEmpty()) {
+			processData.setMailAddr1(address.getDeliveryAddressLines().getString().get(0));
+		}
 		if (address.getDeliveryAddressLines().getString().size() > 1) {
 			processData.setMailAddr2(address.getDeliveryAddressLines().getString().get(1));
 		}
@@ -183,10 +203,19 @@ public class AddressDoctorValidation {
 		if (address.getDeliveryAddressLines().getString().size() > 3) {
 			processData.setMailAddr4(address.getDeliveryAddressLines().getString().get(3));
 		}
-		processData.setMailCity(address.getLocality().getString().get(0));
-		processData.setMailBc(address.getProvince().getString().get(0));
-		processData.setMailCountry(address.getCountry().getString().get(0));
-		processData.setMailPcode(address.getPostalCode().getString().get(0));
+		// City, Province, Country and PostalCode
+		if (!address.getLocality().getString().isEmpty()) {
+			processData.setMailCity(address.getLocality().getString().get(0));
+		}
+		if (!address.getProvince().getString().isEmpty()) {
+			processData.setMailBc(address.getProvince().getString().get(0));
+		}
+		if (!address.getCountry().getString().isEmpty()) {
+			processData.setMailCountry(address.getCountry().getString().get(0));
+		}
+		if (!address.getPostalCode().getString().isEmpty()) {
+			processData.setMailPcode(address.getPostalCode().getString().get(0));
+		}
 	}
 	
 	private Result parseAdressDoctorResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {

@@ -366,6 +366,9 @@ public class ProcessDataController {
 		if (StringUtils.hasText(reqProcessData.getPhysicalAddrValidationStatus()))
 			processData.setPhysicalAddrValidationStatus(reqProcessData.getPhysicalAddrValidationStatus());		
 
+		if (StringUtils.hasText(reqProcessData.getPhysicalAddrMailabilityScore()))
+			processData.setPhysicalAddrMailabilityScore(reqProcessData.getPhysicalAddrMailabilityScore());	
+		
 		if (StringUtils.hasText(reqProcessData.getMailAddr1()))
 			processData.setMailAddr1(reqProcessData.getMailAddr1());
 
@@ -390,6 +393,9 @@ public class ProcessDataController {
 		if (StringUtils.hasText(reqProcessData.getMailAddrValidationStatus()))
 			processData.setMailAddrValidationStatus(reqProcessData.getMailAddrValidationStatus());		
 
+		if (StringUtils.hasText(reqProcessData.getMailAddrMailabilityScore()))
+			processData.setMailAddrMailabilityScore(reqProcessData.getMailAddrMailabilityScore());	
+		
 		if (StringUtils.hasText(reqProcessData.getPlrFacilityId()))
 			processData.setPlrFacilityId(reqProcessData.getPlrFacilityId());
 
