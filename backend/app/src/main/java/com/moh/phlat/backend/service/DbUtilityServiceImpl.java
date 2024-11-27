@@ -158,7 +158,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			}
 			// error detection
-			addressDoctorValidation.validateAddress(control, processData);
+			addressDoctorValidation.validateAddresses(control, processData);
 			
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);

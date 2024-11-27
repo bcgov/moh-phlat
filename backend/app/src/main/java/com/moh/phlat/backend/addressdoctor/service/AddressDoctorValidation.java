@@ -42,15 +42,29 @@ public class AddressDoctorValidation {
 		objectFactory = new ObjectFactory();
 	}
 	
-	public AddressDoctorResults validateAddress(Control control, ProcessData processData) {
+	public void validateAddresses(Control control, ProcessData processData) {
 		
-		SOAPEnvelopeInput addressDoctorRequest = convertToAddressDoctorRequest(processData);
-		SOAPEnvelopeOutput addressDoctorResponse = addressDoctorService.validateAddress(control, addressDoctorRequest);
-		return processAddressDoctorResults(addressDoctorResponse, processData);
+		SOAPEnvelopeInput physicalRequest = physicalAddressToAddressDoctorRequest(processData);
+		SOAPEnvelopeOutput physicalResponse = addressDoctorService.validateAddress(control, physicalRequest);
+		processPhysicalAddressResult(physicalResponse, processData);
+		
+		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailBc())) {
+			SOAPEnvelopeInput mailingRequest = mailingAddressToAddressDoctorRequest(processData);
+			SOAPEnvelopeOutput mailingResponse = addressDoctorService.validateAddress(control, mailingRequest);
+			processMailingAddressResult(mailingResponse, processData);
+		}
 		
 	}
 	
-	private SOAPEnvelopeInput convertToAddressDoctorRequest(ProcessData processData) {
+	private SOAPEnvelopeInput physicalAddressToAddressDoctorRequest(ProcessData processData) {
+		return addressToAddressDoctorRequest(processData, true);
+	}
+	
+	private SOAPEnvelopeInput mailingAddressToAddressDoctorRequest(ProcessData processData) {
+		return addressToAddressDoctorRequest(processData, false);
+	}
+	
+	private SOAPEnvelopeInput addressToAddressDoctorRequest(ProcessData processData, boolean isPhysical) {
 		
 		Process process = objectFactory.createProcess();
 		
@@ -61,20 +75,29 @@ public class AddressDoctorValidation {
 		ArrayOfString country = objectFactory.createArrayOfString();
 		ArrayOfString postalCode = objectFactory.createArrayOfString();
 		
-		deliveryLines.getString().add(processData.getPhysicalAddr1());
-		if (StringUtils.hasText(processData.getPhysicalAddr2())) {
-			deliveryLines.getString().add(processData.getPhysicalAddr2());
+		String processAddr1 = isPhysical ? processData.getPhysicalAddr1() : processData.getMailAddr1();
+		String processAddr2 = isPhysical ? processData.getPhysicalAddr2() : processData.getMailAddr2();
+		String processAddr3 = isPhysical ? processData.getPhysicalAddr3() : processData.getMailAddr3();
+		String processAddr4 = isPhysical ? processData.getPhysicalAddr4() : processData.getMailAddr4();
+		String processCity = isPhysical ? processData.getPhysicalCity() : processData.getMailCity();
+		String processProvinceBc = isPhysical ? processData.getPhysicalProvince() : processData.getMailBc();
+		String processCountry = isPhysical ? processData.getPhysicalCountry() : processData.getMailCountry();
+		String processPcode = isPhysical ? processData.getPhysicalPcode() : processData.getMailPcode();
+		
+		deliveryLines.getString().add(processAddr1);
+		if (StringUtils.hasText(processAddr2)) {
+			deliveryLines.getString().add(processAddr2);
 		}
-		if (StringUtils.hasText(processData.getPhysicalAddr3())) {
-			deliveryLines.getString().add(processData.getPhysicalAddr3());
+		if (StringUtils.hasText(processAddr3)) {
+			deliveryLines.getString().add(processAddr3);
 		}
-		if (StringUtils.hasText(processData.getPhysicalAddr4())) {
-			deliveryLines.getString().add(processData.getPhysicalAddr4());
+		if (StringUtils.hasText(processAddr4)) {
+			deliveryLines.getString().add(processAddr4);
 		}
-		locality.getString().add(processData.getPhysicalCity());
-		province.getString().add(processData.getPhysicalProvince());
-		country.getString().add(processData.getPhysicalCountry());
-		postalCode.getString().add(processData.getPhysicalPcode());
+		locality.getString().add(processCity);
+		province.getString().add(processProvinceBc);
+		country.getString().add(processCountry);
+		postalCode.getString().add(processPcode);
 		
 		address.setDeliveryAddressLines(deliveryLines);
 		address.setLocality(locality);
@@ -98,50 +121,108 @@ public class AddressDoctorValidation {
 		return addressDoctorRequest;
 	}
 	
-	private AddressDoctorResults processAddressDoctorResults(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
+	private void processPhysicalAddressResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
 		
-		AddressDoctorResults addressDoctorResults = new AddressDoctorResults();
+		Result result = parseAdressDoctorResult(addressDoctorResponse, processData);
+		if (result == null) {
+			return;
+		}
+		processData.setPhysicalAddrValidationStatus(result.getProcessStatus());
+		
+		ResultData resultData = result.getResultDataSet().getResultData().get(0);
+		// TODO: SAVE MAILABILITYSCORE
+		
+		Address address = resultData.getAddress();
+		processData.setPhysicalAddr1(address.getDeliveryAddressLines().getString().get(0));
+		if (address.getDeliveryAddressLines().getString().size() > 1) {
+			processData.setPhysicalAddr2(address.getDeliveryAddressLines().getString().get(1));
+		}
+		if (address.getDeliveryAddressLines().getString().size() > 2) {
+			processData.setPhysicalAddr3(address.getDeliveryAddressLines().getString().get(2));
+		}
+		if (address.getDeliveryAddressLines().getString().size() > 3) {
+			processData.setPhysicalAddr4(address.getDeliveryAddressLines().getString().get(3));
+		}
+		processData.setPhysicalCity(address.getLocality().getString().get(0));
+		processData.setPhysicalProvince(address.getProvince().getString().get(0));
+		processData.setPhysicalCountry(address.getCountry().getString().get(0));
+		processData.setPhysicalPcode(address.getPostalCode().getString().get(0));
+		
+		String civicAddress = address.getHouseNumber().getString().get(0) + " "
+				+ address.getStreet().getString().get(0) + ", "
+				+ address.getLocality().getString().get(0) + ", "
+				+ address.getProvince().getString().get(0);
+		processData.setFacCivicAddr(civicAddress);
+		if (!address.getBuilding().getString().isEmpty()) {
+			processData.setFacBuildingName(address.getBuilding().getString().get(0));
+		}
+		if (!address.getSubBuilding().getString().isEmpty()) {
+			processData.setFacAddressUnit(address.getSubBuilding().getString().get(0));
+		}
+	}
+	
+	private void processMailingAddressResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
+		
+		Result result = parseAdressDoctorResult(addressDoctorResponse, processData);
+		if (result == null) {
+			return;
+		}
+		processData.setMailAddrValidationStatus(result.getProcessStatus());
+		
+		ResultData resultData = result.getResultDataSet().getResultData().get(0);
+		// TODO: SAVE MAILABILITYSCORE
+		
+		Address address = resultData.getAddress();
+		processData.setMailAddr1(address.getDeliveryAddressLines().getString().get(0));
+		if (address.getDeliveryAddressLines().getString().size() > 1) {
+			processData.setMailAddr2(address.getDeliveryAddressLines().getString().get(1));
+		}
+		if (address.getDeliveryAddressLines().getString().size() > 2) {
+			processData.setMailAddr3(address.getDeliveryAddressLines().getString().get(2));
+		}
+		if (address.getDeliveryAddressLines().getString().size() > 3) {
+			processData.setMailAddr4(address.getDeliveryAddressLines().getString().get(3));
+		}
+		processData.setMailCity(address.getLocality().getString().get(0));
+		processData.setMailBc(address.getProvince().getString().get(0));
+		processData.setMailCountry(address.getCountry().getString().get(0));
+		processData.setMailPcode(address.getPostalCode().getString().get(0));
+	}
+	
+	private Result parseAdressDoctorResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
 		
 		if (addressDoctorResponse == null) {
 			addError(processData, "ValidationError", "ERROR", "Could not reach or get a response from the AddressDoctor service");
-			addressDoctorResults.setError(true);
-			return addressDoctorResults;
+			return null;
 		}
 		
 		SOAPBodyOutput soapBody = addressDoctorResponse.getSoapBody();
 		if (soapBody == null) {
 			logger.error("The SOAP Body message is missing due to a possible PHLAT misconfiguration or an issue with AddressDoctor");
 			addError(processData, "ValidationError", "ERROR", "Could not reach or get a response from the AddressDoctor service");
-			addressDoctorResults.setError(true);
-			return addressDoctorResults;
+			return null;
 		} else if (soapBody.getFault() != null) {
 			SOAPFault soapFault = soapBody.getFault();
 			logger.error("SOAPFault error occured attempting to call AddressDoctor\r\nFault Code: {}\r\nFault String: {}", soapFault.getFaultcode(), soapFault.getFaultstring());
 			addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
-			addressDoctorResults.setError(true);
-			return addressDoctorResults;
+			return null;
 		}
 		
 		ProcessResponse processResponse = soapBody.getProcessResponse();
-		if (processResponse != null) {
-			
-			Response response = processResponse.getProcessResult();
-			if (response.getStatusCode() != 100 && !response.getStatusMessage().equals("OK")) {
-				logger.error("AddressDoctor returned an error response: {} | {}", response.getStatusCode(), response.getStatusMessage());
-				addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
-				addressDoctorResults.setError(true);
-				return addressDoctorResults;
-			}
-			
-			Result result = response.getResults().getResult().get(0);
-			addressDoctorResults.setProcessStatus(result.getProcessStatus());
-			
-			ResultData resultData = result.getResultDataSet().getResultData().get(0);
-			addressDoctorResults.setMailabilityScore(resultData.getMailabilityScore());
-			addressDoctorResults.setResultPercentage(resultData.getResultPercentage());
-			addressDoctorResults.setAddress(resultData.getAddress());
+		if (processResponse == null) {
+			logger.error("Could not find the ProcessResponse object due to an unparsable or unexpected AddressDoctor response");
+			addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
+			return null;
 		}
-		return addressDoctorResults;
+			
+		Response response = processResponse.getProcessResult();
+		if (response.getStatusCode() != 100 && !response.getStatusMessage().equals("OK")) {
+			logger.error("AddressDoctor returned an error response: {} | {}", response.getStatusCode(), response.getStatusMessage());
+			addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
+			return null;
+		}
+		
+		return response.getResults().getResult().get(0);
 	}
 	
 	private void addError(ProcessData processData, String errorCode, String errorType, String errorMessage) {
