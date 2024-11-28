@@ -146,7 +146,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			// required checks
 			if (!StringUtils.hasText(processData.getStakeholder())) {
 				isValid = false;
-				logger.info("Required check failed on process data id: {}", processData.getId());
+				logger.info("Stakeholder required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
@@ -159,7 +159,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			if (!StringUtils.hasText(processData.getHdsName())) {
 				isValid = false;
-				logger.info("Required check failed on process data id: {}", processData.getId());
+				logger.info("HDS Name required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
@@ -172,7 +172,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			if (!StringUtils.hasText(processData.getHdsType())) {
 				isValid = false;
-				logger.info("Required check failed on process data id: {}", processData.getId());
+				logger.info("HDS Type required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
@@ -185,7 +185,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			if (!StringUtils.hasText(processData.getPhysicalAddr1())) {
 				isValid = false;
-				logger.info("Required check failed on process data id: {}", processData.getId());
+				logger.info("Physical Addr 1 required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
@@ -198,7 +198,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			if (!StringUtils.hasText(processData.getPhysicalCity())) {
 				isValid = false;
-				logger.info("Required check failed on process data id: {}", processData.getId());
+				logger.info("Physical Addr City required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
@@ -210,6 +210,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 			// error detection
+			logger.info("Address Doctor checking on process data id: {}", processData.getId());
 			addressDoctorValidation.validateAddresses(control, processData);
 			
 			if (isValid) { 
@@ -236,22 +237,28 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
-
-			for (ProcessData rec : processDataList) {
-				// skip if the rowstatus is COMPLETED or marked as DO_NOT_LOAD
-				if (!"Y".equals(rec.getDoNotLoadFlag()) && !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
+			try {
+				for (ProcessData rec : processDataList) {
+					// skip if the rowstatus is COMPLETED or marked as DO_NOT_LOAD
+					if (!RowStatusService.ON_HOLD.equals(rec.getRowstatusCode())
+						&& !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
 						&& !RowStatusService.COMPLETED.equals(rec.getRowstatusCode())) {
-					logger.info("validate process data with id: {}", rec.getId());
+						logger.info("validate process data with id: {}", rec.getId());
 
-					// run asyn process
-					validateProcessData(control, rec, authenticatedUserId);
-				} else {
-					logger.info("skip validating process data with id: {}", rec.getId());
+						// run asyn process
+						validateProcessData(control, rec, authenticatedUserId);
+					} else {
+						logger.info("skip validating process data with id: {}", rec.getId());
+					}
 				}
-			}
-			setControlStatus(control.getId(), RowStatusService.PRE_VALIDATION_COMPLETED,
-							 authenticatedUserId);
-			logger.info(RowStatusService.PRE_VALIDATION_COMPLETED);
+				setControlStatus(control.getId(), RowStatusService.PRE_VALIDATION_COMPLETED,
+								authenticatedUserId);
+				logger.info(RowStatusService.PRE_VALIDATION_COMPLETED);
+			} catch (Exception e) {
+				setControlStatus(control.getId(), RowStatusService.UPLOAD_ERROR,
+								authenticatedUserId);
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}				
 		}
 	}
 
