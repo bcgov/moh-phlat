@@ -20,6 +20,6 @@ public interface RowStatusService {
     String WARNING = "WARNING";
     String POTENTIAL_DUPLICATE = "POTENTIAL_DUPLICATE";
     String LOAD_ERROR = "LOAD_ERROR";
-
+    String ON_HOLD = "ON_HOLD";
     List<RowStatus> getRowStatuses(Boolean isDeleted);
 }
