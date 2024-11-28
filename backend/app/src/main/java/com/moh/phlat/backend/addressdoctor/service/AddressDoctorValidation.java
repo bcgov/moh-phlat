@@ -84,6 +84,11 @@ public class AddressDoctorValidation {
 		String processCountry = isPhysical ? processData.getPhysicalCountry() : processData.getMailCountry();
 		String processPcode = isPhysical ? processData.getPhysicalPcode() : processData.getMailPcode();
 		
+		// If Country is empty, assume it's a Canadian address
+		if (!StringUtils.hasText(processCountry)) {
+			processCountry = "CA";
+		}
+		
 		deliveryLines.getString().add(processAddr1);
 		if (StringUtils.hasText(processAddr2)) {
 			deliveryLines.getString().add(processAddr2);
@@ -129,6 +134,9 @@ public class AddressDoctorValidation {
 		}
 		processData.setPhysicalAddrValidationStatus(result.getProcessStatus());
 		
+		if (result.getResultDataSet().getResultData().isEmpty()) {
+			return;
+		}
 		ResultData resultData = result.getResultDataSet().getResultData().get(0);
 		processData.setPhysicalAddrMailabilityScore(resultData.getMailabilityScore());
 		
@@ -185,7 +193,10 @@ public class AddressDoctorValidation {
 			return;
 		}
 		processData.setMailAddrValidationStatus(result.getProcessStatus());
-		
+
+		if (result.getResultDataSet().getResultData().isEmpty()) {
+			return;
+		}
 		ResultData resultData = result.getResultDataSet().getResultData().get(0);
 		processData.setMailAddrMailabilityScore(resultData.getMailabilityScore());
 		
