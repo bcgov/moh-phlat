@@ -148,21 +148,73 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
 			// required checks
+			if (!StringUtils.hasText(processData.getStakeholder())) {
+				isValid = false;
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Stakeholder cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
 			if (!StringUtils.hasText(processData.getHdsName())) {
 				isValid = false;
 				logger.info("Required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
-									 .messageType("ERROR")
-									 .messageCode("101")
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
 									 .messageDesc("HDS Name cannot be empty")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
-
 			}
+
+			if (!StringUtils.hasText(processData.getHdsType())) {
+				isValid = false;
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("HDS Type cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
+			if (!StringUtils.hasText(processData.getPhysicalAddr1())) {
+				isValid = false;
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Addr 1 cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
+			if (!StringUtils.hasText(processData.getPhysicalCity())) {
+				isValid = false;
+				logger.info("Required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Addr City cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
 			// error detection
-			addressDoctorValidation.validateAddress(control, processData);
+			addressDoctorValidation.validateAddresses(control, processData);
 			dataBCValidation.getDataBCResults(processData);
 			
 			if (isValid) { 
@@ -172,6 +224,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 			
 		}
+
+		
 	}
 
 	@Async

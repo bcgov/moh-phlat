@@ -113,6 +113,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddrIsPrivate", filterProcess.getPhysAddrIsPrivate());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrPrpsTypeCd", filterProcess.getPhysicalAddrPrpsTypeCd());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrValidationStatus", filterProcess.getPhysicalAddrValidationStatus());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrMailabilityScore", filterProcess.getPhysicalAddrMailabilityScore());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr1", filterProcess.getMailAddr1());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr2", filterProcess.getMailAddr2());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr3", filterProcess.getMailAddr3());
@@ -124,6 +125,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", filterProcess.getMailAddrIsPriv());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrPrpsTypeCd", filterProcess.getMailAddrPrpsTypeCd());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrValidationStatus", filterProcess.getMailAddrValidationStatus());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrMailabilityScore", filterProcess.getMailAddrMailabilityScore());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "plrFacilityId", filterProcess.getPlrFacilityId());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facAddressUnit", filterProcess.getFacAddressUnit());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facCivicAddr", filterProcess.getFacCivicAddr());

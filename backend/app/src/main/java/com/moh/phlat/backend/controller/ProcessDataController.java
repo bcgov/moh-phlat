@@ -122,6 +122,7 @@ public class ProcessDataController {
 	public ResponseEntity<ResponseMessage> updateProcessDataById(@RequestBody @Valid ProcessData reqProcessData,
 			@PathVariable Long id) {
 
+		String authenticatedUserId=AuthenticationUtils.getAuthenticatedUserId();
 		Optional<ProcessData> processDataTable = processDataRepository.findById(id);
 
 		if (processDataTable.isEmpty()) {
@@ -365,6 +366,9 @@ public class ProcessDataController {
 		if (StringUtils.hasText(reqProcessData.getPhysicalAddrValidationStatus()))
 			processData.setPhysicalAddrValidationStatus(reqProcessData.getPhysicalAddrValidationStatus());		
 
+		if (StringUtils.hasText(reqProcessData.getPhysicalAddrMailabilityScore()))
+			processData.setPhysicalAddrMailabilityScore(reqProcessData.getPhysicalAddrMailabilityScore());	
+		
 		if (StringUtils.hasText(reqProcessData.getMailAddr1()))
 			processData.setMailAddr1(reqProcessData.getMailAddr1());
 
@@ -389,8 +393,14 @@ public class ProcessDataController {
 		if (StringUtils.hasText(reqProcessData.getMailAddrValidationStatus()))
 			processData.setMailAddrValidationStatus(reqProcessData.getMailAddrValidationStatus());		
 
+		if (StringUtils.hasText(reqProcessData.getMailAddrMailabilityScore()))
+			processData.setMailAddrMailabilityScore(reqProcessData.getMailAddrMailabilityScore());	
+		
 		if (StringUtils.hasText(reqProcessData.getPlrFacilityId()))
 			processData.setPlrFacilityId(reqProcessData.getPlrFacilityId());
+
+		if (StringUtils.hasText(reqProcessData.getFacIfcId()))
+			processData.setFacIfcId(reqProcessData.getFacIfcId());	
 
 		if (StringUtils.hasText(reqProcessData.getRowstatusCode()))
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode());
@@ -400,6 +410,27 @@ public class ProcessDataController {
 
 		try {
 			processDataRepository.save(processData);
+
+			Optional<Control> controlTable = controlRepository.findById(processData.getControlTableId());
+			if (controlTable.isPresent()) {
+				Control control = controlTable.get();
+				
+				dbUtilityService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_IN_PROGRESS,authenticatedUserId );
+				
+				if (!processData.getRowstatusCode().equals("DO_NOT_LOAD")
+				&& !processData.getRowstatusCode().equals("ON_HOLD")  
+				&& !processData.getRowstatusCode().equals(RowStatusService.COMPLETED)) {
+					logger.info("validate process data with id: {}", id);
+				    // single validation
+					dbUtilityService.validateProcessData(control, processData,authenticatedUserId);
+				} else {
+					logger.info("skip validating process data with id: {}", id);
+				}
+
+				dbUtilityService.setControlStatus(processData.getControlTableId(), RowStatusService.PRE_VALIDATION_COMPLETED,
+												  authenticatedUserId);
+
+			}
 
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Record updated sucessfully.", null, processData));
 		} catch (Exception e) {

@@ -265,8 +265,11 @@ public class ProcessData {
     @Column(name="physical_addr_prps_type_cd")
     private String physicalAddrPrpsTypeCd;  
 
-     @Column(name="physical_addr_validation_status")
+    @Column(name="physical_addr_validation_status")
     private String physicalAddrValidationStatus;  
+
+    @Column(name="physical_addr_mailability_score")
+    private String physicalAddrMailabilityScore;  
 
     @Column(name="mail_addr1")
     private String mailAddr1;  
@@ -297,6 +300,9 @@ public class ProcessData {
 
     @Column(name="mail_addr_validation_status")
     private String mailAddrValidationStatus;  
+
+    @Column(name="mail_addr_mailability_score")
+    private String mailAddrMailabilityScore;  
 
     @Column(name="plr_facility_id")
     private String plrFacilityId ; 
