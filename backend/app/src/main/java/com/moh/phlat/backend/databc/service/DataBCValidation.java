@@ -1,16 +1,14 @@
 package com.moh.phlat.backend.databc.service;
 
+import com.moh.phlat.backend.databc.dto.CHSAResults;
 import com.moh.phlat.backend.databc.dto.DataBCAddress;
 import com.moh.phlat.backend.databc.dto.Geometry;
 import com.moh.phlat.backend.databc.dto.Properties;
 import com.moh.phlat.backend.databc.util.Constants;
 import com.moh.phlat.backend.model.ProcessData;
 
-import ca.bc.gov.health.plr.dto.facility.esb.CivicAddressDto;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,20 +20,23 @@ public class DataBCValidation {
 	@Autowired
 	private DataBCService dataBCService;
 	
-    public CivicAddressDto getDataBCResults(ProcessData processData) {
+	@Autowired
+	private OpenMapsService openMapsService;
+	
+    public void getDataBCResults(ProcessData processData) {
     	
-    	CivicAddressDto address = createCivicAddressDto(processData);
+    	String address = processData.getFacCivicAddr();
     	
         // Begin processing each address
-        if (address.getAddressLineOne() != null) {
+        if (StringUtils.hasText(address)) {
             // Check if this address is out of province (not BC)
             boolean isBC = true;
-            String[] lineElements = address.getAddressLineOne().split("[\\s,]+");
+            String[] lineElements = address.split("[\\s,]+");
             if (!lineElements[lineElements.length - 1].contains("BC")) {
                 // Address is out of province, set scores to 0 and match precision to OOP
-                address.setScore(0);
-                address.setMatchPrecision("OOP");
-                address.setPrecisionPoints(0);
+                processData.setFacScore("0");
+                processData.setFacMatchPrecision("OOP");
+                processData.setFacPrecisionPoints("0");
                 isBC = false;
             }
             // DataBC coord search
@@ -45,25 +46,21 @@ public class DataBCValidation {
                     // Geometry
                     Geometry geometry = dataBcCoord.getFeatures().get(0).getGeometry();
                     if (geometry.getCoordinates() != null && geometry.getCoordinates().length > 0) {
-                        String longitudeStr = geometry.getCoordinates()[0];
-                        String latitudeStr = geometry.getCoordinates()[1];
-                        Double longitudeDbl = longitudeStr != null && !longitudeStr.isEmpty() ? Double.valueOf(longitudeStr) : null;
-                        Double latitudeDbl = latitudeStr != null && !latitudeStr.isEmpty() ? Double.valueOf(latitudeStr) : null;
-                        address.setLongitude(longitudeDbl != null ? BigDecimal.valueOf(longitudeDbl) : null);
-                        address.setLatitude(latitudeDbl != null ? BigDecimal.valueOf(latitudeDbl) : null);
+                    	processData.setFacLongitude(geometry.getCoordinates()[0]);
+                    	processData.setFacLatitude(geometry.getCoordinates()[1]);
                     }
                     // Features
                     Properties properties = dataBcCoord.getFeatures().get(0).getProperties();
                     // Civic Address Details
                     String number = properties.getCivicNumber();
                     if (StringUtils.hasText(number)) {
-                    	address.setNumber(Long.valueOf(number));
+                    	processData.setFacCivicNumber(number);
                     }
-                    address.setStreetName(properties.getStreetName());
-                    address.setStreetType(properties.getStreetType());
-                    address.setStreetDirection(properties.getStreetDirection());
-                    address.setCity(properties.getLocalityName());
-                    address.setProvinceOrStateTxt(properties.getProvinceCode());
+                    processData.setFacStreetName(properties.getStreetName());
+                    processData.setFacStreetType(properties.getStreetType());
+                    processData.setFacStreetDirection(properties.getStreetDirection());
+                    processData.setFacLocalityName(properties.getLocalityName());
+                    processData.setFacProvinceCode(properties.getProvinceCode());
                     // Full Address
                     String fullAddress;
                     String street = properties.getStreetName();
@@ -78,119 +75,69 @@ public class DataBCValidation {
                     } else {
                         fullAddress = number+" "+street+" "+streetType;
                     }
-                    address.setAddressLineOne((fullAddress+", "+properties.getLocalityName()+", "+properties.getProvinceCode()).toUpperCase());
+                    processData.setFacCivicAddr((fullAddress+", "+properties.getLocalityName()+", "+properties.getProvinceCode()).toUpperCase());
                     // Match Scores
-                    address.setSiteID(properties.getSiteID());
+                    processData.setFacSiteId(properties.getSiteID());
                     if (StringUtils.hasText(properties.getScore())) {
-                    	address.setScore(Integer.parseInt(properties.getScore()));
+                    	processData.setFacScore(properties.getScore());
                     }
-                    address.setMatchPrecision(properties.getMatchPrecision());
+                    processData.setFacMatchPrecision(properties.getMatchPrecision());
                     if (StringUtils.hasText(properties.getPrecisionPoints())) {
-                    	address.setPrecisionPoints(Integer.parseInt(properties.getPrecisionPoints()));
+                    	processData.setFacPrecisionPoints(properties.getPrecisionPoints());
                     }
                     // DataBC Result
                     ObjectMapper mapper = new ObjectMapper();
                     try {
-                        address.setDataBCResult(mapper.writeValueAsString(dataBcCoord));
+                    	processData.setFacDatabcResults(mapper.writeValueAsString(dataBcCoord));
                     } catch (JsonProcessingException ex) {
                         ex.printStackTrace();
                     }
                 }
             }
         }
-        return address;
     }
     
-    private CivicAddressDto createCivicAddressDto(ProcessData processData) {
+    public void getCHSAResults(ProcessData processData) {
     	
-    	CivicAddressDto civicAddress = new CivicAddressDto();
-		civicAddress.setActive(true);
-		
-		if (StringUtils.hasText(processData.getFacCivicAddr())) {
-			civicAddress.setAddressLineOne(processData.getFacCivicAddr());
-		} else {
-			civicAddress.setAddressLineOne(processData.getPhysicalAddr1());
-		}
-		
-		if (StringUtils.hasText(processData.getPhysicalAddr2())) {
-			civicAddress.setAddressLineTwo(processData.getPhysicalAddr2());
-		}
-		if (StringUtils.hasText(processData.getPhysicalAddr3())) {
-			civicAddress.setAddressLineThree(processData.getPhysicalAddr3());
-		}
-		if (StringUtils.hasText(processData.getPhysicalCity())) {
-			civicAddress.setCity(processData.getPhysicalCity());
-		}
-		if (StringUtils.hasText(processData.getPhysicalProvince())) {
-			civicAddress.setProvinceOrStateTxt(processData.getPhysicalProvince());
-		}
-		civicAddress.setCountryCode("CA");
-		civicAddress.setCreatedDate(processData.getCreatedAt());
-		civicAddress.setDisplayActive(true);
-		civicAddress.setEffectiveStartDate(processData.getCreatedAt());
-		civicAddress.setNoChangeOnUpdate(false);
-		if (StringUtils.hasText(processData.getFacStreetType())) {
-			civicAddress.setStreetType(processData.getFacStreetType());
-		}
-		civicAddress.setUpdatable(true);
-		if (StringUtils.hasText(processData.getFacChsaCode())) {
-			civicAddress.setChsaNameCode(processData.getFacChsaCode());
-		}
-		if (StringUtils.hasText(processData.getFacChsaName())) {
-			civicAddress.setChsaDescTxt(processData.getFacChsaName());
-		}
-		if (StringUtils.hasText(processData.getFacChsaStatus())) {
-			civicAddress.setChsaStatus(processData.getFacChsaStatus());
-		}
-		if (StringUtils.hasText(processData.getFacDatabcResults())) {
-			civicAddress.setDataBCResult(processData.getFacDatabcResults());
-		}
-		if (StringUtils.hasText(processData.getFacHaName())) {
-			civicAddress.setHaDescTxt(processData.getFacHaName());
-		}
-		if (StringUtils.hasText(processData.getFacHsdaName())) {
-			civicAddress.setHsdaDescTxt(processData.getFacHsdaName());
-		}
-		if (StringUtils.hasText(processData.getFacLatitude())) {
-			civicAddress.setLatitude(BigDecimal.valueOf(Double.valueOf(processData.getFacLatitude())));
-		}
-		if (StringUtils.hasText(processData.getFacLongitude())) {
-			civicAddress.setLongitude(BigDecimal.valueOf(Double.valueOf(processData.getFacLongitude())));
-		}
-		if (StringUtils.hasText(processData.getFacLhaName())) {
-			civicAddress.setLhaDescTxt(processData.getFacLhaName());
-		}
-		if (StringUtils.hasText(processData.getFacMatchPrecision())) {
-			civicAddress.setMatchPrecision(processData.getFacMatchPrecision());
-		}
-		if (StringUtils.hasText(processData.getFacPcnName())) {
-			civicAddress.setPcnDescTxt(null);
-		}
-		if (StringUtils.hasText(processData.getFacPcnCode())) {
-			civicAddress.setPcnNameCode(processData.getFacPcnCode());
-		}
-		if (StringUtils.hasText(processData.getFacPcnStatus())) {
-			civicAddress.setPcnStatus(processData.getFacPcnStatus());
-		}
-		if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
-			civicAddress.setPrecisionPoints(Integer.valueOf(processData.getFacPrecisionPoints()));
-		}
-		if (StringUtils.hasText(processData.getFacScore())) {
-			civicAddress.setScore(Integer.valueOf(processData.getFacScore()));
-		}
-		if (StringUtils.hasText(processData.getFacSiteId())) {
-			civicAddress.setSiteID(processData.getFacSiteId());
-		}
-		if (StringUtils.hasText(processData.getFacStreetDirection())) {
-			civicAddress.setStreetDirection(processData.getFacStreetDirection());
-		}
-		if (StringUtils.hasText(processData.getStreetDirectionPrefix())) {
-			civicAddress.setIsDirectionPrefix(Boolean.valueOf(processData.getStreetDirectionPrefix()));
-		}
-		if (StringUtils.hasText(processData.getStreetTypePrefix())) {
-			civicAddress.setIsTypePrefix(Boolean.valueOf(processData.getStreetTypePrefix()));
-		}
+    	String address = processData.getFacCivicAddr();
     	
-    	return civicAddress;
+        // Begin processing each address
+        if (StringUtils.hasText(address)) {
+            // Check if this address is out of province (not BC)
+            boolean isBC = true;
+            String[] lineElements = address.split("[\\s,]+");
+            if (!lineElements[lineElements.length - 1].contains("BC")) {
+                // Address is out of province, set scores to 0 and match precision to OOP
+                processData.setFacScore("0");
+                processData.setFacMatchPrecision("OOP");
+                processData.setFacPrecisionPoints("0");
+                isBC = false;
+            }
+            // DataBC CHSA coord search
+            if (isBC) {
+                DataBCAddress dataBcCHSACoord = dataBCService.callDataBC(Constants.DATABC_SRS_UTM, address);
+                if (dataBcCHSACoord != null && dataBcCHSACoord.getFeatures() != null && !dataBcCHSACoord.getFeatures().isEmpty()) {
+                    // Geometry
+                    Geometry geometry = dataBcCHSACoord.getFeatures().get(0).getGeometry();
+                    String chsaLongitude = "";
+                    String chsaLatitude = "";
+                    if (geometry.getCoordinates() != null && geometry.getCoordinates().length > 0) {
+                    	chsaLongitude = geometry.getCoordinates()[0];
+                    	chsaLatitude = geometry.getCoordinates()[1];
+                    }
+                    // OpenMaps CHSA Lookup
+                    if (StringUtils.hasText(chsaLongitude) && StringUtils.hasText(chsaLatitude)) {
+                    	CHSAResults chsaResults = openMapsService.callOpenMapsCHSA(chsaLongitude, chsaLatitude);
+                    	if (chsaResults != null) {
+                    		processData.setFacChsaCode(chsaResults.getChsaAreaCode());
+                    		processData.setFacChsaName(chsaResults.getChsaAreaName());
+                    		processData.setFacHaName(chsaResults.getHaName());
+                    		processData.setFacHsdaName(chsaResults.getHsdaName());
+                    		processData.setFacLhaName(chsaResults.getLhaName());
+                    	}
+                    }
+                }
+            }
+        }
     }
 }

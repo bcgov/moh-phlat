@@ -103,6 +103,9 @@ addressdoctor:
 databc:
   timeout: 30
 
+openmaps:
+  timeout: 30
+
 resilience4j:
   circuitbreaker:
     circuitBreakerAspectOrder: 1

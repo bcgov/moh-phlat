@@ -217,6 +217,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			logger.info("Address Doctor checking on process data id: {}", processData.getId());
 			addressDoctorValidation.validateAddresses(control, processData);
 			dataBCValidation.getDataBCResults(processData);
+			dataBCValidation.getCHSAResults(processData);
 			
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
