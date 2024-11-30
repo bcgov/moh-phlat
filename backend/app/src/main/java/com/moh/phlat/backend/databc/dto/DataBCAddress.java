@@ -31,4 +31,11 @@ public class DataBCAddress {
     private String copyrightNotice;
     private String copyrightLicense;
     private List<Feature> features = new ArrayList<Feature>();
+    private Error error;
+    
+    @Getter
+    @Setter
+    public class Error {
+    	private String message;
+    }
 }

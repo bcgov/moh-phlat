@@ -48,3 +48,15 @@ BEGIN
     END IF;
 END$$;
 
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='fac_databc_results'
+    ) THEN
+        ALTER TABLE process_data
+        ALTER COLUMN fac_databc_results TYPE TEXT;
+    END IF;
+END$$;
+

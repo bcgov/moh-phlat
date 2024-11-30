@@ -75,7 +75,9 @@ public class DataBCValidation {
                     } else {
                         fullAddress = number+" "+street+" "+streetType;
                     }
-                    processData.setFacCivicAddr((fullAddress+", "+properties.getLocalityName()+", "+properties.getProvinceCode()).toUpperCase());
+                    if (StringUtils.hasText(StringUtils.trimAllWhitespace(fullAddress))) {
+                    	processData.setFacCivicAddr((fullAddress+", "+properties.getLocalityName()+", "+properties.getProvinceCode()).toUpperCase());
+                    }
                     // Match Scores
                     processData.setFacSiteId(properties.getSiteID());
                     if (StringUtils.hasText(properties.getScore())) {

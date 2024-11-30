@@ -6,7 +6,6 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -50,7 +49,6 @@ public class DataBCService {
 		
 		Mono<String> mono = webClient.get()
 				.uri(dataBCURL)
-				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(String.class)
 				.doOnError(WebClientRequestException.class, ex -> {
@@ -58,13 +56,18 @@ public class DataBCService {
                 })
 				.doOnError(WebClientResponseException.class, ex -> {
                     logger.error("HTTP Response Status: {}, Response Body: {}", ex.getStatusCode(), ex.getResponseBodyAsString());
-                });
+                })
+				.onErrorComplete();
 		
 		String jsonResponse = mono.block();
+		if (jsonResponse != null && jsonResponse.contains("<?xml")) {
+			logger.error("DataBC lookup with srsCode {} returned the following error: {}", srsCode, jsonResponse);
+			return null;
+		}
 		return new Gson().fromJson(jsonResponse, DataBCAddress.class);
 	}
     
     public String buildDataBCURL(String srsCode, String address){
-        return DATABC_BASE_URI_1 + srsCode + DATABC_BASE_URI_2 + address.replaceAll(" ", "%20").replaceAll(",", "");
+        return DATABC_BASE_URI_1 + srsCode + DATABC_BASE_URI_2 + address.replaceAll(",", "");
     }
 }
