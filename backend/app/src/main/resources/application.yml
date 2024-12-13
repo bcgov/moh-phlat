@@ -61,6 +61,16 @@ spring:
         client:
           truststore:
             certificate: classpath:plr_tls_trust.cert
+      jks:
+        addressdoctor:
+          key:
+            password: HCIM
+          keystore:
+            location: classpath:addressdoctor_keystore.jks
+            password: changeit
+          truststore:
+            location: classpath:addressdoctor_truststore.jks
+            password: changeit
 
 # -------------- spring related config ends ---------------------------
 
@@ -85,6 +95,16 @@ plr:
       provider-url: ${PLR_KEYCLOAK_PROVIDER_URL}
       client-id: ${PLR_KEYCLOAK_CLIENT_ID}
       client-secret: ${PLR_KEYCLOAK_CLIENT_SECRET}
+
+addressdoctor:
+  host: ${ADDRESS_DOCTOR_HOST}
+  timeout: 30
+  
+databc:
+  timeout: 30
+
+openmaps:
+  timeout: 30
 
 resilience4j:
   circuitbreaker:

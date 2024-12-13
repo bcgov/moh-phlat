@@ -92,6 +92,7 @@ public class ProcessDataFilterParams{
 	 private List<String> physicalCountry;
 	 private List<String> physicalAddrPrpsTypeCd;
 	 private List<String> physicalAddrValidationStatus;
+	 private List<String> physicalAddrMailabilityScore;
 	 private List<String> physAddrIsPrivate;
 	 private List<String> mailAddr1;
 	 private List<String> mailAddr2;
@@ -104,5 +105,6 @@ public class ProcessDataFilterParams{
 	 private List<String> mailAddrIsPriv;
 	 private List<String> mailAddrPrpsTypeCd;
 	 private List<String> mailAddrValidationStatus;
+	 private List<String> mailAddrMailabilityScore;
 	 private Map<String,String> sort;
 }

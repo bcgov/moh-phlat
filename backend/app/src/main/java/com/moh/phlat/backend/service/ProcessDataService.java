@@ -21,7 +21,8 @@ public interface ProcessDataService {
 			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate", "rowstatusCode", "hdsSubType",
 			"facRelnType", "pcnClinicStatus", "hdsEffectiveStartDate", "plrFacilityId", "facAddressUnit", "facCivicAddr", "facLatitude", "facLongitude",
 			"facSiteId", "facScore", "facMatchPrecision", "facPrecisionPoints",    "facHsdaName", "facChsaStatus", "facPcnStatus", "facChsaCode", "facChsaName",
-			"facLhaName", "facHaName", "facPcnCode", "facPcnName", "physicalAddrPrpsTypeCd", "physicalAddrValidationStatus", "mailAddrPrpsTypeCd", "mailAddrValidationStatus");			
+			"facLhaName", "facHaName", "facPcnCode", "facPcnName", "physicalAddrPrpsTypeCd", "physicalAddrValidationStatus", "physicalAddrMailabilityScore", 
+			"mailAddrPrpsTypeCd", "mailAddrValidationStatus", "mailAddrMailabilityScore");			
 
     List<ReportSummary> getReportSummary(Long controlTableId);
 	

@@ -5,6 +5,7 @@ import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -95,7 +96,9 @@ public class OFRelationshipResponse implements PlrResponse {
 		hasError = true;
 		if (ex instanceof WebClientResponseException webEx) {
 			addError("HTTP " + webEx.getStatusCode().value(), "ERROR", 
-					"PLR is unreachable or could not process the request.");
+					"PLR could not process the request.");
+		} else if (ex instanceof WebClientRequestException) {
+			addError("RequestProblem", "ERROR", "PLR could not be reached.");
 		} else if (ex instanceof CallNotPermittedException callEx) {
 			addError(callEx.getClass().getName(), "ERROR",
 					"Too many load attempts have failed in succession; this record's load attempt has been cancelled.");

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.moh.phlat.backend.addressdoctor.service.AddressDoctorValidation;
+import com.moh.phlat.backend.databc.service.DataBCValidation;
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
@@ -42,6 +44,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	
 	@Autowired
 	private PlrDataLoad plrDataLoad;
+	
+	@Autowired
+	private AddressDoctorValidation addressDoctorValidation;
+	
+	@Autowired
+	private DataBCValidation dataBCValidation;
 
 	@Override
 	public String getVariablesByTableNameSortedById(String tableName) {
@@ -133,25 +141,83 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 
 	public void validateProcessData(Control control, ProcessData processData, String authenticatedUserId) {
+		
+		clearMessagesFromProcessData(processData);
+		
 		Boolean isValid = true;
 		
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
 			// required checks
+			if (!StringUtils.hasText(processData.getStakeholder())) {
+				isValid = false;
+				logger.info("Stakeholder required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Stakeholder cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
 			if (!StringUtils.hasText(processData.getHdsName())) {
 				isValid = false;
-				logger.info("Required check failed on process data id: {}", processData.getId());
+				logger.info("HDS Name required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
-									 .messageType("ERROR")
-									 .messageCode("101")
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
 									 .messageDesc("HDS Name cannot be empty")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
-
 			}
+
+			if (!StringUtils.hasText(processData.getHdsType())) {
+				isValid = false;
+				logger.info("HDS Type required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("HDS Type cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
+			if (!StringUtils.hasText(processData.getPhysicalAddr1())) {
+				isValid = false;
+				logger.info("Physical Addr 1 required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Addr 1 cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
+			if (!StringUtils.hasText(processData.getPhysicalCity())) {
+				isValid = false;
+				logger.info("Physical Addr City required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Addr City cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
 			// error detection
-			
+			logger.info("Address Doctor checking on process data id: {}", processData.getId());
+			addressDoctorValidation.validateAddresses(control, processData);
+			dataBCValidation.getDataBCResults(processData);
+			dataBCValidation.getCHSAResults(processData);
 			
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
@@ -160,9 +226,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 			
 		}
+
+		
 	}
 
 	@Async
+	@Transactional
 	@Override
 	public void validateProcessDataByControlTableId(Long controlTableId, String authenticatedUserId) {
 		logger.info("START VALIDATE ASYNC");
@@ -174,22 +243,28 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
-
-			for (ProcessData rec : processDataList) {
-				// skip if the rowstatus is COMPLETED or marked as DO_NOT_LOAD
-				if (!"Y".equals(rec.getDoNotLoadFlag()) && !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
+			try {
+				for (ProcessData rec : processDataList) {
+					// skip if the rowstatus is COMPLETED or marked as DO_NOT_LOAD
+					if (!RowStatusService.ON_HOLD.equals(rec.getRowstatusCode())
+						&& !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
 						&& !RowStatusService.COMPLETED.equals(rec.getRowstatusCode())) {
-					logger.info("validate process data with id: {}", rec.getId());
+						logger.info("validate process data with id: {}", rec.getId());
 
-					// run asyn process
-					validateProcessData(control, rec, authenticatedUserId);
-				} else {
-					logger.info("skip validating process data with id: {}", rec.getId());
+						// run asyn process
+						validateProcessData(control, rec, authenticatedUserId);
+					} else {
+						logger.info("skip validating process data with id: {}", rec.getId());
+					}
 				}
-			}
-			setControlStatus(control.getId(), RowStatusService.PRE_VALIDATION_COMPLETED,
-							 authenticatedUserId);
-			logger.info(RowStatusService.PRE_VALIDATION_COMPLETED);
+				setControlStatus(control.getId(), RowStatusService.PRE_VALIDATION_COMPLETED,
+								authenticatedUserId);
+				logger.info(RowStatusService.PRE_VALIDATION_COMPLETED);
+			} catch (Exception e) {
+				setControlStatus(control.getId(), RowStatusService.UPLOAD_ERROR,
+								authenticatedUserId);
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}				
 		}
 	}
 
@@ -214,6 +289,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
+					clearMessagesFromProcessData(processData);
+					
 					// Load the ProcessData record
 					PlrLoadResults maintainResults = plrDataLoad.loadPlrViaEsb(control, processData);
 					
@@ -238,4 +315,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			logger.info("PLR Load Completed");
 		}
 	}	
+	
+	public void clearMessagesFromProcessData(ProcessData processData) {
+		if (processData.getMessages() != null && !processData.getMessages().isEmpty()) {
+			messageService.deleteMessages(processData.getMessages());
+			processData.getMessages().clear();
+			processDataRepository.save(processData);
+		}
+	}
 }

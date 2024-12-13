@@ -36,6 +36,10 @@ resource "aws_secretsmanager_secret" "phlat_plr_api_host" {
   name = "${var.application}_plr_api_host"
 }
 
+resource "aws_secretsmanager_secret" "phlat_address_doctor_host" {
+  name = "${var.application}_address_doctor_host"
+}
+
 resource "aws_secretsmanager_secret_version" "phlat_db_database" {
   secret_id     = aws_secretsmanager_secret.phlat_db_database.id
   secret_string = "changeme"
@@ -68,6 +72,11 @@ resource "aws_secretsmanager_secret_version" "phlat_keycloak_client_id_web" {
 
 resource "aws_secretsmanager_secret_version" "phlat_plr_api_host" {
   secret_id     = aws_secretsmanager_secret.phlat_plr_api_host.id
+  secret_string = "changeme"
+}
+
+resource "aws_secretsmanager_secret_version" "phlat_address_doctor_host" {
+  secret_id     = aws_secretsmanager_secret.phlat_address_doctor_host.id
   secret_string = "changeme"
 }
 
