@@ -23,6 +23,60 @@ public class DataBCValidation {
 	@Autowired
 	private OpenMapsService openMapsService;
 	
+    private String convertOrdinalStreetNames(String streetName) {
+		String ordinalStreetName;
+		
+		ordinalStreetName = streetName.toUpperCase();
+		ordinalStreetName = ordinalStreetName.replace("WEST","W");
+		ordinalStreetName = ordinalStreetName.replace("EAST","E");
+		ordinalStreetName = ordinalStreetName.replace("NORTH","N");
+		ordinalStreetName = ordinalStreetName.replace("SOUTH","S");
+
+		ordinalStreetName = ordinalStreetName.replace("1ST","1");
+		ordinalStreetName = ordinalStreetName.replace("2ND","2");
+		ordinalStreetName = ordinalStreetName.replace("3RD","3");
+		ordinalStreetName = ordinalStreetName.replace("4TH","4");
+		ordinalStreetName = ordinalStreetName.replace("5TH","5");
+		ordinalStreetName = ordinalStreetName.replace("6TH","6");
+		ordinalStreetName = ordinalStreetName.replace("7TH","7");
+		ordinalStreetName = ordinalStreetName.replace("8TH","8");
+		ordinalStreetName = ordinalStreetName.replace("9TH","9");
+		ordinalStreetName = ordinalStreetName.replace("10TH","10");
+		ordinalStreetName = ordinalStreetName.replace("11TH","11");
+		ordinalStreetName = ordinalStreetName.replace("12TH","12");
+		ordinalStreetName = ordinalStreetName.replace("13TH","13");
+		ordinalStreetName = ordinalStreetName.replace("14TH","14");
+		ordinalStreetName = ordinalStreetName.replace("15TH","15");
+		ordinalStreetName = ordinalStreetName.replace("16TH","16");
+		ordinalStreetName = ordinalStreetName.replace("17TH","17");
+		ordinalStreetName = ordinalStreetName.replace("18TH","18");
+		ordinalStreetName = ordinalStreetName.replace("19TH","19");
+		ordinalStreetName = ordinalStreetName.replace("20TH","20");	
+
+		ordinalStreetName = ordinalStreetName.replace("FIRST","1");
+		ordinalStreetName = ordinalStreetName.replace("SECOND","2");
+		ordinalStreetName = ordinalStreetName.replace("THIRD","3");
+		ordinalStreetName = ordinalStreetName.replace("FOURTH","4");
+		ordinalStreetName = ordinalStreetName.replace("FIFTH","5");
+		ordinalStreetName = ordinalStreetName.replace("SIXTH","6");
+		ordinalStreetName = ordinalStreetName.replace("SEVENTH","7");
+		ordinalStreetName = ordinalStreetName.replace("EIGHTH","8");
+		ordinalStreetName = ordinalStreetName.replace("NINTH","9");
+		ordinalStreetName = ordinalStreetName.replace("TENTH","10");
+		ordinalStreetName = ordinalStreetName.replace("ELEVENTH","11");
+		ordinalStreetName = ordinalStreetName.replace("TWELTH","12");
+		ordinalStreetName = ordinalStreetName.replace("THIRTEENTH","13");
+		ordinalStreetName = ordinalStreetName.replace("FOURTEENTH","14");
+		ordinalStreetName = ordinalStreetName.replace("FIFTEENTH","15");
+		ordinalStreetName = ordinalStreetName.replace("SIXTEENTH","16");
+		ordinalStreetName = ordinalStreetName.replace("SEVENTEENTH","17");
+		ordinalStreetName = ordinalStreetName.replace("EIGHTEENTH","18");
+		ordinalStreetName = ordinalStreetName.replace("NINTETEENTH","19");
+		ordinalStreetName = ordinalStreetName.replace("TWENTIETH","20");
+
+		return ordinalStreetName;
+	}
+
     public void getDataBCResults(ProcessData processData) {
     	
     	String address = processData.getFacCivicAddr();
@@ -56,11 +110,15 @@ public class DataBCValidation {
                     if (StringUtils.hasText(number)) {
                     	processData.setFacCivicNumber(number);
                     }
+
+                    processData.setPhysicalAddr1(convertOrdinalStreetNames(processData.getPhysicalAddr1()));
+                    processData.setPhysicalCity(processData.getPhysicalCity().toUpperCase().replace("DISTRICT OF","").replace("TOWNSHIP OF","").toUpperCase()); 
                     processData.setFacStreetName(properties.getStreetName());
                     processData.setFacStreetType(properties.getStreetType());
                     processData.setFacStreetDirection(properties.getStreetDirection());
                     processData.setFacLocalityName(properties.getLocalityName());
                     processData.setFacProvinceCode(properties.getProvinceCode());
+
                     // Full Address
                     String fullAddress;
                     String street = properties.getStreetName();
