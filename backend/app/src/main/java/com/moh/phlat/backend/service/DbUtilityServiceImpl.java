@@ -145,7 +145,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		clearMessagesFromProcessData(processData);
 		
 		Boolean isValid = true;
-		
+
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
 			// required checks
 			if (!StringUtils.hasText(processData.getStakeholder())) {
@@ -224,10 +224,63 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			} else {
 				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 			}
-			
-		}
 
-		
+			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
+				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Physical Addr mailability score is less than 3")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
+
+			if (StringUtils.hasText(processData.getMailAddrMailabilityScore())) {
+				if (Integer.parseInt(processData.getMailAddrMailabilityScore()) < 3) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Mail Addr mailability score is less than 3")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
+
+			if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
+				if (Integer.parseInt(processData.getFacPrecisionPoints()) < 96) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("PRECISION_POINTS is less than 96")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
+
+			if (StringUtils.hasText(processData.getFacScore())) {
+				if (Integer.parseInt(processData.getFacScore()) < 98) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Data SCORE is less than 98")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}			
+		}	
 	}
 
 	@Async
