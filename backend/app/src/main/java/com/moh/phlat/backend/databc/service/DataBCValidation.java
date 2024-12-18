@@ -23,7 +23,7 @@ public class DataBCValidation {
 	@Autowired
 	private OpenMapsService openMapsService;
 	
-    private String convertOrdinalStreetNames(String streetName) {
+    private String convertOrdinalStreetName(String streetName) {
 		String ordinalStreetName;
 		
 		ordinalStreetName = streetName.toUpperCase();
@@ -77,6 +77,13 @@ public class DataBCValidation {
 		return ordinalStreetName;
 	}
 
+    private String convertOrdinalCity(String cityName) {
+		String ordinalCityName = cityName.toUpperCase();
+        ordinalCityName = ordinalCityName.replace("DISTRICT OF ","").replace("TOWNSHIP OF ","");
+		
+		return ordinalCityName;
+	}
+
     public void getDataBCResults(ProcessData processData) {
     	
     	String address = processData.getFacCivicAddr();
@@ -111,19 +118,22 @@ public class DataBCValidation {
                     	processData.setFacCivicNumber(number);
                     }
 
-                    processData.setPhysicalAddr1(convertOrdinalStreetNames(processData.getPhysicalAddr1()));
-                    processData.setPhysicalCity(processData.getPhysicalCity().toUpperCase().replace("DISTRICT OF","").replace("TOWNSHIP OF","").toUpperCase()); 
+                    String city = convertOrdinalCity(properties.getLocalityName());
+
                     processData.setFacStreetName(properties.getStreetName());
                     processData.setFacStreetType(properties.getStreetType());
                     processData.setFacStreetDirection(properties.getStreetDirection());
-                    processData.setFacLocalityName(properties.getLocalityName());
+                    processData.setFacLocalityName(city);
                     processData.setFacProvinceCode(properties.getProvinceCode());
 
                     // Full Address
                     String fullAddress;
-                    String street = properties.getStreetName();
+                    String street = convertOrdinalStreetName(properties.getStreetName());
                     String streetType = properties.getStreetType();
+
                     String streetDirection = properties.getStreetDirection();
+
+
                     if(properties.isStreetDirectionPrefix()){
                         if(properties.isStreetTypePrefix()){
                             fullAddress = number+" "+streetType+" "+streetDirection+" "+street;
@@ -134,7 +144,7 @@ public class DataBCValidation {
                         fullAddress = number+" "+street+" "+streetType;
                     }
                     if (StringUtils.hasText(StringUtils.trimAllWhitespace(fullAddress))) {
-                    	processData.setFacCivicAddr((fullAddress+", "+properties.getLocalityName()+", "+properties.getProvinceCode()).toUpperCase());
+                    	processData.setFacCivicAddr((fullAddress + ", " + city + ", " + properties.getProvinceCode()).toUpperCase());
                     }
                     // Match Scores
                     processData.setFacSiteId(properties.getSiteID());

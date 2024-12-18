@@ -213,17 +213,47 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}
 
+			if (!StringUtils.hasText(processData.getPhysicalCountry())) {
+				isValid = false;
+				logger.info("Physical Addr Country required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Addr Country cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			} else if (!processData.getPhysicalCountry().equals("CANADA")) {
+				isValid = false;
+				logger.info("Out of country address on process data id: {}", processData.getId()); 
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Addr Country is out of country")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}	
+
 			// error detection
-			logger.info("Address Doctor checking on process data id: {}", processData.getId());
-			addressDoctorValidation.validateAddresses(control, processData);
-			dataBCValidation.getDataBCResults(processData);
-			dataBCValidation.getCHSAResults(processData);
-			
+
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
 			} else {
 				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 			}
+
+			if (!processData.getPhysicalCountry().equals("CANADA")) {
+				logger.info("Skip Address Doctor checks for out of country address on process data id: {}", processData.getId());
+				return;
+			}
+
+			logger.info("Address Doctor checking on process data id: {}", processData.getId());
+			addressDoctorValidation.validateAddresses(control, processData);
+			dataBCValidation.getDataBCResults(processData);
+			dataBCValidation.getCHSAResults(processData);
 
 			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
 				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
@@ -231,7 +261,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					Message msg = Message.builder()
 										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Physical Addr mailability score is less than 3")
+										.messageDesc("Address Doctor mailability score is less than 3")
 										.sourceSystemName(MessageSourceSystem.PLR)
 										.processData(processData)
 										.build();
@@ -239,47 +269,54 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				}
 			}
 
-			if (StringUtils.hasText(processData.getMailAddrMailabilityScore())) {
-				if (Integer.parseInt(processData.getMailAddrMailabilityScore()) < 3) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Mail Addr mailability score is less than 3")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			}
-
-			if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
-				if (Integer.parseInt(processData.getFacPrecisionPoints()) < 96) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("PRECISION_POINTS is less than 96")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			}
+			Integer dataBcScore = null;
 
 			if (StringUtils.hasText(processData.getFacScore())) {
-				if (Integer.parseInt(processData.getFacScore()) < 98) {
+				dataBcScore = Integer.parseInt(processData.getFacScore());
+			}
+
+			Integer dataBcPrecisionPoints = null;
+			if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
+				dataBcPrecisionPoints = Integer.parseInt(processData.getFacPrecisionPoints());
+			}
+
+			if (dataBcScore != null && dataBcPrecisionPoints != null) {
+				if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
 					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 					Message msg = Message.builder()
 										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Data SCORE is less than 98")
+										.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98")
 										.sourceSystemName(MessageSourceSystem.PLR)
 										.processData(processData)
 										.build();
 					messageService.createMessage(msg);
 				}
-			}			
+			} else if (dataBcScore != null) {
+				if (dataBcScore < 96) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Data SCORE is less than 96")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			} else if (dataBcPrecisionPoints != null) {
+				if ((dataBcPrecisionPoints < 98)) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("PRECISION_POINTS is less than 98")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}	
 		}	
 	}
 
