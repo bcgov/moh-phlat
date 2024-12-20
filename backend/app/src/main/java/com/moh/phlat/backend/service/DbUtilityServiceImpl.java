@@ -237,30 +237,20 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}	
 
-			if (!StringUtils.hasText(processData.getMailCountry()) && StringUtils.hasText(processData.getMailAddr1())) {
-				isValid = false;
-				logger.info("Mail Addr Country required check failed on process data id: {}", processData.getId());
-				Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Mailing Address Country cannot be empty")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-				messageService.createMessage(msg);
-			} else if (StringUtils.hasText(processData.getMailCountry()) && !processData.getMailCountry().equals("CANADA")) {
-				isValid = false;
-				logger.info("Out of country mailing address on process data id: {}", processData.getId()); 
-				Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Mailing Address is out of country")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-				messageService.createMessage(msg);
+			if (StringUtils.hasText(processData.getMailAddr1())) {
+				if (StringUtils.hasText(processData.getMailCountry()) && !processData.getMailCountry().equals("CANADA")) {
+					isValid = false;
+					logger.info("Out of country mailing address on process data id: {}", processData.getId()); 
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Mailing Address is out of country")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
 			}
-
 			// error detection
 
 			if (isValid) { 
