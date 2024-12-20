@@ -219,7 +219,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Physical Addr Country cannot be empty")
+									 .messageDesc("Physical Address Country cannot be empty")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
@@ -230,12 +230,36 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Physical Addr Country is out of country")
+									 .messageDesc("Physical Address is out of country")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
 			}	
+
+			if (!StringUtils.hasText(processData.getMailCountry()) && StringUtils.hasText(processData.getMailAddr1())) {
+				isValid = false;
+				logger.info("Mail Addr Country required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Mailing Address Country cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			} else if (StringUtils.hasText(processData.getMailCountry()) && !processData.getMailCountry().equals("CANADA")) {
+				isValid = false;
+				logger.info("Out of country mailing address on process data id: {}", processData.getId()); 
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Mailing Address is out of country")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
 
 			// error detection
 
@@ -246,7 +270,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 			if (!processData.getPhysicalCountry().equals("CANADA")) {
-				logger.info("Skip Address Doctor checks for out of country address on process data id: {}", processData.getId());
+				logger.info("Skip record with an out of country physical address on process data id: {}", processData.getId());
+				return;
+			}
+
+			if (StringUtils.hasText(processData.getMailCountry()) && !processData.getMailCountry().equals("CANADA")) {
+				logger.info("Skip record with an out of country mailing addresscks on process data id: {}", processData.getId());
 				return;
 			}
 
