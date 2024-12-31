@@ -213,7 +213,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}
 
-			if (!StringUtils.hasText(processData.getPhysicalCountry())) {
+			String physicalCountry = "";
+			physicalCountry = processData.getPhysicalCountry();
+			if (!StringUtils.hasText(physicalCountry)) {
 				isValid = false;
 				logger.info("Physical Addr Country required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
@@ -224,7 +226,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
-			} else if (!processData.getPhysicalCountry().equals("CANADA")) {
+			} else if (!physicalCountry.equals("CANADA") && !physicalCountry.equals("CA")) {
 				isValid = false;
 				logger.info("Out of country address on process data id: {}", processData.getId()); 
 				Message msg = Message.builder()
@@ -237,8 +239,11 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}	
 
+			String mailCountry = "";
+			mailCountry = processData.getMailCountry();
+
 			if (StringUtils.hasText(processData.getMailAddr1())) {
-				if (StringUtils.hasText(processData.getMailCountry()) && !processData.getMailCountry().equals("CANADA")) {
+				if (StringUtils.hasText(mailCountry) &&  !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
 					isValid = false;
 					logger.info("Out of country mailing address on process data id: {}", processData.getId()); 
 					Message msg = Message.builder()
@@ -259,12 +264,12 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 			}
 
-			if (!processData.getPhysicalCountry().equals("CANADA")) {
+			if (!physicalCountry.equals("CANADA") && !physicalCountry.equals("CA")) {
 				logger.info("Skip record with an out of country physical address on process data id: {}", processData.getId());
 				return;
 			}
 
-			if (StringUtils.hasText(processData.getMailCountry()) && !processData.getMailCountry().equals("CANADA")) {
+			if (StringUtils.hasText(mailCountry) && !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
 				logger.info("Skip record with an out of country mailing addresscks on process data id: {}", processData.getId());
 				return;
 			}
