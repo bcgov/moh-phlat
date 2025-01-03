@@ -214,7 +214,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 			String physicalCountry = "";
-			physicalCountry = processData.getPhysicalCountry();
+			physicalCountry = processData.getPhysicalCountry().toUpperCase();
 			if (!StringUtils.hasText(physicalCountry)) {
 				isValid = false;
 				logger.info("Physical Addr Country required check failed on process data id: {}", processData.getId());
@@ -240,7 +240,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}	
 
 			String mailCountry = "";
-			mailCountry = processData.getMailCountry();
+			mailCountry = processData.getMailCountry().toUpperCase();
 
 			if (StringUtils.hasText(processData.getMailAddr1())) {
 				if (StringUtils.hasText(mailCountry) &&  !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
@@ -270,7 +270,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 			if (StringUtils.hasText(mailCountry) && !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
-				logger.info("Skip record with an out of country mailing addresscks on process data id: {}", processData.getId());
+				logger.info("Skip record with an out of country mailing address on process data id: {}", processData.getId());
 				return;
 			}
 
@@ -281,10 +281,10 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
 				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
 					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
 										.messageDesc("Address Doctor mailability score is less than 3")
 										.sourceSystemName(MessageSourceSystem.PLR)
 										.processData(processData)
