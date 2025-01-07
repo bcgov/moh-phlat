@@ -274,10 +274,27 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				return;
 			}
 
-			logger.info("Address Doctor checking on process data id: {}", processData.getId());
-			addressDoctorValidation.validateAddresses(control, processData);
-			dataBCValidation.getDataBCResults(processData);
-			dataBCValidation.getCHSAResults(processData);
+			logger.info("Call Address Doctor on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
+
+			try {
+				addressDoctorValidation.validateAddresses(control, processData);
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}	
+
+			logger.info("Call dataBC on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
+			
+			try {
+				dataBCValidation.getDataBCResults(processData);
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}	
+
+			try {
+				dataBCValidation.getCHSAResults(processData);
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}				
 
 			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
 				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
@@ -340,7 +357,23 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 										.build();
 					messageService.createMessage(msg);
 				}
-			}	
+			}
+
+			String civicAddress = "";
+			civicAddress = processData.getFacCivicAddr();
+			if (!StringUtils.hasText(civicAddress)) {
+				isValid = false;
+				logger.info("Civic Address required check failed on process data id: {}", processData.getId());
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Civic Address cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}				
 		}	
 	}
 
@@ -437,4 +470,45 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			processDataRepository.save(processData);
 		}
 	}
+
+	public static boolean isValidCivicAddress(String address) {
+        if (address == null || address.isEmpty()) {
+            return false;
+        }
+
+        // Split the address into parts
+        String[] parts = address.split(", ");
+        if (parts.length != 3) {
+            return false;
+        }
+
+        String streetPart = parts[0];
+        String municipality = parts[2];
+
+        // Validate the street part (civic number and street name)
+        String[] streetParts = streetPart.split(" ");
+        if (streetParts.length < 2) {
+            return false;
+        }
+
+        // Check if the first part is a number (civic number)
+        try {
+            Integer.parseInt(streetParts[0]);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        // Check if the street name is valid (basic check)
+        if (streetParts[1].matches(".*\\d.*")) {
+            return false; // Street name should not contain numbers
+        }
+
+        // Check if the municipality is valid (basic check)
+        if (municipality.matches(".*\\d.*")) {
+            return false; // Municipality name should not contain numbers
+        }
+
+        return true;
+    }
+	
 }
