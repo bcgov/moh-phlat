@@ -362,7 +362,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			String civicAddress = "";
 			civicAddress = processData.getFacCivicAddr();
 			if (!StringUtils.hasText(civicAddress)) {
-				isValid = false;
 				logger.info("Civic Address required check failed on process data id: {}", processData.getId());
 				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 				Message msg = Message.builder()
@@ -373,6 +372,21 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
+			}
+			
+			if (StringUtils.hasText(civicAddress)) {
+				if (!isValidCivicAddress(civicAddress)) {
+					logger.info("Validating Civic Address on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Invalid Civic Address")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+					messageService.createMessage(msg);
+				}
 			}				
 		}	
 	}

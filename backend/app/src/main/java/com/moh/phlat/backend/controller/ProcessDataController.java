@@ -493,8 +493,9 @@ public class ProcessDataController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("success", 200, "Nothing to validate.", null, "[]"));
 			
 		}
+		
 		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
-		dbUtilityService.setControlStatus(id, RowStatusService.PRE_VALIDATION_COMPLETED,
+		dbUtilityService.setControlStatus(id, RowStatusService.PRE_VALIDATION_IN_PROGRESS,
 										  authenticatedUserId);
 		// asynchronous operation
 		dbUtilityService.validateProcessDataByControlTableId(id,authenticatedUserId);
