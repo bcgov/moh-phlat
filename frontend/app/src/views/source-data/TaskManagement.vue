@@ -197,7 +197,11 @@ export default {
       this.populateControlTable();
       this.loading = false;
     },
-
+    refreshControlTableList() {
+      this.loading = true;
+      this.populateControlTable();
+      this.loading = false;
+    },
     onShowColumnDialog() {
       this.BASE_FILTER_HEADERS.sort(
         (a, b) =>
@@ -305,6 +309,22 @@ export default {
         class="header-component-tm"
       ></v-text-field>
       <div class="header-component-tm">
+        <span>
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-btn
+                class="mx-1"
+                color="primary"
+                v-bind="props"
+                size="x-small"
+                density="default"
+                icon="mdi:mdi-refresh"
+                @click="refreshControlTableList"
+              />
+            </template>
+            <span>Refresh list</span>
+          </v-tooltip>
+        </span>
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
