@@ -481,7 +481,7 @@ export default {
           const i = this.inputSrcData.findIndex(
             (x) => x.id === selectedItemToEdit.id
           );
-          this.inputSrcData[i] = selectedItemToEdit;
+          this.inputSrcData[i] = data;
 
           this.loading = false;
           this.close();
