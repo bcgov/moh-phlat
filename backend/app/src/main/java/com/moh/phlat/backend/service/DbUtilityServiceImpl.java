@@ -361,18 +361,30 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			String civicAddress = "";
 			civicAddress = processData.getFacCivicAddr();
-			if (!StringUtils.hasText(civicAddress)) {
-				logger.info("Civic Address required check failed on process data id: {}", processData.getId());
+			if (!StringUtils.hasText(civicAddress) && StringUtils.hasText(processData.getPhysicalAddrValidationStatus())) {
+				logger.info("dataBC lookup failed on process data id: {}", processData.getId());
 				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Civic Address cannot be empty")
+									 .messageDesc("dataBC failed on Civic Address")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			} else if (!StringUtils.hasText(civicAddress)) {
+				logger.info("Civic Address required check on process data id: {}", processData.getId());
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Civic address cannot be empty")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
 				messageService.createMessage(msg);
 			}
+
 			
 			if (StringUtils.hasText(civicAddress)) {
 				if (!isValidCivicAddress(civicAddress)) {
@@ -381,12 +393,24 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Invalid Civic Address")
+									 .messageDesc("Invalid civic address format")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+					messageService.createMessage(msg);
+				} else if (!isAllUpperCase(civicAddress)) {
+					logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
+					Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+									 .messageDesc("Civic address is not in uppercase")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
 					messageService.createMessage(msg);
 				}
+
 			}				
 		}	
 	}
@@ -512,11 +536,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
             return false;
         }
 
-        // Check if the street name is valid (basic check)
-        if (streetParts[1].matches(".*\\d.*")) {
-            return false; // Street name should not contain numbers
-        }
-
         // Check if the municipality is valid (basic check)
         if (municipality.matches(".*\\d.*")) {
             return false; // Municipality name should not contain numbers
@@ -525,4 +544,22 @@ public class DbUtilityServiceImpl implements DbUtilityService {
         return true;
     }
 	
+	public static boolean isAllUpperCase(String address) {
+        // Check if the address is not null and not empty
+        if (address == null || address.isEmpty()) {
+            return false;
+        }
+        
+        // Iterate through each character in the string
+        for (char c : address.toCharArray()) {
+            // If the character is a letter and not uppercase, return false
+            if (Character.isLetter(c) && !Character.isUpperCase(c)) {
+                return false;
+            }
+        }
+        
+        // If all letters are uppercase, return true
+        return true;
+    }
+
 }
