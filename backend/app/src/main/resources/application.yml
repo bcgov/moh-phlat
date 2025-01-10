@@ -114,7 +114,16 @@ resilience4j:
 
 resilience4j.circuitbreaker:
   instances:
+    #PLR
     callPlrCircuitBreaker:
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 3
+      minimumNumberOfCalls: 3
+      failureRateThreshold: 100
+      waitDurationInOpenState: 60000
+      permittedNumberOfCallsInHalfOpenState: 2
+    #AddressDoctor
+    addressDoctorCircuitBreaker:
       slidingWindowType: COUNT_BASED
       slidingWindowSize: 3
       minimumNumberOfCalls: 3
@@ -124,7 +133,15 @@ resilience4j.circuitbreaker:
 
 resilience4j.retry:
   instances:
+    #PLR
     callPlrRetry:
+      maxAttempts: 3
+      waitDuration: 1000
+      retryExceptions:
+      - org.springframework.web.reactive.function.client.WebClientRequestException
+      - org.springframework.web.reactive.function.client.WebClientResponseException
+    #AddressDoctor
+    addressDoctorRetry:
       maxAttempts: 3
       waitDuration: 1000
       retryExceptions:

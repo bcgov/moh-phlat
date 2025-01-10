@@ -438,6 +438,15 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 						// run asyn process
 						validateProcessData(control, rec, authenticatedUserId);
+
+						// Check if there has been repeated issues with the AddressDoctor calls
+						if (addressDoctorValidation.getAddressDoctorService().hasPersistentIssue()) {
+							// Too many errors are happening back to back; stop the validation process
+							setControlStatus(control.getId(), RowStatusService.UPLOAD_ERROR, authenticatedUserId);
+							logger.error("AddressDoctor connection has a persistent issue. Ending this run. Resolve and try again later.");
+							return;
+						}
+						
 					} else {
 						logger.info("skip validating process data with id: {}", rec.getId());
 					}
