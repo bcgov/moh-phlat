@@ -530,7 +530,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
         }
 
         String streetPart = parts[0];
-        String municipality = parts[2];
 
         // Validate the street part (civic number and street name)
         String[] streetParts = streetPart.split(" ");
@@ -544,12 +543,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
         } catch (NumberFormatException e) {
             return false;
         }
-
-        // Check if the municipality is valid (basic check)
-        if (municipality.matches(".*\\d.*")) {
-            return false; // Municipality name should not contain numbers
-        }
-
+        
         return true;
     }
 	
