@@ -145,7 +145,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		clearMessagesFromProcessData(processData);
 		
 		Boolean isValid = true;
-		
+
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
 			// required checks
 			if (!StringUtils.hasText(processData.getStakeholder())) {
@@ -213,21 +213,206 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}
 
+			String physicalCountry = "";
+			physicalCountry = processData.getPhysicalCountry().toUpperCase();
+			if (!StringUtils.hasText(physicalCountry)) {
+				isValid = false;
+				logger.info("Physical Addr Country required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Address Country cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			} else if (!physicalCountry.equals("CANADA") && !physicalCountry.equals("CA")) {
+				isValid = false;
+				logger.info("Out of country address on process data id: {}", processData.getId()); 
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Physical Address is out of country")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}	
+
+			String mailCountry = "";
+			mailCountry = processData.getMailCountry().toUpperCase();
+
+			if (StringUtils.hasText(processData.getMailAddr1())) {
+				if (StringUtils.hasText(mailCountry) &&  !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
+					isValid = false;
+					logger.info("Out of country mailing address on process data id: {}", processData.getId()); 
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Mailing Address is out of country")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
 			// error detection
-			logger.info("Address Doctor checking on process data id: {}", processData.getId());
-			addressDoctorValidation.validateAddresses(control, processData);
-			dataBCValidation.getDataBCResults(processData);
-			dataBCValidation.getCHSAResults(processData);
-			
+
 			if (isValid) { 
 				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
 			} else {
 				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 			}
-			
-		}
 
-		
+			if (!physicalCountry.equals("CANADA") && !physicalCountry.equals("CA")) {
+				logger.info("Skip record with an out of country physical address on process data id: {}", processData.getId());
+				return;
+			}
+
+			if (StringUtils.hasText(mailCountry) && !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
+				logger.info("Skip record with an out of country mailing address on process data id: {}", processData.getId());
+				return;
+			}
+
+			logger.info("Call Address Doctor on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
+
+			try {
+				addressDoctorValidation.validateAddresses(control, processData);
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}	
+
+			logger.info("Call dataBC on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
+			
+			try {
+				dataBCValidation.getDataBCResults(processData);
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}	
+
+			try {
+				dataBCValidation.getCHSAResults(processData);
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}				
+
+			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
+				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
+					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										.messageDesc("Address Doctor mailability score is less than 3")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
+
+			Integer dataBcScore = null;
+
+			if (StringUtils.hasText(processData.getFacScore())) {
+				dataBcScore = Integer.parseInt(processData.getFacScore());
+			}
+
+			Integer dataBcPrecisionPoints = null;
+			if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
+				dataBcPrecisionPoints = Integer.parseInt(processData.getFacPrecisionPoints());
+			}
+
+			if (dataBcScore != null && dataBcPrecisionPoints != null) {
+				if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			} else if (dataBcScore != null) {
+				if (dataBcScore < 96) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Data SCORE is less than 96")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			} else if (dataBcPrecisionPoints != null) {
+				if ((dataBcPrecisionPoints < 98)) {
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("PRECISION_POINTS is less than 98")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
+
+			String civicAddress = "";
+			civicAddress = processData.getFacCivicAddr();
+			if (!StringUtils.hasText(civicAddress) && StringUtils.hasText(processData.getPhysicalAddrValidationStatus())) {
+				logger.info("dataBC lookup failed on process data id: {}", processData.getId());
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("dataBC failed on Civic Address")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			} else if (!StringUtils.hasText(civicAddress)) {
+				logger.info("Civic Address required check on process data id: {}", processData.getId());
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Civic address cannot be empty")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+
+			
+			if (StringUtils.hasText(civicAddress)) {
+				if (!isValidCivicAddress(civicAddress)) {
+					logger.info("Validating Civic Address on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Invalid civic address format")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+					messageService.createMessage(msg);
+				} else if (!isAllUpperCase(civicAddress)) {
+					logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
+					Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+									 .messageDesc("Civic address is not in uppercase")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+					messageService.createMessage(msg);
+				}
+
+			}				
+		}	
 	}
 
 	@Async
@@ -253,6 +438,15 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 						// run asyn process
 						validateProcessData(control, rec, authenticatedUserId);
+
+						// Check if there has been repeated issues with the AddressDoctor calls
+						if (addressDoctorValidation.getAddressDoctorService().hasPersistentIssue()) {
+							// Too many errors are happening back to back; stop the validation process
+							setControlStatus(control.getId(), RowStatusService.UPLOAD_ERROR, authenticatedUserId);
+							logger.error("AddressDoctor connection has a persistent issue. Ending this run. Resolve and try again later.");
+							return;
+						}
+						
 					} else {
 						logger.info("skip validating process data with id: {}", rec.getId());
 					}
@@ -323,4 +517,52 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			processDataRepository.save(processData);
 		}
 	}
+
+	public static boolean isValidCivicAddress(String address) {
+        if (address == null || address.isEmpty()) {
+            return false;
+        }
+
+        // Split the address into parts
+        String[] parts = address.split(", ");
+        if (parts.length != 3) {
+            return false;
+        }
+
+        String streetPart = parts[0];
+
+        // Validate the street part (civic number and street name)
+        String[] streetParts = streetPart.split(" ");
+        if (streetParts.length < 2) {
+            return false;
+        }
+
+        // Check if the first part is a number (civic number)
+        try {
+            Integer.parseInt(streetParts[0]);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        
+        return true;
+    }
+	
+	public static boolean isAllUpperCase(String address) {
+        // Check if the address is not null and not empty
+        if (address == null || address.isEmpty()) {
+            return false;
+        }
+        
+        // Iterate through each character in the string
+        for (char c : address.toCharArray()) {
+            // If the character is a letter and not uppercase, return false
+            if (Character.isLetter(c) && !Character.isUpperCase(c)) {
+                return false;
+            }
+        }
+        
+        // If all letters are uppercase, return true
+        return true;
+    }
+
 }

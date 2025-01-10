@@ -275,6 +275,7 @@ public class AddressDoctorValidation {
 				 .processData(processData)
 				 .build();
 		processData.getMessages().add(msg);
+		processData.setRowstatusCode("INVALID");
 	}
 	
 }

@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface DbUtilityService {
     String PHLAT_ERROR_TYPE = "ERROR";
+	String PHLAT_WARNING_TYPE = "WARNING";
     String PHLAT_ERROR_CODE = "100";
+	String PHLAT_WARNING_CODE = "101";
 	public String getVariablesByTableNameSortedById(String tableName);
 	public String getHeadersByTableNameSortedById(String tableName);
 	public void setProcessDataStatus(Long processDataId, String rowstatusCode, String authenticatedUserId);
