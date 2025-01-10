@@ -68,7 +68,8 @@ public class OpenMapsService {
 		}
 		JsonObject root = new Gson().fromJson(jsonResponse, JsonObject.class);
 		
-		if (root.has("features") && root.getAsJsonArray("features").get(0).getAsJsonObject().has("properties")) {
+		if (root.has("features") && !root.getAsJsonArray("features").isEmpty()
+				&& root.getAsJsonArray("features").get(0).getAsJsonObject().has("properties")) {
 			JsonObject properties = root.getAsJsonArray("features").get(0).getAsJsonObject().getAsJsonObject("properties");
 			CHSAResults chsaResults = new CHSAResults();
 			if (properties.has(Constants.CHSA_CODE)) {
