@@ -428,13 +428,24 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			Iterable<ProcessData> processDataList = processDataRepository
 					.getAllProcessDataByControlTableId(controlTableId);
+			Integer maxCount =  processDataRepository.getAllProcessDataByControlTableId(controlTableId).size();
+			Integer curCount = 0;
+			Double percentCompleted = 0.0;
 			try {
 				for (ProcessData rec : processDataList) {
+					curCount++;
+					if (maxCount == 0 ) {
+						percentCompleted = 100.0;
+					} else {
+						percentCompleted = ((double) curCount / (double) maxCount) * 100;
+					}	
+					logger.info("validate process data with id: {} - {} of {} - {}% completed", rec.getId(), curCount, maxCount, (int) Math.rint(percentCompleted));
+
 					// skip if the rowstatus is COMPLETED or marked as DO_NOT_LOAD
 					if (!RowStatusService.ON_HOLD.equals(rec.getRowstatusCode())
 						&& !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
 						&& !RowStatusService.COMPLETED.equals(rec.getRowstatusCode())) {
-						logger.info("validate process data with id: {}", rec.getId());
+						logger.info("validate process data with id: {} {} of {} ... {}% completed", rec.getId(), curCount, maxCount, percentCompleted);
 
 						// run asyn process
 						validateProcessData(control, rec, authenticatedUserId);
