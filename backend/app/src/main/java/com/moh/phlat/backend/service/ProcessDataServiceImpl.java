@@ -45,9 +45,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		}
 
 		Page<ProcessData> processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
-		Integer cnt = processData.getNumberOfElements();
-		if (cnt < itemsPerPage) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage + (itemsPerPage - cnt));
+		Integer count = processData.getNumberOfElements();
+		if (count < itemsPerPage) {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage + (itemsPerPage - count));
 			processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
 		} 
 		return processData;
