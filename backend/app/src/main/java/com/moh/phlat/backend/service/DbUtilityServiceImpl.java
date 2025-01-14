@@ -445,7 +445,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					if (!RowStatusService.ON_HOLD.equals(rec.getRowstatusCode())
 						&& !RowStatusService.DO_NOT_LOAD.equals(rec.getRowstatusCode())
 						&& !RowStatusService.COMPLETED.equals(rec.getRowstatusCode())) {
-						logger.info("validate process data with id: {} {} of {} ... {}% completed", rec.getId(), curCount, maxCount, percentCompleted);
 
 						// run asyn process
 						validateProcessData(control, rec, authenticatedUserId);
