@@ -108,10 +108,10 @@ public class FileServiceImpl implements FileService {
 				controlRepository.save(control);
 
 				logger.info("Starting copy of data from source to destination table...");
-				copyInputSourceDataToProcessData(controlTableId,authenticateUserId);
-				
 
 				dbUtilityService.setControlStatus(controlTableId, RowStatusService.PRE_VALIDATION_IN_PROGRESS,	authenticateUserId);
+				copyInputSourceDataToProcessData(controlTableId,authenticateUserId);
+				
 				// asynchronous operation
 				dbUtilityService.validateProcessDataByControlTableId(controlTableId,authenticateUserId);
 				

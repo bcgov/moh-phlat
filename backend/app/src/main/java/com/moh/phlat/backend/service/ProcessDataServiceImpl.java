@@ -43,8 +43,14 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		} else {
 			pageRequest = PageRequest.of(page - 1, itemsPerPage);
 		}
-		
-		return processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
+
+		Page<ProcessData> processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
+		Integer count = processData.getNumberOfElements();
+		if (count < itemsPerPage) {
+			pageRequest = PageRequest.of(page - 1, itemsPerPage + (itemsPerPage - count));
+			processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
+		} 
+		return processData;
     }
     
     private Specification<ProcessData> buildSpecification(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess) {
