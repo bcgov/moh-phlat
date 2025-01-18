@@ -64,13 +64,13 @@ spring:
       jks:
         addressdoctor:
           key:
-            password: HCIM
+            password: ${ADDRESS_DOCTOR_KEY_PASSWORD}
           keystore:
             location: classpath:addressdoctor_keystore.jks
-            password: changeit
+            password: ${ADDRESS_DOCTOR_KEYSTORE_PASSWORD}
           truststore:
             location: classpath:addressdoctor_truststore.jks
-            password: changeit
+            password: ${ADDRESS_DOCTOR_TRUSTSTORE_PASSWORD}
 
 # -------------- spring related config ends ---------------------------
 
