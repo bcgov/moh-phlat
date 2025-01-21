@@ -40,6 +40,10 @@ resource "aws_secretsmanager_secret" "phlat_address_doctor_host" {
   name = "${var.application}_address_doctor_host"
 }
 
+resource "aws_secretsmanager_secret" "phlat_address_doctor_certificates" {
+  name = "${var.application}_address_doctor_certificates"
+}
+
 resource "aws_secretsmanager_secret_version" "phlat_db_database" {
   secret_id     = aws_secretsmanager_secret.phlat_db_database.id
   secret_string = "changeme"
@@ -90,6 +94,20 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
   "host": "${module.aurora_postgresql_v2.cluster_endpoint}",
   "port": ${module.aurora_postgresql_v2.cluster_port},
   "dbClusterIdentifier": "${module.aurora_postgresql_v2.cluster_id}"
+}
+EOF
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "phlat_address_doctor_certificates" {
+  secret_id     = aws_secretsmanager_secret.phlat_address_doctor_certificates.id
+  secret_string = <<EOF
+{
+  "truststore_password": "changeme",
+  "keystore_password": "changeme",
+  "key_password": "changeme"
 }
 EOF
   lifecycle {

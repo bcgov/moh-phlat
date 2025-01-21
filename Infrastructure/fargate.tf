@@ -89,6 +89,18 @@ resource "aws_ecs_task_definition" "phlat_td" {
           name      = "ADDRESS_DOCTOR_HOST"
           valueFrom = aws_secretsmanager_secret_version.phlat_address_doctor_host.arn
         },
+        {
+          name      = "ADDRESS_DOCTOR_TRUSTSTORE_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret_version.phlat_address_doctor_certificates.arn}:truststore_password::"
+        },
+        {
+          name      = "ADDRESS_DOCTOR_KEYSTORE_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret_version.phlat_address_doctor_certificates.arn}:keystore_password::"
+        },
+        {
+          name      = "ADDRESS_DOCTOR_KEY_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret_version.phlat_address_doctor_certificates.arn}:key_password::"
+        },
       ]
       environment = [
         {
