@@ -19,7 +19,7 @@ variable "fargate_cpu" {
 
 variable "fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
-  default     = 1024
+  default     = 2048
 }
 
 variable "phlat_cluster_name" {
@@ -62,7 +62,7 @@ variable "app_image" {
 
 variable "app_count" {
   description = "Number of docker containers to run"
-  default     = 1
+  default     = 2
 }
 
 variable "fam_console_idp_name" {

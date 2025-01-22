@@ -8,7 +8,7 @@ generate "stag_tfvars" {
   disable_signature = true
   contents          = <<-EOF
   fargate_cpu = 512
-  fargate_memory = 1024
+  fargate_memory = 2048
   app_port = 8088
   fam_console_idp_name = "PROD-IDIR"
   application = "phlat-stag"

@@ -46,4 +46,4 @@ FROM openjdk:17-jdk
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
 
 EXPOSE 8088
-ENTRYPOINT [ "java", "-jar", "/app/target/phlat-backend.jar" ]
+ENTRYPOINT [ "java", "-XX:MaxRAMPercentage=80.0", "-jar", "/app/target/phlat-backend.jar" ]
