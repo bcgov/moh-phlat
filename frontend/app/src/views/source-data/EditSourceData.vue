@@ -264,6 +264,11 @@ export default {
       // this.updateSelectedFiltersData({}, 'editSrcData');
       this.clearAllFilters();
     },
+    refreshControlTableList() {
+      this.loading = true;
+      this.populateInputSource();
+      this.loading = false;
+    },
     fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
       switch (thiseditStatusNewItem) {
         case RowStatusCode.INITIAL:
@@ -571,6 +576,22 @@ export default {
               />
             </template>
             <span>Clear Filter</span>
+          </v-tooltip>
+        </span>
+        <span>
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-btn
+                class="mx-1"
+                color="primary"
+                v-bind="props"
+                size="x-small"
+                density="default"
+                icon="mdi:mdi-refresh"
+                @click="refreshControlTableList"
+              />
+            </template>
+            <span>Refresh list</span>
           </v-tooltip>
         </span>
         <span>
