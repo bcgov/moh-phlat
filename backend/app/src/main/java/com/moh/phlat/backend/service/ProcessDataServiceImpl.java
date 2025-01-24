@@ -45,11 +45,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		}
 
 		Page<ProcessData> processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
-		Integer count = processData.getNumberOfElements();
-		if (count < itemsPerPage) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage + (itemsPerPage - count));
-			processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
-		} 
+
 		return processData;
     }
     
@@ -60,9 +56,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", reqRowStatusCode);
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", filterProcess.getId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "actions", filterProcess.getActions());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", filterProcess.getRowstatusCode());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "doNotLoad", filterProcess.getDoNotLoad());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "stakeholder", filterProcess.getStakeholder());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsIpcId", filterProcess.getHdsIpcId());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCpnId", filterProcess.getHdsCpnId());
@@ -73,11 +67,9 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdentifierType2", filterProcess.getHdsProviderIdentifierType2());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsProviderIdentifierType3", filterProcess.getHdsProviderIdentifierType3());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsMspFacilityNumber", filterProcess.getHdsMspFacilityNumber());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHibcFacId", filterProcess.getHdsHibcFacId());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsType", filterProcess.getHdsType());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubType", filterProcess.getHdsSubType());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsName", filterProcess.getHdsName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameAlias", filterProcess.getHdsNameAlias());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsPreferredNameFlag", filterProcess.getHdsPreferredNameFlag());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmail", filterProcess.getHdsEmail());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsite", filterProcess.getHdsWebsite());
@@ -91,23 +83,10 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnServiceDeliveryType", filterProcess.getPcnServiceDeliveryType());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnClinicType", filterProcess.getPcnClinicType());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnPciFlag", filterProcess.getPcnPciFlag());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsHoursOfOp", filterProcess.getHdsHoursOfOp());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsContactName", filterProcess.getHdsContactName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsIsForProfitFlag", filterProcess.getHdsIsForProfitFlag());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "sourceStatus", filterProcess.getSourceStatus());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "pcnClinicStatus", filterProcess.getPcnClinicStatus());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEffectiveStartDate", filterProcess.getHdsEffectiveStartDate());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsParentIpcId", filterProcess.getHdsParentIpcId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busIpcId", filterProcess.getBusIpcId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busCpnId", filterProcess.getBusCpnId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busName", filterProcess.getBusName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busLegalName", filterProcess.getBusLegalName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busPayeeNum", filterProcess.getBusPayeeNum());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerName", filterProcess.getBusOwnerName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerType", filterProcess.getBusOwnerType());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "busOwnerTypeOther", filterProcess.getBusOwnerTypeOther());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facBuildingName", filterProcess.getFacBuildingName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facHdsDetailAddInfo", filterProcess.getFacHdsDetailAddInfo());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddr1", filterProcess.getPhysicalAddr1());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddr2", filterProcess.getPhysicalAddr2());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddr3", filterProcess.getPhysicalAddr3());
@@ -116,7 +95,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalProvince", filterProcess.getPhysicalProvince());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalPcode", filterProcess.getPhysicalPcode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalCountry", filterProcess.getPhysicalCountry());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physAddrIsPrivate", filterProcess.getPhysAddrIsPrivate());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrPrpsTypeCd", filterProcess.getPhysicalAddrPrpsTypeCd());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrValidationStatus", filterProcess.getPhysicalAddrValidationStatus());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrMailabilityScore", filterProcess.getPhysicalAddrMailabilityScore());
@@ -128,7 +106,6 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailBc", filterProcess.getMailBc());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailPcode", filterProcess.getMailPcode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", filterProcess.getMailCountry());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", filterProcess.getMailAddrIsPriv());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrPrpsTypeCd", filterProcess.getMailAddrPrpsTypeCd());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrValidationStatus", filterProcess.getMailAddrValidationStatus());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrMailabilityScore", filterProcess.getMailAddrMailabilityScore());
@@ -145,10 +122,10 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnStatus", filterProcess.getFacPcnStatus());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facChsaCode", filterProcess.getFacChsaCode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facChsaName", filterProcess.getFacChsaName());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facLhaName", filterProcess.getFacPrecisionPoints());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facHaName", filterProcess.getFacPrecisionPoints());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnCode", filterProcess.getFacPrecisionPoints());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnName", filterProcess.getFacPrecisionPoints());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facLhaName", filterProcess.getFacLhaName());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facHaName", filterProcess.getFacHaName());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnCode", filterProcess.getFacPcnCode());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnName", filterProcess.getFacPcnName());
 		
 		return combinedSpecification;
     }

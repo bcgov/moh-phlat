@@ -489,8 +489,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			// Begin load process
 			for (ProcessData processData : processDataList) {
-				// Skip record marked as DO_NOT_LOAD and send to PLR VALID or POTENTIAL_DUPLICATE records only
-				if (!"Y".equals(processData.getDoNotLoadFlag()) && RowStatusService.VALID.equals(processData.getRowstatusCode())) {
+				// send to PLR records with VALID status only 
+				if (RowStatusService.VALID.equals(processData.getRowstatusCode())) {
 					logger.info("loading process data with id: {} to PLR.", processData.getId());
 
 					clearMessagesFromProcessData(processData);
