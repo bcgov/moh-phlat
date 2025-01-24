@@ -235,7 +235,10 @@ export default {
     this.initialize();
   },
   methods: {
-    ...mapActions(useFilterDataStore, ['updateSelectedFiltersData']),
+    ...mapActions(useFilterDataStore, [
+      'updateSelectedFiltersData',
+      'clearAllFilters',
+    ]),
     ...mapActions(useNotificationStore, ['addNotification']),
     ...mapActions(useProcessDataStore, [
       'fetchProcessDataByControlId',
@@ -256,6 +259,10 @@ export default {
       this.populateControlTable();
       // this.populateStatus();
       this.loading = false;
+    },
+    clearFilters() {
+      // this.updateSelectedFiltersData({}, 'editSrcData');
+      this.clearAllFilters();
     },
     refreshControlTableList() {
       this.loading = true;
@@ -555,6 +562,22 @@ export default {
         @update:modelValue="sortOrderHandle"
       ></v-select>
       <div class="header-component">
+        <span>
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-btn
+                class="mx-1"
+                color="primary"
+                v-bind="props"
+                size="x-small"
+                density="default"
+                icon="mdi:mdi-filter-remove"
+                @click="this.clearFilters"
+              />
+            </template>
+            <span>Clear Filter</span>
+          </v-tooltip>
+        </span>
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
