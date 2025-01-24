@@ -5,10 +5,10 @@ import { useAppStore } from '~/store/app';
 /**
  * @function appAxios
  * Returns an Axios instance with auth header and preconfiguration
- * @param {integer} [timeout=10000] Number of milliseconds before timing out the request
+ * @param {integer} [timeout=60000] Number of milliseconds before timing out the request
  * @returns {object} An axios instance
  */
-export function appAxios(timeout = 10000) {
+export function appAxios(timeout = 60000) {
   const appStore = useAppStore();
   const axiosOptions = { timeout: timeout };
   if (appStore.config) {
