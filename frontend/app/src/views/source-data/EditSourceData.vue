@@ -257,6 +257,11 @@ export default {
       // this.populateStatus();
       this.loading = false;
     },
+    refreshControlTableList() {
+      this.loading = true;
+      this.populateInputSource();
+      this.loading = false;
+    },
     fetchRowStatusCodesAvailableToSwitch(thiseditStatusNewItem) {
       switch (thiseditStatusNewItem) {
         case RowStatusCode.INITIAL:
@@ -550,6 +555,22 @@ export default {
         @update:modelValue="sortOrderHandle"
       ></v-select>
       <div class="header-component">
+        <span>
+          <v-tooltip location="bottom">
+            <template #activator="{ props }">
+              <v-btn
+                class="mx-1"
+                color="primary"
+                v-bind="props"
+                size="x-small"
+                density="default"
+                icon="mdi:mdi-refresh"
+                @click="refreshControlTableList"
+              />
+            </template>
+            <span>Refresh list</span>
+          </v-tooltip>
+        </span>
         <span>
           <v-tooltip location="bottom">
             <template #activator="{ props }">
