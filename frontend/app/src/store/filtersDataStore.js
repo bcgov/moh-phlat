@@ -42,6 +42,10 @@ export const useFilterDataStore = defineStore('filters', {
         console.log('Something went wrong. (SOPSD#3926)', error); // eslint-disable-line no-console
       }
     },
+    clearAllFilters() {
+      this.viewSourceSelectedFiltersData = {};
+      this.editSourceSelectedFiltersData = {};
+    },
     updateSelectedFiltersData(columnKey, value, sourceType = 'viewSrcData') {
       // If an object with the same key exists, update its value
       const storeKeySelectedData =
