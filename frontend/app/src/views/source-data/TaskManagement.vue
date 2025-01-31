@@ -353,7 +353,7 @@ export default {
         :items="desserts"
         :items-length="desserts.length"
         density="compact"
-        :sort-by="[{ key: 'id', order: 'asc' }]"
+        :sort-by="[{ key: 'id', order: 'desc' }]"
         class="submissions-table"
         :search="search"
       >
