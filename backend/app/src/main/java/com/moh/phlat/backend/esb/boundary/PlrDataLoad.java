@@ -46,6 +46,8 @@ public class PlrDataLoad {
 				maintainResults.setHdsResult(hdsResponse);
 			} else {
 				// If this record already has HDS IDs, mark it as loaded and skip
+				// TODO: CHANGE THIS TO RUN AN UPDATE REQUEST INSTEAD
+				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
 				maintainResults.setHdsResult(new MaintainHdsResponse(true));
 			}
 		}
@@ -76,6 +78,15 @@ public class PlrDataLoad {
 	
 	private MaintainHdsResponse createHdsProvider(Control control, ProcessData processData) {
 		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(processData);
+		MaintainHdsResponse maintainHdsResponse = new MaintainHdsResponse(processData);
+		
+		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);
+		
+		return maintainHdsResponse;
+	}
+	
+	private MaintainHdsResponse updateHdsProvider(Control control, ProcessData processData) {
+		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(processData, true);
 		MaintainHdsResponse maintainHdsResponse = new MaintainHdsResponse(processData);
 		
 		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);

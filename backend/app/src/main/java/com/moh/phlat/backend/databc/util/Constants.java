@@ -12,4 +12,14 @@ public class Constants {
     public static final String LHA_NAME = "LOCAL_HLTH_AREA_NAME";
     public static final String HSDA_NAME = "HLTH_SERVICE_DLVR_AREA_NAME";
     public static final String HA_NAME = "HLTH_AUTHORITY_NAME";
+    
+    // End Reason Codes
+    public static enum EndReasonCodes {
+    	CHG, UNK, CEASE, CORR;
+    	
+    	@Override
+    	public String toString() {
+    		return this.name();
+    	}
+    }
 }

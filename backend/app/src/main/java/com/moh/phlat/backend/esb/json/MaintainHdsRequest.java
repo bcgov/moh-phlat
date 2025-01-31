@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.moh.phlat.backend.databc.util.Constants.EndReasonCodes;
 import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
@@ -46,9 +47,15 @@ public class MaintainHdsRequest implements PlrRequest {
 	}
 	
 	private ProcessData processData;
+	private boolean isUpdate;
 	
 	public MaintainHdsRequest(ProcessData processData) {
+		this(processData, false);
+	}
+	
+	public MaintainHdsRequest(ProcessData processData, boolean isUpdate) {
 		this.processData = processData;
+		this.isUpdate = isUpdate;
 	}
 	
 	@Override
@@ -77,17 +84,21 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private ProviderDetails createProviderDetails() {
 		ProviderDetails providerDetails = new ProviderDetails();
-		providerDetails.setOrgNames(createOrgNameDtos());
-		providerDetails.setType("HDS");
-		providerDetails.setProviderType("ORG");
-		providerDetails.setHdsType(createHdsTypeDto());
-		providerDetails.setProperties(createPropertyDtos());
-		providerDetails.setIdentifiers(createIdentifierDtos());
-		providerDetails.setJurisdiction(createJurisdictionDto());
-		providerDetails.setStatuses(createStatusDtos());
-		providerDetails.setAddresses(createAddressDtos());
-		providerDetails.setTelecommunication(createTelecomunicationDtos());
-		providerDetails.setElectronicAddresses(createElectronicAddressDtos());
+		if (isUpdate) {
+			providerDetails.setTelecommunication(createTelecomunicationDtos());
+		} else {
+			providerDetails.setOrgNames(createOrgNameDtos());
+			providerDetails.setType("HDS");
+			providerDetails.setProviderType("ORG");
+			providerDetails.setHdsType(createHdsTypeDto());
+			providerDetails.setProperties(createPropertyDtos());
+			providerDetails.setIdentifiers(createIdentifierDtos());
+			providerDetails.setJurisdiction(createJurisdictionDto());
+			providerDetails.setStatuses(createStatusDtos());
+			providerDetails.setAddresses(createAddressDtos());
+			providerDetails.setTelecommunication(createTelecomunicationDtos());
+			providerDetails.setElectronicAddresses(createElectronicAddressDtos());
+		}
 		return providerDetails;
 	}
 	
@@ -289,7 +300,14 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			hdsBusTelNumber.setCreatedDate(processData.getCreatedAt());
 			hdsBusTelNumber.setDataOwnerCode(processData.getStakeholder());
-			hdsBusTelNumber.setEffectiveStartDate(processData.getCreatedAt());
+			if (isUpdate && processData.getUpdatedAt() != null) {
+				hdsBusTelNumber.setEffectiveStartDate(processData.getUpdatedAt());
+			} else {
+				hdsBusTelNumber.setEffectiveStartDate(processData.getCreatedAt());
+			}
+			if (isUpdate) {
+				hdsBusTelNumber.setEndReasonCode(EndReasonCodes.CHG.toString());
+			}
 			telecomList.add(hdsBusTelNumber);
 		}
 		
