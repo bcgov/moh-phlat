@@ -572,7 +572,7 @@ export default {
                 size="x-small"
                 density="default"
                 icon="mdi:mdi-filter-remove"
-                @click="this.clearFilters"
+                @click="clearFilters"
               />
             </template>
             <span>Clear Filter</span>
