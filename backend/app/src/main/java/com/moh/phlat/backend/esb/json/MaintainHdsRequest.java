@@ -247,7 +247,7 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private AddressDto createMailingAddressDto() {
 		AddressDto address = new AddressDto();
-		address.setActive(true);
+		address.setActive(false);
 		address.setAddressLineOne(processData.getMailAddr1());
 		if (StringUtils.hasText(processData.getMailAddr2())) {
 			address.setAddressLineTwo(processData.getMailAddr2());
@@ -266,15 +266,15 @@ public class MaintainHdsRequest implements PlrRequest {
 		address.setCountry(processData.getMailCountry());
 		address.setCountryCode("CA");
 		address.setCreatedDate(processData.getCreatedAt());
-		address.setDisplayActive(true);
+		address.setDisplayActive(false);
 		address.setDataOwnerCode(processData.getStakeholder());
 		address.setEffectiveStartDate(processData.getCreatedAt());
-		address.setNoChangeOnUpdate(true);
+		address.setNoChangeOnUpdate(false);
 		if (StringUtils.hasText(processData.getMailPcode())) {
 			address.setPostalCode(processData.getMailPcode());
 		}
 		address.setProvinceOrStateTxt(processData.getMailBc());
-		address.setUpdatable(true);
+		address.setUpdatable(false);
 		address.setValidCpc(true);
 		
 		return address;
