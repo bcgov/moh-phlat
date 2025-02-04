@@ -86,6 +86,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		ProviderDetails providerDetails = new ProviderDetails();
 		if (isUpdate) {
 			providerDetails.setTelecommunication(createTelecomunicationDtos());
+			providerDetails.setIdentifiers(createIdentifierDtos());
 		} else {
 			providerDetails.setOrgNames(createOrgNameDtos());
 			providerDetails.setType("HDS");
@@ -155,9 +156,14 @@ public class MaintainHdsRequest implements PlrRequest {
 	private List<CollegeIdentifierDto> createIdentifierDtos() {
 		List<CollegeIdentifierDto> identifierList = new ArrayList<>();
 		
-		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier1(), processData.getHdsProviderIdentifierType1());
-		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier2(), processData.getHdsProviderIdentifierType2());
-		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
+		if (isUpdate) {
+			addHdsProviderIdentifier(identifierList, processData.getHdsIpcId(), "IPC");
+			addHdsProviderIdentifier(identifierList, processData.getHdsCpnId(), "CPN");
+		} else {
+			addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier1(), processData.getHdsProviderIdentifierType1());
+			addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier2(), processData.getHdsProviderIdentifierType2());
+			addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
+		}
 				
 		if (identifierList.isEmpty()) {
 			return null;
@@ -170,8 +176,10 @@ public class MaintainHdsRequest implements PlrRequest {
 			CollegeIdentifierDto identifierDto = new CollegeIdentifierDto();
 			identifierDto.setIdentifier(hdsId);
 			identifierDto.setTypeCode(hdsIdType);
-			identifierDto.setDataOwnerCode(processData.getStakeholder());
-			identifierDto.setEffectiveStartDate(processData.getCreatedAt());
+			if (!isUpdate) {
+				identifierDto.setDataOwnerCode(processData.getStakeholder());
+				identifierDto.setEffectiveStartDate(processData.getCreatedAt());
+			}
 			identifierList.add(identifierDto);
 		}
 	}

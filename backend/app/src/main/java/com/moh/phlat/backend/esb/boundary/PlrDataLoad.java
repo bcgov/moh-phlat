@@ -48,7 +48,7 @@ public class PlrDataLoad {
 				// If this record already has HDS IDs, mark it as loaded and skip
 				// TODO: CHANGE THIS TO RUN AN UPDATE REQUEST INSTEAD
 				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
-				maintainResults.setHdsResult(new MaintainHdsResponse(true));
+				maintainResults.setHdsResult(hdsResponse);
 			}
 		}
 		//OF Relationship Load
