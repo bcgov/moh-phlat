@@ -376,8 +376,14 @@ public class ProcessDataController {
 			processData.setMailAddr2(reqProcessData.getMailAddr2());
 		
 		if (StringUtils.hasText(reqProcessData.getMailAddr3()))
-			processData.setMailCity(reqProcessData.getMailCity());
+			processData.setMailAddr3(reqProcessData.getMailAddr3());
 		
+		if (StringUtils.hasText(reqProcessData.getMailAddr4()))
+			processData.setMailAddr4(reqProcessData.getMailAddr4());
+
+		if (StringUtils.hasText(reqProcessData.getMailCity()))
+			processData.setMailCity(reqProcessData.getMailCity());
+
 		if (StringUtils.hasText(reqProcessData.getMailBc()))
 			processData.setMailBc(reqProcessData.getMailBc());
 		
