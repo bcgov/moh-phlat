@@ -84,17 +84,19 @@ public class MaintainHdsRequest implements PlrRequest {
 	
 	private ProviderDetails createProviderDetails() {
 		ProviderDetails providerDetails = new ProviderDetails();
+		
+		providerDetails.setType("HDS");
+		providerDetails.setProviderType("ORG");
+		providerDetails.setJurisdiction(createJurisdictionDto());
+		providerDetails.setIdentifiers(createIdentifierDtos());
+		
 		if (isUpdate) {
 			providerDetails.setTelecommunication(createTelecomunicationDtos());
-			providerDetails.setIdentifiers(createIdentifierDtos());
+			
 		} else {
 			providerDetails.setOrgNames(createOrgNameDtos());
-			providerDetails.setType("HDS");
-			providerDetails.setProviderType("ORG");
 			providerDetails.setHdsType(createHdsTypeDto());
 			providerDetails.setProperties(createPropertyDtos());
-			providerDetails.setIdentifiers(createIdentifierDtos());
-			providerDetails.setJurisdiction(createJurisdictionDto());
 			providerDetails.setStatuses(createStatusDtos());
 			providerDetails.setAddresses(createAddressDtos());
 			providerDetails.setTelecommunication(createTelecomunicationDtos());
@@ -318,33 +320,34 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			telecomList.add(hdsBusTelNumber);
 		}
-		
-		if (StringUtils.hasText(processData.getHdsCellNumber())) {
-			TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
-			hdsBusCellNumber.setNumber(processData.getHdsCellNumber());
-			hdsBusCellNumber.setTypeCode("MB");
-			hdsBusCellNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
-			if (StringUtils.hasText(processData.getHdsCellAreaCode())) {
-				hdsBusCellNumber.setAreaCode(processData.getHdsCellAreaCode());
+		if (!isUpdate) {
+			if (StringUtils.hasText(processData.getHdsCellNumber())) {
+				TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
+				hdsBusCellNumber.setNumber(processData.getHdsCellNumber());
+				hdsBusCellNumber.setTypeCode("MB");
+				hdsBusCellNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
+				if (StringUtils.hasText(processData.getHdsCellAreaCode())) {
+					hdsBusCellNumber.setAreaCode(processData.getHdsCellAreaCode());
+				}
+				hdsBusCellNumber.setCreatedDate(processData.getCreatedAt());
+				hdsBusCellNumber.setDataOwnerCode(processData.getStakeholder());
+				hdsBusCellNumber.setEffectiveStartDate(processData.getCreatedAt());
+				telecomList.add(hdsBusCellNumber);
 			}
-			hdsBusCellNumber.setCreatedDate(processData.getCreatedAt());
-			hdsBusCellNumber.setDataOwnerCode(processData.getStakeholder());
-			hdsBusCellNumber.setEffectiveStartDate(processData.getCreatedAt());
-			telecomList.add(hdsBusCellNumber);
-		}
-		
-		if (StringUtils.hasText(processData.getHdsFaxNumber())) {
-			TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
-			hdsBusFaxNumber.setNumber(processData.getHdsFaxNumber());
-			hdsBusFaxNumber.setTypeCode("FAX");
-			hdsBusFaxNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
-			if (StringUtils.hasText(processData.getHdsFaxAreaCode())) {
-				hdsBusFaxNumber.setAreaCode(processData.getHdsFaxAreaCode());
+			
+			if (StringUtils.hasText(processData.getHdsFaxNumber())) {
+				TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
+				hdsBusFaxNumber.setNumber(processData.getHdsFaxNumber());
+				hdsBusFaxNumber.setTypeCode("FAX");
+				hdsBusFaxNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
+				if (StringUtils.hasText(processData.getHdsFaxAreaCode())) {
+					hdsBusFaxNumber.setAreaCode(processData.getHdsFaxAreaCode());
+				}
+				hdsBusFaxNumber.setCreatedDate(processData.getCreatedAt());
+				hdsBusFaxNumber.setDataOwnerCode(processData.getStakeholder());
+				hdsBusFaxNumber.setEffectiveStartDate(processData.getCreatedAt());
+				telecomList.add(hdsBusFaxNumber);
 			}
-			hdsBusFaxNumber.setCreatedDate(processData.getCreatedAt());
-			hdsBusFaxNumber.setDataOwnerCode(processData.getStakeholder());
-			hdsBusFaxNumber.setEffectiveStartDate(processData.getCreatedAt());
-			telecomList.add(hdsBusFaxNumber);
 		}
 		return telecomList;
 	}
