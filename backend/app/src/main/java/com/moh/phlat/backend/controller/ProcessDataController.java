@@ -132,284 +132,281 @@ public class ProcessDataController {
 
 		ProcessData processData = processDataTable.get();
 
-		if (StringUtils.hasText(reqProcessData.getDoNotLoadFlag()))
-			processData.setDoNotLoadFlag(reqProcessData.getDoNotLoadFlag());
+		if (reqProcessData.getStakeholder() != null)
+			processData.setStakeholder(reqProcessData.getStakeholder().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getStakeholder()))
-			processData.setStakeholder(reqProcessData.getStakeholder());
+		if (reqProcessData.getStakeholderId() != null)
+			processData.setStakeholderId(reqProcessData.getStakeholderId().trim());
+
+		if (reqProcessData.getHdsIpcId() != null)
+			processData.setHdsIpcId(reqProcessData.getHdsIpcId().trim());
+
+		if (reqProcessData.getHdsCpnId() != null)
+			processData.setHdsCpnId(reqProcessData.getHdsCpnId().trim());
+
+		if (reqProcessData.getHdsProviderIdentifier1() != null)
+			processData.setHdsProviderIdentifier1(reqProcessData.getHdsProviderIdentifier1().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getStakeholderId()))
-			processData.setStakeholderId(reqProcessData.getStakeholderId());
+		if (reqProcessData.getHdsProviderIdentifier2() != null)
+			processData.setHdsProviderIdentifier2(reqProcessData.getHdsProviderIdentifier2().trim());
 
-		if (StringUtils.hasText(reqProcessData.getHdsIpcId()))
-			processData.setHdsIpcId(reqProcessData.getHdsIpcId());
-
-		if (StringUtils.hasText(reqProcessData.getHdsCpnId()))
-			processData.setHdsCpnId(reqProcessData.getHdsCpnId());
-
-		if (StringUtils.hasText(reqProcessData.getHdsProviderIdentifier1()))
-			processData.setHdsProviderIdentifier1(reqProcessData.getHdsProviderIdentifier1());
+		if (reqProcessData.getHdsProviderIdentifier3() != null)
+			processData.setHdsProviderIdentifier3(reqProcessData.getHdsProviderIdentifier3().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsProviderIdentifier2()))
-			processData.setHdsProviderIdentifier2(reqProcessData.getHdsProviderIdentifier2());
-
-		if (StringUtils.hasText(reqProcessData.getHdsProviderIdentifier3()))
-			processData.setHdsProviderIdentifier3(reqProcessData.getHdsProviderIdentifier3());
+		if (reqProcessData.getHdsProviderIdentifierType1() != null)
+			processData.setHdsProviderIdentifierType1(reqProcessData.getHdsProviderIdentifierType1().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsProviderIdentifierType1()))
-			processData.setHdsProviderIdentifierType1(reqProcessData.getHdsProviderIdentifierType1());
+		if (reqProcessData.getHdsProviderIdentifierType2() != null)
+			processData.setHdsProviderIdentifierType2(reqProcessData.getHdsProviderIdentifierType2().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsProviderIdentifierType2()))
-			processData.setHdsProviderIdentifierType2(reqProcessData.getHdsProviderIdentifierType2());
+		if (reqProcessData.getHdsProviderIdentifierType3() != null)
+			processData.setHdsProviderIdentifierType3(reqProcessData.getHdsProviderIdentifierType3().trim());
+
+		if (reqProcessData.getHdsMspFacilityNumber() != null)
+			processData.setHdsMspFacilityNumber(reqProcessData.getHdsMspFacilityNumber().trim());
+
+		if (reqProcessData.getHdsPauthId() != null)
+			processData.setHdsPauthId(reqProcessData.getHdsPauthId().trim());
+
+		if (reqProcessData.getHdsCategoryCode() != null)
+			processData.setHdsCategoryCode(reqProcessData.getHdsCategoryCode().trim());
+
+		if (reqProcessData.getHdsRoleTypeCode() != null)
+			processData.setHdsRoleTypeCode(reqProcessData.getHdsRoleTypeCode().trim());
+
+		if (reqProcessData.getHdsType() != null)
+			processData.setHdsType(reqProcessData.getHdsType().trim());
+
+		if (reqProcessData.getHdsSubType() != null)
+			processData.setHdsSubType(reqProcessData.getHdsSubType().trim());			
 		
-		if (StringUtils.hasText(reqProcessData.getHdsProviderIdentifierType3()))
-			processData.setHdsProviderIdentifierType3(reqProcessData.getHdsProviderIdentifierType3());
-
-		if (StringUtils.hasText(reqProcessData.getHdsMspFacilityNumber()))
-			processData.setHdsMspFacilityNumber(reqProcessData.getHdsMspFacilityNumber());
-
-		if (StringUtils.hasText(reqProcessData.getHdsPauthId()))
-			processData.setHdsPauthId(reqProcessData.getHdsPauthId());
-
-		if (StringUtils.hasText(reqProcessData.getHdsCategoryCode()))
-			processData.setHdsCategoryCode(reqProcessData.getHdsCategoryCode());
-
-		if (StringUtils.hasText(reqProcessData.getHdsRoleTypeCode()))
-			processData.setHdsRoleTypeCode(reqProcessData.getHdsRoleTypeCode());
-
-		if (StringUtils.hasText(reqProcessData.getHdsType()))
-			processData.setHdsType(reqProcessData.getHdsType());
-
-		if (StringUtils.hasText(reqProcessData.getHdsSubType()))
-			processData.setHdsSubType(reqProcessData.getHdsSubType());			
+		if (reqProcessData.getHdsUserChid() != null)
+			processData.setHdsUserChid(reqProcessData.getHdsUserChid().trim());		
 		
-		if (StringUtils.hasText(reqProcessData.getHdsUserChid()))
-			processData.setHdsUserChid(reqProcessData.getHdsUserChid());		
-		
-		if (StringUtils.hasText(reqProcessData.getHdsCreatedDts()))
-			processData.setHdsCreatedDts(reqProcessData.getHdsCreatedDts());	
+		if (reqProcessData.getHdsCreatedDts() != null)
+			processData.setHdsCreatedDts(reqProcessData.getHdsCreatedDts().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getHdsInvalidatedDts()))
-			processData.setHdsInvalidatedDts(reqProcessData.getHdsInvalidatedDts());	
+		if (reqProcessData.getHdsInvalidatedDts() != null)
+			processData.setHdsInvalidatedDts(reqProcessData.getHdsInvalidatedDts().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getHdsName()))
-			processData.setHdsName(reqProcessData.getHdsName());
+		if (reqProcessData.getHdsName() != null)
+			processData.setHdsName(reqProcessData.getHdsName().trim());
 	
-		if (StringUtils.hasText(reqProcessData.getHdsPreferredNameFlag()))
-			processData.setHdsPreferredNameFlag(reqProcessData.getHdsPreferredNameFlag());
+		if (reqProcessData.getHdsPreferredNameFlag() != null)
+			processData.setHdsPreferredNameFlag(reqProcessData.getHdsPreferredNameFlag().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsEmail()))
-			processData.setHdsEmail(reqProcessData.getHdsEmail());
+		if (reqProcessData.getHdsEmail() != null)
+			processData.setHdsEmail(reqProcessData.getHdsEmail().trim());
 		
 		if (reqProcessData.getHdsWebsite() != null)
-			processData.setHdsWebsite(reqProcessData.getHdsWebsite());
+			processData.setHdsWebsite(reqProcessData.getHdsWebsite().trim());
 
-		if (StringUtils.hasText(reqProcessData.getHdsBusTelAreaCode()))
-			processData.setHdsBusTelAreaCode(reqProcessData.getHdsBusTelAreaCode());
+		if (reqProcessData.getHdsBusTelAreaCode() != null)
+			processData.setHdsBusTelAreaCode(reqProcessData.getHdsBusTelAreaCode().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsBusTelNumber()))
-			processData.setHdsBusTelNumber(reqProcessData.getHdsBusTelNumber());
+		if (reqProcessData.getHdsBusTelNumber() != null)
+			processData.setHdsBusTelNumber(reqProcessData.getHdsBusTelNumber().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsTelExtension()))
-			processData.setHdsTelExtension(reqProcessData.getHdsTelExtension());
+		if (reqProcessData.getHdsTelExtension() != null)
+			processData.setHdsTelExtension(reqProcessData.getHdsTelExtension().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsCellAreaCode()))
-			processData.setHdsCellAreaCode(reqProcessData.getHdsCellAreaCode());
+		if (reqProcessData.getHdsCellAreaCode() != null)
+			processData.setHdsCellAreaCode(reqProcessData.getHdsCellAreaCode().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsCellNumber()))
-			processData.setHdsCellNumber(reqProcessData.getHdsCellNumber());
+		if (reqProcessData.getHdsCellNumber() != null)
+			processData.setHdsCellNumber(reqProcessData.getHdsCellNumber().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsFaxAreaCode()))
-			processData.setHdsFaxAreaCode(reqProcessData.getHdsFaxAreaCode());
+		if (reqProcessData.getHdsFaxAreaCode() != null)
+			processData.setHdsFaxAreaCode(reqProcessData.getHdsFaxAreaCode().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getHdsFaxNumber()))
-			processData.setHdsFaxNumber(reqProcessData.getHdsFaxNumber());
+		if (reqProcessData.getHdsFaxNumber() != null)
+			processData.setHdsFaxNumber(reqProcessData.getHdsFaxNumber().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPcnServiceDeliveryType()))
-			processData.setPcnServiceDeliveryType(reqProcessData.getPcnServiceDeliveryType());	
+		if (reqProcessData.getPcnServiceDeliveryType() != null)
+			processData.setPcnServiceDeliveryType(reqProcessData.getPcnServiceDeliveryType().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getPcnClinicType()))
-			processData.setPcnClinicType(reqProcessData.getPcnClinicType());
+		if (reqProcessData.getPcnClinicType() != null)
+			processData.setPcnClinicType(reqProcessData.getPcnClinicType().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPcnPciFlag()))
-			processData.setPcnPciFlag(reqProcessData.getPcnPciFlag());
+		if (reqProcessData.getPcnPciFlag() != null)
+			processData.setPcnPciFlag(reqProcessData.getPcnPciFlag().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getSourceStatus()))
-			processData.setSourceStatus(reqProcessData.getSourceStatus());
+		if (reqProcessData.getSourceStatus() != null)
+			processData.setSourceStatus(reqProcessData.getSourceStatus().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPcnClinicStatus()))
-			processData.setPcnClinicStatus(reqProcessData.getPcnClinicStatus());
+		if (reqProcessData.getPcnClinicStatus() != null)
+			processData.setPcnClinicStatus(reqProcessData.getPcnClinicStatus().trim());
 
-		if (StringUtils.hasText(reqProcessData.getHdsEffectiveStartDate()))
-			processData.setHdsEffectiveStartDate(reqProcessData.getHdsEffectiveStartDate());
+		if (reqProcessData.getHdsEffectiveStartDate() != null)
+			processData.setHdsEffectiveStartDate(reqProcessData.getHdsEffectiveStartDate().trim());
 
-		if (StringUtils.hasText(reqProcessData.getHdsEffectiveEndDate()))
-			processData.setHdsEffectiveEndDate(reqProcessData.getHdsEffectiveEndDate());	
+		if (reqProcessData.getHdsEffectiveEndDate() != null)
+			processData.setHdsEffectiveEndDate(reqProcessData.getHdsEffectiveEndDate().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacAddressUnit()))
-			processData.setFacAddressUnit(reqProcessData.getFacAddressUnit());	
+		if (reqProcessData.getFacAddressUnit() != null)
+			processData.setFacAddressUnit(reqProcessData.getFacAddressUnit().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacBuildingName()))
-			processData.setFacBuildingName(reqProcessData.getFacBuildingName());	
+		if (reqProcessData.getFacBuildingName() != null)
+			processData.setFacBuildingName(reqProcessData.getFacBuildingName().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacCivicAddrId()))
-			processData.setFacCivicAddrId(reqProcessData.getFacCivicAddrId());	
+		if (reqProcessData.getFacCivicAddrId() != null)
+			processData.setFacCivicAddrId(reqProcessData.getFacCivicAddrId().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacCivicAddr()))
-			processData.setFacCivicAddr(reqProcessData.getFacCivicAddr());	
+		if (reqProcessData.getFacCivicAddr() != null)
+			processData.setFacCivicAddr(reqProcessData.getFacCivicAddr().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacLatitude()))
-			processData.setFacLatitude(reqProcessData.getFacLatitude());	
+		if (reqProcessData.getFacLatitude() != null)
+			processData.setFacLatitude(reqProcessData.getFacLatitude().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacLongitude()))
-			processData.setFacLongitude(reqProcessData.getFacLongitude());	
+		if (reqProcessData.getFacLongitude() != null)
+			processData.setFacLongitude(reqProcessData.getFacLongitude().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacStreetDirection()))
-			processData.setFacStreetDirection(reqProcessData.getFacStreetDirection());	
+		if (reqProcessData.getFacStreetDirection() != null)
+			processData.setFacStreetDirection(reqProcessData.getFacStreetDirection().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getStreetDirectionPrefix()))
-			processData.setStreetDirectionPrefix(reqProcessData.getStreetDirectionPrefix());	
+		if (reqProcessData.getStreetDirectionPrefix() != null)
+			processData.setStreetDirectionPrefix(reqProcessData.getStreetDirectionPrefix().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getStreetTypePrefix()))
-			processData.setStreetTypePrefix(reqProcessData.getStreetTypePrefix());	
+		if (reqProcessData.getStreetTypePrefix() != null)
+			processData.setStreetTypePrefix(reqProcessData.getStreetTypePrefix().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getFacCivicNumber()))
-			processData.setFacCivicNumber(reqProcessData.getFacCivicNumber());
+		if (reqProcessData.getFacCivicNumber() != null)
+			processData.setFacCivicNumber(reqProcessData.getFacCivicNumber().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacStreetName()))
-			processData.setFacStreetName(reqProcessData.getFacStreetName());
+		if (reqProcessData.getFacStreetName() != null)
+			processData.setFacStreetName(reqProcessData.getFacStreetName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacStreetType()))
-			processData.setFacStreetType(reqProcessData.getFacStreetType());
+		if (reqProcessData.getFacStreetType() != null)
+			processData.setFacStreetType(reqProcessData.getFacStreetType().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacLocalityName()))
-			processData.setFacLocalityName(reqProcessData.getFacLocalityName());
+		if (reqProcessData.getFacLocalityName() != null)
+			processData.setFacLocalityName(reqProcessData.getFacLocalityName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacProvinceCode()))
-			processData.setFacProvinceCode(reqProcessData.getFacProvinceCode());
+		if (reqProcessData.getFacProvinceCode() != null)
+			processData.setFacProvinceCode(reqProcessData.getFacProvinceCode().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacSiteId()))
-			processData.setFacSiteId(reqProcessData.getFacSiteId());
+		if (reqProcessData.getFacSiteId() != null)
+			processData.setFacSiteId(reqProcessData.getFacSiteId().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacScore()))
-			processData.setFacScore(reqProcessData.getFacScore());
+		if (reqProcessData.getFacScore() != null)
+			processData.setFacScore(reqProcessData.getFacScore().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacMatchPrecision()))
-			processData.setFacMatchPrecision(reqProcessData.getFacMatchPrecision());
+		if (reqProcessData.getFacMatchPrecision() != null)
+			processData.setFacMatchPrecision(reqProcessData.getFacMatchPrecision().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacPrecisionPoints()))
-			processData.setFacPrecisionPoints(reqProcessData.getFacPrecisionPoints());
+		if (reqProcessData.getFacPrecisionPoints() != null)
+			processData.setFacPrecisionPoints(reqProcessData.getFacPrecisionPoints().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacHsdaName()))
-			processData.setFacHsdaName(reqProcessData.getFacHsdaName());
+		if (reqProcessData.getFacHsdaName() != null)
+			processData.setFacHsdaName(reqProcessData.getFacHsdaName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacDatabcResults()))
-			processData.setFacDatabcResults(reqProcessData.getFacDatabcResults());
+		if (reqProcessData.getFacDatabcResults() != null)
+			processData.setFacDatabcResults(reqProcessData.getFacDatabcResults().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacPcnCode()))
-			processData.setFacPcnCode(reqProcessData.getFacPcnCode());
+		if (reqProcessData.getFacPcnCode() != null)
+			processData.setFacPcnCode(reqProcessData.getFacPcnCode().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacPcnName()))
-			processData.setFacPcnName(reqProcessData.getFacPcnName());
+		if (reqProcessData.getFacPcnName() != null)
+			processData.setFacPcnName(reqProcessData.getFacPcnName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacChsaStatus()))
-			processData.setFacChsaStatus(reqProcessData.getFacChsaStatus());
+		if (reqProcessData.getFacChsaStatus() != null)
+			processData.setFacChsaStatus(reqProcessData.getFacChsaStatus().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacPcnStatus()))
-			processData.setFacPcnStatus(reqProcessData.getFacPcnStatus());
+		if (reqProcessData.getFacPcnStatus() != null)
+			processData.setFacPcnStatus(reqProcessData.getFacPcnStatus().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacChsaCode()))
-			processData.setFacChsaCode(reqProcessData.getFacChsaCode());
+		if (reqProcessData.getFacChsaCode() != null)
+			processData.setFacChsaCode(reqProcessData.getFacChsaCode().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacChsaName()))
-			processData.setFacChsaName(reqProcessData.getFacChsaName());
+		if (reqProcessData.getFacChsaName() != null)
+			processData.setFacChsaName(reqProcessData.getFacChsaName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacLhaName()))
-			processData.setFacLhaName(reqProcessData.getFacLhaName());
+		if (reqProcessData.getFacLhaName() != null)
+			processData.setFacLhaName(reqProcessData.getFacLhaName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacHaName()))
-			processData.setFacHaName(reqProcessData.getFacHaName());
+		if (reqProcessData.getFacHaName() != null)
+			processData.setFacHaName(reqProcessData.getFacHaName().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacRelnType()))
-			processData.setFacRelnType(reqProcessData.getFacRelnType());
+		if (reqProcessData.getFacRelnType() != null)
+			processData.setFacRelnType(reqProcessData.getFacRelnType().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacTypeCode()))
-			processData.setFacTypeCode(reqProcessData.getFacTypeCode());
+		if (reqProcessData.getFacTypeCode() != null)
+			processData.setFacTypeCode(reqProcessData.getFacTypeCode().trim());
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddr1()))
-			processData.setPhysicalAddr1(reqProcessData.getPhysicalAddr1());
+		if (reqProcessData.getPhysicalAddr1() != null)
+			processData.setPhysicalAddr1(reqProcessData.getPhysicalAddr1().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddr2()))
-			processData.setPhysicalAddr2(reqProcessData.getPhysicalAddr2());
+		if (reqProcessData.getPhysicalAddr2() != null)
+			processData.setPhysicalAddr2(reqProcessData.getPhysicalAddr2().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddr3()))
-			processData.setPhysicalAddr3(reqProcessData.getPhysicalAddr3());
+		if (reqProcessData.getPhysicalAddr3() != null)
+			processData.setPhysicalAddr3(reqProcessData.getPhysicalAddr3().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddr4()))
-			processData.setPhysicalAddr4(reqProcessData.getPhysicalAddr4());
+		if (reqProcessData.getPhysicalAddr4() != null)
+			processData.setPhysicalAddr4(reqProcessData.getPhysicalAddr4().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getPhysicalCity()))
-			processData.setPhysicalCity(reqProcessData.getPhysicalCity());
+		if (reqProcessData.getPhysicalCity() != null)
+			processData.setPhysicalCity(reqProcessData.getPhysicalCity().trim());
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalProvince()))
-			processData.setPhysicalProvince(reqProcessData.getPhysicalProvince());
+		if (reqProcessData.getPhysicalProvince() != null)
+			processData.setPhysicalProvince(reqProcessData.getPhysicalProvince().trim());
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalPcode()))
-			processData.setPhysicalPcode(reqProcessData.getPhysicalPcode());
+		if (reqProcessData.getPhysicalPcode() != null)
+			processData.setPhysicalPcode(reqProcessData.getPhysicalPcode().trim());
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalCountry()))
-			processData.setPhysicalCountry(reqProcessData.getPhysicalCountry());
+		if (reqProcessData.getPhysicalCountry() != null)
+			processData.setPhysicalCountry(reqProcessData.getPhysicalCountry().trim());
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddrPrpsTypeCd()))
-			processData.setPhysicalAddrPrpsTypeCd(reqProcessData.getPhysicalAddrPrpsTypeCd());
+		if (reqProcessData.getPhysicalAddrPrpsTypeCd() != null)
+			processData.setPhysicalAddrPrpsTypeCd(reqProcessData.getPhysicalAddrPrpsTypeCd().trim());
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddrValidationStatus()))
-			processData.setPhysicalAddrValidationStatus(reqProcessData.getPhysicalAddrValidationStatus());		
+		if (reqProcessData.getPhysicalAddrValidationStatus() != null)
+			processData.setPhysicalAddrValidationStatus(reqProcessData.getPhysicalAddrValidationStatus().trim());		
 
-		if (StringUtils.hasText(reqProcessData.getPhysicalAddrMailabilityScore()))
-			processData.setPhysicalAddrMailabilityScore(reqProcessData.getPhysicalAddrMailabilityScore());	
+		if (reqProcessData.getPhysicalAddrMailabilityScore() != null)
+			processData.setPhysicalAddrMailabilityScore(reqProcessData.getPhysicalAddrMailabilityScore().trim());	
 		
-		if (StringUtils.hasText(reqProcessData.getMailAddr1()))
-			processData.setMailAddr1(reqProcessData.getMailAddr1());
+		if (reqProcessData.getMailAddr1() != null)
+			processData.setMailAddr1(reqProcessData.getMailAddr1().trim());
 
-		if (StringUtils.hasText(reqProcessData.getMailAddr2()))
-			processData.setMailAddr2(reqProcessData.getMailAddr2());
+		if (reqProcessData.getMailAddr2() != null)
+			processData.setMailAddr2(reqProcessData.getMailAddr2().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getMailAddr3()))
-			processData.setMailAddr3(reqProcessData.getMailAddr3());
+		if (reqProcessData.getMailAddr3() != null)
+			processData.setMailAddr3(reqProcessData.getMailAddr3().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getMailAddr4()))
-			processData.setMailAddr4(reqProcessData.getMailAddr4());
+		if (reqProcessData.getMailAddr4() != null)
+			processData.setMailAddr4(reqProcessData.getMailAddr4().trim());
 
-		if (StringUtils.hasText(reqProcessData.getMailCity()))
-			processData.setMailCity(reqProcessData.getMailCity());
+		if (reqProcessData.getMailCity() != null)
+			processData.setMailCity(reqProcessData.getMailCity().trim());
 
-		if (StringUtils.hasText(reqProcessData.getMailBc()))
-			processData.setMailBc(reqProcessData.getMailBc());
+		if (reqProcessData.getMailBc() != null)
+			processData.setMailBc(reqProcessData.getMailBc().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getMailPcode()))
-			processData.setMailPcode(reqProcessData.getMailPcode());
+		if (reqProcessData.getMailPcode() != null)
+			processData.setMailPcode(reqProcessData.getMailPcode().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getMailCountry()))
-			processData.setMailCountry(reqProcessData.getMailCountry());
+		if (reqProcessData.getMailCountry() != null)
+			processData.setMailCountry(reqProcessData.getMailCountry().trim());
 		
-		if (StringUtils.hasText(reqProcessData.getMailAddrPrpsTypeCd()))
-			processData.setMailAddrPrpsTypeCd(reqProcessData.getMailAddrPrpsTypeCd());
+		if (reqProcessData.getMailAddrPrpsTypeCd() != null)
+			processData.setMailAddrPrpsTypeCd(reqProcessData.getMailAddrPrpsTypeCd().trim());
 
-		if (StringUtils.hasText(reqProcessData.getMailAddrValidationStatus()))
-			processData.setMailAddrValidationStatus(reqProcessData.getMailAddrValidationStatus());		
+		if (reqProcessData.getMailAddrValidationStatus() != null)
+			processData.setMailAddrValidationStatus(reqProcessData.getMailAddrValidationStatus().trim());		
 
-		if (StringUtils.hasText(reqProcessData.getMailAddrMailabilityScore()))
-			processData.setMailAddrMailabilityScore(reqProcessData.getMailAddrMailabilityScore());	
+		if (reqProcessData.getMailAddrMailabilityScore() != null)
+			processData.setMailAddrMailabilityScore(reqProcessData.getMailAddrMailabilityScore().trim());	
 		
-		if (StringUtils.hasText(reqProcessData.getPlrFacilityId()))
-			processData.setPlrFacilityId(reqProcessData.getPlrFacilityId());
+		if (reqProcessData.getPlrFacilityId() != null)
+			processData.setPlrFacilityId(reqProcessData.getPlrFacilityId().trim());
 
-		if (StringUtils.hasText(reqProcessData.getFacIfcId()))
-			processData.setFacIfcId(reqProcessData.getFacIfcId());	
+		if (reqProcessData.getFacIfcId() != null)
+			processData.setFacIfcId(reqProcessData.getFacIfcId().trim());	
 
-		if (StringUtils.hasText(reqProcessData.getRowstatusCode()))
-			processData.setRowstatusCode(reqProcessData.getRowstatusCode());
+		if (reqProcessData.getRowstatusCode() != null)
+			processData.setRowstatusCode(reqProcessData.getRowstatusCode().trim());
 
 		processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 		processData.setUpdatedAt(new Date());
