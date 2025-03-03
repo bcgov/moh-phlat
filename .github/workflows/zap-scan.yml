@@ -33,7 +33,7 @@ jobs:
     permissions: write-all
     steps:
       - name: ZAP Frontend Scan
-        uses: zaproxy/action-full-scan@v0.12.0
+        uses: zaproxy/action-baseline@v0.14.0
         with:
           target: ${{ vars.APPLICATION_URL }}
           artifact_name: zap_fe_scan
