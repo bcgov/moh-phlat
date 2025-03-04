@@ -256,6 +256,27 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					messageService.createMessage(msg);
 				}
 			}
+
+			String contactInfoGroupAction = "";
+			contactInfoGroupAction = processData.getContactInfoGroupAction().toUpperCase();
+
+			if (StringUtils.hasText(contactInfoGroupAction)) {
+				if (!contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG) &&
+				    !contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CORR) &&
+					!contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CEASE)) {
+					isValid = false;
+					logger.info("Invalid end reason code on Contact Info for process data id: {}", processData.getId()); 
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("End reason code must be CHG, CORR or CEASE")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
+
 			// error detection
 
 			if (isValid) { 

@@ -407,8 +407,24 @@ public class ProcessDataController {
 
 		if (reqProcessData.getRowstatusCode() != null)
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode().trim());
+	
+		if (reqProcessData.getPrimaryCareSpecificGroupAction() != null)
+			processData.setPrimaryCareSpecificGroupAction(reqProcessData.getPrimaryCareSpecificGroupAction().trim());				
 
-		processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
+		if (reqProcessData.getContactInfoGroupAction() != null)
+			processData.setContactInfoGroupAction(reqProcessData.getContactInfoGroupAction().trim());		
+
+		if (reqProcessData.getStatusGroupAction() != null)
+			processData.setStatusGroupAction(reqProcessData.getStatusGroupAction().trim());
+
+
+		if (reqProcessData.getPhysicalAddressGroupAction() != null)
+			processData.setPhysicalAddressGroupAction(reqProcessData.getPhysicalAddressGroupAction().trim());			
+
+		if (reqProcessData.getMailingAddressGroupAction() != null)
+			processData.setMailingAddressGroupAction(reqProcessData.getMailingAddressGroupAction().trim());			
+
+			processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 		processData.setUpdatedAt(new Date());
 
 		try {

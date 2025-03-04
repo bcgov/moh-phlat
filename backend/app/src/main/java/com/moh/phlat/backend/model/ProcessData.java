@@ -325,6 +325,22 @@ public class ProcessData {
 	@Column(name="updated_by")
     private String updatedBy;
 
+    @Column(name="primary_care_specific_group_action")
+    private String primaryCareSpecificGroupAction;
+    
+    @Column(name="contact_info_group_action")
+    private String contactInfoGroupAction;	
+
+    @Column(name="status_group_action")
+    private String statusGroupAction;
+    
+    @Column(name="physical_address_group_action")
+    private String physicalAddressGroupAction;
+    
+    @Column(name="mailing_address_group_action")
+    private String mailingAddressGroupAction;	
+
+
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
     private List<Message> messages;
 }

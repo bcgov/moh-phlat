@@ -160,7 +160,9 @@ public class FileServiceImpl implements FileService {
                                                  String mailAddr1, String mailAddr2,
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailBc,
                                                  String mailPcode, String mailCountry, 
-                                                 Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
+                                                 Date createdAt, String createdBy, Date updatedAt, String updatedBy,
+												 String  primaryCareSpecificGroupAction, String contactInfoGroupAction,
+												 String statusGroupAction, String physicalAddressGroupAction, String mailingAddressGroupAction) {
         return SourceData.builder()
                           .controlTableId(controlTableId)
                           .doNotLoadFlag(doNotLoadFlag)
@@ -218,6 +220,11 @@ public class FileServiceImpl implements FileService {
                           .createdBy(createdBy)
                           .updatedAt(updatedAt)
                           .updatedBy(updatedBy)
+						  .primaryCareSpecificGroupAction(primaryCareSpecificGroupAction)
+						  .contactInfoGroupAction(contactInfoGroupAction)
+						  .statusGroupAction(statusGroupAction)			
+						  .physicalAddressGroupAction(physicalAddressGroupAction)		
+						  .mailingAddressGroupAction(mailingAddressGroupAction)									  							  			  
                           .build();
     }
 
@@ -284,7 +291,12 @@ public class FileServiceImpl implements FileService {
 				 		new Date(), // created_at
 			    		authenticateUserId,
 				 		null, // updated_at
-				 		null // updated_by
+				 		null, // updated_by
+						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_ACTION"),
+						csvRecords.get("CONTACT_INFO_GROUP_ACTION"),
+						csvRecords.get("STATUS_GROUP_ACTION"),
+						csvRecords.get("PHYSICAL_ADDRESS_GROUP_ACTION"),
+						csvRecords.get("MAILING_ADDRESS_GROUP_ACTION")
 				));
 			}
 			return sourceData;
@@ -369,6 +381,11 @@ public class FileServiceImpl implements FileService {
             processData.setMailAddrValidationStatus("");
             processData.setCreatedAt(s.getCreatedAt());
             processData.setCreatedBy(authenticateUserId);
+			processData.setPrimaryCareSpecificGroupAction(s.getPrimaryCareSpecificGroupAction());
+			processData.setContactInfoGroupAction(s.getContactInfoGroupAction());
+			processData.setStatusGroupAction(s.getStatusGroupAction());
+			processData.setPhysicalAddressGroupAction(s.getPhysicalAddressGroupAction());
+			processData.setMailingAddressGroupAction(s.getMailingAddressGroupAction());
 	        
 	        // set default values
 		    if (controlTable.getLoadTypeHds()) {
