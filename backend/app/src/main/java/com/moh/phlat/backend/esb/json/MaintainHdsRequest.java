@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.moh.phlat.backend.databc.util.Constants.EndReasonCodes;
 import com.moh.phlat.backend.model.ProcessData;
 
 import ca.bc.gov.health.plr.dto.esb.MaintainProviderRequest;
@@ -33,6 +32,8 @@ import ca.bc.gov.health.plr.dto.provider.esb.TelecommunicationDto;
 public class MaintainHdsRequest implements PlrRequest {
 	
 	private static final String COMMUNICATION_PURPOSE_CODE = "BC";
+	private static final String HDS_SUB_TYPE = "HDS_SUB_TYPE";
+	private static final String ADDRESS_UNIT = "ADDRESS_UNIT";
 	
 	private static ObjectMapper objectMapper;
 	static {
@@ -89,23 +90,20 @@ public class MaintainHdsRequest implements PlrRequest {
 		providerDetails.setProviderType("ORG");
 		providerDetails.setJurisdiction(createJurisdictionDto());
 		providerDetails.setIdentifiers(createIdentifierDtos());
-		
-		if (isUpdate) {
-			providerDetails.setTelecommunication(createTelecomunicationDtos());
-			
-		} else {
-			providerDetails.setOrgNames(createOrgNameDtos());
-			providerDetails.setHdsType(createHdsTypeDto());
-			providerDetails.setProperties(createPropertyDtos());
-			providerDetails.setStatuses(createStatusDtos());
-			providerDetails.setAddresses(createAddressDtos());
-			providerDetails.setTelecommunication(createTelecomunicationDtos());
-			providerDetails.setElectronicAddresses(createElectronicAddressDtos());
-		}
+		providerDetails.setOrgNames(createOrgNameDtos());
+		providerDetails.setHdsType(createHdsTypeDto());
+		providerDetails.setProperties(createPropertyDtos());
+		providerDetails.setStatuses(createStatusDtos());
+		providerDetails.setAddresses(createAddressDtos());
+		providerDetails.setTelecommunication(createTelecomunicationDtos());
+		providerDetails.setElectronicAddresses(createElectronicAddressDtos());
 		return providerDetails;
 	}
 	
 	private List<OrgNameDto> createOrgNameDtos() {
+		if (isUpdate) {
+			return null;
+		}
 		List<OrgNameDto> orgNameList = new ArrayList<>();
 		
 		OrgNameDto orgName = new OrgNameDto();
@@ -133,11 +131,11 @@ public class MaintainHdsRequest implements PlrRequest {
 	private List<PropertyDto> createPropertyDtos() {
 		List<PropertyDto> propertyList = new ArrayList<>();
 		
-		if (StringUtils.hasText(processData.getHdsSubType())) {
-			addHdsProperty(propertyList, processData.getHdsSubType(), "HDS_SUB_TYPE");
+		if (StringUtils.hasText(processData.getHdsSubType()) && !isUpdate) {
+			addHdsProperty(propertyList, processData.getHdsSubType(), HDS_SUB_TYPE);
 		}
-		if (StringUtils.hasText(processData.getFacAddressUnit())) {
-			addHdsProperty(propertyList, processData.getFacAddressUnit(), "ADDRESS_UNIT");
+		if (StringUtils.hasText(processData.getFacAddressUnit()) && !isUpdate) {
+			addHdsProperty(propertyList, processData.getFacAddressUnit(), ADDRESS_UNIT);
 		}
 		
 		if (propertyList.isEmpty()) {
@@ -147,12 +145,12 @@ public class MaintainHdsRequest implements PlrRequest {
 	}
 	
 	private void addHdsProperty(List<PropertyDto> propertyList, String propertyValue, String propertyType) {
-		PropertyDto hdsSubTypeProp = new PropertyDto();
-		hdsSubTypeProp.setPropertyValue(propertyValue);
-		hdsSubTypeProp.setPropertyTypeCode(propertyType);
-		hdsSubTypeProp.setDataOwnerCode(processData.getStakeholder());
-		hdsSubTypeProp.setEffectiveStartDate(processData.getCreatedAt());
-		propertyList.add(hdsSubTypeProp);
+		PropertyDto hdsProperty = new PropertyDto();
+		hdsProperty.setPropertyValue(propertyValue);
+		hdsProperty.setPropertyTypeCode(propertyType);
+		hdsProperty.setDataOwnerCode(processData.getStakeholder());
+		hdsProperty.setEffectiveStartDate(processData.getUpdatedAt());
+		propertyList.add(hdsProperty);
 	}
 	
 	private List<CollegeIdentifierDto> createIdentifierDtos() {
@@ -194,6 +192,10 @@ public class MaintainHdsRequest implements PlrRequest {
 	}
 	
 	private List<StatusDto> createStatusDtos() {
+		if (isUpdate && !StringUtils.hasText(processData.getStatusGroupAction())) {
+			return null;
+		}
+		
 		List<StatusDto> statusList = new ArrayList<>();
 		
 		StatusDto status = new StatusDto();
@@ -201,13 +203,24 @@ public class MaintainHdsRequest implements PlrRequest {
 		status.setClassCode("AE");
 		status.setReasonCode("ORG");
 		status.setDataOwnerCode(processData.getStakeholder());
-		status.setEffectiveStartDate(processData.getCreatedAt());
+		if (StringUtils.hasText(processData.getStatusGroupAction()) && processData.getUpdatedAt() != null) {
+			status.setEffectiveStartDate(processData.getUpdatedAt());
+		} else {
+			status.setEffectiveStartDate(processData.getCreatedAt());
+		}
+		if (StringUtils.hasText(processData.getStatusGroupAction())) {
+			status.setEndReasonCode(processData.getStatusGroupAction());
+		}
 		statusList.add(status);
 		
 		return statusList;
 	}
 	
 	private List<AddressDto> createAddressDtos() {
+		if (isUpdate && !StringUtils.hasText(processData.getPhysicalAddressGroupAction() + processData.getMailingAddressGroupAction())) {
+			return null;
+		}
+		
 		List<AddressDto> addressList = new ArrayList<>();
 		addressList.add(createPhysicalAddressDto());
 		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailBc())) {
@@ -241,7 +254,6 @@ public class MaintainHdsRequest implements PlrRequest {
 		address.setCreatedDate(processData.getCreatedAt());
 		address.setDisplayActive(false);
 		address.setDataOwnerCode(processData.getStakeholder());
-		address.setEffectiveStartDate(processData.getCreatedAt());
 		address.setNoChangeOnUpdate(false);
 		if (StringUtils.hasText(processData.getPhysicalPcode())) {
 			address.setPostalCode(processData.getPhysicalPcode());
@@ -251,6 +263,14 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		address.setUpdatable(false);
 		address.setValidCpc(true);
+		if (StringUtils.hasText(processData.getPhysicalAddressGroupAction()) && processData.getUpdatedAt() != null) {
+			address.setEffectiveStartDate(processData.getUpdatedAt());
+		} else {
+			address.setEffectiveStartDate(processData.getCreatedAt());
+		}
+		if (StringUtils.hasText(processData.getPhysicalAddressGroupAction())) {
+			address.setEndReasonCode(processData.getPhysicalAddressGroupAction());
+		}
 		
 		return address;
 	}
@@ -278,7 +298,6 @@ public class MaintainHdsRequest implements PlrRequest {
 		address.setCreatedDate(processData.getCreatedAt());
 		address.setDisplayActive(false);
 		address.setDataOwnerCode(processData.getStakeholder());
-		address.setEffectiveStartDate(processData.getCreatedAt());
 		address.setNoChangeOnUpdate(false);
 		if (StringUtils.hasText(processData.getMailPcode())) {
 			address.setPostalCode(processData.getMailPcode());
@@ -286,12 +305,21 @@ public class MaintainHdsRequest implements PlrRequest {
 		address.setProvinceOrStateTxt(processData.getMailBc());
 		address.setUpdatable(false);
 		address.setValidCpc(true);
+		if (StringUtils.hasText(processData.getMailingAddressGroupAction()) && processData.getUpdatedAt() != null) {
+			address.setEffectiveStartDate(processData.getUpdatedAt());
+		} else {
+			address.setEffectiveStartDate(processData.getCreatedAt());
+		}
+		if (StringUtils.hasText(processData.getMailingAddressGroupAction())) {
+			address.setEndReasonCode(processData.getMailingAddressGroupAction());
+		}
 		
 		return address;
 	}
 	
 	private List<TelecommunicationDto> createTelecomunicationDtos() {
-		if (!StringUtils.hasText(processData.getHdsBusTelNumber() + processData.getHdsCellNumber() + processData.getHdsFaxNumber())) {
+		if ((isUpdate && !StringUtils.hasText(processData.getContactInfoGroupAction()))
+				|| !StringUtils.hasText(processData.getHdsBusTelNumber() + processData.getHdsCellNumber() + processData.getHdsFaxNumber())) {
 			return null;
 		}
 		
@@ -310,44 +338,55 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			hdsBusTelNumber.setCreatedDate(processData.getCreatedAt());
 			hdsBusTelNumber.setDataOwnerCode(processData.getStakeholder());
-			if (isUpdate && processData.getUpdatedAt() != null) {
+			if (StringUtils.hasText(processData.getContactInfoGroupAction()) && processData.getUpdatedAt() != null) {
 				hdsBusTelNumber.setEffectiveStartDate(processData.getUpdatedAt());
 			} else {
 				hdsBusTelNumber.setEffectiveStartDate(processData.getCreatedAt());
 			}
-			if (isUpdate) {
-				hdsBusTelNumber.setEndReasonCode(EndReasonCodes.CHG.toString());
+			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
+				hdsBusTelNumber.setEndReasonCode(processData.getContactInfoGroupAction());
 			}
 			telecomList.add(hdsBusTelNumber);
 		}
-		if (!isUpdate) {
-			if (StringUtils.hasText(processData.getHdsCellNumber())) {
-				TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
-				hdsBusCellNumber.setNumber(processData.getHdsCellNumber());
-				hdsBusCellNumber.setTypeCode("MB");
-				hdsBusCellNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
-				if (StringUtils.hasText(processData.getHdsCellAreaCode())) {
-					hdsBusCellNumber.setAreaCode(processData.getHdsCellAreaCode());
-				}
-				hdsBusCellNumber.setCreatedDate(processData.getCreatedAt());
-				hdsBusCellNumber.setDataOwnerCode(processData.getStakeholder());
+		if (StringUtils.hasText(processData.getHdsCellNumber())) {
+			TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
+			hdsBusCellNumber.setNumber(processData.getHdsCellNumber());
+			hdsBusCellNumber.setTypeCode("MB");
+			hdsBusCellNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
+			if (StringUtils.hasText(processData.getHdsCellAreaCode())) {
+				hdsBusCellNumber.setAreaCode(processData.getHdsCellAreaCode());
+			}
+			hdsBusCellNumber.setCreatedDate(processData.getCreatedAt());
+			hdsBusCellNumber.setDataOwnerCode(processData.getStakeholder());
+			if (StringUtils.hasText(processData.getContactInfoGroupAction()) && processData.getUpdatedAt() != null) {
+				hdsBusCellNumber.setEffectiveStartDate(processData.getUpdatedAt());
+			} else {
 				hdsBusCellNumber.setEffectiveStartDate(processData.getCreatedAt());
-				telecomList.add(hdsBusCellNumber);
 			}
-			
-			if (StringUtils.hasText(processData.getHdsFaxNumber())) {
-				TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
-				hdsBusFaxNumber.setNumber(processData.getHdsFaxNumber());
-				hdsBusFaxNumber.setTypeCode("FAX");
-				hdsBusFaxNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
-				if (StringUtils.hasText(processData.getHdsFaxAreaCode())) {
-					hdsBusFaxNumber.setAreaCode(processData.getHdsFaxAreaCode());
-				}
-				hdsBusFaxNumber.setCreatedDate(processData.getCreatedAt());
-				hdsBusFaxNumber.setDataOwnerCode(processData.getStakeholder());
+			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
+				hdsBusCellNumber.setEndReasonCode(processData.getContactInfoGroupAction());
+			}
+			telecomList.add(hdsBusCellNumber);
+		}
+		if (StringUtils.hasText(processData.getHdsFaxNumber())) {
+			TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
+			hdsBusFaxNumber.setNumber(processData.getHdsFaxNumber());
+			hdsBusFaxNumber.setTypeCode("FAX");
+			hdsBusFaxNumber.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
+			if (StringUtils.hasText(processData.getHdsFaxAreaCode())) {
+				hdsBusFaxNumber.setAreaCode(processData.getHdsFaxAreaCode());
+			}
+			hdsBusFaxNumber.setCreatedDate(processData.getCreatedAt());
+			hdsBusFaxNumber.setDataOwnerCode(processData.getStakeholder());
+			if (StringUtils.hasText(processData.getContactInfoGroupAction()) && processData.getUpdatedAt() != null) {
+				hdsBusFaxNumber.setEffectiveStartDate(processData.getUpdatedAt());
+			} else {
 				hdsBusFaxNumber.setEffectiveStartDate(processData.getCreatedAt());
-				telecomList.add(hdsBusFaxNumber);
 			}
+			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
+				hdsBusFaxNumber.setEndReasonCode(processData.getContactInfoGroupAction());
+			}
+			telecomList.add(hdsBusFaxNumber);
 		}
 		return telecomList;
 	}
@@ -366,7 +405,14 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsEmail.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			hdsEmail.setCreatedDate(processData.getCreatedAt());
 			hdsEmail.setDataOwnerCode(processData.getStakeholder());
-			hdsEmail.setEffectiveStartDate(processData.getCreatedAt());
+			if (StringUtils.hasText(processData.getContactInfoGroupAction()) && processData.getUpdatedAt() != null) {
+				hdsEmail.setEffectiveStartDate(processData.getUpdatedAt());
+			} else {
+				hdsEmail.setEffectiveStartDate(processData.getCreatedAt());
+			}
+			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
+				hdsEmail.setEndReasonCode(processData.getContactInfoGroupAction());
+			}
 			electronicAddressList.add(hdsEmail);
 		}
 		
@@ -377,7 +423,14 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsWebsite.setCommunicationPurposeCode(COMMUNICATION_PURPOSE_CODE);
 			hdsWebsite.setCreatedDate(processData.getCreatedAt());
 			hdsWebsite.setDataOwnerCode(processData.getStakeholder());
-			hdsWebsite.setEffectiveStartDate(processData.getCreatedAt());
+			if (StringUtils.hasText(processData.getContactInfoGroupAction()) && processData.getUpdatedAt() != null) {
+				hdsWebsite.setEffectiveStartDate(processData.getUpdatedAt());
+			} else {
+				hdsWebsite.setEffectiveStartDate(processData.getCreatedAt());
+			}
+			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
+				hdsWebsite.setEndReasonCode(processData.getContactInfoGroupAction());
+			}
 			electronicAddressList.add(hdsWebsite);
 		}
 		

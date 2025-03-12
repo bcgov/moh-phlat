@@ -258,7 +258,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 			String contactInfoGroupAction = "";
-			contactInfoGroupAction = processData.getContactInfoGroupAction().toUpperCase();
+			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
+				contactInfoGroupAction = processData.getContactInfoGroupAction().toUpperCase();
+			}
 
 			if (StringUtils.hasText(contactInfoGroupAction)) {
 				if (!contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG) &&
