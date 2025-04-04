@@ -10,8 +10,8 @@ let keycloak = new Keycloak({
 
 // For some reason idpHint cannot be specified in the Keycloak constructor or init options.
 // https://stackoverflow.com/a/56338011/201891
-let kcLogin = await keycloak.login;
-await keycloak.login = (options) => {
+let kcLogin = keycloak.login;
+keycloak.login = (options) => {
   options.idpHint = 'idir';
   return kcLogin(options);
 };
