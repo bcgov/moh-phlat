@@ -22,8 +22,6 @@ export const useAuthStore = defineStore('auth', {
     authenticated: false,
   }),
   getters: {
-    createLoginUrl: (state) => (options) =>
-      state.keycloak.createLoginUrl(options),
     createLogoutUrl: (state) => (options) =>
       state.keycloak.createLogoutUrl(options),
     email: (state) =>
@@ -102,11 +100,14 @@ export const useAuthStore = defineStore('auth', {
     },
   },
   actions: {
+    async createLoginUrl(options) {
+      return await this.keycloak.createLoginUrl(options);
+    },
     updateKeycloak(keycloak, isAuthenticated) {
       this.keycloak = keycloak;
       this.authenticated = isAuthenticated;
     },
-    login(idpHint) {
+    async login(idpHint) {
       if (this.ready) {
         if (!this.redirectUri) this.redirectUri = location.toString();
 
@@ -119,7 +120,7 @@ export const useAuthStore = defineStore('auth', {
 
         if (options.idpHint) {
           // Redirect to Keycloak if idpHint is available
-          window.location.replace(this.createLoginUrl(options));
+          window.location.replace(await this.createLoginUrl(options));
         } else {
           // Navigate to internal login page if no idpHint specified
           const router = getRouter();
