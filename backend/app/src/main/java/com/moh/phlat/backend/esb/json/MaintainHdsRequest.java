@@ -156,14 +156,11 @@ public class MaintainHdsRequest implements PlrRequest {
 	private List<CollegeIdentifierDto> createIdentifierDtos() {
 		List<CollegeIdentifierDto> identifierList = new ArrayList<>();
 		
-		//if (isUpdate) {
-			addHdsProviderIdentifier(identifierList, processData.getHdsIpcId(), "IPC");
-			addHdsProviderIdentifier(identifierList, processData.getHdsCpnId(), "CPN");
-		//} else {
-			addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier1(), processData.getHdsProviderIdentifierType1());
-			addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier2(), processData.getHdsProviderIdentifierType2());
-			addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
-		//}
+		addHdsProviderIdentifier(identifierList, processData.getHdsIpcId(), "IPC");
+		addHdsProviderIdentifier(identifierList, processData.getHdsCpnId(), "CPN");
+		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier1(), processData.getHdsProviderIdentifierType1());
+		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier2(), processData.getHdsProviderIdentifierType2());
+		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
 				
 		if (identifierList.isEmpty()) {
 			return null;

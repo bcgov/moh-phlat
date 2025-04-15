@@ -42,11 +42,16 @@ public class PlrDataLoad {
 			if (!StringUtils.hasText(processData.getHdsPauthId())
 					&& !StringUtils.hasText(processData.getHdsCpnId())
 					&& !StringUtils.hasText(processData.getHdsIpcId())) {
+				// Create HDS
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
-			} else {
-				// If this record already has HDS IDs, mark it as loaded and skip
-				// TODO: CHANGE THIS TO RUN AN UPDATE REQUEST INSTEAD
+			} else if (StringUtils.hasText(
+					processData.getContactInfoGroupAction() +
+					processData.getMailingAddressGroupAction() +
+					processData.getPhysicalAddressGroupAction() +
+					processData.getPrimaryCareSpecificGroupAction() +
+					processData.getStatusGroupAction())) {
+				// Update HDS
 				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
 			}
