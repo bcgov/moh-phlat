@@ -410,19 +410,84 @@ public class ProcessDataController {
 	
 		if (reqProcessData.getPrimaryCareSpecificGroupAction() != null)
 			processData.setPrimaryCareSpecificGroupAction(reqProcessData.getPrimaryCareSpecificGroupAction().trim());				
+		
+		if (reqProcessData.getPrimaryCareSpecificGroupStartDate() != null)
+			processData.setPrimaryCareSpecificGroupStartDate(reqProcessData.getPrimaryCareSpecificGroupStartDate());				
+		
+		if (reqProcessData.getPrimaryCareSpecificGroupEndDate() != null)
+			processData.setPrimaryCareSpecificGroupEndDate(reqProcessData.getPrimaryCareSpecificGroupEndDate());				
 
-		if (reqProcessData.getContactInfoGroupAction() != null)
-			processData.setContactInfoGroupAction(reqProcessData.getContactInfoGroupAction().trim());		
+		if (reqProcessData.getHdsEmailGroupAction() != null)
+			processData.setHdsEmailGroupAction(reqProcessData.getHdsEmailGroupAction().trim());		
+		
+		if (reqProcessData.getHdsEmailGroupStartDate() != null)
+			processData.setHdsEmailGroupStartDate(reqProcessData.getHdsEmailGroupStartDate());				
+		
+		if (reqProcessData.getHdsEmailGroupEndDate() != null)
+			processData.setHdsEmailGroupEndDate(reqProcessData.getHdsEmailGroupEndDate());				
+
+		if (reqProcessData.getHdsWebsiteGroupAction() != null)
+			processData.setHdsWebsiteGroupAction(reqProcessData.getHdsWebsiteGroupAction().trim());		
+		
+		if (reqProcessData.getHdsWebsiteGroupStartDate() != null)
+			processData.setHdsWebsiteGroupStartDate(reqProcessData.getHdsWebsiteGroupStartDate());				
+		
+		if (reqProcessData.getHdsWebsiteGroupEndDate() != null)
+			processData.setHdsWebsiteGroupEndDate(reqProcessData.getHdsWebsiteGroupEndDate());				
+
+		if (reqProcessData.getBusinessPhoneGroupAction() != null)
+			processData.setBusinessPhoneGroupAction(reqProcessData.getBusinessPhoneGroupAction().trim());		
+		
+		if (reqProcessData.getBusinessPhoneGroupStartDate() != null)
+			processData.setBusinessPhoneGroupStartDate(reqProcessData.getBusinessPhoneGroupStartDate());				
+		
+		if (reqProcessData.getBusinessPhoneGroupEndDate() != null)
+			processData.setBusinessPhoneGroupEndDate(reqProcessData.getBusinessPhoneGroupEndDate());				
+
+		if (reqProcessData.getHdsCellGroupAction() != null)
+			processData.setHdsCellGroupAction(reqProcessData.getHdsCellGroupAction().trim());		
+		
+		if (reqProcessData.getHdsCellGroupStartDate() != null)
+			processData.setHdsCellGroupStartDate(reqProcessData.getHdsCellGroupStartDate());				
+		
+		if (reqProcessData.getHdsCellGroupEndDate() != null)
+			processData.setHdsCellGroupEndDate(reqProcessData.getHdsCellGroupEndDate());				
+
+		if (reqProcessData.getHdsFaxGroupAction() != null)
+			processData.setHdsFaxGroupAction(reqProcessData.getHdsFaxGroupAction().trim());		
+		
+		if (reqProcessData.getHdsFaxGroupStartDate() != null)
+			processData.setHdsFaxGroupStartDate(reqProcessData.getHdsFaxGroupStartDate());				
+		
+		if (reqProcessData.getHdsFaxGroupEndDate() != null)
+			processData.setHdsFaxGroupEndDate(reqProcessData.getHdsFaxGroupEndDate());				
 
 		if (reqProcessData.getStatusGroupAction() != null)
 			processData.setStatusGroupAction(reqProcessData.getStatusGroupAction().trim());
-
+		
+		if (reqProcessData.getStatusGroupStartDate() != null)
+			processData.setStatusGroupStartDate(reqProcessData.getStatusGroupStartDate());				
+		
+		if (reqProcessData.getStatusGroupEndDate() != null)
+			processData.setStatusGroupEndDate(reqProcessData.getStatusGroupEndDate());				
 
 		if (reqProcessData.getPhysicalAddressGroupAction() != null)
 			processData.setPhysicalAddressGroupAction(reqProcessData.getPhysicalAddressGroupAction().trim());			
+		
+		if (reqProcessData.getPhysicalAddressGroupStartDate() != null)
+			processData.setPhysicalAddressGroupStartDate(reqProcessData.getPhysicalAddressGroupStartDate());				
+		
+		if (reqProcessData.getPhysicalAddressGroupEndDate() != null)
+			processData.setPhysicalAddressGroupEndDate(reqProcessData.getPhysicalAddressGroupEndDate());				
 
 		if (reqProcessData.getMailingAddressGroupAction() != null)
 			processData.setMailingAddressGroupAction(reqProcessData.getMailingAddressGroupAction().trim());			
+		
+		if (reqProcessData.getMailingAddressGroupStartDate() != null)
+			processData.setMailingAddressGroupStartDate(reqProcessData.getMailingAddressGroupStartDate());				
+		
+		if (reqProcessData.getMailingAddressGroupEndDate() != null)
+			processData.setMailingAddressGroupEndDate(reqProcessData.getMailingAddressGroupEndDate());				
 
 			processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 		processData.setUpdatedAt(new Date());

@@ -17,6 +17,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
+
 @Entity
 @Table(name = "PROCESS_DATA")
 @Builder
@@ -328,19 +330,99 @@ public class ProcessData {
     @Column(name="primary_care_specific_group_action")
     private String primaryCareSpecificGroupAction;
     
-    @Column(name="contact_info_group_action")
-    private String contactInfoGroupAction;	
-
+    @Column(name="primary_care_specific_group_start_date")
+    private Date primaryCareSpecificGroupStartDate;
+    
+    @Column(name="primary_care_specific_group_end_date")
+    private Date primaryCareSpecificGroupEndDate;
+    
+    @Column(name="hds_email_group_action")
+    private String hdsEmailGroupAction;
+    
+    @Column(name="hds_email_group_start_date")
+    private Date hdsEmailGroupStartDate;
+    
+    @Column(name="hds_email_group_end_date")
+    private Date hdsEmailGroupEndDate;
+    
+    @Column(name="hds_website_group_action")
+    private String hdsWebsiteGroupAction;
+    
+    @Column(name="hds_website_group_start_date")
+    private Date hdsWebsiteGroupStartDate;
+    
+    @Column(name="hds_website_group_end_date")
+    private Date hdsWebsiteGroupEndDate;
+    
+    @Column(name="business_phone_group_action")
+    private String businessPhoneGroupAction;
+    
+    @Column(name="business_phone_group_start_date")
+    private Date businessPhoneGroupStartDate;
+    
+    @Column(name="business_phone_group_end_date")
+    private Date businessPhoneGroupEndDate;
+    
+    @Column(name="hds_fax_group_action")
+    private String hdsFaxGroupAction;
+    
+    @Column(name="hds_fax_group_start_date")
+    private Date hdsFaxGroupStartDate;
+    
+    @Column(name="hds_fax_group_end_date")
+    private Date hdsFaxGroupEndDate;
+    
+    @Column(name="hds_cell_group_action")
+    private String hdsCellGroupAction;
+    
+    @Column(name="hds_cell_group_start_date")
+    private Date hdsCellGroupStartDate;
+    
+    @Column(name="hds_cell_group_end_date")
+    private Date hdsCellGroupEndDate;
+    
     @Column(name="status_group_action")
     private String statusGroupAction;
+    
+    @Column(name="status_group_start_date")
+    private Date statusGroupStartDate;
+    
+    @Column(name="status_group_end_date")
+    private Date statusGroupEndDate;
     
     @Column(name="physical_address_group_action")
     private String physicalAddressGroupAction;
     
+    @Column(name="physical_address_group_start_date")
+    private Date physicalAddressGroupStartDate;
+    
+    @Column(name="physical_address_group_end_date")
+    private Date physicalAddressGroupEndDate;
+    
     @Column(name="mailing_address_group_action")
-    private String mailingAddressGroupAction;	
+    private String mailingAddressGroupAction;
+    
+    @Column(name="mailing_address_group_start_date")
+    private Date mailingAddressGroupStartDate;
+    
+    @Column(name="mailing_address_group_end_date")
+    private Date mailingAddressGroupEndDate;
 
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
     private List<Message> messages;
+    
+    public boolean hasHdsGroupActions() {
+    	return StringUtils.hasText(
+    			primaryCareSpecificGroupAction +
+    			hdsEmailGroupAction +
+    			hdsWebsiteGroupAction +
+    			businessPhoneGroupAction +
+    			hdsCellGroupAction +
+    			hdsFaxGroupAction +
+    			statusGroupAction +
+    			physicalAddressGroupAction +
+    			mailingAddressGroupAction
+    			);
+    }
 }

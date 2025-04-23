@@ -257,17 +257,17 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				}
 			}
 
-			String contactInfoGroupAction = "";
-			if (StringUtils.hasText(processData.getContactInfoGroupAction())) {
-				contactInfoGroupAction = processData.getContactInfoGroupAction().toUpperCase();
+			String primaryCareSpecificGroupAction = "";
+			if (StringUtils.hasText(processData.getPrimaryCareSpecificGroupAction())) {
+				primaryCareSpecificGroupAction = processData.getPrimaryCareSpecificGroupAction().toUpperCase();
 			}
 
-			if (StringUtils.hasText(contactInfoGroupAction)) {
-				if (!contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG) &&
-				    !contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CORR) &&
-					!contactInfoGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CEASE)) {
+			if (StringUtils.hasText(primaryCareSpecificGroupAction)) {
+				if (!primaryCareSpecificGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG) &&
+				    !primaryCareSpecificGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CORR) &&
+					!primaryCareSpecificGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CEASE)) {
 					isValid = false;
-					logger.info("Invalid end reason code on Contact Info for process data id: {}", processData.getId()); 
+					logger.info("Invalid end reason code on Primary Care Specific for process data id: {}", processData.getId()); 
 					Message msg = Message.builder()
 										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)

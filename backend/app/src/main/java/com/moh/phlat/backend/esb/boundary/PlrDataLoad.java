@@ -45,12 +45,7 @@ public class PlrDataLoad {
 				// Create HDS
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
-			} else if (StringUtils.hasText(
-					processData.getContactInfoGroupAction() +
-					processData.getMailingAddressGroupAction() +
-					processData.getPhysicalAddressGroupAction() +
-					processData.getPrimaryCareSpecificGroupAction() +
-					processData.getStatusGroupAction())) {
+			} else if (processData.hasHdsGroupActions()) {
 				// Update HDS
 				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
