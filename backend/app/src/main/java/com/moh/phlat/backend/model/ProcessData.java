@@ -330,83 +330,203 @@ public class ProcessData {
     @Column(name="primary_care_specific_group_action")
     private String primaryCareSpecificGroupAction;
     
-    @Column(name="primary_care_specific_group_start_date")
-    private Date primaryCareSpecificGroupStartDate;
+    @Column(name="primary_care_specific_group_effective_start_date")
+    private Date primaryCareSpecificGroupEffectiveStartDate;
     
-    @Column(name="primary_care_specific_group_end_date")
-    private Date primaryCareSpecificGroupEndDate;
+    @Column(name="primary_care_specific_group_effective_end_date")
+    private Date primaryCareSpecificGroupEffectiveEndDate;
+
+    @Column(name="hds_sub_type_group_action")
+    private String hdsSubTypeGroupAction;
+    
+    @Column(name="hds_sub_type_group_effective_start_date")
+    private Date hdsSubTypeGroupEffectiveStartDate;
+    
+    @Column(name="hds_sub_type_group_effective_end_date")
+    private Date hdsSubTypeGroupEffectiveEndDate;
+
+    @Column(name="hds_name_group_action")
+    private String hdsNameGroupAction;
+    
+    @Column(name="hds_name_group_effective_start_date")
+    private Date hdsNameGroupEffectiveStartDate;
+    
+    @Column(name="hds_name_group_effective_end_date")
+    private Date hdsNameGroupEffectiveEndDate;
     
     @Column(name="hds_email_group_action")
     private String hdsEmailGroupAction;
     
-    @Column(name="hds_email_group_start_date")
-    private Date hdsEmailGroupStartDate;
+    @Column(name="hds_email_group_effective_start_date")
+    private Date hdsEmailGroupEffectiveStartDate;
     
-    @Column(name="hds_email_group_end_date")
-    private Date hdsEmailGroupEndDate;
+    @Column(name="hds_email_group_effective_end_date")
+    private Date hdsEmailGroupEffectiveEndDate;
     
     @Column(name="hds_website_group_action")
     private String hdsWebsiteGroupAction;
     
-    @Column(name="hds_website_group_start_date")
-    private Date hdsWebsiteGroupStartDate;
+    @Column(name="hds_website_group_effective_start_date")
+    private Date hdsWebsiteGroupEffectiveStartDate;
     
-    @Column(name="hds_website_group_end_date")
-    private Date hdsWebsiteGroupEndDate;
+    @Column(name="hds_website_group_effective_end_date")
+    private Date hdsWebsiteGroupEffectiveEndDate;
     
     @Column(name="business_phone_group_action")
     private String businessPhoneGroupAction;
     
-    @Column(name="business_phone_group_start_date")
-    private Date businessPhoneGroupStartDate;
+    @Column(name="business_phone_group_effective_start_date")
+    private Date businessPhoneGroupEffectiveStartDate;
     
-    @Column(name="business_phone_group_end_date")
-    private Date businessPhoneGroupEndDate;
+    @Column(name="business_phone_group_effective_end_date")
+    private Date businessPhoneGroupEffectiveEndDate;
     
     @Column(name="hds_fax_group_action")
     private String hdsFaxGroupAction;
     
-    @Column(name="hds_fax_group_start_date")
-    private Date hdsFaxGroupStartDate;
+    @Column(name="hds_fax_group_effective_start_date")
+    private Date hdsFaxGroupEffectiveStartDate;
     
-    @Column(name="hds_fax_group_end_date")
-    private Date hdsFaxGroupEndDate;
+    @Column(name="hds_fax_group_effective_end_date")
+    private Date hdsFaxGroupEffectiveEndDate;
     
     @Column(name="hds_cell_group_action")
     private String hdsCellGroupAction;
     
-    @Column(name="hds_cell_group_start_date")
-    private Date hdsCellGroupStartDate;
+    @Column(name="hds_cell_group_effective_start_date")
+    private Date hdsCellGroupEffectiveStartDate;
     
-    @Column(name="hds_cell_group_end_date")
-    private Date hdsCellGroupEndDate;
+    @Column(name="hds_cell_group_effective_end_date")
+    private Date hdsCellGroupEffectiveEndDate;
     
     @Column(name="status_group_action")
     private String statusGroupAction;
     
-    @Column(name="status_group_start_date")
-    private Date statusGroupStartDate;
+    @Column(name="status_group_effective_start_date")
+    private Date statusGroupEffectiveStartDate;
     
-    @Column(name="status_group_end_date")
-    private Date statusGroupEndDate;
+    @Column(name="status_group_effective_end_date")
+    private Date statusGroupEffectiveEndDate;
     
     @Column(name="physical_address_group_action")
     private String physicalAddressGroupAction;
     
-    @Column(name="physical_address_group_start_date")
-    private Date physicalAddressGroupStartDate;
+    @Column(name="physical_address_group_effective_start_date")
+    private Date physicalAddressGroupEffectiveStartDate;
     
-    @Column(name="physical_address_group_end_date")
-    private Date physicalAddressGroupEndDate;
+    @Column(name="physical_address_group_effective_end_date")
+    private Date physicalAddressGroupEffectiveEndDate;
     
     @Column(name="mailing_address_group_action")
     private String mailingAddressGroupAction;
     
-    @Column(name="mailing_address_group_start_date")
-    private Date mailingAddressGroupStartDate;
+    @Column(name="mailing_address_group_effective_start_date")
+    private Date mailingAddressGroupEffectiveStartDate;
     
-    @Column(name="mailing_address_group_end_date")
-    private Date mailingAddressGroupEndDate;
+    @Column(name="mailing_address_group_effective_end_date")
+    private Date mailingAddressGroupEffectiveEndDate;
+    
+    @Column(name="record_action")
+    private String recordAction;
+    
+    @Column(name="plr_hds_sub_type")
+    private String plrHdsSubType;
+
+    @Column(name="plr_hds_sub_type_effective_start_date")
+    private Date plrHdsSubTypeEffectiveStartDate;
+
+    @Column(name="plr_sub_type_effective_end_date")
+    private Date plrSubTypeEffectiveEndDate;
+
+    @Column(name="plr_hds_name")
+    private String plrHdsName;
+
+    @Column(name="plr_hds_name_efective_start_date")
+    private Date plrHdsNameEfectiveStartDate;
+
+    @Column(name="plr_hds_name_effective_end_date")
+    private Date plrHdsNameEffectiveEndDate;
+
+    @Column(name="plr_source_status")
+    private String plrSourceStatus;
+
+    @Column(name="plr_source_status_effective_start_date")
+    private Date plrSourceStatusEffectiveStartDate;
+
+    @Column(name="plr_source_status_effective_end_date")
+    private Date plrSourceStatusEffectiveEndDate;
+
+    @Column(name="plr_pcn_clinic_status")
+    private String plrPcnClinicStatus;
+
+    @Column(name="plr_pcn_clinic_status_effective_start_date")
+    private Date plrPcnClinicStatusEffectiveStartDate;
+
+    @Column(name="plr_pcn_clinic_status_effective_end_date")
+    private Date plrPcnClinicStatusEffectiveEndDate;
+
+    @Column(name="plr_hds_email")
+    private String plrHdsEmail;
+
+    @Column(name="plr_hds_email_effective_start_date")
+    private Date plrHdsEmailEffectiveStartDate;
+
+    @Column(name="plr_hds_email_effective_end_date")
+    private Date plrHdsEmailEffectiveEndDate;
+
+    @Column(name="plr_hds_website")
+    private String plrHdsWebsite;
+
+    @Column(name="plr_hds_website_effective_start_date")
+    private Date plrHdsWebsiteEffectiveStartDate;
+
+    @Column(name="plr_hds_website_effective_end_date")
+    private Date plrHdsWebsiteEffectiveEndDate;
+
+    @Column(name="plr_hds_business_phone")
+    private String plrHdsBusinessPhone;
+
+    @Column(name="plr_business_phone_effective_start_date")
+    private Date plrBusinessPhoneEffectiveStartDate;
+
+    @Column(name="plr_business_phone_effective_end_date")
+    private Date plrBusinessPhoneEffectiveEndDate;
+
+    @Column(name="plr_hds_fax")
+    private String plrHdsFax;
+
+    @Column(name="plr_hds_fax_effective_start_date")
+    private Date plrHdsFaxEffectiveStartDate;
+
+    @Column(name="plr_hds_fax_effective_end_date")
+    private Date plrHdsFaxEffectiveEndDate;
+
+    @Column(name="plr_hds_cell")
+    private String plrHdsCell;
+
+    @Column(name="plr_hds_cell_effective_start_date")
+    private Date plrHdsCellEffectiveStartDate;
+
+    @Column(name="plr_hds_cell_effective_end_date_date")
+    private Date plrHdsCellEffectiveEndDateDate;
+
+    @Column(name="plr_physical_address")
+    private String plrPhysicalAddress;
+
+    @Column(name="plr_physical_address_effectve_start_date")
+    private Date plrPhysicalAddressEffectveStartDate;
+
+    @Column(name="plr_physical_address_effective_end_date")
+    private Date plrPhysicalAddressEffectiveEndDate;
+
+    @Column(name="plr_mailing_address")
+    private String plrMailingAddress;
+
+    @Column(name="plr_mailing_address_effective_start_date")
+    private Date plrMailingAddressEffectiveStartDate;
+
+    @Column(name="plr_mailing_address_effective_end_date")
+    private Date plrMailingAddressEffectiveEndDate;
 
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
@@ -415,6 +535,8 @@ public class ProcessData {
     public boolean hasHdsGroupActions() {
     	return StringUtils.hasText(
     			primaryCareSpecificGroupAction +
+    			hdsSubTypeGroupAction +
+    			hdsNameGroupAction +
     			hdsEmailGroupAction +
     			hdsWebsiteGroupAction +
     			businessPhoneGroupAction +
@@ -422,7 +544,8 @@ public class ProcessData {
     			hdsFaxGroupAction +
     			statusGroupAction +
     			physicalAddressGroupAction +
-    			mailingAddressGroupAction
+    			mailingAddressGroupAction +
+    			recordAction
     			);
     }
 }
