@@ -162,18 +162,31 @@ public class FileServiceImpl implements FileService {
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailBc,
                                                  String mailPcode, String mailCountry, 
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy,
-												 String primaryCareSpecificGroupAction, Date primaryCareSpecificGroupEffectiveStartDate, Date primaryCareSpecificGroupEffectiveEndDate,
-												 String hdsSubTypeGroupAction, Date hdsSubTypeGroupEffectiveStartDate, Date hdsSubTypeGroupEffectiveEndDate,
-												 String hdsNameGroupAction, Date hdsNameGroupEffectiveStartDate, Date hdsNameGroupEffectiveEndDate,
-												 String hdsEmailGroupAction, Date hdsEmailGroupEffectiveStartDate, Date hdsEmailGroupEffectiveEndDate,
-												 String hdsWebsiteGroupAction, Date hdsWebsiteGroupEffectiveStartDate, Date hdsWebsiteGroupEffectiveEndDate,
-												 String businessPhoneGroupAction, Date businessPhoneStartDate, Date businessPhoneGroupEffectiveEndDate,
-												 String hdsCellGroupAction, Date hdsCellGroupEffectiveStartDate, Date hdsCellGroupEffectiveEndDate,
-												 String hdsFaxGroupAction, Date hdsFaxGroupEffectiveStartDate, Date hdsFaxGroupEffectiveEndDate,
-												 String statusGroupAction, Date statusGroupEffectiveStartDate, Date statusGroupEffectiveEndDate,
-												 String physicalAddressGroupAction, Date physicalAddressGroupEffectiveStartDate, Date physicalAddressGroupEffectiveEndDate,
-												 String mailingAddressGroupAction, Date mailingAddressGroupEffectiveStartDate, Date mailingAddressGroupEffectiveEndDate,
-												 String recordAction) {
+                                                 // Group actions and effective dates
+												 String primaryCareSpecificGroupAction, String primaryCareSpecificGroupEffectiveStartDate, String primaryCareSpecificGroupEffectiveEndDate,
+												 String hdsSubTypeGroupAction, String hdsSubTypeGroupEffectiveStartDate, String hdsSubTypeGroupEffectiveEndDate,
+												 String hdsNameGroupAction, String hdsNameGroupEffectiveStartDate, String hdsNameGroupEffectiveEndDate,
+												 String hdsEmailGroupAction, String hdsEmailGroupEffectiveStartDate, String hdsEmailGroupEffectiveEndDate,
+												 String hdsWebsiteGroupAction, String hdsWebsiteGroupEffectiveStartDate, String hdsWebsiteGroupEffectiveEndDate,
+												 String businessPhoneGroupAction, String businessPhoneStartDate, String businessPhoneGroupEffectiveEndDate,
+												 String hdsCellGroupAction, String hdsCellGroupEffectiveStartDate, String hdsCellGroupEffectiveEndDate,
+												 String hdsFaxGroupAction, String hdsFaxGroupEffectiveStartDate, String hdsFaxGroupEffectiveEndDate,
+												 String statusGroupAction, String statusGroupEffectiveStartDate, String statusGroupEffectiveEndDate,
+												 String physicalAddressGroupAction, String physicalAddressGroupEffectiveStartDate, String physicalAddressGroupEffectiveEndDate,
+												 String mailingAddressGroupAction, String mailingAddressGroupEffectiveStartDate, String mailingAddressGroupEffectiveEndDate,
+												 String recordAction,
+												 // PLR storage only
+												 String plrHdsSubType, String plrHdsSubTypeEffectiveStartDate, String plrHdsSubTypeEffectiveEndDate,
+												 String plrHdsName, String plrHdsNameEffectiveStartDate, String plrHdsNameEffectiveEndDate,
+												 String plrSourceStatus, String plrSourceStatusEffectiveStartDate, String plrSourceStatusEffectiveEndDate,
+												 String plrPcnClinicStatus, String plrPcnClinicStatusEffectiveStartDate, String plrPcnClinicStatusEffectiveEndDate,
+												 String plrHdsEmail, String plrHdsEmailEffectiveStartDate, String plrHdsEmailEffectiveEndDate,
+												 String plrHdsWebsite, String plrHdsWebsiteEffectiveStartDate, String plrHdsWebsiteEffectiveEndDate,
+												 String plrHdsBusinessPhone, String plrBusinessPhoneEffectiveStartDate, String plrBusinessPhoneEffectiveEndDate,
+												 String plrHdsFax, String plrHdsFaxEffectiveStartDate, String plrHdsFaxEffectiveEndDate,
+												 String plrHdsCell, String plrHdsCellEffectiveStartDate, String plrHdsCellEffectiveEndDate,
+												 String plrPhysicalAddress, String plrPhysicalAddressEffectiveStartDate, String plrPhysicalAddressEffectiveEndDate,
+												 String plrMailingAddress, String plrMailingAddressEffectiveStartDate, String plrMailingAddressEffectiveEndDate) {
         return SourceData.builder()
                           .controlTableId(controlTableId)
                           .doNotLoadFlag(doNotLoadFlag)
@@ -231,6 +244,7 @@ public class FileServiceImpl implements FileService {
                           .createdBy(createdBy)
                           .updatedAt(updatedAt)
                           .updatedBy(updatedBy)
+                          // Group actions and effective dates
 						  .primaryCareSpecificGroupAction(primaryCareSpecificGroupAction)
 						  .primaryCareSpecificGroupEffectiveStartDate(primaryCareSpecificGroupEffectiveStartDate)
 						  .primaryCareSpecificGroupEffectiveEndDate(primaryCareSpecificGroupEffectiveEndDate)
@@ -265,6 +279,40 @@ public class FileServiceImpl implements FileService {
 						  .mailingAddressGroupEffectiveStartDate(mailingAddressGroupEffectiveStartDate)
 						  .mailingAddressGroupEffectiveEndDate(mailingAddressGroupEffectiveEndDate)
 						  .recordAction(recordAction)
+						  // PLR storage only
+						  .plrHdsSubType(plrHdsSubType)
+						  .plrHdsSubTypeEffectiveStartDate(plrHdsSubTypeEffectiveStartDate)
+						  .plrHdsSubTypeEffectiveEndDate(plrHdsSubTypeEffectiveEndDate)
+						  .plrHdsName(plrHdsName)
+						  .plrHdsNameEffectiveStartDate(plrHdsNameEffectiveStartDate)
+						  .plrHdsNameEffectiveEndDate(plrHdsNameEffectiveEndDate)
+						  .plrSourceStatus(plrSourceStatus)
+						  .plrSourceStatusEffectiveStartDate(plrSourceStatusEffectiveStartDate)
+						  .plrSourceStatusEffectiveEndDate(plrSourceStatusEffectiveEndDate)
+						  .plrPcnClinicStatus(plrPcnClinicStatus)
+						  .plrPcnClinicStatusEffectiveStartDate(plrPcnClinicStatusEffectiveStartDate)
+						  .plrPcnClinicStatusEffectiveEndDate(plrPcnClinicStatusEffectiveEndDate)
+						  .plrHdsEmail(plrHdsEmail)
+						  .plrHdsEmailEffectiveStartDate(plrHdsEmailEffectiveStartDate)
+						  .plrHdsEmailEffectiveEndDate(plrHdsEmailEffectiveEndDate)
+						  .plrHdsWebsite(plrHdsWebsite)
+						  .plrHdsWebsiteEffectiveStartDate(plrHdsWebsiteEffectiveStartDate)
+						  .plrHdsWebsiteEffectiveEndDate(plrHdsWebsiteEffectiveEndDate)
+						  .plrHdsBusinessPhone(plrHdsBusinessPhone)
+						  .plrBusinessPhoneEffectiveStartDate(plrBusinessPhoneEffectiveStartDate)
+						  .plrBusinessPhoneEffectiveEndDate(plrBusinessPhoneEffectiveEndDate)
+						  .plrHdsFax(plrHdsFax)
+						  .plrHdsFaxEffectiveStartDate(plrHdsFaxEffectiveStartDate)
+						  .plrHdsFaxEffectiveEndDate(plrHdsFaxEffectiveEndDate)
+						  .plrHdsCell(plrHdsCell)
+						  .plrHdsCellEffectiveStartDate(plrHdsCellEffectiveStartDate)
+						  .plrHdsCellEffectiveEndDate(plrHdsCellEffectiveEndDate)
+						  .plrPhysicalAddress(plrPhysicalAddress)
+						  .plrPhysicalAddressEffectiveStartDate(plrPhysicalAddressEffectiveStartDate)
+						  .plrPhysicalAddressEffectiveEndDate(plrPhysicalAddressEffectiveEndDate)
+						  .plrMailingAddress(plrMailingAddress)
+						  .plrMailingAddressEffectiveStartDate(plrMailingAddressEffectiveStartDate)
+						  .plrMailingAddressEffectiveEndDate(plrMailingAddressEffectiveEndDate)
                           .build();
     }
 
@@ -272,34 +320,9 @@ public class FileServiceImpl implements FileService {
 		try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 				CSVParser csvParser = new CSVParser(fileReader,
 						CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			List<SourceData> sourceData = new ArrayList<SourceData>();
 			List<CSVRecord> records = csvParser.getRecords();
 			for (CSVRecord csvRecords : records) {
-				
-				String primaryCareSpecificGroupEffectiveStartDate = csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_EFFECTIVE_START_DATE");
-				String primaryCareSpecificGroupEffectiveEndDate = csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_EFFECTIVE_END_DATE");
-				String hdsSubTypeGroupEffectiveStartDate = csvRecords.get("HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE");
-				String hdsSubTypeGroupEffectiveEndDate = csvRecords.get("HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE");
-				String hdsNameGroupEffectiveStartDate = csvRecords.get("HDS_NAME_GROUP_EFFECTIVE_START_DATE");
-				String hdsNameGroupEffectiveEndDate = csvRecords.get("HDS_NAME_GROUP_EFFECTIVE_END_DATE");
-				String hdsEmailGroupEffectiveStartDate = csvRecords.get("HDS_EMAIL_GROUP_EFFECTIVE_START_DATE");
-				String hdsEmailGroupEffectiveEndDate = csvRecords.get("HDS_EMAIL_GROUP_EFFECTIVE_END_DATE");
-				String hdsWebsiteGroupEffectiveStartDate = csvRecords.get("HDS_WEBSITE_GROUP_EFFECTIVE_START_DATE");
-				String hdsWebsiteGroupEffectiveEndDate = csvRecords.get("HDS_WEBSITE_GROUP_EFFECTIVE_END_DATE");
-				String businessPhoneGroupEffectiveStartDate = csvRecords.get("BUSINESS_PHONE_GROUP_EFFECTIVE_START_DATE");
-				String businessPhoneGroupEffectiveEndDate = csvRecords.get("BUSINESS_PHONE_GROUP_EFFECTIVE_END_DATE");
-				String hdsCellGroupEffectiveStartDate = csvRecords.get("HDS_CELL_GROUP_EFFECTIVE_START_DATE");
-				String hdsCellGroupEffectiveEndDate = csvRecords.get("HDS_CELL_GROUP_EFFECTIVE_END_DATE");
-				String hdsFaxGroupEffectiveStartDate = csvRecords.get("HDS_FAX_GROUP_EFFECTIVE_START_DATE");
-				String hdsFaxGroupEffectiveEndDate = csvRecords.get("HDS_FAX_GROUP_EFFECTIVE_END_DATE");
-				String statusGroupEffectiveStartDate = csvRecords.get("STATUS_GROUP_EFFECTIVE_START_DATE");
-				String statusGroupEffectiveEndDate = csvRecords.get("STATUS_GROUP_EFFECTIVE_END_DATE");
-				String physicalAddressGroupEffectiveStartDate = csvRecords.get("PHYSICAL_ADDRESS_GROUP_EFFECTIVE_START_DATE");
-				String physicalAddressGroupEffectiveEndDate = csvRecords.get("PHYSICAL_ADDRESS_GROUP_EFFECTIVE_END_DATE");
-				String mailingAddressGroupEffectiveStartDate = csvRecords.get("MAILING_ADDRESS_GROUP_EFFECTIVE_START_DATE");
-				String mailingAddressGroupEffectiveEndDate = csvRecords.get("MAILING_ADDRESS_GROUP_EFFECTIVE_END_DATE");
-				
 				sourceData.add(createSourceData(
 					    controlTableId,
 						csvRecords.get("DO_NOT_LOAD_FLAG"), 
@@ -357,40 +380,75 @@ public class FileServiceImpl implements FileService {
 			    		authenticateUserId,
 				 		null, // updated_at
 				 		null, // updated_by
+				 		// Group actions and effective dates
 						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_ACTION"),
-						primaryCareSpecificGroupEffectiveStartDate != null ? sdf.parse(primaryCareSpecificGroupEffectiveStartDate) : null,
-						primaryCareSpecificGroupEffectiveEndDate != null ? sdf.parse(primaryCareSpecificGroupEffectiveEndDate) : null,
+						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_SUB_TYPE_GROUP_ACTION"),
-						hdsSubTypeGroupEffectiveStartDate != null ? sdf.parse(hdsSubTypeGroupEffectiveStartDate) : null,
-						hdsSubTypeGroupEffectiveEndDate != null ? sdf.parse(hdsSubTypeGroupEffectiveEndDate) : null,
+						csvRecords.get("HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_NAME_GROUP_ACTION"),
-						hdsNameGroupEffectiveStartDate != null ? sdf.parse(hdsNameGroupEffectiveStartDate) : null,
-						hdsNameGroupEffectiveEndDate != null ? sdf.parse(hdsNameGroupEffectiveEndDate) : null,
+						csvRecords.get("HDS_NAME_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("HDS_NAME_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_EMAIL_GROUP_ACTION"),
-						hdsEmailGroupEffectiveStartDate != null ? sdf.parse(hdsEmailGroupEffectiveStartDate) : null,
-						hdsEmailGroupEffectiveEndDate != null ? sdf.parse(hdsEmailGroupEffectiveEndDate) : null,
+						csvRecords.get("HDS_EMAIL_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("HDS_EMAIL_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_WEBSITE_GROUP_ACTION"),
-						hdsWebsiteGroupEffectiveStartDate != null ? sdf.parse(hdsWebsiteGroupEffectiveStartDate) : null,
-						hdsWebsiteGroupEffectiveEndDate != null ? sdf.parse(hdsWebsiteGroupEffectiveEndDate) : null,
+						csvRecords.get("HDS_WEBSITE_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("HDS_WEBSITE_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("BUSINESS_PHONE_GROUP_ACTION"),
-						businessPhoneGroupEffectiveStartDate != null ? sdf.parse(businessPhoneGroupEffectiveStartDate) : null,
-						businessPhoneGroupEffectiveEndDate != null ? sdf.parse(businessPhoneGroupEffectiveEndDate) : null,
+						csvRecords.get("BUSINESS_PHONE_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("BUSINESS_PHONE_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_CELL_GROUP_ACTION"),
-						hdsCellGroupEffectiveStartDate != null ? sdf.parse(hdsCellGroupEffectiveStartDate) : null,
-						hdsCellGroupEffectiveEndDate != null ? sdf.parse(hdsCellGroupEffectiveEndDate) : null,
+						csvRecords.get("HDS_CELL_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("HDS_CELL_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_FAX_GROUP_ACTION"),
-						hdsFaxGroupEffectiveStartDate != null ? sdf.parse(hdsFaxGroupEffectiveStartDate) : null,
-						hdsFaxGroupEffectiveEndDate != null ? sdf.parse(hdsFaxGroupEffectiveEndDate) : null,
+						csvRecords.get("HDS_FAX_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("HDS_FAX_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("STATUS_GROUP_ACTION"),
-						statusGroupEffectiveStartDate != null ? sdf.parse(statusGroupEffectiveStartDate) : null,
-						statusGroupEffectiveEndDate != null ? sdf.parse(statusGroupEffectiveEndDate) : null,
+						csvRecords.get("STATUS_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("STATUS_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("PHYSICAL_ADDRESS_GROUP_ACTION"),
-						physicalAddressGroupEffectiveStartDate != null ? sdf.parse(physicalAddressGroupEffectiveStartDate) : null,
-						physicalAddressGroupEffectiveEndDate != null ? sdf.parse(physicalAddressGroupEffectiveEndDate) : null,
+						csvRecords.get("PHYSICAL_ADDRESS_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("PHYSICAL_ADDRESS_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("MAILING_ADDRESS_GROUP_ACTION"),
-						mailingAddressGroupEffectiveStartDate != null ? sdf.parse(mailingAddressGroupEffectiveStartDate) : null,
-						mailingAddressGroupEffectiveEndDate != null ? sdf.parse(mailingAddressGroupEffectiveEndDate) : null,
-						csvRecords.get("RECORD_ACTION")
+						csvRecords.get("MAILING_ADDRESS_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("MAILING_ADDRESS_GROUP_EFFECTIVE_END_DATE"),
+						csvRecords.get("RECORD_ACTION"),
+						// PLR storage only
+						csvRecords.get("PLR_HDS_SUB_TYPE"),
+						csvRecords.get("PLR_HDS_SUB_TYPE_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_HDS_SUB_TYPE_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_HDS_NAME"),
+						csvRecords.get("PLR_HDS_NAME_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_HDS_NAME_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_SOURCE_STATUS"),
+						csvRecords.get("PLR_SOURCE_STATUS_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_SOURCE_STATUS_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_PCN_CLINIC_STATUS"),
+						csvRecords.get("PLR_PCN_CLINIC_STATUS_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_HDS_EMAIL"),
+						csvRecords.get("PLR_HDS_EMAIL_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_HDS_EMAIL_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_HDS_WEBSITE"),
+						csvRecords.get("PLR_HDS_WEBSITE_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_HDS_WEBSITE_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_HDS_BUSINESS_PHONE"),
+						csvRecords.get("PLR_BUSINESS_PHONE_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_BUSINESS_PHONE_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_HDS_FAX"),
+						csvRecords.get("PLR_HDS_FAX_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_HDS_FAX_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_HDS_CELL"),
+						csvRecords.get("PLR_HDS_CELL_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_HDS_CELL_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_PHYSICAL_ADDRESS"),
+						csvRecords.get("PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE"),
+					    csvRecords.get("PLR_MAILING_ADDRESS"),
+						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE")
 				));
 			}
 			return sourceData;
@@ -475,6 +533,7 @@ public class FileServiceImpl implements FileService {
             processData.setMailAddrValidationStatus("");
             processData.setCreatedAt(s.getCreatedAt());
             processData.setCreatedBy(authenticateUserId);
+            // Group actions and effective dates
 			processData.setPrimaryCareSpecificGroupAction(s.getPrimaryCareSpecificGroupAction());
 			processData.setPrimaryCareSpecificGroupEffectiveStartDate(s.getPrimaryCareSpecificGroupEffectiveStartDate());
 			processData.setPrimaryCareSpecificGroupEffectiveEndDate(s.getPrimaryCareSpecificGroupEffectiveEndDate());
@@ -508,6 +567,41 @@ public class FileServiceImpl implements FileService {
 			processData.setMailingAddressGroupAction(s.getMailingAddressGroupAction());
 			processData.setMailingAddressGroupEffectiveStartDate(s.getMailingAddressGroupEffectiveStartDate());
 			processData.setMailingAddressGroupEffectiveEndDate(s.getMailingAddressGroupEffectiveEndDate());
+			processData.setRecordAction(s.getRecordAction());
+			// PLR storage only
+			processData.setPlrHdsSubType(s.getPlrHdsSubType());
+			processData.setPlrHdsSubTypeEffectiveStartDate(s.getPlrHdsSubTypeEffectiveStartDate());
+			processData.setPlrHdsSubTypeEffectiveEndDate(s.getPlrHdsSubTypeEffectiveEndDate());
+			processData.setPlrHdsName(s.getPlrHdsName());
+			processData.setPlrHdsNameEffectiveStartDate(s.getPlrHdsNameEffectiveStartDate());
+			processData.setPlrHdsNameEffectiveEndDate(s.getPlrHdsNameEffectiveEndDate());
+			processData.setPlrSourceStatus(s.getPlrSourceStatus());
+			processData.setPlrSourceStatusEffectiveStartDate(s.getPlrSourceStatusEffectiveStartDate());
+			processData.setPlrSourceStatusEffectiveEndDate(s.getPlrSourceStatusEffectiveEndDate());
+			processData.setPlrPcnClinicStatus(s.getPlrPcnClinicStatus());
+			processData.setPlrPcnClinicStatusEffectiveStartDate(s.getPlrPcnClinicStatusEffectiveStartDate());
+			processData.setPlrPcnClinicStatusEffectiveEndDate(s.getPlrPcnClinicStatusEffectiveEndDate());
+			processData.setPlrHdsEmail(s.getPlrHdsEmail());
+			processData.setPlrHdsEmailEffectiveStartDate(s.getPlrHdsEmailEffectiveStartDate());
+			processData.setPlrHdsEmailEffectiveEndDate(s.getPlrHdsEmailEffectiveEndDate());
+			processData.setPlrHdsWebsite(s.getPlrHdsWebsite());
+			processData.setPlrHdsWebsiteEffectiveStartDate(s.getPlrHdsWebsiteEffectiveStartDate());
+			processData.setPlrHdsWebsiteEffectiveEndDate(s.getPlrHdsWebsiteEffectiveEndDate());
+			processData.setPlrHdsBusinessPhone(s.getPlrHdsBusinessPhone());
+			processData.setPlrBusinessPhoneEffectiveStartDate(s.getPlrBusinessPhoneEffectiveStartDate());
+			processData.setPlrBusinessPhoneEffectiveEndDate(s.getPlrBusinessPhoneEffectiveEndDate());
+			processData.setPlrHdsFax(s.getPlrHdsFax());
+			processData.setPlrHdsFaxEffectiveStartDate(s.getPlrHdsFaxEffectiveStartDate());
+			processData.setPlrHdsFaxEffectiveEndDate(s.getPlrHdsFaxEffectiveEndDate());
+			processData.setPlrHdsCell(s.getPlrHdsCell());
+			processData.setPlrHdsCellEffectiveStartDate(s.getPlrHdsCellEffectiveStartDate());
+			processData.setPlrHdsCellEffectiveEndDate(s.getPlrHdsCellEffectiveEndDate());
+			processData.setPlrPhysicalAddress(s.getPlrPhysicalAddress());
+			processData.setPlrPhysicalAddressEffectiveStartDate(s.getPlrPhysicalAddressEffectiveStartDate());
+			processData.setPlrPhysicalAddressEffectiveEndDate(s.getPlrPhysicalAddressEffectiveEndDate());
+			processData.setPlrMailingAddress(s.getPlrMailingAddress());
+			processData.setPlrMailingAddressEffectiveStartDate(s.getPlrMailingAddressEffectiveStartDate());
+			processData.setPlrMailingAddressEffectiveEndDate(s.getPlrMailingAddressEffectiveEndDate());
 	        
 	        // set default values
 		    if (controlTable.getLoadTypeHds()) {

@@ -2,6 +2,7 @@ package com.moh.phlat.backend.esb.boundary;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
+import java.text.ParseException;
 import java.time.Duration;
 
 import javax.net.ssl.SSLContext;
@@ -89,7 +90,7 @@ public class PlrEsbBoundary {
 		String jsonRequest;
 		try {
 			jsonRequest = plrRequest.processDataToPlrJson();
-		} catch (IOException ex) {
+		} catch (IOException | ParseException ex) {
 			logger.error("Could not convert {} into JSON: ", ex, plrRequest.getClass().getName());
 			plrResponse.handlePlrError(ex);
 			return;

@@ -1,6 +1,7 @@
 package com.moh.phlat.backend.esb.json;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -122,7 +123,7 @@ public class MaintainHdsResponse implements PlrResponse {
 		} else if (ex instanceof CallNotPermittedException callEx) {
 			addError(callEx.getClass().getName(), "ERROR",
 					"Too many load attempts have failed in succession; this record's load attempt has been cancelled.");
-		} else if (ex instanceof IOException) {
+		} else if (ex instanceof IOException || ex instanceof ParseException) {
 			addError("InputProblem", "ERROR",
 					"The input record was invalid or could not be converted into a PLR request.");
 		}

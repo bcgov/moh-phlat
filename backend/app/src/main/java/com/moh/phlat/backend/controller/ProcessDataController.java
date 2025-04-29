@@ -507,6 +507,9 @@ public class ProcessDataController {
 		if (reqProcessData.getMailingAddressGroupEffectiveEndDate() != null)
 			processData.setMailingAddressGroupEffectiveEndDate(reqProcessData.getMailingAddressGroupEffectiveEndDate());				
 
+		if (reqProcessData.getRecordAction() != null)
+			processData.setRecordAction(reqProcessData.getRecordAction());
+		
 			processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 		processData.setUpdatedAt(new Date());
 
