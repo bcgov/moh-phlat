@@ -3,6 +3,7 @@ package com.moh.phlat.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -257,27 +258,30 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				}
 			}
 
-			String primaryCareSpecificGroupAction = "";
-			if (StringUtils.hasText(processData.getPrimaryCareSpecificGroupAction())) {
-				primaryCareSpecificGroupAction = processData.getPrimaryCareSpecificGroupAction().toUpperCase();
-			}
-
-			if (StringUtils.hasText(primaryCareSpecificGroupAction)) {
-				if (!primaryCareSpecificGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG) &&
-				    !primaryCareSpecificGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CORR) &&
-					!primaryCareSpecificGroupAction.equals(DbUtilityService.PHLAT_END_REASON_CODE_CEASE)) {
-					isValid = false;
-					logger.info("Invalid end reason code on Primary Care Specific for process data id: {}", processData.getId()); 
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("End reason code must be CHG, CORR or CEASE")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
+			AtomicBoolean hasCorrectEndReasons = new AtomicBoolean(true);
+			processData.getGroupActions().forEach((group,action) -> {
+				
+				if (StringUtils.hasText(action)) {
+					
+					String actionUpper = action.toUpperCase();
+					if (!actionUpper.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG)
+							&& !actionUpper.equals(DbUtilityService.PHLAT_END_REASON_CODE_CORR)
+							&& !actionUpper.equals(DbUtilityService.PHLAT_END_REASON_CODE_CEASE)) {
+						
+						hasCorrectEndReasons.set(false);
+						logger.info("Invalid end reason code on {} for process data id: {}", group, processData.getId()); 
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("End reason code must be CHG, CORR or CEASE")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
 				}
-			}
+			});
+			isValid = hasCorrectEndReasons.get();
 
 			// error detection
 

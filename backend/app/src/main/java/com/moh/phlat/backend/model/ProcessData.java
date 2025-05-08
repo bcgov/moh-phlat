@@ -14,8 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.AbstractMap;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
@@ -531,6 +534,23 @@ public class ProcessData {
 
     @Column(name="plr_mailing_address_effective_end_date")
     private String plrMailingAddressEffectiveEndDate;
+    
+    // CHID fields
+    
+    @Column(name="hds_sub_type_chid")
+    private String hdsSubTypeChid;
+    
+    @Column(name="pcn_service_delivery_type_chid")
+    private String pcnServiceDeliveryTypeChid;
+    
+    @Column(name="pcn_clinic_type_chid")
+    private String pcnClinicTypeChid;
+    
+    @Column(name="pcn_pci_flag_chid")
+    private String pcnPciFlagChid;
+    
+    @Column(name="fac_address_unit_chid")
+    private String facAddressUnitChid;
 
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
@@ -551,5 +571,22 @@ public class ProcessData {
     			mailingAddressGroupAction +
     			recordAction
     			);
+    }
+    
+    public Map<String,String> getGroupActions() {
+    	return Map.ofEntries(
+		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareSpecificGroupAction),
+		    new AbstractMap.SimpleEntry<>("Hds Sub Type", hdsSubTypeGroupAction),
+		    new AbstractMap.SimpleEntry<>("Hds Name", hdsNameGroupAction),
+		    new AbstractMap.SimpleEntry<>("Hds Email", hdsEmailGroupAction),
+		    new AbstractMap.SimpleEntry<>("Hds Website", hdsWebsiteGroupAction),
+		    new AbstractMap.SimpleEntry<>("Business Phone", businessPhoneGroupAction),
+		    new AbstractMap.SimpleEntry<>("Hds Cell", hdsCellGroupAction),
+		    new AbstractMap.SimpleEntry<>("Hds Fax", hdsFaxGroupAction),
+		    new AbstractMap.SimpleEntry<>("Status", statusGroupAction),
+		    new AbstractMap.SimpleEntry<>("Physical Address", physicalAddressGroupAction),
+		    new AbstractMap.SimpleEntry<>("Mailing Address", mailingAddressGroupAction),
+		    new AbstractMap.SimpleEntry<>("Record", recordAction)
+    	);
     }
 }

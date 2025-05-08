@@ -35,6 +35,9 @@ public class MaintainHdsRequest implements PlrRequest {
 	private static final String COMMUNICATION_PURPOSE_CODE = "BC";
 	private static final String HDS_SUB_TYPE = "HDS_SUB_TYPE";
 	private static final String ADDRESS_UNIT = "ADDRESS_UNIT";
+	private static final String CLINIC_SERVICES = "CLINIC_SERVICES";
+	private static final String CLINIC_TYPE = "CLINIC_TYPE";
+	private static final String PCI_FLAG = "PCI_FLAG";
 	
 	private static ObjectMapper objectMapper;
 	static {
@@ -138,14 +141,33 @@ public class MaintainHdsRequest implements PlrRequest {
 		return hdsType;
 	}
 	
-	private List<PropertyDto> createPropertyDtos() {
+	private List<PropertyDto> createPropertyDtos() throws ParseException {
 		List<PropertyDto> propertyList = new ArrayList<>();
 		
-		if (StringUtils.hasText(processData.getHdsSubType()) && !isUpdate) {
-			addHdsProperty(propertyList, processData.getHdsSubType(), HDS_SUB_TYPE);
+		if (StringUtils.hasText(processData.getHdsSubType())) {
+			addHdsProperty(propertyList, processData.getHdsSubType(), HDS_SUB_TYPE, 
+					processData.getHdsSubTypeGroupAction(), processData.getHdsSubTypeGroupEffectiveStartDate(), processData.getHdsSubTypeGroupEffectiveEndDate(),
+					"PRPTY.0000.PRS");
 		}
-		if (StringUtils.hasText(processData.getFacAddressUnit()) && !isUpdate) {
-			addHdsProperty(propertyList, processData.getFacAddressUnit(), ADDRESS_UNIT);
+		if (StringUtils.hasText(processData.getFacAddressUnit())) {
+			addHdsProperty(propertyList, processData.getFacAddressUnit(), ADDRESS_UNIT, 
+					processData.getPhysicalAddressGroupAction(), processData.getPhysicalAddressGroupEffectiveStartDate(), processData.getPhysicalAddressGroupEffectiveEndDate(),
+					"PRPTY.0000.PRS");
+		}
+		if (StringUtils.hasText(processData.getPcnServiceDeliveryType())) {
+			addHdsProperty(propertyList, processData.getPcnServiceDeliveryType(), CLINIC_SERVICES, 
+					processData.getPrimaryCareSpecificGroupAction(), processData.getPrimaryCareSpecificGroupEffectiveStartDate(), processData.getPrimaryCareSpecificGroupEffectiveEndDate(),
+					"PRPTY.0000.PRS");
+		}
+		if (StringUtils.hasText(processData.getPcnClinicType())) {
+			addHdsProperty(propertyList, processData.getPcnClinicType(), CLINIC_TYPE, 
+					processData.getPrimaryCareSpecificGroupAction(), processData.getPrimaryCareSpecificGroupEffectiveStartDate(), processData.getPrimaryCareSpecificGroupEffectiveEndDate(),
+					"PRPTY.0000.PRS");
+		}
+		if (StringUtils.hasText(processData.getPcnPciFlag())) {
+			addHdsProperty(propertyList, processData.getPcnPciFlag(), PCI_FLAG, 
+					processData.getPrimaryCareSpecificGroupAction(), processData.getPrimaryCareSpecificGroupEffectiveStartDate(), processData.getPrimaryCareSpecificGroupEffectiveEndDate(),
+					"PRPTY.0000.PRS");
 		}
 		
 		if (propertyList.isEmpty()) {
@@ -154,24 +176,62 @@ public class MaintainHdsRequest implements PlrRequest {
 		return propertyList;
 	}
 	
-	private void addHdsProperty(List<PropertyDto> propertyList, String propertyValue, String propertyType) {
+	private void addHdsProperty(List<PropertyDto> propertyList, String propertyValue, String propertyType,
+			String groupAction, String effectiveStartDate, String effectiveEndDate,
+			String propertyChid) throws ParseException {
+		
+		if (isUpdate && !StringUtils.hasText(groupAction)) {
+			return;
+		}
+		
 		PropertyDto hdsProperty = new PropertyDto();
 		hdsProperty.setPropertyValue(propertyValue);
 		hdsProperty.setPropertyTypeCode(propertyType);
 		hdsProperty.setDataOwnerCode(processData.getStakeholder());
-		hdsProperty.setEffectiveStartDate(processData.getUpdatedAt());
+		hdsProperty.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(effectiveStartDate));
+		if (StringUtils.hasText(effectiveEndDate)) {
+			hdsProperty.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(effectiveEndDate));
+		}
+		if (StringUtils.hasText(groupAction)) {
+			hdsProperty.setEndReasonCode(groupAction);
+			hdsProperty.setPropertyChid(propertyChid);
+		}
 		propertyList.add(hdsProperty);
 	}
 	
-	private List<CollegeIdentifierDto> createIdentifierDtos() {
+	private List<CollegeIdentifierDto> createIdentifierDtos() throws ParseException {
 		List<CollegeIdentifierDto> identifierList = new ArrayList<>();
 		
+		// PLR Provider Identifiers
 		addHdsProviderIdentifier(identifierList, processData.getHdsIpcId(), "IPC");
 		addHdsProviderIdentifier(identifierList, processData.getHdsCpnId(), "CPN");
+		
+		// HDS Identifiers
 		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier1(), processData.getHdsProviderIdentifierType1());
 		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier2(), processData.getHdsProviderIdentifierType2());
 		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
-				
+
+		// HDS MSP Facility Number
+		if (StringUtils.hasText(processData.getHdsMspFacilityNumber()) 
+				|| StringUtils.hasText(processData.getPrimaryCareSpecificGroupAction())) {
+			
+			CollegeIdentifierDto identifierDto = new CollegeIdentifierDto();
+			identifierDto.setIdentifier(processData.getHdsMspFacilityNumber());
+			identifierDto.setTypeCode("HFI");
+			if (!isUpdate) {
+				identifierDto.setDataOwnerCode(processData.getStakeholder());
+			}
+			identifierDto.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareSpecificGroupEffectiveStartDate()));
+			if (processData.getPrimaryCareSpecificGroupEffectiveEndDate() != null) {
+				identifierDto.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareSpecificGroupEffectiveEndDate()));
+			}
+			if (StringUtils.hasText(processData.getPrimaryCareSpecificGroupAction())) {
+				identifierDto.setEndReasonCode(processData.getPrimaryCareSpecificGroupAction());
+			}
+			identifierList.add(identifierDto);
+			
+		}
+		
 		if (identifierList.isEmpty()) {
 			return null;
 		}

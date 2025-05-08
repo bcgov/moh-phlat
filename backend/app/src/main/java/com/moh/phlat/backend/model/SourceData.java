@@ -395,4 +395,21 @@ public class SourceData {
 
     @Column(name="plr_mailing_address_effective_end_date")
     private String plrMailingAddressEffectiveEndDate;
+    
+    // CHID fields
+    
+    @Column(name="hds_sub_type_chid")
+    private String hdsSubTypeChid;
+    
+    @Column(name="pcn_service_delivery_type_chid")
+    private String pcnServiceDeliveryTypeChid;
+    
+    @Column(name="pcn_clinic_type_chid")
+    private String pcnClinicTypeChid;
+    
+    @Column(name="pcn_pci_flag_chid")
+    private String pcnPciFlagChid;
+    
+    @Column(name="fac_address_unit_chid")
+    private String facAddressUnitChid;
 }
