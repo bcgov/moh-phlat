@@ -147,27 +147,27 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (StringUtils.hasText(processData.getHdsSubType())) {
 			addHdsProperty(propertyList, processData.getHdsSubType(), HDS_SUB_TYPE, 
 					processData.getHdsSubTypeGroupAction(), processData.getHdsSubTypeGroupEffectiveStartDate(), processData.getHdsSubTypeGroupEffectiveEndDate(),
-					"PRPTY.0000.PRS");
+					processData.getHdsSubTypePropertyChid());
 		}
 		if (StringUtils.hasText(processData.getFacAddressUnit())) {
 			addHdsProperty(propertyList, processData.getFacAddressUnit(), ADDRESS_UNIT, 
 					processData.getPhysicalAddressGroupAction(), processData.getPhysicalAddressGroupEffectiveStartDate(), processData.getPhysicalAddressGroupEffectiveEndDate(),
-					"PRPTY.0000.PRS");
+					processData.getFacAddressUnitPropertyChid());
 		}
 		if (StringUtils.hasText(processData.getPcnServiceDeliveryType())) {
 			addHdsProperty(propertyList, processData.getPcnServiceDeliveryType(), CLINIC_SERVICES, 
-					processData.getPrimaryCareSpecificGroupAction(), processData.getPrimaryCareSpecificGroupEffectiveStartDate(), processData.getPrimaryCareSpecificGroupEffectiveEndDate(),
-					"PRPTY.0000.PRS");
+					processData.getPrimaryCareGroupAction(), processData.getPrimaryCareGroupEffectiveStartDate(), processData.getPrimaryCareGroupEffectiveEndDate(),
+					processData.getPcnServiceDeliveryTypePropertyChid());
 		}
 		if (StringUtils.hasText(processData.getPcnClinicType())) {
 			addHdsProperty(propertyList, processData.getPcnClinicType(), CLINIC_TYPE, 
-					processData.getPrimaryCareSpecificGroupAction(), processData.getPrimaryCareSpecificGroupEffectiveStartDate(), processData.getPrimaryCareSpecificGroupEffectiveEndDate(),
-					"PRPTY.0000.PRS");
+					processData.getPrimaryCareGroupAction(), processData.getPrimaryCareGroupEffectiveStartDate(), processData.getPrimaryCareGroupEffectiveEndDate(),
+					processData.getPcnClinicTypePropertyChid());
 		}
 		if (StringUtils.hasText(processData.getPcnPciFlag())) {
 			addHdsProperty(propertyList, processData.getPcnPciFlag(), PCI_FLAG, 
-					processData.getPrimaryCareSpecificGroupAction(), processData.getPrimaryCareSpecificGroupEffectiveStartDate(), processData.getPrimaryCareSpecificGroupEffectiveEndDate(),
-					"PRPTY.0000.PRS");
+					processData.getPrimaryCareGroupAction(), processData.getPrimaryCareGroupEffectiveStartDate(), processData.getPrimaryCareGroupEffectiveEndDate(),
+					processData.getPcnPciFlagPropertyChid());
 		}
 		
 		if (propertyList.isEmpty()) {
@@ -213,7 +213,7 @@ public class MaintainHdsRequest implements PlrRequest {
 
 		// HDS MSP Facility Number
 		if (StringUtils.hasText(processData.getHdsMspFacilityNumber()) 
-				|| StringUtils.hasText(processData.getPrimaryCareSpecificGroupAction())) {
+				|| StringUtils.hasText(processData.getPrimaryCareGroupAction())) {
 			
 			CollegeIdentifierDto identifierDto = new CollegeIdentifierDto();
 			identifierDto.setIdentifier(processData.getHdsMspFacilityNumber());
@@ -221,12 +221,12 @@ public class MaintainHdsRequest implements PlrRequest {
 			if (!isUpdate) {
 				identifierDto.setDataOwnerCode(processData.getStakeholder());
 			}
-			identifierDto.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareSpecificGroupEffectiveStartDate()));
-			if (processData.getPrimaryCareSpecificGroupEffectiveEndDate() != null) {
-				identifierDto.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareSpecificGroupEffectiveEndDate()));
+			identifierDto.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareGroupEffectiveStartDate()));
+			if (processData.getPrimaryCareGroupEffectiveEndDate() != null) {
+				identifierDto.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareGroupEffectiveEndDate()));
 			}
-			if (StringUtils.hasText(processData.getPrimaryCareSpecificGroupAction())) {
-				identifierDto.setEndReasonCode(processData.getPrimaryCareSpecificGroupAction());
+			if (StringUtils.hasText(processData.getPrimaryCareGroupAction())) {
+				identifierDto.setEndReasonCode(processData.getPrimaryCareGroupAction());
 			}
 			identifierList.add(identifierDto);
 			

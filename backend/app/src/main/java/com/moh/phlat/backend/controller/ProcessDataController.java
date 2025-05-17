@@ -408,14 +408,14 @@ public class ProcessDataController {
 		if (reqProcessData.getRowstatusCode() != null)
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode().trim());
 	
-		if (reqProcessData.getPrimaryCareSpecificGroupAction() != null)
-			processData.setPrimaryCareSpecificGroupAction(reqProcessData.getPrimaryCareSpecificGroupAction().trim());				
+		if (reqProcessData.getPrimaryCareGroupAction() != null)
+			processData.setPrimaryCareGroupAction(reqProcessData.getPrimaryCareGroupAction().trim());				
 		
-		if (reqProcessData.getPrimaryCareSpecificGroupEffectiveStartDate() != null)
-			processData.setPrimaryCareSpecificGroupEffectiveStartDate(reqProcessData.getPrimaryCareSpecificGroupEffectiveStartDate());				
+		if (reqProcessData.getPrimaryCareGroupEffectiveStartDate() != null)
+			processData.setPrimaryCareGroupEffectiveStartDate(reqProcessData.getPrimaryCareGroupEffectiveStartDate());				
 		
-		if (reqProcessData.getPrimaryCareSpecificGroupEffectiveEndDate() != null)
-			processData.setPrimaryCareSpecificGroupEffectiveEndDate(reqProcessData.getPrimaryCareSpecificGroupEffectiveEndDate());				
+		if (reqProcessData.getPrimaryCareGroupEffectiveEndDate() != null)
+			processData.setPrimaryCareGroupEffectiveEndDate(reqProcessData.getPrimaryCareGroupEffectiveEndDate());				
 
 		if (reqProcessData.getHdsSubTypeGroupAction() != null)
 			processData.setHdsSubTypeGroupAction(reqProcessData.getHdsSubTypeGroupAction().trim());				

@@ -332,14 +332,14 @@ public class ProcessData {
     
     // Group actions and effective dates
 
-    @Column(name="primary_care_specific_group_action")
-    private String primaryCareSpecificGroupAction;
+    @Column(name="primary_care_group_action")
+    private String primaryCareGroupAction;
     
-    @Column(name="primary_care_specific_group_effective_start_date")
-    private String primaryCareSpecificGroupEffectiveStartDate;
+    @Column(name="primary_care_group_effective_start_date")
+    private String primaryCareGroupEffectiveStartDate;
     
-    @Column(name="primary_care_specific_group_effective_end_date")
-    private String primaryCareSpecificGroupEffectiveEndDate;
+    @Column(name="primary_care_group_effective_end_date")
+    private String primaryCareGroupEffectiveEndDate;
 
     @Column(name="hds_sub_type_group_action")
     private String hdsSubTypeGroupAction;
@@ -535,22 +535,22 @@ public class ProcessData {
     @Column(name="plr_mailing_address_effective_end_date")
     private String plrMailingAddressEffectiveEndDate;
     
-    // CHID fields
+    // Property CHID fields
     
-    @Column(name="hds_sub_type_chid")
-    private String hdsSubTypeChid;
+    @Column(name="hds_sub_type_property_chid")
+    private String hdsSubTypePropertyChid;
     
-    @Column(name="pcn_service_delivery_type_chid")
-    private String pcnServiceDeliveryTypeChid;
+    @Column(name="pcn_service_delivery_type_property_chid")
+    private String pcnServiceDeliveryTypePropertyChid;
     
-    @Column(name="pcn_clinic_type_chid")
-    private String pcnClinicTypeChid;
+    @Column(name="pcn_clinic_type_property_chid")
+    private String pcnClinicTypePropertyChid;
     
-    @Column(name="pcn_pci_flag_chid")
-    private String pcnPciFlagChid;
+    @Column(name="pcn_pci_flag_property_chid")
+    private String pcnPciFlagPropertyChid;
     
-    @Column(name="fac_address_unit_chid")
-    private String facAddressUnitChid;
+    @Column(name="fac_address_unit_property_chid")
+    private String facAddressUnitPropertyChid;
 
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
@@ -558,7 +558,7 @@ public class ProcessData {
     
     public boolean hasHdsGroupActions() {
     	return StringUtils.hasText(
-    			primaryCareSpecificGroupAction +
+    			primaryCareGroupAction +
     			hdsSubTypeGroupAction +
     			hdsNameGroupAction +
     			hdsEmailGroupAction +
@@ -575,7 +575,7 @@ public class ProcessData {
     
     public Map<String,String> getGroupActions() {
     	return Map.ofEntries(
-		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareSpecificGroupAction),
+		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareGroupAction),
 		    new AbstractMap.SimpleEntry<>("Hds Sub Type", hdsSubTypeGroupAction),
 		    new AbstractMap.SimpleEntry<>("Hds Name", hdsNameGroupAction),
 		    new AbstractMap.SimpleEntry<>("Hds Email", hdsEmailGroupAction),

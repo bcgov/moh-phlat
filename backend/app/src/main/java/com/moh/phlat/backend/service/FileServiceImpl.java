@@ -39,9 +39,7 @@ public class FileServiceImpl implements FileService {
 	@Autowired
 	private SourceDataRepository sourceDataRepository;
 
-	   
     @Autowired
-
 	private ProcessDataRepository processDataRepository;	
 
 	@Autowired
@@ -163,7 +161,7 @@ public class FileServiceImpl implements FileService {
                                                  String mailPcode, String mailCountry, 
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy,
                                                  // Group actions and effective dates
-												 String primaryCareSpecificGroupAction, String primaryCareSpecificGroupEffectiveStartDate, String primaryCareSpecificGroupEffectiveEndDate,
+												 String primaryCareGroupAction, String primaryCareGroupEffectiveStartDate, String primaryCareGroupEffectiveEndDate,
 												 String hdsSubTypeGroupAction, String hdsSubTypeGroupEffectiveStartDate, String hdsSubTypeGroupEffectiveEndDate,
 												 String hdsNameGroupAction, String hdsNameGroupEffectiveStartDate, String hdsNameGroupEffectiveEndDate,
 												 String hdsEmailGroupAction, String hdsEmailGroupEffectiveStartDate, String hdsEmailGroupEffectiveEndDate,
@@ -186,7 +184,9 @@ public class FileServiceImpl implements FileService {
 												 String plrHdsFax, String plrHdsFaxEffectiveStartDate, String plrHdsFaxEffectiveEndDate,
 												 String plrHdsCell, String plrHdsCellEffectiveStartDate, String plrHdsCellEffectiveEndDate,
 												 String plrPhysicalAddress, String plrPhysicalAddressEffectiveStartDate, String plrPhysicalAddressEffectiveEndDate,
-												 String plrMailingAddress, String plrMailingAddressEffectiveStartDate, String plrMailingAddressEffectiveEndDate) {
+												 String plrMailingAddress, String plrMailingAddressEffectiveStartDate, String plrMailingAddressEffectiveEndDate,
+												 // Property CHIDs
+												 String hdsSubTypePropertyChid, String pcnServiceDeliveryTypePropertyChid, String pcnClinicTypePropertyChid, String pcnPciFlagPropertyChid, String facAddressUnitPropertyChid) {
         return SourceData.builder()
                           .controlTableId(controlTableId)
                           .doNotLoadFlag(doNotLoadFlag)
@@ -245,9 +245,9 @@ public class FileServiceImpl implements FileService {
                           .updatedAt(updatedAt)
                           .updatedBy(updatedBy)
                           // Group actions and effective dates
-						  .primaryCareSpecificGroupAction(primaryCareSpecificGroupAction)
-						  .primaryCareSpecificGroupEffectiveStartDate(primaryCareSpecificGroupEffectiveStartDate)
-						  .primaryCareSpecificGroupEffectiveEndDate(primaryCareSpecificGroupEffectiveEndDate)
+						  .primaryCareGroupAction(primaryCareGroupAction)
+						  .primaryCareGroupEffectiveStartDate(primaryCareGroupEffectiveStartDate)
+						  .primaryCareGroupEffectiveEndDate(primaryCareGroupEffectiveEndDate)
 						  .hdsSubTypeGroupAction(hdsSubTypeGroupAction)
 						  .hdsSubTypeGroupEffectiveStartDate(hdsSubTypeGroupEffectiveStartDate)
 						  .hdsSubTypeGroupEffectiveEndDate(hdsSubTypeGroupEffectiveEndDate)
@@ -313,7 +313,13 @@ public class FileServiceImpl implements FileService {
 						  .plrMailingAddress(plrMailingAddress)
 						  .plrMailingAddressEffectiveStartDate(plrMailingAddressEffectiveStartDate)
 						  .plrMailingAddressEffectiveEndDate(plrMailingAddressEffectiveEndDate)
-                          .build();
+                          // Property CHIDs
+						  .hdsSubTypePropertyChid(hdsSubTypePropertyChid)
+                          .pcnServiceDeliveryTypePropertyChid(pcnServiceDeliveryTypePropertyChid)
+                          .pcnClinicTypePropertyChid(pcnClinicTypePropertyChid)
+                          .pcnPciFlagPropertyChid(pcnPciFlagPropertyChid)
+                          .facAddressUnitPropertyChid(facAddressUnitPropertyChid)
+						  .build();
     }
 
 	private List<SourceData> csvToSourceData(InputStream inputStream, Long controlTableId, String authenticateUserId) {
@@ -381,9 +387,9 @@ public class FileServiceImpl implements FileService {
 				 		null, // updated_at
 				 		null, // updated_by
 				 		// Group actions and effective dates
-						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_ACTION"),
-						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_EFFECTIVE_START_DATE"),
-						csvRecords.get("PRIMARY_CARE_SPECIFIC_GROUP_EFFECTIVE_END_DATE"),
+						csvRecords.get("PRIMARY_CARE_GROUP_ACTION"),
+						csvRecords.get("PRIMARY_CARE_GROUP_EFFECTIVE_START_DATE"),
+						csvRecords.get("PRIMARY_CARE_GROUP_EFFECTIVE_END_DATE"),
 						csvRecords.get("HDS_SUB_TYPE_GROUP_ACTION"),
 						csvRecords.get("HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE"),
 						csvRecords.get("HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE"),
@@ -448,7 +454,13 @@ public class FileServiceImpl implements FileService {
 						csvRecords.get("PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE"),
 					    csvRecords.get("PLR_MAILING_ADDRESS"),
 						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE"),
-						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE")
+						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE"),
+						// Property CHIDs
+						csvRecords.get("HDS_SUB_TYPE_PROPERTY_CHID"),
+						csvRecords.get("PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID"),
+						csvRecords.get("PCN_CLINIC_TYPE_PROPERTY_CHID"),
+						csvRecords.get("PCN_PCI_FLAG_PROPERTY_CHID"),
+						csvRecords.get("FAC_ADDRESS_UNIT_PROPERTY_CHID")
 				));
 			}
 			return sourceData;
@@ -534,9 +546,9 @@ public class FileServiceImpl implements FileService {
             processData.setCreatedAt(s.getCreatedAt());
             processData.setCreatedBy(authenticateUserId);
             // Group actions and effective dates
-			processData.setPrimaryCareSpecificGroupAction(s.getPrimaryCareSpecificGroupAction());
-			processData.setPrimaryCareSpecificGroupEffectiveStartDate(s.getPrimaryCareSpecificGroupEffectiveStartDate());
-			processData.setPrimaryCareSpecificGroupEffectiveEndDate(s.getPrimaryCareSpecificGroupEffectiveEndDate());
+			processData.setPrimaryCareGroupAction(s.getPrimaryCareGroupAction());
+			processData.setPrimaryCareGroupEffectiveStartDate(s.getPrimaryCareGroupEffectiveStartDate());
+			processData.setPrimaryCareGroupEffectiveEndDate(s.getPrimaryCareGroupEffectiveEndDate());
 			processData.setHdsSubTypeGroupAction(s.getHdsSubTypeGroupAction());
 			processData.setHdsSubTypeGroupEffectiveStartDate(s.getHdsSubTypeGroupEffectiveStartDate());
 			processData.setHdsSubTypeGroupEffectiveEndDate(s.getHdsSubTypeGroupEffectiveEndDate());
@@ -602,6 +614,12 @@ public class FileServiceImpl implements FileService {
 			processData.setPlrMailingAddress(s.getPlrMailingAddress());
 			processData.setPlrMailingAddressEffectiveStartDate(s.getPlrMailingAddressEffectiveStartDate());
 			processData.setPlrMailingAddressEffectiveEndDate(s.getPlrMailingAddressEffectiveEndDate());
+			// Property CHIDs
+			processData.setHdsSubTypePropertyChid(s.getHdsSubTypePropertyChid());
+			processData.setPcnServiceDeliveryTypePropertyChid(s.getPcnServiceDeliveryTypePropertyChid());
+			processData.setPcnClinicTypePropertyChid(s.getPcnClinicTypePropertyChid());
+			processData.setPcnPciFlagPropertyChid(s.getPcnPciFlagPropertyChid());
+			processData.setFacAddressUnitPropertyChid(s.getFacAddressUnitPropertyChid());
 	        
 	        // set default values
 		    if (controlTable.getLoadTypeHds()) {
