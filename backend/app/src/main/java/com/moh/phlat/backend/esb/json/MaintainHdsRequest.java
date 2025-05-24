@@ -116,12 +116,16 @@ public class MaintainHdsRequest implements PlrRequest {
 		OrgNameDto orgName = new OrgNameDto();
 		orgName.setName(processData.getHdsName());
 		if (processData.getHdsPreferredNameFlag() != null) {
-			orgName.setPreferred(Boolean.parseBoolean(processData.getHdsPreferredNameFlag()));
+			if ("Y".equals(processData.getHdsPreferredNameFlag())) {
+				orgName.setPreferred(true);
+			} else if ("N".equals(processData.getHdsPreferredNameFlag())) {
+				orgName.setPreferred(false);
+			}
 		}
 		orgName.setTypeCode("CURR");
 		orgName.setDataOwnerCode(processData.getStakeholder());
 		orgName.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsNameGroupEffectiveStartDate()));
-		if (processData.getHdsNameGroupEffectiveEndDate() != null) {
+		if (StringUtils.hasText(processData.getHdsNameGroupEffectiveEndDate())) {
 			orgName.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsNameGroupEffectiveEndDate()));
 		}
 		if (StringUtils.hasText(nameAction)) {
@@ -212,8 +216,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
 
 		// HDS MSP Facility Number
-		if (StringUtils.hasText(processData.getHdsMspFacilityNumber()) 
-				|| StringUtils.hasText(processData.getPrimaryCareGroupAction())) {
+		if (StringUtils.hasText(processData.getHdsMspFacilityNumber())) {
 			
 			CollegeIdentifierDto identifierDto = new CollegeIdentifierDto();
 			identifierDto.setIdentifier(processData.getHdsMspFacilityNumber());
@@ -222,7 +225,7 @@ public class MaintainHdsRequest implements PlrRequest {
 				identifierDto.setDataOwnerCode(processData.getStakeholder());
 			}
 			identifierDto.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareGroupEffectiveStartDate()));
-			if (processData.getPrimaryCareGroupEffectiveEndDate() != null) {
+			if (StringUtils.hasText(processData.getPrimaryCareGroupEffectiveEndDate())) {
 				identifierDto.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareGroupEffectiveEndDate()));
 			}
 			if (StringUtils.hasText(processData.getPrimaryCareGroupAction())) {
@@ -274,7 +277,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		status.setReasonCode("ORG");
 		status.setDataOwnerCode(processData.getStakeholder());
 		status.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getStatusGroupEffectiveStartDate()));
-		if (processData.getStatusGroupEffectiveEndDate() != null) {
+		if (StringUtils.hasText(processData.getStatusGroupEffectiveEndDate())) {
 			status.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getStatusGroupEffectiveEndDate()));
 		}
 		if (StringUtils.hasText(statusAction)) {
@@ -333,7 +336,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		address.setUpdatable(false);
 		address.setValidCpc(true);
 		address.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPhysicalAddressGroupEffectiveStartDate()));
-		if (processData.getPhysicalAddressGroupEffectiveEndDate() != null) {
+		if (StringUtils.hasText(processData.getPhysicalAddressGroupEffectiveEndDate())) {
 			address.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPhysicalAddressGroupEffectiveEndDate()));
 		}
 		if (StringUtils.hasText(processData.getPhysicalAddressGroupAction())) {
@@ -374,7 +377,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		address.setUpdatable(false);
 		address.setValidCpc(true);
 		address.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getMailingAddressGroupEffectiveStartDate()));
-		if (processData.getMailingAddressGroupEffectiveEndDate() != null) {
+		if (StringUtils.hasText(processData.getMailingAddressGroupEffectiveEndDate())) {
 			address.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getMailingAddressGroupEffectiveEndDate()));
 		}
 		if (StringUtils.hasText(processData.getMailingAddressGroupAction())) {
@@ -412,7 +415,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsBusTelNumber.setCreatedDate(processData.getCreatedAt());
 			hdsBusTelNumber.setDataOwnerCode(processData.getStakeholder());
 			hdsBusTelNumber.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getBusinessPhoneGroupEffectiveStartDate()));
-			if (processData.getBusinessPhoneGroupEffectiveEndDate() != null) {
+			if (StringUtils.hasText(processData.getBusinessPhoneGroupEffectiveEndDate())) {
 				hdsBusTelNumber.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getBusinessPhoneGroupEffectiveEndDate()));
 			}
 			if (StringUtils.hasText(busAction)) {
@@ -432,7 +435,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsBusCellNumber.setCreatedDate(processData.getCreatedAt());
 			hdsBusCellNumber.setDataOwnerCode(processData.getStakeholder());
 			hdsBusCellNumber.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsCellGroupEffectiveStartDate()));
-			if (processData.getHdsCellGroupEffectiveEndDate() != null) {
+			if (StringUtils.hasText(processData.getHdsCellGroupEffectiveEndDate())) {
 				hdsBusCellNumber.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsCellGroupEffectiveEndDate()));
 			}
 			if (StringUtils.hasText(cellAction)) {
@@ -452,7 +455,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsBusFaxNumber.setCreatedDate(processData.getCreatedAt());
 			hdsBusFaxNumber.setDataOwnerCode(processData.getStakeholder());
 			hdsBusFaxNumber.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsFaxGroupEffectiveStartDate()));
-			if (processData.getHdsFaxGroupEffectiveEndDate() != null) {
+			if (StringUtils.hasText(processData.getHdsFaxGroupEffectiveEndDate())) {
 				hdsBusFaxNumber.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsFaxGroupEffectiveEndDate()));
 			}
 			if (StringUtils.hasText(faxAction)) {
@@ -484,7 +487,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsEmail.setCreatedDate(processData.getCreatedAt());
 			hdsEmail.setDataOwnerCode(processData.getStakeholder());
 			hdsEmail.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsEmailGroupEffectiveStartDate()));
-			if (processData.getHdsEmailGroupEffectiveEndDate() != null) {
+			if (StringUtils.hasText(processData.getHdsEmailGroupEffectiveEndDate())) {
 				hdsEmail.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsEmailGroupEffectiveEndDate()));
 			}
 			if (StringUtils.hasText(emailAction)) {
@@ -502,7 +505,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			hdsWebsite.setCreatedDate(processData.getCreatedAt());
 			hdsWebsite.setDataOwnerCode(processData.getStakeholder());
 			hdsWebsite.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsWebsiteGroupEffectiveStartDate()));
-			if (processData.getHdsWebsiteGroupEffectiveEndDate() != null) {
+			if (StringUtils.hasText(processData.getHdsWebsiteGroupEffectiveEndDate())) {
 				hdsWebsite.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getHdsWebsiteGroupEffectiveEndDate()));
 			}
 			if (StringUtils.hasText(webAction)) {

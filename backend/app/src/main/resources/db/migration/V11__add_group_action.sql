@@ -818,7 +818,7 @@ BEGIN
         WHERE table_name='source_data' and column_name='HDS_SUB_TYPE_PROPERTY_CHID'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_SUB_TYPE_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN HDS_SUB_TYPE_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -830,7 +830,7 @@ BEGIN
         WHERE table_name='source_data' and column_name='PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -842,7 +842,7 @@ BEGIN
         WHERE table_name='source_data' and column_name='PCN_CLINIC_TYPE_PROPERTY_CHID'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PCN_CLINIC_TYPE_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN PCN_CLINIC_TYPE_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -854,7 +854,7 @@ BEGIN
         WHERE table_name='source_data' and column_name='PCN_PCI_FLAG_PROPERTY_CHID'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PCN_PCI_FLAG_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN PCN_PCI_FLAG_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -866,7 +866,7 @@ BEGIN
         WHERE table_name='source_data' and column_name='FAC_ADDRESS_UNIT_PROPERTY_CHID'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN FAC_ADDRESS_UNIT_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN FAC_ADDRESS_UNIT_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -1683,7 +1683,7 @@ BEGIN
         WHERE table_name='process_data' and column_name='HDS_SUB_TYPE_PROPERTY_CHID'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_SUB_TYPE_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN HDS_SUB_TYPE_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -1695,7 +1695,7 @@ BEGIN
         WHERE table_name='process_data' and column_name='PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -1707,7 +1707,7 @@ BEGIN
         WHERE table_name='process_data' and column_name='PCN_CLINIC_TYPE_PROPERTY_CHID'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PCN_CLINIC_TYPE_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN PCN_CLINIC_TYPE_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -1719,7 +1719,7 @@ BEGIN
         WHERE table_name='process_data' and column_name='PCN_PCI_FLAG_PROPERTY_CHID'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PCN_PCI_FLAG_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN PCN_PCI_FLAG_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 
@@ -1731,7 +1731,7 @@ BEGIN
         WHERE table_name='process_data' and column_name='FAC_ADDRESS_UNIT_PROPERTY_CHID'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN FAC_ADDRESS_UNIT_PROPERTY_CHID VARCHAR(10);
+        ADD COLUMN FAC_ADDRESS_UNIT_PROPERTY_CHID VARCHAR(15);
     END IF;
 END$$;
 

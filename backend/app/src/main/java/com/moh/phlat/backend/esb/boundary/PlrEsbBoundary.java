@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ssl.NoSuchSslBundleException;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundles;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.stereotype.Component;
@@ -107,6 +108,9 @@ public class PlrEsbBoundary {
 				.bodyValue(jsonRequest)
 				.retrieve()
 				.bodyToMono(String.class)
+                .onErrorResume(WebClientResponseException.BadRequest.class, ex -> {
+                    return Mono.just(ex.getResponseBodyAsString());
+                })
 				.doOnError(WebClientRequestException.class, ex -> {
                     logger.error("HTTP Request failed due to an error: ", ex);
                 })

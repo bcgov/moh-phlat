@@ -573,7 +573,7 @@ public class ProcessData {
     			);
     }
     
-    public Map<String,String> getGroupActions() {
+    public Map<String,String> mapOfAllHdsGroupActions() {
     	return Map.ofEntries(
 		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareGroupAction),
 		    new AbstractMap.SimpleEntry<>("Hds Sub Type", hdsSubTypeGroupAction),
