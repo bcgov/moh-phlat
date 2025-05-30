@@ -272,7 +272,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		List<StatusDto> statusList = new ArrayList<>();
 		
 		StatusDto status = new StatusDto();
-		status.setTypeCode("ACTIVE");
+		status.setTypeCode(processData.getSourceStatus());
 		status.setClassCode("AE");
 		status.setReasonCode("ORG");
 		status.setDataOwnerCode(processData.getStakeholder());
