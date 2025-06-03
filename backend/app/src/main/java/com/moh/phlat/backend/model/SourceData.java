@@ -111,10 +111,7 @@ public class SourceData {
     private String pcnPciFlag;  
     
     @Column(name="source_status")
-    private String sourceStatus;  
-
-    @Column(name="pcn_clinic_status")
-    private String pcnClinicStatus;  
+    private String sourceStatus;
 
     @Column(name="hds_effective_start_date")
     private String hdsEffectiveStartDate;
@@ -323,15 +320,6 @@ public class SourceData {
 
     @Column(name="plr_source_status_effective_end_date")
     private String plrSourceStatusEffectiveEndDate;
-
-    @Column(name="plr_pcn_clinic_status")
-    private String plrPcnClinicStatus;
-
-    @Column(name="plr_pcn_clinic_status_effective_start_date")
-    private String plrPcnClinicStatusEffectiveStartDate;
-
-    @Column(name="plr_pcn_clinic_status_effective_end_date")
-    private String plrPcnClinicStatusEffectiveEndDate;
 
     @Column(name="plr_hds_email")
     private String plrHdsEmail;

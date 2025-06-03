@@ -146,7 +146,6 @@ public class FileServiceImpl implements FileService {
                                                  String pcnClinicType,
                                                  String pcnPciFlag, 
                                                  String sourceStatus, 
-                                                 String pcnClinicStatus,
                                                  String hdsEffectiveStartDate,
                                                  String facCivicAddress, 
                                                  String facAddressUnit,
@@ -177,7 +176,6 @@ public class FileServiceImpl implements FileService {
 												 String plrHdsSubType, String plrHdsSubTypeEffectiveStartDate, String plrHdsSubTypeEffectiveEndDate,
 												 String plrHdsName, String plrHdsNameEffectiveStartDate, String plrHdsNameEffectiveEndDate,
 												 String plrSourceStatus, String plrSourceStatusEffectiveStartDate, String plrSourceStatusEffectiveEndDate,
-												 String plrPcnClinicStatus, String plrPcnClinicStatusEffectiveStartDate, String plrPcnClinicStatusEffectiveEndDate,
 												 String plrHdsEmail, String plrHdsEmailEffectiveStartDate, String plrHdsEmailEffectiveEndDate,
 												 String plrHdsWebsite, String plrHdsWebsiteEffectiveStartDate, String plrHdsWebsiteEffectiveEndDate,
 												 String plrHdsBusinessPhone, String plrBusinessPhoneEffectiveStartDate, String plrBusinessPhoneEffectiveEndDate,
@@ -218,7 +216,6 @@ public class FileServiceImpl implements FileService {
                           .pcnClinicType(pcnClinicType)
                           .pcnPciFlag(pcnPciFlag)
                           .sourceStatus(sourceStatus)
-                          .pcnClinicStatus(pcnClinicStatus)
                           .hdsEffectiveStartDate(hdsEffectiveStartDate)
                           .facCivicAddress(facCivicAddress)
                           .facAddressUnit(facAddressUnit)
@@ -289,9 +286,6 @@ public class FileServiceImpl implements FileService {
 						  .plrSourceStatus(plrSourceStatus)
 						  .plrSourceStatusEffectiveStartDate(plrSourceStatusEffectiveStartDate)
 						  .plrSourceStatusEffectiveEndDate(plrSourceStatusEffectiveEndDate)
-						  .plrPcnClinicStatus(plrPcnClinicStatus)
-						  .plrPcnClinicStatusEffectiveStartDate(plrPcnClinicStatusEffectiveStartDate)
-						  .plrPcnClinicStatusEffectiveEndDate(plrPcnClinicStatusEffectiveEndDate)
 						  .plrHdsEmail(plrHdsEmail)
 						  .plrHdsEmailEffectiveStartDate(plrHdsEmailEffectiveStartDate)
 						  .plrHdsEmailEffectiveEndDate(plrHdsEmailEffectiveEndDate)
@@ -360,7 +354,6 @@ public class FileServiceImpl implements FileService {
 				 		csvRecords.get("PCN_CLINIC_TYPE"),
 				 		csvRecords.get("PCN_PCI_FLAG"),
 				 		csvRecords.get("SOURCE_STATUS"),	
-				 		csvRecords.get("PCN_CLINIC_STATUS"),	
 						csvRecords.get("HDS_EFFECTIVE_START_DATE"),
 				 		csvRecords.get("FAC_CIVIC_ADDRESS"),															
 				 		csvRecords.get("FAC_ADDRESS_UNIT"),
@@ -431,9 +424,6 @@ public class FileServiceImpl implements FileService {
 					    csvRecords.get("PLR_SOURCE_STATUS"),
 						csvRecords.get("PLR_SOURCE_STATUS_EFFECTIVE_START_DATE"),
 						csvRecords.get("PLR_SOURCE_STATUS_EFFECTIVE_END_DATE"),
-					    csvRecords.get("PLR_PCN_CLINIC_STATUS"),
-						csvRecords.get("PLR_PCN_CLINIC_STATUS_EFFECTIVE_START_DATE"),
-						csvRecords.get("PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE"),
 					    csvRecords.get("PLR_HDS_EMAIL"),
 						csvRecords.get("PLR_HDS_EMAIL_EFFECTIVE_START_DATE"),
 						csvRecords.get("PLR_HDS_EMAIL_EFFECTIVE_END_DATE"),
@@ -520,7 +510,6 @@ public class FileServiceImpl implements FileService {
             processData.setPcnClinicType(s.getPcnClinicType());
             processData.setPcnPciFlag(s.getPcnPciFlag());
             processData.setSourceStatus(s.getSourceStatus()); 
-            processData.setPcnClinicStatus(s.getPcnClinicStatus());
             processData.setHdsEffectiveStartDate(s.getHdsEffectiveStartDate());
             processData.setFacCivicAddr(s.getFacCivicAddress()); 	  
             processData.setFacAddressUnit(s.getFacAddressUnit()); 			    
@@ -590,9 +579,6 @@ public class FileServiceImpl implements FileService {
 			processData.setPlrSourceStatus(s.getPlrSourceStatus());
 			processData.setPlrSourceStatusEffectiveStartDate(s.getPlrSourceStatusEffectiveStartDate());
 			processData.setPlrSourceStatusEffectiveEndDate(s.getPlrSourceStatusEffectiveEndDate());
-			processData.setPlrPcnClinicStatus(s.getPlrPcnClinicStatus());
-			processData.setPlrPcnClinicStatusEffectiveStartDate(s.getPlrPcnClinicStatusEffectiveStartDate());
-			processData.setPlrPcnClinicStatusEffectiveEndDate(s.getPlrPcnClinicStatusEffectiveEndDate());
 			processData.setPlrHdsEmail(s.getPlrHdsEmail());
 			processData.setPlrHdsEmailEffectiveStartDate(s.getPlrHdsEmailEffectiveStartDate());
 			processData.setPlrHdsEmailEffectiveEndDate(s.getPlrHdsEmailEffectiveEndDate());

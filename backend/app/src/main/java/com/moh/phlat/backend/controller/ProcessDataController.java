@@ -234,9 +234,6 @@ public class ProcessDataController {
 		if (reqProcessData.getSourceStatus() != null)
 			processData.setSourceStatus(reqProcessData.getSourceStatus().trim());
 		
-		if (reqProcessData.getPcnClinicStatus() != null)
-			processData.setPcnClinicStatus(reqProcessData.getPcnClinicStatus().trim());
-
 		if (reqProcessData.getHdsEffectiveStartDate() != null)
 			processData.setHdsEffectiveStartDate(reqProcessData.getHdsEffectiveStartDate().trim());
 

@@ -425,7 +425,6 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath(baseJasonPath + "pcnClinicType").value(processData.getPcnClinicType()))
                      .andExpect(jsonPath(baseJasonPath + "pcnPciFlag").value(processData.getPcnPciFlag()))
                      .andExpect(jsonPath(baseJasonPath + "sourceStatus").value(processData.getSourceStatus()))
-                     .andExpect(jsonPath(baseJasonPath + "pcnClinicStatus").value(processData.getPcnClinicStatus()))
                      .andExpect(jsonPath(baseJasonPath + "hdsEffectiveStartDate").value(processData.getHdsEffectiveStartDate()))
                      .andExpect(jsonPath(baseJasonPath + "hdsEffectiveEndDate").value(processData.getHdsEffectiveEndDate()))
                      .andExpect(jsonPath(baseJasonPath + "facAddressUnit").value(processData.getFacAddressUnit()))

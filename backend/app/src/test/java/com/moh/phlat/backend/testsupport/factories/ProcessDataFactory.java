@@ -181,7 +181,6 @@ public class ProcessDataFactory extends BaseFactory {
                           .pcnClinicType(pcnClinicType)
                           .pcnPciFlag(pcnPciFlag)
                           .sourceStatus(sourceStatus)
-                          .pcnClinicStatus(pcnClinicStatus)
                           .hdsEffectiveStartDate(hdsEffectiveStartDate)
                           .hdsEffectiveEndDate(hdsEffectiveEndDate)
                           .facAddressUnit(facAddressUnit)
