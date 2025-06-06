@@ -38,17 +38,22 @@ public class PlrDataLoad {
 			}
 		}
 		// HDS Load
-		if (control.getLoadTypeHds() && StringUtils.hasText(processData.getFacIfcId())) {
-			if (!StringUtils.hasText(processData.getHdsPauthId())
+		if (control.getLoadTypeHds()) {
+			if (StringUtils.hasText(processData.getFacIfcId())
+					&& !StringUtils.hasText(processData.getHdsPauthId())
 					&& !StringUtils.hasText(processData.getHdsCpnId())
-					&& !StringUtils.hasText(processData.getHdsIpcId())) {
+					&& !StringUtils.hasText(processData.getHdsIpcId())
+					&& !StringUtils.hasText(processData.getRecordAction())) {
 				// Create HDS
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
-			} else if (processData.hasHdsGroupActions()) {
+			} else if (StringUtils.hasText(processData.getRecordAction())) {
 				// Update HDS
 				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
+			} else {
+				// HDS Identifiers are present but there's no Record Action; mark as not loaded and skip
+				maintainResults.setHdsResult(new MaintainHdsResponse(false));
 			}
 		}
 		//OF Relationship Load

@@ -544,24 +544,7 @@ public class ProcessData {
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, mappedBy = "processData")
     private List<Message> messages;
     
-    public boolean hasHdsGroupActions() {
-    	return StringUtils.hasText(
-    			primaryCareGroupAction +
-    			hdsSubTypeGroupAction +
-    			hdsNameGroupAction +
-    			hdsEmailGroupAction +
-    			hdsWebsiteGroupAction +
-    			businessPhoneGroupAction +
-    			hdsCellGroupAction +
-    			hdsFaxGroupAction +
-    			statusGroupAction +
-    			physicalAddressGroupAction +
-    			mailingAddressGroupAction +
-    			recordAction
-    			);
-    }
-    
-    public Map<String,String> mapOfAllHdsGroupActions() {
+    public Map<String,String> mapOfHdsGroupActions() {
     	return Map.ofEntries(
 		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareGroupAction),
 		    new AbstractMap.SimpleEntry<>("Hds Sub Type", hdsSubTypeGroupAction),
@@ -573,8 +556,7 @@ public class ProcessData {
 		    new AbstractMap.SimpleEntry<>("Hds Fax", hdsFaxGroupAction),
 		    new AbstractMap.SimpleEntry<>("Status", statusGroupAction),
 		    new AbstractMap.SimpleEntry<>("Physical Address", physicalAddressGroupAction),
-		    new AbstractMap.SimpleEntry<>("Mailing Address", mailingAddressGroupAction),
-		    new AbstractMap.SimpleEntry<>("Record", recordAction)
+		    new AbstractMap.SimpleEntry<>("Mailing Address", mailingAddressGroupAction)
     	);
     }
 }

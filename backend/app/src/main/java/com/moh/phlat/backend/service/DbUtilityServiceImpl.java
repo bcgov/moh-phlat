@@ -259,7 +259,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}
 
 			AtomicBoolean hasCorrectEndReasons = new AtomicBoolean(true);
-			processData.mapOfAllHdsGroupActions().forEach((group,action) -> {
+			processData.mapOfHdsGroupActions().forEach((group,action) -> {
 				
 				if (StringUtils.hasText(action)) {
 					
