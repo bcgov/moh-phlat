@@ -22,6 +22,7 @@ END$$;
 DO $$
 BEGIN
     ALTER TABLE source_data ALTER COLUMN plr_hds_sub_type TYPE VARCHAR(50);
+    ALTER TABLE source_data ALTER COLUMN plr_source_status TYPE VARCHAR(50);
     ALTER TABLE source_data ALTER COLUMN plr_hds_name TYPE VARCHAR(255);
     ALTER TABLE source_data ALTER COLUMN plr_hds_email TYPE VARCHAR(255);
     ALTER TABLE source_data ALTER COLUMN plr_hds_website TYPE VARCHAR(255);
@@ -29,6 +30,7 @@ BEGIN
     ALTER TABLE source_data ALTER COLUMN plr_mailing_address TYPE VARCHAR(255);
     
     ALTER TABLE process_data ALTER COLUMN plr_hds_sub_type TYPE VARCHAR(50);
+    ALTER TABLE process_data ALTER COLUMN plr_source_status TYPE VARCHAR(50);
     ALTER TABLE process_data ALTER COLUMN plr_hds_name TYPE VARCHAR(255);
     ALTER TABLE process_data ALTER COLUMN plr_hds_email TYPE VARCHAR(255);
     ALTER TABLE process_data ALTER COLUMN plr_hds_website TYPE VARCHAR(255);
