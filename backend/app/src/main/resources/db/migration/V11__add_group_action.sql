@@ -11,10 +11,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PRIMARY_CARE_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='primary_care_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PRIMARY_CARE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN primary_care_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -23,10 +23,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PRIMARY_CARE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='primary_care_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PRIMARY_CARE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN primary_care_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -35,10 +35,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PRIMARY_CARE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='primary_care_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PRIMARY_CARE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN primary_care_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -47,10 +47,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_SUB_TYPE_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='hds_sub_type_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_SUB_TYPE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_sub_type_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -59,10 +59,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='hds_sub_type_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_sub_type_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -71,10 +71,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='hds_sub_type_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_sub_type_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -83,10 +83,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_NAME_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='hds_name_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_NAME_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_name_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -95,10 +95,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_NAME_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='hds_name_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_NAME_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_name_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -107,10 +107,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_NAME_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='hds_name_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_NAME_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_name_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -119,10 +119,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='STATUS_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='status_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN STATUS_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN status_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -131,10 +131,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='STATUS_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='status_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN STATUS_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN status_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -143,10 +143,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='STATUS_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='status_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN STATUS_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN status_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -155,10 +155,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_EMAIL_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='hds_email_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_EMAIL_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_email_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -167,10 +167,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_EMAIL_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='hds_email_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_EMAIL_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_email_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -179,10 +179,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_EMAIL_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='hds_email_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_EMAIL_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_email_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -191,10 +191,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_WEBSITE_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='hds_website_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_WEBSITE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_website_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -203,10 +203,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_WEBSITE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='hds_website_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_WEBSITE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_website_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -215,10 +215,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_WEBSITE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='hds_website_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_WEBSITE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_website_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -227,10 +227,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='BUSINESS_PHONE_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='business_phone_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN BUSINESS_PHONE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN business_phone_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -239,10 +239,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='BUSINESS_PHONE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='business_phone_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN BUSINESS_PHONE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN business_phone_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -251,10 +251,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='BUSINESS_PHONE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='business_phone_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN BUSINESS_PHONE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN business_phone_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -263,10 +263,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_FAX_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='hds_fax_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_FAX_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_fax_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -275,10 +275,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_FAX_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='hds_fax_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_FAX_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_fax_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -287,10 +287,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_FAX_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='hds_fax_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_FAX_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_fax_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -299,10 +299,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_CELL_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='hds_cell_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_CELL_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_cell_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -311,10 +311,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_CELL_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='hds_cell_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_CELL_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_cell_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -323,10 +323,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_CELL_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='hds_cell_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_CELL_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_cell_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -335,10 +335,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PHYSICAL_ADDRESS_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='physical_address_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PHYSICAL_ADDRESS_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN physical_address_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -347,10 +347,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PHYSICAL_ADDRESS_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='physical_address_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PHYSICAL_ADDRESS_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN physical_address_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -359,10 +359,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PHYSICAL_ADDRESS_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='physical_address_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PHYSICAL_ADDRESS_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN physical_address_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -371,10 +371,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='MAILING_ADDRESS_GROUP_ACTION'
+        WHERE table_name='source_data' and column_name='mailing_address_group_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN MAILING_ADDRESS_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN mailing_address_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -383,10 +383,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='MAILING_ADDRESS_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='mailing_address_group_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN MAILING_ADDRESS_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN mailing_address_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -395,10 +395,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='MAILING_ADDRESS_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='mailing_address_group_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN MAILING_ADDRESS_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN mailing_address_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -407,10 +407,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='RECORD_ACTION'
+        WHERE table_name='source_data' and column_name='record_action'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN RECORD_ACTION VARCHAR(10);
+        ADD COLUMN record_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -419,10 +419,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_SUB_TYPE'
+        WHERE table_name='source_data' and column_name='plr_hds_sub_type'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_SUB_TYPE VARCHAR(10);
+        ADD COLUMN plr_hds_sub_type VARCHAR(10);
     END IF;
 END$$;
 
@@ -431,10 +431,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_SUB_TYPE_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_sub_type_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_SUB_TYPE_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_sub_type_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -443,10 +443,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_SUB_TYPE_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_sub_type_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_SUB_TYPE_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_sub_type_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -455,10 +455,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_NAME'
+        WHERE table_name='source_data' and column_name='plr_hds_name'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_NAME VARCHAR(10);
+        ADD COLUMN plr_hds_name VARCHAR(10);
     END IF;
 END$$;
 
@@ -467,10 +467,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_NAME_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_name_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_NAME_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_name_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -479,10 +479,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_NAME_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_name_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_NAME_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_name_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -491,10 +491,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_SOURCE_STATUS'
+        WHERE table_name='source_data' and column_name='plr_source_status'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_SOURCE_STATUS VARCHAR(10);
+        ADD COLUMN plr_source_status VARCHAR(10);
     END IF;
 END$$;
 
@@ -503,10 +503,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_SOURCE_STATUS_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_source_status_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_SOURCE_STATUS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_source_status_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -515,10 +515,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_SOURCE_STATUS_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_source_status_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_SOURCE_STATUS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_source_status_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -527,10 +527,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_PCN_CLINIC_STATUS'
+        WHERE table_name='source_data' and column_name='plr_pcn_clinic_status'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_PCN_CLINIC_STATUS VARCHAR(10);
+        ADD COLUMN plr_pcn_clinic_status VARCHAR(10);
     END IF;
 END$$;
 
@@ -539,10 +539,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_PCN_CLINIC_STATUS_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_pcn_clinic_status_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_PCN_CLINIC_STATUS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_pcn_clinic_status_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -551,10 +551,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_pcn_clinic_status_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_pcn_clinic_status_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -563,10 +563,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_EMAIL'
+        WHERE table_name='source_data' and column_name='plr_hds_email'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_EMAIL VARCHAR(10);
+        ADD COLUMN plr_hds_email VARCHAR(10);
     END IF;
 END$$;
 
@@ -575,10 +575,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_EMAIL_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_email_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_EMAIL_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_email_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -587,10 +587,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_EMAIL_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_email_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_EMAIL_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_email_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -599,10 +599,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_WEBSITE'
+        WHERE table_name='source_data' and column_name='plr_hds_website'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_WEBSITE VARCHAR(10);
+        ADD COLUMN plr_hds_website VARCHAR(10);
     END IF;
 END$$;
 
@@ -611,10 +611,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_WEBSITE_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_website_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_WEBSITE_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_website_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -623,10 +623,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_WEBSITE_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_website_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_WEBSITE_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_website_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -635,10 +635,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_BUSINESS_PHONE'
+        WHERE table_name='source_data' and column_name='plr_hds_business_phone'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_BUSINESS_PHONE VARCHAR(10);
+        ADD COLUMN plr_hds_business_phone VARCHAR(10);
     END IF;
 END$$;
 
@@ -647,10 +647,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_BUSINESS_PHONE_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_business_phone_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_BUSINESS_PHONE_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_business_phone_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -659,10 +659,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_BUSINESS_PHONE_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_business_phone_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_BUSINESS_PHONE_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_business_phone_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -671,10 +671,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_FAX'
+        WHERE table_name='source_data' and column_name='plr_hds_fax'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_FAX VARCHAR(10);
+        ADD COLUMN plr_hds_fax VARCHAR(10);
     END IF;
 END$$;
 
@@ -683,10 +683,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_FAX_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_fax_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_FAX_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_fax_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -695,10 +695,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_FAX_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_fax_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_FAX_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_fax_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -707,10 +707,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_CELL'
+        WHERE table_name='source_data' and column_name='plr_hds_cell'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_CELL VARCHAR(10);
+        ADD COLUMN plr_hds_cell VARCHAR(10);
     END IF;
 END$$;
 
@@ -719,10 +719,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_CELL_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_cell_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_CELL_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_cell_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -731,10 +731,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_HDS_CELL_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_hds_cell_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_HDS_CELL_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_cell_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -743,10 +743,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_PHYSICAL_ADDRESS'
+        WHERE table_name='source_data' and column_name='plr_physical_address'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_PHYSICAL_ADDRESS VARCHAR(10);
+        ADD COLUMN plr_physical_address VARCHAR(10);
     END IF;
 END$$;
 
@@ -755,10 +755,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_physical_address_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_physical_address_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -767,10 +767,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_physical_address_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_physical_address_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -779,10 +779,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_MAILING_ADDRESS'
+        WHERE table_name='source_data' and column_name='plr_mailing_address'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_MAILING_ADDRESS VARCHAR(10);
+        ADD COLUMN plr_mailing_address VARCHAR(10);
     END IF;
 END$$;
 
@@ -791,10 +791,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE'
+        WHERE table_name='source_data' and column_name='plr_mailing_address_effective_start_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_mailing_address_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -803,10 +803,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE'
+        WHERE table_name='source_data' and column_name='plr_mailing_address_effective_end_date'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_mailing_address_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -815,10 +815,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='HDS_SUB_TYPE_PROPERTY_CHID'
+        WHERE table_name='source_data' and column_name='hds_sub_type_property_chid'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN HDS_SUB_TYPE_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN hds_sub_type_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -827,10 +827,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID'
+        WHERE table_name='source_data' and column_name='pcn_service_delivery_type_property_chid'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN pcn_service_delivery_type_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -839,10 +839,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PCN_CLINIC_TYPE_PROPERTY_CHID'
+        WHERE table_name='source_data' and column_name='pcn_clinic_type_property_chid'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PCN_CLINIC_TYPE_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN pcn_clinic_type_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -851,10 +851,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='PCN_PCI_FLAG_PROPERTY_CHID'
+        WHERE table_name='source_data' and column_name='pcn_pci_flag_property_chid'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN PCN_PCI_FLAG_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN pcn_pci_flag_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -863,10 +863,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='FAC_ADDRESS_UNIT_PROPERTY_CHID'
+        WHERE table_name='source_data' and column_name='fac_address_unit_property_chid'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN FAC_ADDRESS_UNIT_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN fac_address_unit_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -875,10 +875,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PRIMARY_CARE_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='primary_care_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PRIMARY_CARE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN primary_care_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -887,10 +887,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PRIMARY_CARE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='primary_care_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PRIMARY_CARE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN primary_care_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -899,10 +899,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PRIMARY_CARE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='primary_care_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PRIMARY_CARE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN primary_care_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -911,10 +911,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_SUB_TYPE_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='hds_sub_type_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_SUB_TYPE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_sub_type_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -923,10 +923,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='hds_sub_type_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_SUB_TYPE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_sub_type_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -935,10 +935,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='hds_sub_type_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_SUB_TYPE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_sub_type_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -947,10 +947,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_NAME_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='hds_name_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_NAME_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_name_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -959,10 +959,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_NAME_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='hds_name_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_NAME_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_name_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -971,10 +971,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_NAME_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='hds_name_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_NAME_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_name_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -983,10 +983,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='STATUS_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='status_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN STATUS_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN status_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -995,10 +995,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='STATUS_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='status_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN STATUS_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN status_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1007,10 +1007,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='STATUS_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='status_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN STATUS_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN status_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1019,10 +1019,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_EMAIL_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='hds_email_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_EMAIL_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_email_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1031,10 +1031,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_EMAIL_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='hds_email_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_EMAIL_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_email_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1043,10 +1043,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_EMAIL_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='hds_email_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_EMAIL_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_email_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1055,10 +1055,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_WEBSITE_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='hds_website_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_WEBSITE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_website_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1067,10 +1067,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_WEBSITE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='hds_website_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_WEBSITE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_website_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1079,10 +1079,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_WEBSITE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='hds_website_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_WEBSITE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_website_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1091,10 +1091,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='BUSINESS_PHONE_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='business_phone_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN BUSINESS_PHONE_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN business_phone_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1103,10 +1103,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='BUSINESS_PHONE_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='business_phone_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN BUSINESS_PHONE_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN business_phone_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1115,10 +1115,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='BUSINESS_PHONE_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='business_phone_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN BUSINESS_PHONE_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN business_phone_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1127,10 +1127,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_FAX_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='hds_fax_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_FAX_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_fax_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1139,10 +1139,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_FAX_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='hds_fax_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_FAX_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_fax_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1151,10 +1151,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_FAX_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='hds_fax_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_FAX_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_fax_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1163,10 +1163,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_CELL_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='hds_cell_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_CELL_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN hds_cell_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1175,10 +1175,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_CELL_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='hds_cell_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_CELL_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN hds_cell_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1187,10 +1187,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_CELL_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='hds_cell_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_CELL_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN hds_cell_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1199,10 +1199,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PHYSICAL_ADDRESS_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='physical_address_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PHYSICAL_ADDRESS_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN physical_address_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1211,10 +1211,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PHYSICAL_ADDRESS_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='physical_address_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PHYSICAL_ADDRESS_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN physical_address_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1223,10 +1223,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PHYSICAL_ADDRESS_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='physical_address_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PHYSICAL_ADDRESS_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN physical_address_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1235,10 +1235,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='MAILING_ADDRESS_GROUP_ACTION'
+        WHERE table_name='process_data' and column_name='mailing_address_group_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN MAILING_ADDRESS_GROUP_ACTION VARCHAR(10);
+        ADD COLUMN mailing_address_group_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1247,10 +1247,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='MAILING_ADDRESS_GROUP_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='mailing_address_group_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN MAILING_ADDRESS_GROUP_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN mailing_address_group_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1259,10 +1259,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='MAILING_ADDRESS_GROUP_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='mailing_address_group_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN MAILING_ADDRESS_GROUP_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN mailing_address_group_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1271,10 +1271,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='RECORD_ACTION'
+        WHERE table_name='process_data' and column_name='record_action'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN RECORD_ACTION VARCHAR(10);
+        ADD COLUMN record_action VARCHAR(10);
     END IF;
 END$$;
 
@@ -1283,10 +1283,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_SUB_TYPE'
+        WHERE table_name='process_data' and column_name='plr_hds_sub_type'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_SUB_TYPE VARCHAR(10);
+        ADD COLUMN plr_hds_sub_type VARCHAR(10);
     END IF;
 END$$;
 
@@ -1295,10 +1295,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_SUB_TYPE_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_sub_type_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_SUB_TYPE_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_sub_type_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1307,10 +1307,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_SUB_TYPE_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_sub_type_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_SUB_TYPE_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_sub_type_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1319,10 +1319,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_NAME'
+        WHERE table_name='process_data' and column_name='plr_hds_name'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_NAME VARCHAR(10);
+        ADD COLUMN plr_hds_name VARCHAR(10);
     END IF;
 END$$;
 
@@ -1331,10 +1331,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_NAME_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_name_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_NAME_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_name_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1343,10 +1343,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_NAME_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_name_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_NAME_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_name_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1355,10 +1355,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_SOURCE_STATUS'
+        WHERE table_name='process_data' and column_name='plr_source_status'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_SOURCE_STATUS VARCHAR(10);
+        ADD COLUMN plr_source_status VARCHAR(10);
     END IF;
 END$$;
 
@@ -1367,10 +1367,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_SOURCE_STATUS_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_source_status_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_SOURCE_STATUS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_source_status_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1379,10 +1379,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_SOURCE_STATUS_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_source_status_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_SOURCE_STATUS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_source_status_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1391,10 +1391,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_PCN_CLINIC_STATUS'
+        WHERE table_name='process_data' and column_name='plr_pcn_clinic_status'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_PCN_CLINIC_STATUS VARCHAR(10);
+        ADD COLUMN plr_pcn_clinic_status VARCHAR(10);
     END IF;
 END$$;
 
@@ -1403,10 +1403,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_PCN_CLINIC_STATUS_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_pcn_clinic_status_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_PCN_CLINIC_STATUS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_pcn_clinic_status_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1415,10 +1415,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_pcn_clinic_status_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_pcn_clinic_status_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1427,10 +1427,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_EMAIL'
+        WHERE table_name='process_data' and column_name='plr_hds_email'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_EMAIL VARCHAR(10);
+        ADD COLUMN plr_hds_email VARCHAR(10);
     END IF;
 END$$;
 
@@ -1439,10 +1439,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_EMAIL_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_email_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_EMAIL_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_email_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1451,10 +1451,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_EMAIL_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_email_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_EMAIL_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_email_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1463,10 +1463,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_WEBSITE'
+        WHERE table_name='process_data' and column_name='plr_hds_website'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_WEBSITE VARCHAR(10);
+        ADD COLUMN plr_hds_website VARCHAR(10);
     END IF;
 END$$;
 
@@ -1475,10 +1475,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_WEBSITE_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_website_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_WEBSITE_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_website_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1487,10 +1487,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_WEBSITE_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_website_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_WEBSITE_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_website_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1499,10 +1499,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_BUSINESS_PHONE'
+        WHERE table_name='process_data' and column_name='plr_hds_business_phone'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_BUSINESS_PHONE VARCHAR(10);
+        ADD COLUMN plr_hds_business_phone VARCHAR(10);
     END IF;
 END$$;
 
@@ -1511,10 +1511,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_BUSINESS_PHONE_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_business_phone_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_BUSINESS_PHONE_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_business_phone_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1523,10 +1523,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_BUSINESS_PHONE_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_business_phone_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_BUSINESS_PHONE_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_business_phone_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1535,10 +1535,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_FAX'
+        WHERE table_name='process_data' and column_name='plr_hds_fax'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_FAX VARCHAR(10);
+        ADD COLUMN plr_hds_fax VARCHAR(10);
     END IF;
 END$$;
 
@@ -1547,10 +1547,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_FAX_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_fax_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_FAX_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_fax_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1559,10 +1559,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_FAX_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_fax_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_FAX_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_fax_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1571,10 +1571,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_CELL'
+        WHERE table_name='process_data' and column_name='plr_hds_cell'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_CELL VARCHAR(10);
+        ADD COLUMN plr_hds_cell VARCHAR(10);
     END IF;
 END$$;
 
@@ -1583,10 +1583,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_CELL_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_cell_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_CELL_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_cell_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1595,10 +1595,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_HDS_CELL_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_hds_cell_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_HDS_CELL_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_hds_cell_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1607,10 +1607,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_PHYSICAL_ADDRESS'
+        WHERE table_name='process_data' and column_name='plr_physical_address'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_PHYSICAL_ADDRESS VARCHAR(10);
+        ADD COLUMN plr_physical_address VARCHAR(10);
     END IF;
 END$$;
 
@@ -1619,10 +1619,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_physical_address_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_physical_address_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1631,10 +1631,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_physical_address_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_physical_address_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1643,10 +1643,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_MAILING_ADDRESS'
+        WHERE table_name='process_data' and column_name='plr_mailing_address'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_MAILING_ADDRESS VARCHAR(10);
+        ADD COLUMN plr_mailing_address VARCHAR(10);
     END IF;
 END$$;
 
@@ -1655,10 +1655,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE'
+        WHERE table_name='process_data' and column_name='plr_mailing_address_effective_start_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE VARCHAR(10);
+        ADD COLUMN plr_mailing_address_effective_start_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1667,10 +1667,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE'
+        WHERE table_name='process_data' and column_name='plr_mailing_address_effective_end_date'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE VARCHAR(10);
+        ADD COLUMN plr_mailing_address_effective_end_date VARCHAR(10);
     END IF;
 END$$;
 
@@ -1680,10 +1680,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='HDS_SUB_TYPE_PROPERTY_CHID'
+        WHERE table_name='process_data' and column_name='hds_sub_type_property_chid'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN HDS_SUB_TYPE_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN hds_sub_type_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -1692,10 +1692,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID'
+        WHERE table_name='process_data' and column_name='pcn_service_delivery_type_property_chid'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN pcn_service_delivery_type_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -1704,10 +1704,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PCN_CLINIC_TYPE_PROPERTY_CHID'
+        WHERE table_name='process_data' and column_name='pcn_clinic_type_property_chid'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PCN_CLINIC_TYPE_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN pcn_clinic_type_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -1716,10 +1716,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='PCN_PCI_FLAG_PROPERTY_CHID'
+        WHERE table_name='process_data' and column_name='pcn_pci_flag_property_chid'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN PCN_PCI_FLAG_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN pcn_pci_flag_property_chid VARCHAR(15);
     END IF;
 END$$;
 
@@ -1728,10 +1728,10 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='FAC_ADDRESS_UNIT_PROPERTY_CHID'
+        WHERE table_name='process_data' and column_name='fac_address_unit_property_chid'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN FAC_ADDRESS_UNIT_PROPERTY_CHID VARCHAR(15);
+        ADD COLUMN fac_address_unit_property_chid VARCHAR(15);
     END IF;
 END$$;
 
