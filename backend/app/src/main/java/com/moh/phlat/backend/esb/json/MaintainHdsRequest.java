@@ -216,7 +216,9 @@ public class MaintainHdsRequest implements PlrRequest {
 		addHdsProviderIdentifier(identifierList, processData.getHdsProviderIdentifier3(), processData.getHdsProviderIdentifierType3());
 
 		// HDS MSP Facility Number
-		if (StringUtils.hasText(processData.getHdsMspFacilityNumber())) {
+		String primaryCareGroupAction = processData.getPrimaryCareGroupAction();
+		if (StringUtils.hasText(processData.getHdsMspFacilityNumber())
+				&& (!isUpdate || isUpdate && StringUtils.hasText(primaryCareGroupAction))) {
 			
 			CollegeIdentifierDto identifierDto = new CollegeIdentifierDto();
 			identifierDto.setIdentifier(processData.getHdsMspFacilityNumber());
@@ -228,8 +230,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			if (StringUtils.hasText(processData.getPrimaryCareGroupEffectiveEndDate())) {
 				identifierDto.setEffectiveEndDate(EFFECTIVE_DATE_FORMAT.parse(processData.getPrimaryCareGroupEffectiveEndDate()));
 			}
-			if (StringUtils.hasText(processData.getPrimaryCareGroupAction())) {
-				identifierDto.setEndReasonCode(processData.getPrimaryCareGroupAction());
+			if (StringUtils.hasText(primaryCareGroupAction)) {
+				identifierDto.setEndReasonCode(primaryCareGroupAction);
 			}
 			identifierList.add(identifierDto);
 			
@@ -295,7 +297,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		
 		List<AddressDto> addressList = new ArrayList<>();
 		addressList.add(createPhysicalAddressDto());
-		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailBc())) {
+		if ((StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailBc()))
+				&& (!isUpdate || isUpdate && StringUtils.hasText(processData.getMailingAddressGroupAction()))) {
 			addressList.add(createMailingAddressDto());
 		}
 		return addressList;
@@ -401,7 +404,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		List<TelecommunicationDto> telecomList = new ArrayList<>();
 		
 		if (StringUtils.hasText(processData.getHdsBusTelNumber())
-				|| (isUpdate && StringUtils.hasText(busAction))) {
+				&& (!isUpdate || isUpdate && StringUtils.hasText(busAction))) {
 			TelecommunicationDto hdsBusTelNumber = new TelecommunicationDto();
 			hdsBusTelNumber.setNumber(processData.getHdsBusTelNumber());
 			hdsBusTelNumber.setTypeCode("T");
@@ -424,7 +427,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			telecomList.add(hdsBusTelNumber);
 		}
 		if (StringUtils.hasText(processData.getHdsCellNumber())
-				|| (isUpdate && StringUtils.hasText(cellAction))) {
+				&& (!isUpdate || isUpdate && StringUtils.hasText(cellAction))) {
 			TelecommunicationDto hdsBusCellNumber = new TelecommunicationDto();
 			hdsBusCellNumber.setNumber(processData.getHdsCellNumber());
 			hdsBusCellNumber.setTypeCode("MB");
@@ -444,7 +447,7 @@ public class MaintainHdsRequest implements PlrRequest {
 			telecomList.add(hdsBusCellNumber);
 		}
 		if (StringUtils.hasText(processData.getHdsFaxNumber())
-				|| (isUpdate && StringUtils.hasText(faxAction))) {
+				&& (!isUpdate || isUpdate && StringUtils.hasText(faxAction))) {
 			TelecommunicationDto hdsBusFaxNumber = new TelecommunicationDto();
 			hdsBusFaxNumber.setNumber(processData.getHdsFaxNumber());
 			hdsBusFaxNumber.setTypeCode("FAX");
@@ -479,7 +482,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		List<ElectronicAddressDto> electronicAddressList = new ArrayList<>();
 		
 		if (StringUtils.hasText(processData.getHdsEmail())
-				|| (isUpdate && StringUtils.hasText(emailAction))) {
+				&& (!isUpdate || isUpdate && StringUtils.hasText(emailAction))) {
 			ElectronicAddressDto hdsEmail = new ElectronicAddressDto();
 			hdsEmail.setAddress(processData.getHdsEmail());
 			hdsEmail.setTypeCode("E");
@@ -497,7 +500,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		
 		if (StringUtils.hasText(processData.getHdsWebsite())
-				|| (isUpdate && StringUtils.hasText(webAction))) {
+				&& (!isUpdate || isUpdate && StringUtils.hasText(webAction))) {
 			ElectronicAddressDto hdsWebsite = new ElectronicAddressDto();
 			hdsWebsite.setAddress(processData.getHdsWebsite());
 			hdsWebsite.setTypeCode("H");
