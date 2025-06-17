@@ -299,7 +299,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (!isUpdate || isUpdate && StringUtils.hasText(processData.getPhysicalAddressGroupAction())) {
 			addressList.add(createPhysicalAddressDto());
 		}
-		if ((StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailBc()))
+		if ((StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailProvince()))
 				&& (!isUpdate || isUpdate && StringUtils.hasText(processData.getMailingAddressGroupAction()))) {
 			addressList.add(createMailingAddressDto());
 		}
@@ -378,7 +378,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (StringUtils.hasText(processData.getMailPcode())) {
 			address.setPostalCode(processData.getMailPcode());
 		}
-		address.setProvinceOrStateTxt(processData.getMailBc());
+		address.setProvinceOrStateTxt(processData.getMailProvince());
 		address.setUpdatable(false);
 		address.setValidCpc(true);
 		address.setEffectiveStartDate(EFFECTIVE_DATE_FORMAT.parse(processData.getMailingAddressGroupEffectiveStartDate()));

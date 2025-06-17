@@ -167,8 +167,8 @@ public class SourceData {
     @Column(name="mail_city")
     private String mailCity;  
     
-    @Column(name="mail_bc")
-    private String mailBc;
+    @Column(name="mail_province")
+    private String mailProvince;
     
     @Column(name="mail_pcode")
     private String mailPcode;

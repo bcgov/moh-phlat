@@ -470,7 +470,7 @@ public class ProcessDataControllerTest {
                      .andExpect(jsonPath(baseJasonPath + "mailAddr3").value(processData.getMailAddr3()))
                      .andExpect(jsonPath(baseJasonPath + "mailAddr4").value(processData.getMailAddr4()))
                      .andExpect(jsonPath(baseJasonPath + "mailCity").value(processData.getMailCity()))
-                     .andExpect(jsonPath(baseJasonPath + "mailBc").value(processData.getMailBc()))
+                     .andExpect(jsonPath(baseJasonPath + "mailProvince").value(processData.getMailProvince()))
                      .andExpect(jsonPath(baseJasonPath + "mailPcode").value(processData.getMailPcode()))
                      .andExpect(jsonPath(baseJasonPath + "mailCountry").value(processData.getMailCountry()))
                      .andExpect(jsonPath(baseJasonPath + "mailAddrPrpsTypeCd").value(processData.getMailAddrPrpsTypeCd()))

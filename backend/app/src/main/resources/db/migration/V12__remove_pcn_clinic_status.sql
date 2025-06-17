@@ -37,3 +37,27 @@ BEGIN
     ALTER TABLE process_data ALTER COLUMN plr_physical_address TYPE VARCHAR(255);
     ALTER TABLE process_data ALTER COLUMN plr_mailing_address TYPE VARCHAR(255);
 END$$;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='mail_bc'
+    ) THEN
+        ALTER TABLE source_data
+        RENAME COLUMN mail_bc TO mail_province;
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='mail_bc'
+    ) THEN
+        ALTER TABLE process_data
+        RENAME COLUMN mail_bc TO mail_province;
+    END IF;
+END$$;

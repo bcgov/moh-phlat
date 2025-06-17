@@ -137,7 +137,7 @@ public class ProcessDataFactory extends BaseFactory {
                                                  String physicalCountry,
                                                  String physicalAddrPrpsTypeCd, String physicalAddrValidationStatus,
                                                  String mailAddr1, String mailAddr2,
-                                                 String mailAddr3, String mailAddr4, String mailCity, String mailBc,
+                                                 String mailAddr3, String mailAddr4, String mailCity, String mailProvince,
                                                  String mailPcode, String mailCountry, 
                                                  String mailAddrPrpsTypeCd, String mailAddrValidationStatus,
                                                  String plrFacilityId, String rowstatusCode,
@@ -228,7 +228,7 @@ public class ProcessDataFactory extends BaseFactory {
                           .mailAddr3(mailAddr3)
                           .mailAddr4(mailAddr4)
                           .mailCity(mailCity)
-                          .mailBc(mailBc)
+                          .mailProvince(mailProvince)
                           .mailPcode(mailPcode)
                           .mailCountry(mailCountry)
                           .mailAddrPrpsTypeCd(mailAddrPrpsTypeCd)

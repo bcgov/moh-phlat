@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import com.moh.phlat.backend.addressdoctor.service.AddressDoctorValidation;
 import com.moh.phlat.backend.databc.service.DataBCValidation;
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
+import com.moh.phlat.backend.esb.json.PlrRequest;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
@@ -283,6 +285,35 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			});
 			isValid = hasCorrectEndReasons.get();
 
+			AtomicBoolean hasCorrectDateFormats = new AtomicBoolean(true);
+			processData.mapOfHdsGroupEffectiveDates().forEach((group,dates) -> {
+				
+				String[] splitDates = dates.split("|");
+				String startDate = splitDates[0];
+				String endDate = splitDates[1];
+				
+				try {
+					if (StringUtils.hasText(startDate)) {
+						PlrRequest.EFFECTIVE_DATE_FORMAT.parse(startDate);
+					}
+					if (StringUtils.hasText(endDate)) {
+						PlrRequest.EFFECTIVE_DATE_FORMAT.parse(endDate);
+					}
+				} catch (ParseException ex) {
+					hasCorrectDateFormats.set(false);
+					logger.info("Invalid date formats on {} for process data id: {}", group, processData.getId()); 
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc("Effective Start and End dates must be in yyyy-MM-dd format")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			});
+			isValid = hasCorrectDateFormats.get();
+			
 			// error detection
 
 			if (isValid) { 

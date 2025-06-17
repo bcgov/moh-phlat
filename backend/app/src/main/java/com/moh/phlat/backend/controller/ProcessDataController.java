@@ -378,8 +378,8 @@ public class ProcessDataController {
 		if (reqProcessData.getMailCity() != null)
 			processData.setMailCity(reqProcessData.getMailCity().trim());
 
-		if (reqProcessData.getMailBc() != null)
-			processData.setMailBc(reqProcessData.getMailBc().trim());
+		if (reqProcessData.getMailProvince() != null)
+			processData.setMailProvince(reqProcessData.getMailProvince().trim());
 		
 		if (reqProcessData.getMailPcode() != null)
 			processData.setMailPcode(reqProcessData.getMailPcode().trim());

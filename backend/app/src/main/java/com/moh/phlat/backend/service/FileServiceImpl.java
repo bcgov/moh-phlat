@@ -156,7 +156,7 @@ public class FileServiceImpl implements FileService {
                                                  String physicalCountry,
                                                  String physicalAddrPrpsTypeCd,
                                                  String mailAddr1, String mailAddr2,
-                                                 String mailAddr3, String mailAddr4, String mailCity, String mailBc,
+                                                 String mailAddr3, String mailAddr4, String mailCity, String mailProvince,
                                                  String mailPcode, String mailCountry, 
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy,
                                                  // Group actions and effective dates
@@ -234,7 +234,7 @@ public class FileServiceImpl implements FileService {
                           .mailAddr3(mailAddr3)
                           .mailAddr4(mailAddr4)
                           .mailCity(mailCity)
-                          .mailBc(mailBc)
+                          .mailProvince(mailProvince)
                           .mailPcode(mailPcode)
                           .mailCountry(mailCountry)
                           .createdAt(createdAt)
@@ -372,7 +372,7 @@ public class FileServiceImpl implements FileService {
 				 		csvRecords.get("MAIL_ADDR3"),
 				 		csvRecords.get("MAIL_ADDR4"),
 				 		csvRecords.get("MAIL_CITY"),						
-				 		csvRecords.get("MAIL_BC"),
+				 		csvRecords.get("MAIL_PROVINCE"),
 				 		csvRecords.get("MAIL_PCODE"),
 				 		csvRecords.get("MAIL_COUNTRY"),
 				 		new Date(), // created_at
@@ -528,7 +528,7 @@ public class FileServiceImpl implements FileService {
             processData.setMailAddr3(s.getMailAddr3());
             processData.setMailAddr4(s.getMailAddr4());
             processData.setMailCity(s.getMailCity());        
-            processData.setMailBc(s.getMailBc());      
+            processData.setMailProvince(s.getMailProvince());      
             processData.setMailPcode(s.getMailPcode());      
             processData.setMailCountry(s.getMailCountry());
             processData.setMailAddrValidationStatus("");

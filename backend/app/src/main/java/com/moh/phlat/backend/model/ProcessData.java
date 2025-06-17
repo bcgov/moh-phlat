@@ -288,8 +288,8 @@ public class ProcessData {
     @Column(name="mail_city")
     private String mailCity;  
     
-    @Column(name="mail_bc")
-    private String mailBc;
+    @Column(name="mail_province")
+    private String mailProvince;
     
     @Column(name="mail_pcode")
     private String mailPcode;
@@ -557,6 +557,22 @@ public class ProcessData {
 		    new AbstractMap.SimpleEntry<>("Status", statusGroupAction),
 		    new AbstractMap.SimpleEntry<>("Physical Address", physicalAddressGroupAction),
 		    new AbstractMap.SimpleEntry<>("Mailing Address", mailingAddressGroupAction)
+    	);
+    }
+    
+    public Map<String,String> mapOfHdsGroupEffectiveDates() {
+    	return Map.ofEntries(
+		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareGroupEffectiveStartDate + "|" + primaryCareGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Hds Sub Type", hdsSubTypeGroupEffectiveStartDate + "|" + hdsSubTypeGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Hds Name", hdsNameGroupEffectiveStartDate + "|" + hdsNameGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Hds Email", hdsEmailGroupEffectiveStartDate + "|" + hdsEmailGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Hds Website", hdsWebsiteGroupEffectiveStartDate + "|" + hdsWebsiteGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Business Phone", businessPhoneGroupEffectiveStartDate + "|" + businessPhoneGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Hds Cell", hdsCellGroupEffectiveStartDate + "|" + hdsCellGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Hds Fax", hdsFaxGroupEffectiveStartDate + "|" + hdsFaxGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Status", statusGroupEffectiveStartDate + "|" + statusGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Physical Address", physicalAddressGroupEffectiveStartDate + "|" + physicalAddressGroupEffectiveEndDate),
+		    new AbstractMap.SimpleEntry<>("Mailing Address", mailingAddressGroupEffectiveStartDate + "|" + mailingAddressGroupEffectiveEndDate)
     	);
     }
 }
