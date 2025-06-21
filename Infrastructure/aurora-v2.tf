@@ -37,6 +37,7 @@ resource "aws_db_subnet_group" "phlat_subnet_group" {
 data "aws_rds_engine_version" "postgresql" {
   engine  = "aurora-postgresql"
   version = "15.10"
+  allow_major_version_upgrade = true
 }
 
 module "aurora_postgresql_v2" {
