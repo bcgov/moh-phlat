@@ -288,12 +288,16 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			AtomicBoolean hasCorrectDateFormats = new AtomicBoolean(true);
 			processData.mapOfHdsGroupEffectiveDates().forEach((group,dates) -> {
 				
-				String[] splitDates = dates.split("|");
+				String[] splitDates = dates.split("\\|");
 				String startDate = splitDates[0];
-				String endDate = splitDates[1];
+				String endDate = null;
+				if (splitDates.length > 1) {
+					endDate = splitDates[1];
+				}
 				
 				try {
-					if (StringUtils.hasText(startDate)) {
+					if (!StringUtils.hasText(processData.getRecordAction())
+							|| StringUtils.hasText(processData.mapOfHdsGroupActions().get(group))) {
 						PlrRequest.EFFECTIVE_DATE_FORMAT.parse(startDate);
 					}
 					if (StringUtils.hasText(endDate)) {

@@ -165,7 +165,7 @@ public class FileServiceImpl implements FileService {
 												 String hdsNameGroupAction, String hdsNameGroupEffectiveStartDate, String hdsNameGroupEffectiveEndDate,
 												 String hdsEmailGroupAction, String hdsEmailGroupEffectiveStartDate, String hdsEmailGroupEffectiveEndDate,
 												 String hdsWebsiteGroupAction, String hdsWebsiteGroupEffectiveStartDate, String hdsWebsiteGroupEffectiveEndDate,
-												 String businessPhoneGroupAction, String businessPhoneStartDate, String businessPhoneGroupEffectiveEndDate,
+												 String businessPhoneGroupAction, String businessPhoneGroupEffectiveStartDate, String businessPhoneGroupEffectiveEndDate,
 												 String hdsCellGroupAction, String hdsCellGroupEffectiveStartDate, String hdsCellGroupEffectiveEndDate,
 												 String hdsFaxGroupAction, String hdsFaxGroupEffectiveStartDate, String hdsFaxGroupEffectiveEndDate,
 												 String statusGroupAction, String statusGroupEffectiveStartDate, String statusGroupEffectiveEndDate,
@@ -258,7 +258,7 @@ public class FileServiceImpl implements FileService {
 						  .hdsWebsiteGroupEffectiveStartDate(hdsWebsiteGroupEffectiveStartDate)
 						  .hdsWebsiteGroupEffectiveEndDate(hdsWebsiteGroupEffectiveEndDate)
 						  .businessPhoneGroupAction(businessPhoneGroupAction)
-						  .businessPhoneGroupEffectiveStartDate(businessPhoneGroupEffectiveEndDate)
+						  .businessPhoneGroupEffectiveStartDate(businessPhoneGroupEffectiveStartDate)
 						  .businessPhoneGroupEffectiveEndDate(businessPhoneGroupEffectiveEndDate)
 						  .hdsCellGroupAction(hdsCellGroupAction)
 						  .hdsCellGroupEffectiveStartDate(hdsCellGroupEffectiveStartDate)

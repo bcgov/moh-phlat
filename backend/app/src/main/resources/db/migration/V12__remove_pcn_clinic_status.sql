@@ -1,3 +1,4 @@
+-- Remove pcn_clinic_status and related columns
 DO $$
 BEGIN
     ALTER TABLE source_data DROP COLUMN IF EXISTS pcn_clinic_status;
@@ -19,6 +20,7 @@ BEGIN
     DELETE FROM table_column_info WHERE table_name = 'PROCESS_DATA' AND column_name = 'PLR_PCN_CLINIC_STATUS_EFFECTIVE_END_DATE';
 END$$;
 
+-- Update column sizes
 DO $$
 BEGIN
     ALTER TABLE source_data ALTER COLUMN plr_hds_sub_type TYPE VARCHAR(50);
@@ -38,6 +40,7 @@ BEGIN
     ALTER TABLE process_data ALTER COLUMN plr_mailing_address TYPE VARCHAR(255);
 END$$;
 
+-- Update mail_bc to mail_province
 DO $$
 BEGIN
     IF EXISTS (
@@ -59,5 +62,31 @@ BEGIN
     ) THEN
         ALTER TABLE process_data
         RENAME COLUMN mail_bc TO mail_province;
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' and column_name='MAIL_PROVINCE'
+    ) THEN
+      UPDATE table_column_info
+          SET column_name='MAIL_PROVINCE', header_name='MAIL_PROVINCE', variable_name='mailProvince', title='Mail Province'
+          WHERE table_name='SOURCE_DATA' AND column_name='MAIL_BC';
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='PROCESS_DATA' and column_name='MAIL_PROVINCE'
+    ) THEN
+      UPDATE table_column_info
+          SET column_name='MAIL_PROVINCE', header_name='MAIL_PROVINCE', variable_name='mailProvince', title='Mail Province'
+          WHERE table_name='PROCESS_DATA' AND column_name='MAIL_BC';
     END IF;
 END$$;
