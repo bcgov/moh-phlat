@@ -181,8 +181,12 @@ public class FileServiceImpl implements FileService {
 												 String plrHdsBusinessPhone, String plrBusinessPhoneEffectiveStartDate, String plrBusinessPhoneEffectiveEndDate,
 												 String plrHdsFax, String plrHdsFaxEffectiveStartDate, String plrHdsFaxEffectiveEndDate,
 												 String plrHdsCell, String plrHdsCellEffectiveStartDate, String plrHdsCellEffectiveEndDate,
-												 String plrPhysicalAddress, String plrPhysicalAddressEffectiveStartDate, String plrPhysicalAddressEffectiveEndDate,
-												 String plrMailingAddress, String plrMailingAddressEffectiveStartDate, String plrMailingAddressEffectiveEndDate,
+                                                 String plrPhysicalAddr1, String plrPhysicalAddr2, String plrPhysicalAddr3, String plrPhysicalAddr4,
+                                                 String plrPhysicalCity, String plrPhysicalProvince, String plrPhysicalPcode, String plrPhysicalCountry, String plrPhysicalAddrPrpsTypeCd,
+                                                 String plrPhysicalAddressEffectiveStartDate, String plrPhysicalAddressEffectiveEndDate,
+                                                 String plrMailAddr1, String plrMailAddr2, String plrMailAddr3, String plrMailAddr4,
+                                                 String plrMailCity, String plrMailProvince, String plrMailPcode, String plrMailCountry,
+                                                 String plrMailingAddressEffectiveStartDate, String plrMailingAddressEffectiveEndDate,
 												 // Property CHIDs
 												 String hdsSubTypePropertyChid, String pcnServiceDeliveryTypePropertyChid, String pcnClinicTypePropertyChid, String pcnPciFlagPropertyChid, String facAddressUnitPropertyChid) {
         return SourceData.builder()
@@ -301,10 +305,25 @@ public class FileServiceImpl implements FileService {
 						  .plrHdsCell(plrHdsCell)
 						  .plrHdsCellEffectiveStartDate(plrHdsCellEffectiveStartDate)
 						  .plrHdsCellEffectiveEndDate(plrHdsCellEffectiveEndDate)
-						  .plrPhysicalAddress(plrPhysicalAddress)
+                          .plrPhysicalAddr1(plrPhysicalAddr1)
+                          .plrPhysicalAddr2(plrPhysicalAddr2)
+                          .plrPhysicalAddr3(plrPhysicalAddr3)
+                          .plrPhysicalAddr4(plrPhysicalAddr4)
+                          .plrPhysicalCity(plrPhysicalCity)
+                          .plrPhysicalProvince(plrPhysicalProvince)
+                          .plrPhysicalPcode(plrPhysicalPcode)
+                          .plrPhysicalCountry(plrPhysicalCountry)
+                          .plrPhysicalAddrPrpsTypeCd(plrPhysicalAddrPrpsTypeCd)
 						  .plrPhysicalAddressEffectiveStartDate(plrPhysicalAddressEffectiveStartDate)
 						  .plrPhysicalAddressEffectiveEndDate(plrPhysicalAddressEffectiveEndDate)
-						  .plrMailingAddress(plrMailingAddress)
+                          .plrMailAddr1(plrMailAddr1)
+                          .plrMailAddr2(plrMailAddr2)
+                          .plrMailAddr3(plrMailAddr3)
+                          .plrMailAddr4(plrMailAddr4)
+                          .plrMailCity(plrMailCity)
+                          .plrMailProvince(plrMailProvince)
+                          .plrMailPcode(plrMailPcode)
+                          .plrMailCountry(plrMailCountry)
 						  .plrMailingAddressEffectiveStartDate(plrMailingAddressEffectiveStartDate)
 						  .plrMailingAddressEffectiveEndDate(plrMailingAddressEffectiveEndDate)
                           // Property CHIDs
@@ -439,10 +458,25 @@ public class FileServiceImpl implements FileService {
 					    csvRecords.get("PLR_HDS_CELL"),
 						csvRecords.get("PLR_HDS_CELL_EFFECTIVE_START_DATE"),
 						csvRecords.get("PLR_HDS_CELL_EFFECTIVE_END_DATE"),
-					    csvRecords.get("PLR_PHYSICAL_ADDRESS"),
+				 		csvRecords.get("PLR_PHYSICAL_ADDR1"),
+				 		csvRecords.get("PLR_PHYSICAL_ADDR2"),
+				 		csvRecords.get("PLR_PHYSICAL_ADDR3"),
+				 		csvRecords.get("PLR_PHYSICAL_ADDR4"),
+				 		csvRecords.get("PLR_PHYSICAL_CITY"),						
+				 		csvRecords.get("PLR_PHYSICAL_PROVINCE"),
+				 		csvRecords.get("PLR_PHYSICAL_PCODE"),
+				 		csvRecords.get("PLR_PHYSICAL_COUNTRY"),
+				 		csvRecords.get("PLR_PHYSICAL_ADDR_PRPS_TYPE_CD"),	
 						csvRecords.get("PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE"),
 						csvRecords.get("PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE"),
-					    csvRecords.get("PLR_MAILING_ADDRESS"),
+				 		csvRecords.get("PLR_MAIL_ADDR1"),
+				 		csvRecords.get("PLR_MAIL_ADDR2"),
+				 		csvRecords.get("PLR_MAIL_ADDR3"),
+				 		csvRecords.get("PLR_MAIL_ADDR4"),
+				 		csvRecords.get("PLR_MAIL_CITY"),						
+				 		csvRecords.get("PLR_MAIL_PROVINCE"),
+				 		csvRecords.get("PLR_MAIL_PCODE"),
+				 		csvRecords.get("PLR_MAIL_COUNTRY"),
 						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE"),
 						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE"),
 						// Property CHIDs
@@ -593,11 +627,26 @@ public class FileServiceImpl implements FileService {
 			processData.setPlrHdsFaxEffectiveEndDate(s.getPlrHdsFaxEffectiveEndDate());
 			processData.setPlrHdsCell(s.getPlrHdsCell());
 			processData.setPlrHdsCellEffectiveStartDate(s.getPlrHdsCellEffectiveStartDate());
-			processData.setPlrHdsCellEffectiveEndDate(s.getPlrHdsCellEffectiveEndDate());
-			processData.setPlrPhysicalAddress(s.getPlrPhysicalAddress());
+			processData.setPlrHdsCellEffectiveEndDate(s.getPlrHdsCellEffectiveEndDate()); 	
+            processData.setPlrPhysicalAddr1(s.getPlrPhysicalAddr1());
+            processData.setPlrPhysicalAddr2(s.getPlrPhysicalAddr2());	  
+			processData.setPlrPhysicalAddr3(s.getPlrPhysicalAddr3());
+            processData.setPlrPhysicalAddr4(s.getPlrPhysicalAddr4());
+            processData.setPlrPhysicalCity(s.getPlrPhysicalCity());        
+            processData.setPlrPhysicalProvince(s.getPlrPhysicalProvince());      
+            processData.setPlrPhysicalPcode(s.getPlrPhysicalPcode());      
+            processData.setPlrPhysicalCountry(s.getPlrPhysicalCountry()); 
+            processData.setPlrPhysicalAddrPrpsTypeCd(s.getPlrPhysicalAddrPrpsTypeCd()); 
 			processData.setPlrPhysicalAddressEffectiveStartDate(s.getPlrPhysicalAddressEffectiveStartDate());
-			processData.setPlrPhysicalAddressEffectiveEndDate(s.getPlrPhysicalAddressEffectiveEndDate());
-			processData.setPlrMailingAddress(s.getPlrMailingAddress());
+			processData.setPlrPhysicalAddressEffectiveEndDate(s.getPlrPhysicalAddressEffectiveEndDate()); 
+            processData.setPlrMailAddr1(s.getPlrMailAddr1());
+            processData.setPlrMailAddr2(s.getPlrMailAddr2());	        
+            processData.setPlrMailAddr3(s.getPlrMailAddr3());
+            processData.setPlrMailAddr4(s.getPlrMailAddr4());
+            processData.setPlrMailCity(s.getPlrMailCity());        
+            processData.setPlrMailProvince(s.getPlrMailProvince());      
+            processData.setPlrMailPcode(s.getPlrMailPcode());      
+            processData.setPlrMailCountry(s.getPlrMailCountry());
 			processData.setPlrMailingAddressEffectiveStartDate(s.getPlrMailingAddressEffectiveStartDate());
 			processData.setPlrMailingAddressEffectiveEndDate(s.getPlrMailingAddressEffectiveEndDate());
 			// Property CHIDs

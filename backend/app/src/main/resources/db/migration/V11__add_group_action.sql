@@ -743,10 +743,106 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='plr_physical_address'
+        WHERE table_name='source_data' and column_name='plr_physical_addr1'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN plr_physical_address VARCHAR(10);
+        ADD COLUMN plr_physical_addr1 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_addr2'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_addr2 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_addr3'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_addr3 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_addr4'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_addr4 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_city'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_city VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_province'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_province VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_pcode'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_pcode VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_country'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_country VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_physical_addr_prps_type_cd'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_physical_addr_prps_type_cd VARCHAR(255);
     END IF;
 END$$;
 
@@ -779,10 +875,94 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='source_data' and column_name='plr_mailing_address'
+        WHERE table_name='source_data' and column_name='plr_mail_addr1'
     ) THEN
         ALTER TABLE source_data
-        ADD COLUMN plr_mailing_address VARCHAR(10);
+        ADD COLUMN plr_mail_addr1 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_addr2'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_addr2 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_addr3'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_addr3 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_addr4'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_addr4 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_city'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_city VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_province'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_province VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_pcode'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_pcode VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_mail_country'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_mail_country VARCHAR(255);
     END IF;
 END$$;
 
@@ -1607,10 +1787,106 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='plr_physical_address'
+        WHERE table_name='process_data' and column_name='plr_physical_addr1'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN plr_physical_address VARCHAR(10);
+        ADD COLUMN plr_physical_addr1 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_addr2'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_addr2 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_addr3'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_addr3 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_addr4'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_addr4 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_city'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_city VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_province'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_province VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_pcode'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_pcode VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_country'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_country VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_physical_addr_prps_type_cd'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_physical_addr_prps_type_cd VARCHAR(255);
     END IF;
 END$$;
 
@@ -1643,10 +1919,94 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
-        WHERE table_name='process_data' and column_name='plr_mailing_address'
+        WHERE table_name='process_data' and column_name='plr_mail_addr1'
     ) THEN
         ALTER TABLE process_data
-        ADD COLUMN plr_mailing_address VARCHAR(10);
+        ADD COLUMN plr_mail_addr1 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_addr2'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_addr2 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_addr3'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_addr3 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_addr4'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_addr4 VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_city'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_city VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_province'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_province VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_pcode'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_pcode VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_mail_country'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_mail_country VARCHAR(255);
     END IF;
 END$$;
 
@@ -2527,7 +2887,7 @@ BEGIN
       );
     END IF;
 END$$;
-
+--TODO: UPDATE TO BE SEPARATE PHYS/MAIL ADDR FIELDS, THIS IS NECESSARY FOR FILE LOAD
 DO $$
 BEGIN
     IF NOT EXISTS (

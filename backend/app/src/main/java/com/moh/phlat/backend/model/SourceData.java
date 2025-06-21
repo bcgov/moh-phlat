@@ -366,17 +366,62 @@ public class SourceData {
     @Column(name="plr_hds_cell_effective_end_date")
     private String plrHdsCellEffectiveEndDate;
 
-    @Column(name="plr_physical_address")
-    private String plrPhysicalAddress;
+    @Column(name="plr_physical_addr1")
+    private String plrPhysicalAddr1;  
+    
+    @Column(name="plr_physical_addr2")
+    private String plrPhysicalAddr2;  
+    
+    @Column(name="plr_physical_addr3")
+    private String plrPhysicalAddr3;  
+    
+    @Column(name="plr_physical_addr4")
+    private String plrPhysicalAddr4;  
+     
+    @Column(name="plr_physical_city")
+    private String plrPhysicalCity;  
+    
+    @Column(name="plr_physical_province")
+    private String plrPhysicalProvince;  
+
+    @Column(name="plr_physical_pcode")
+    private String plrPhysicalPcode;  
+    
+    @Column(name="plr_physical_country")
+    private String plrPhysicalCountry;  
+    
+    @Column(name="plr_physical_addr_prps_type_cd")
+    private String plrPhysicalAddrPrpsTypeCd;  
 
     @Column(name="plr_physical_address_effective_start_date")
     private String plrPhysicalAddressEffectiveStartDate;
 
     @Column(name="plr_physical_address_effective_end_date")
     private String plrPhysicalAddressEffectiveEndDate;
+    
+    @Column(name="plr_mail_addr1")
+    private String plrMailAddr1;  
+    
+    @Column(name="plr_mail_addr2")
+    private String plrMailAddr2;  
 
-    @Column(name="plr_mailing_address")
-    private String plrMailingAddress;
+    @Column(name="plr_mail_addr3")
+    private String plrMailAddr3;
+    
+    @Column(name="plr_mail_addr4")
+    private String plrMailAddr4;  
+    
+    @Column(name="plr_mail_city")
+    private String plrMailCity;  
+    
+    @Column(name="plr_mail_province")
+    private String plrMailProvince;
+    
+    @Column(name="plr_mail_pcode")
+    private String plrMailPcode;
+    
+    @Column(name="plr_mail_country")
+    private String plrMailCountry;  
 
     @Column(name="plr_mailing_address_effective_start_date")
     private String plrMailingAddressEffectiveStartDate;
