@@ -89,18 +89,18 @@ module "aurora_postgresql_v2" {
 }
 
 resource "aws_db_parameter_group" "phlat_postgresql15" {
-  name        = "${var.phlat_cluster_name}-parameter-group"
+  name        = "${var.phlat_cluster_name}-parameter-group-15"
   family      = "aurora-postgresql15"
-  description = "${var.phlat_cluster_name}-parameter-group"
+  description = "${var.phlat_cluster_name}-parameter-group-15"
   tags = {
     managed-by = "terraform"
   }
 }
 
 resource "aws_rds_cluster_parameter_group" "phlat_postgresql15" {
-  name        = "${var.phlat_cluster_name}-cluster-parameter-group"
+  name        = "${var.phlat_cluster_name}-cluster-parameter-group-15"
   family      = "aurora-postgresql15"
-  description = "${var.phlat_cluster_name}-cluster-parameter-group"
+  description = "${var.phlat_cluster_name}-cluster-parameter-group-15"
   tags = {
     managed-by = "terraform"
   }
