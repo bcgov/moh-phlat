@@ -995,6 +995,78 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_hds_msp_facility_number'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_hds_msp_facility_number VARCHAR(50);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_pcn_service_delivery_type'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_pcn_service_delivery_type VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_pcn_clinic_type'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_pcn_clinic_type VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_pcn_pci_flag'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_pcn_pci_flag VARCHAR(1);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_primary_care_specific_effective_start_date'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_primary_care_specific_effective_start_date VARCHAR(10);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='source_data' and column_name='plr_primary_care_specific_effective_end_date'
+    ) THEN
+        ALTER TABLE source_data
+        ADD COLUMN plr_primary_care_specific_effective_end_date VARCHAR(10);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
         WHERE table_name='source_data' and column_name='hds_sub_type_property_chid'
     ) THEN
         ALTER TABLE source_data
@@ -2034,6 +2106,77 @@ BEGIN
     END IF;
 END$$;
 
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_hds_msp_facility_number'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_hds_msp_facility_number VARCHAR(50);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_pcn_service_delivery_type'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_pcn_service_delivery_type VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_pcn_clinic_type'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_pcn_clinic_type VARCHAR(255);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_pcn_pci_flag'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_pcn_pci_flag VARCHAR(1);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_primary_care_specific_effective_start_date'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_primary_care_specific_effective_start_date VARCHAR(10);
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns 
+        WHERE table_name='process_data' and column_name='plr_primary_care_specific_effective_end_date'
+    ) THEN
+        ALTER TABLE process_data
+        ADD COLUMN plr_primary_care_specific_effective_end_date VARCHAR(10);
+    END IF;
+END$$;
 
 DO $$
 BEGIN
@@ -2887,16 +3030,120 @@ BEGIN
       );
     END IF;
 END$$;
---TODO: UPDATE TO BE SEPARATE PHYS/MAIL ADDR FIELDS, THIS IS NECESSARY FOR FILE LOAD
+
 DO $$
 BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDRESS'
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDR1'
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PLR_PHYSICAL_ADDRESS', 'PLR_PHYSICAL_ADDRESS', 'plrPhysicalAddress', 'Plr Physical Address'
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDR1', 'PLR_PHYSICAL_ADDR1', 'plrPhysicalAddr1', 'Plr Physical Addr 1'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDR2'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDR2', 'PLR_PHYSICAL_ADDR2', 'plrPhysicalAddr2', 'Plr Physical Addr 2'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDR3'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDR3', 'PLR_PHYSICAL_ADDR3', 'plrPhysicalAddr3', 'Plr Physical Addr 3'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDR4'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDR4', 'PLR_PHYSICAL_ADDR4', 'plrPhysicalAddr4', 'Plr Physical Addr 4'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_CITY'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_CITY', 'PLR_PHYSICAL_CITY', 'plrPhysicalCity', 'Plr Physical City'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_PROVINCE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_PROVINCE', 'PLR_PHYSICAL_PROVINCE', 'plrPhysicalProvince', 'Plr Physical Prov'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_PCODE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_PCODE', 'PLR_PHYSICAL_PCODE', 'plrPhysicalPcode', 'Plr Physical Postal'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_COUNTRY'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_COUNTRY', 'PLR_PHYSICAL_COUNTRY', 'plrPhysicalCountry', 'Plr Physical Country'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDR_PRPS_TYPE_CD'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDR_PRPS_TYPE_CD', 'PLR_PHYSICAL_ADDR_PRPS_TYPE_CD', 'plrPhysicalAddrPrpsTypeCd', 'Plr Physical Purpose Type CD'
       );
     END IF;
 END$$;
@@ -2932,10 +3179,101 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAILING_ADDRESS'
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_ADDR1'
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PLR_MAILING_ADDRESS', 'PLR_MAILING_ADDRESS', 'plrMailingAddress', 'Plr Mailing Address'
+          'SOURCE_DATA', 'PLR_MAIL_ADDR1', 'PLR_MAIL_ADDR1', 'plrMailAddr1', 'Plr Mailing Addr 1'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_ADDR2'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_ADDR2', 'PLR_MAIL_ADDR2', 'plrMailAddr2', 'Plr Mailing Addr 2'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_ADDR3'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_ADDR3', 'PLR_MAIL_ADDR3', 'plrMailAddr3', 'Plr Mailing Addr 3'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_ADDR4'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_ADDR4', 'PLR_MAIL_ADDR4', 'plrMailAddr4', 'Plr Mailing Addr 4'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_CITY'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_CITY', 'PLR_MAIL_CITY', 'plrMailCity', 'Plr Mailing City'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_PROVINCE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_PROVINCE', 'PLR_MAIL_PROVINCE', 'plrMailProvince', 'Plr Mailing Prov'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_PCODE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_PCODE', 'PLR_MAIL_PCODE', 'plrMailPcode', 'Plr Mailing Postal'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_COUNTRY'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAIL_COUNTRY', 'PLR_MAIL_COUNTRY', 'plrMailCountry', 'Plr Mailing Country'
       );
     END IF;
 END$$;
@@ -2962,6 +3300,84 @@ BEGIN
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
           'SOURCE_DATA', 'PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE', 'PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE', 'plrMailingAddressEffectiveEndDate', 'Plr Mailing Address Effective End Date'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_HDS_MSP_FACILITY_NUMBER'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_HDS_MSP_FACILITY_NUMBER', 'PLR_HDS_MSP_FACILITY_NUMBER', 'plrHdsMspFacilityNumber', 'Plr HDS MSP Facility #'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PCN_SERVICE_DELIVERY_TYPE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PCN_SERVICE_DELIVERY_TYPE', 'PLR_PCN_SERVICE_DELIVERY_TYPE', 'plrPcnServiceDeliveryType', 'Plr PCN Srve Delivery Type'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PCN_CLINIC_TYPE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PCN_CLINIC_TYPE', 'PLR_PCN_CLINIC_TYPE', 'plrPcnClinicType', 'Plr PCN Clinic Type'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PCN_PCI_FLAG'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PCN_PCI_FLAG', 'PLR_PCN_PCI_FLAG', 'plrPcnPciFlag', 'Plr PCN PCI Flag'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_START_DATE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_START_DATE', 'PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_START_DATE', 'plrPrimaryCareSpecificEffectiveStartDate', 'Plr Primary Care Effective Start Date'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_END_DATE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_END_DATE', 'PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_END_DATE', 'plrPrimaryCareSpecificEffectiveEndDate', 'Plr Primary Care Effective End Date'
       );
     END IF;
 END$$;

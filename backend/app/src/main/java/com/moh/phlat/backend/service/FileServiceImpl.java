@@ -187,6 +187,8 @@ public class FileServiceImpl implements FileService {
                                                  String plrMailAddr1, String plrMailAddr2, String plrMailAddr3, String plrMailAddr4,
                                                  String plrMailCity, String plrMailProvince, String plrMailPcode, String plrMailCountry,
                                                  String plrMailingAddressEffectiveStartDate, String plrMailingAddressEffectiveEndDate,
+                                                 String plrHdsMspFacilityNumber, String plrPcnServiceDeliveryType, String plrPcnClinicType, String plrPcnPciFlag,
+                                                 String plrPrimaryCareSpecificEffectiveStartDate, String plrPrimaryCareSpecificEffectiveEndDate,
 												 // Property CHIDs
 												 String hdsSubTypePropertyChid, String pcnServiceDeliveryTypePropertyChid, String pcnClinicTypePropertyChid, String pcnPciFlagPropertyChid, String facAddressUnitPropertyChid) {
         return SourceData.builder()
@@ -326,6 +328,12 @@ public class FileServiceImpl implements FileService {
                           .plrMailCountry(plrMailCountry)
 						  .plrMailingAddressEffectiveStartDate(plrMailingAddressEffectiveStartDate)
 						  .plrMailingAddressEffectiveEndDate(plrMailingAddressEffectiveEndDate)
+						  .plrHdsMspFacilityNumber(plrHdsMspFacilityNumber)
+						  .plrPcnServiceDeliveryType(plrPcnServiceDeliveryType)
+						  .plrPcnClinicType(plrPcnClinicType)
+						  .plrPcnPciFlag(plrPcnPciFlag)
+						  .plrPrimaryCareSpecificEffectiveStartDate(plrPrimaryCareSpecificEffectiveStartDate)
+						  .plrPrimaryCareSpecificEffectiveEndDate(plrPrimaryCareSpecificEffectiveEndDate)
                           // Property CHIDs
 						  .hdsSubTypePropertyChid(hdsSubTypePropertyChid)
                           .pcnServiceDeliveryTypePropertyChid(pcnServiceDeliveryTypePropertyChid)
@@ -479,6 +487,12 @@ public class FileServiceImpl implements FileService {
 				 		csvRecords.get("PLR_MAIL_COUNTRY"),
 						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE"),
 						csvRecords.get("PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE"),
+				 		csvRecords.get("PLR_HDS_MSP_FACILITY_NUMBER"),
+				 		csvRecords.get("PLR_PCN_SERVICE_DELIVERY_TYPE"),
+				 		csvRecords.get("PLR_PCN_CLINIC_TYPE"),
+				 		csvRecords.get("PLR_PCN_PCI_FLAG"),
+						csvRecords.get("PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_START_DATE"),
+						csvRecords.get("PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_END_DATE"),
 						// Property CHIDs
 						csvRecords.get("HDS_SUB_TYPE_PROPERTY_CHID"),
 						csvRecords.get("PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID"),
@@ -649,6 +663,12 @@ public class FileServiceImpl implements FileService {
             processData.setPlrMailCountry(s.getPlrMailCountry());
 			processData.setPlrMailingAddressEffectiveStartDate(s.getPlrMailingAddressEffectiveStartDate());
 			processData.setPlrMailingAddressEffectiveEndDate(s.getPlrMailingAddressEffectiveEndDate());
+			processData.setPlrHdsMspFacilityNumber(s.getPlrHdsMspFacilityNumber());
+			processData.setPlrPcnServiceDeliveryType(s.getPlrPcnServiceDeliveryType());
+			processData.setPlrPcnClinicType(s.getPlrPcnClinicType());
+			processData.setPlrPcnPciFlag(s.getPlrPcnPciFlag());
+			processData.setPlrPrimaryCareSpecificEffectiveStartDate(s.getPlrPrimaryCareSpecificEffectiveStartDate());
+			processData.setPlrPrimaryCareSpecificEffectiveEndDate(s.getPlrPrimaryCareSpecificEffectiveEndDate());
 			// Property CHIDs
 			processData.setHdsSubTypePropertyChid(s.getHdsSubTypePropertyChid());
 			processData.setPcnServiceDeliveryTypePropertyChid(s.getPcnServiceDeliveryTypePropertyChid());

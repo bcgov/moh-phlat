@@ -429,6 +429,24 @@ public class SourceData {
     @Column(name="plr_mailing_address_effective_end_date")
     private String plrMailingAddressEffectiveEndDate;
     
+    @Column(name="plr_hds_msp_facility_number")
+    private String plrHdsMspFacilityNumber;
+    
+    @Column(name="plr_pcn_service_delivery_type")
+    private String plrPcnServiceDeliveryType;
+    
+    @Column(name="plr_pcn_clinic_type")
+    private String plrPcnClinicType;
+    
+    @Column(name="plr_pcn_pci_flag")
+    private String plrPcnPciFlag;
+
+    @Column(name="plr_primary_care_specific_effective_start_date")
+    private String plrPrimaryCareSpecificEffectiveStartDate;
+
+    @Column(name="plr_primary_care_specific_effective_end_date")
+    private String plrPrimaryCareSpecificEffectiveEndDate;
+    
     // Property CHID fields
     
     @Column(name="hds_sub_type_property_chid")
