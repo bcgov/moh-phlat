@@ -86,3 +86,17 @@ BEGIN
           WHERE table_name='PROCESS_DATA' AND column_name='MAIL_BC';
     END IF;
 END$$;
+
+-- Remove PLR_PHYSICAL_ADDRESS and PLR_MAILING_ADDRESS columns
+DO $$
+BEGIN
+    ALTER TABLE source_data DROP COLUMN IF EXISTS plr_physical_address;
+    ALTER TABLE source_data DROP COLUMN IF EXISTS plr_mailing_address;
+    ALTER TABLE process_data DROP COLUMN IF EXISTS plr_physical_address;
+    ALTER TABLE process_data DROP COLUMN IF EXISTS plr_mailing_address;
+    
+    DELETE FROM table_column_info WHERE table_name = 'SOURCE_DATA' AND column_name = 'PLR_PHYSICAL_ADDRESS';
+    DELETE FROM table_column_info WHERE table_name = 'SOURCE_DATA' AND column_name = 'PLR_MAILING_ADDRESS';
+    DELETE FROM table_column_info WHERE table_name = 'PROCESS_DATA' AND column_name = 'PLR_PHYSICAL_ADDRESS';
+    DELETE FROM table_column_info WHERE table_name = 'PROCESS_DATA' AND column_name = 'PLR_MAILING_ADDRESS';
+END$$;

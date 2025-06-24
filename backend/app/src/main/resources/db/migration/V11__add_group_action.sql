@@ -3036,6 +3036,123 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE', 'plrPhysicalAddressEffectiveStartDate', 'Plr Physical Address Effective Start Date'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE', 'plrPhysicalAddressEffectiveEndDate', 'Plr Physical Address Effective End Date'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE', 'PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE', 'plrMailingAddressEffectiveStartDate', 'Plr Mailing Address Effective Start Date'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE', 'PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE', 'plrMailingAddressEffectiveEndDate', 'Plr Mailing Address Effective End Date'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='HDS_SUB_TYPE_PROPERTY_CHID'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'HDS_SUB_TYPE_PROPERTY_CHID', 'HDS_SUB_TYPE_PROPERTY_CHID', 'hdsSubTypePropertyChid', 'Hds Sub Type Property Chid'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID', 'PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID', 'pcnServiceDeliveryTypePropertyChid', 'Pcn Service Delivery Type Property Chid'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PCN_CLINIC_TYPE_PROPERTY_CHID'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PCN_CLINIC_TYPE_PROPERTY_CHID', 'PCN_CLINIC_TYPE_PROPERTY_CHID', 'pcnClinicTypePropertyChid', 'Pcn Clinic Type Property Chid'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='PCN_PCI_FLAG_PROPERTY_CHID'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'PCN_PCI_FLAG_PROPERTY_CHID', 'PCN_PCI_FLAG_PROPERTY_CHID', 'pcnPciFlagPropertyChid', 'Pcn Pci Flag Property Chid'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
+        WHERE table_name='SOURCE_DATA' AND column_name='FAC_ADDRESS_UNIT_PROPERTY_CHID'
+    ) THEN
+      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
+          'SOURCE_DATA', 'FAC_ADDRESS_UNIT_PROPERTY_CHID', 'FAC_ADDRESS_UNIT_PROPERTY_CHID', 'facAddressUnitPropertyChid', 'Fac Address Unit Property Chid'
+      );
+    END IF;
+END$$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM table_column_info
         WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDR1'
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
@@ -3153,32 +3270,6 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_START_DATE', 'plrPhysicalAddressEffectiveStartDate', 'Plr Physical Address Effective Start Date'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE', 'PLR_PHYSICAL_ADDRESS_EFFECTIVE_END_DATE', 'plrPhysicalAddressEffectiveEndDate', 'Plr Physical Address Effective End Date'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
         WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAIL_ADDR1'
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
@@ -3283,32 +3374,6 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE', 'PLR_MAILING_ADDRESS_EFFECTIVE_START_DATE', 'plrMailingAddressEffectiveStartDate', 'Plr Mailing Address Effective Start Date'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE', 'PLR_MAILING_ADDRESS_EFFECTIVE_END_DATE', 'plrMailingAddressEffectiveEndDate', 'Plr Mailing Address Effective End Date'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
         WHERE table_name='SOURCE_DATA' AND column_name='PLR_HDS_MSP_FACILITY_NUMBER'
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
@@ -3378,71 +3443,6 @@ BEGIN
     ) THEN
       INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
           'SOURCE_DATA', 'PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_END_DATE', 'PLR_PRIMARY_CARE_SPECIFIC_EFFECTIVE_END_DATE', 'plrPrimaryCareSpecificEffectiveEndDate', 'Plr Primary Care Effective End Date'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='HDS_SUB_TYPE_PROPERTY_CHID'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'HDS_SUB_TYPE_PROPERTY_CHID', 'HDS_SUB_TYPE_PROPERTY_CHID', 'hdsSubTypePropertyChid', 'Hds Sub Type Property Chid'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID', 'PCN_SERVICE_DELIVERY_TYPE_PROPERTY_CHID', 'pcnServiceDeliveryTypePropertyChid', 'Pcn Service Delivery Type Property Chid'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PCN_CLINIC_TYPE_PROPERTY_CHID'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PCN_CLINIC_TYPE_PROPERTY_CHID', 'PCN_CLINIC_TYPE_PROPERTY_CHID', 'pcnClinicTypePropertyChid', 'Pcn Clinic Type Property Chid'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='PCN_PCI_FLAG_PROPERTY_CHID'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'PCN_PCI_FLAG_PROPERTY_CHID', 'PCN_PCI_FLAG_PROPERTY_CHID', 'pcnPciFlagPropertyChid', 'Pcn Pci Flag Property Chid'
-      );
-    END IF;
-END$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM table_column_info
-        WHERE table_name='SOURCE_DATA' AND column_name='FAC_ADDRESS_UNIT_PROPERTY_CHID'
-    ) THEN
-      INSERT INTO table_column_info(table_name, column_name, header_name, variable_name, title) VALUES (
-          'SOURCE_DATA', 'FAC_ADDRESS_UNIT_PROPERTY_CHID', 'FAC_ADDRESS_UNIT_PROPERTY_CHID', 'facAddressUnitPropertyChid', 'Fac Address Unit Property Chid'
       );
     END IF;
 END$$;
