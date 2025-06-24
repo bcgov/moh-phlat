@@ -36,7 +36,7 @@ resource "aws_db_subnet_group" "phlat_subnet_group" {
 
 data "aws_rds_engine_version" "postgresql" {
   engine  = "aurora-postgresql"
-  version = "15.10"
+  version = "14.17"
 }
 
 module "aurora_postgresql_v2" {
@@ -67,8 +67,8 @@ module "aurora_postgresql_v2" {
   apply_immediately   = true
   skip_final_snapshot = true
 
-  db_parameter_group_name         = aws_db_parameter_group.phlat_postgresql15.id
-  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.phlat_postgresql15.id
+  db_parameter_group_name         = aws_db_parameter_group.phlat_postgresql14.id
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.phlat_postgresql14.id
 
   serverlessv2_scaling_configuration = {
     min_capacity = var.aurora_acu_min
@@ -88,19 +88,19 @@ module "aurora_postgresql_v2" {
   enabled_cloudwatch_logs_exports = ["postgresql"]
 }
 
-resource "aws_db_parameter_group" "phlat_postgresql15" {
-  name        = "${var.phlat_cluster_name}-parameter-group-15"
-  family      = "aurora-postgresql15"
-  description = "${var.phlat_cluster_name}-parameter-group-15"
+resource "aws_db_parameter_group" "phlat_postgresql14" {
+  name        = "${var.phlat_cluster_name}-parameter-group-14"
+  family      = "aurora-postgresql14"
+  description = "${var.phlat_cluster_name}-parameter-group-14"
   tags = {
     managed-by = "terraform"
   }
 }
 
-resource "aws_rds_cluster_parameter_group" "phlat_postgresql15" {
-  name        = "${var.phlat_cluster_name}-cluster-parameter-group-15"
-  family      = "aurora-postgresql15"
-  description = "${var.phlat_cluster_name}-cluster-parameter-group-15"
+resource "aws_rds_cluster_parameter_group" "phlat_postgresql14" {
+  name        = "${var.phlat_cluster_name}-cluster-parameter-group-14"
+  family      = "aurora-postgresql14"
+  description = "${var.phlat_cluster_name}-cluster-parameter-group-14"
   tags = {
     managed-by = "terraform"
   }
