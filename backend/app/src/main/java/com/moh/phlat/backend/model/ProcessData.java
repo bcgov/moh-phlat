@@ -1,5 +1,11 @@
 package com.moh.phlat.backend.model;
 
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,14 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.AbstractMap;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "PROCESS_DATA")
@@ -623,19 +621,19 @@ public class ProcessData {
     	);
     }
     
-    public Map<String,String> mapOfHdsGroupEffectiveDates() {
+    public Map<String,List<String>> mapOfHdsGroupEffectiveDates() {
     	return Map.ofEntries(
-		    new AbstractMap.SimpleEntry<>("Primary Care Specific", primaryCareGroupEffectiveStartDate + "|" + primaryCareGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Hds Sub Type", hdsSubTypeGroupEffectiveStartDate + "|" + hdsSubTypeGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Hds Name", hdsNameGroupEffectiveStartDate + "|" + hdsNameGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Hds Email", hdsEmailGroupEffectiveStartDate + "|" + hdsEmailGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Hds Website", hdsWebsiteGroupEffectiveStartDate + "|" + hdsWebsiteGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Business Phone", businessPhoneGroupEffectiveStartDate + "|" + businessPhoneGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Hds Cell", hdsCellGroupEffectiveStartDate + "|" + hdsCellGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Hds Fax", hdsFaxGroupEffectiveStartDate + "|" + hdsFaxGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Status", statusGroupEffectiveStartDate + "|" + statusGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Physical Address", physicalAddressGroupEffectiveStartDate + "|" + physicalAddressGroupEffectiveEndDate),
-		    new AbstractMap.SimpleEntry<>("Mailing Address", mailingAddressGroupEffectiveStartDate + "|" + mailingAddressGroupEffectiveEndDate)
+    	    new AbstractMap.SimpleEntry<>("Primary Care Specific", Arrays.asList(primaryCareGroupEffectiveStartDate, primaryCareGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Hds Sub Type", Arrays.asList(hdsSubTypeGroupEffectiveStartDate, hdsSubTypeGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Hds Name", Arrays.asList(hdsNameGroupEffectiveStartDate, hdsNameGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Hds Email", Arrays.asList(hdsEmailGroupEffectiveStartDate, hdsEmailGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Hds Website", Arrays.asList(hdsWebsiteGroupEffectiveStartDate, hdsWebsiteGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Business Phone", Arrays.asList(businessPhoneGroupEffectiveStartDate, businessPhoneGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Hds Cell", Arrays.asList(hdsCellGroupEffectiveStartDate, hdsCellGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Hds Fax", Arrays.asList(hdsFaxGroupEffectiveStartDate, hdsFaxGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Status", Arrays.asList(statusGroupEffectiveStartDate, statusGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Physical Address", Arrays.asList(physicalAddressGroupEffectiveStartDate, physicalAddressGroupEffectiveEndDate)),
+    	    new AbstractMap.SimpleEntry<>("Mailing Address", Arrays.asList(mailingAddressGroupEffectiveStartDate, mailingAddressGroupEffectiveEndDate))
     	);
     }
 }
