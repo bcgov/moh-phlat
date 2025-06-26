@@ -62,7 +62,7 @@ variable "app_image" {
 
 variable "app_count" {
   description = "Number of docker containers to run"
-  default     = 0
+  default     = 2
 }
 
 variable "fam_console_idp_name" {
