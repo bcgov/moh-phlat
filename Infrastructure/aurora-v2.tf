@@ -39,7 +39,7 @@ data "aws_rds_engine_version" "postgresql" {
   version = "13.21"
 }
 
-data "aws_rds_engine_version_15" "postgresql" {
+data "aws_rds_engine_version" "postgresql_15" {
   engine  = "aurora-postgresql"
   version = "15.10"
 }
@@ -98,9 +98,9 @@ module "aurora_postgresql_v2_15" {
   version = "7.7.1"
 
   name              = "${var.phlat_cluster_name}-${var.target_env}-15"
-  engine            = data.aws_rds_engine_version_15.postgresql.engine
+  engine            = data.aws_rds_engine_version.postgresql_15.engine
   engine_mode       = "provisioned"
-  engine_version    = data.aws_rds_engine_version_15.postgresql.version
+  engine_version    = data.aws_rds_engine_version.postgresql_15.version
   storage_encrypted = true
   database_name     = var.phlat_database_name
   allow_major_version_upgrade = true
