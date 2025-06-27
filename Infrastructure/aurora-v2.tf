@@ -93,7 +93,7 @@ module "aurora_postgresql_v2" {
   enabled_cloudwatch_logs_exports = ["postgresql"]
 }
 
-module "aurora_postgresql_v2" {
+module "aurora_postgresql_v2_15" {
   source  = "terraform-aws-modules/rds-aurora/aws"
   version = "7.7.1"
 
