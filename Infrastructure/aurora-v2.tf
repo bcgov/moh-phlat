@@ -36,7 +36,12 @@ resource "aws_db_subnet_group" "phlat_subnet_group" {
 
 data "aws_rds_engine_version" "postgresql" {
   engine  = "aurora-postgresql"
-  version = "13.18"
+  version = "13.21"
+}
+
+data "aws_rds_engine_version" "postgresql_15" {
+  engine  = "aurora-postgresql"
+  version = "15.10"
 }
 
 module "aurora_postgresql_v2" {
@@ -49,6 +54,7 @@ module "aurora_postgresql_v2" {
   engine_version    = data.aws_rds_engine_version.postgresql.version
   storage_encrypted = true
   database_name     = var.phlat_database_name
+  allow_major_version_upgrade = true
 
   vpc_id                 = data.aws_vpc.main.id
   vpc_security_group_ids = [data.aws_security_group.data.id]
@@ -87,6 +93,55 @@ module "aurora_postgresql_v2" {
   enabled_cloudwatch_logs_exports = ["postgresql"]
 }
 
+module "aurora_postgresql_v2_15" {
+  source  = "terraform-aws-modules/rds-aurora/aws"
+  version = "7.7.1"
+
+  name              = "${var.phlat_cluster_name}-${var.target_env}-15"
+  engine            = data.aws_rds_engine_version.postgresql_15.engine
+  engine_mode       = "provisioned"
+  engine_version    = data.aws_rds_engine_version.postgresql_15.version
+  storage_encrypted = true
+  database_name     = var.phlat_database_name
+  allow_major_version_upgrade = true
+
+  vpc_id                 = data.aws_vpc.main.id
+  vpc_security_group_ids = [data.aws_security_group.data.id]
+  db_subnet_group_name   = aws_db_subnet_group.phlat_subnet_group.name
+
+  master_username = var.phlat_master_username
+  master_password = random_password.phlat_master_password.result
+
+  create_cluster         = true
+  create_security_group  = false
+  create_db_subnet_group = false
+  create_monitoring_role = false
+  create_random_password = false
+
+  apply_immediately   = true
+  skip_final_snapshot = true
+
+  db_parameter_group_name         = aws_db_parameter_group.phlat_postgresql15.id
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.phlat_postgresql15.id
+
+  serverlessv2_scaling_configuration = {
+    min_capacity = var.aurora_acu_min
+    max_capacity = var.aurora_acu_max
+  }
+
+  instance_class = "db.serverless"
+  instances = {
+    one = {}
+    two = {}
+  }
+
+  tags = {
+    managed-by = "terraform"
+  }
+
+  enabled_cloudwatch_logs_exports = ["postgresql"]
+}
+
 resource "aws_db_parameter_group" "phlat_postgresql13" {
   name        = "${var.phlat_cluster_name}-parameter-group"
   family      = "aurora-postgresql13"
@@ -100,6 +155,28 @@ resource "aws_rds_cluster_parameter_group" "phlat_postgresql13" {
   name        = "${var.phlat_cluster_name}-cluster-parameter-group"
   family      = "aurora-postgresql13"
   description = "${var.phlat_cluster_name}-cluster-parameter-group"
+  tags = {
+    managed-by = "terraform"
+  }
+  parameter {
+    name  = "timezone"
+    value = var.timezone
+  }
+}
+
+resource "aws_db_parameter_group" "phlat_postgresql15" {
+  name        = "${var.phlat_cluster_name}-parameter-group-15"
+  family      = "aurora-postgresql15"
+  description = "${var.phlat_cluster_name}-parameter-group-15"
+  tags = {
+    managed-by = "terraform"
+  }
+}
+
+resource "aws_rds_cluster_parameter_group" "phlat_postgresql15" {
+  name        = "${var.phlat_cluster_name}-cluster-parameter-group-15"
+  family      = "aurora-postgresql15"
+  description = "${var.phlat_cluster_name}-cluster-parameter-group-15"
   tags = {
     managed-by = "terraform"
   }
