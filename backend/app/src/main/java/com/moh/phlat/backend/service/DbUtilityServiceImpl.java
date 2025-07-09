@@ -177,13 +177,28 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}
 
-			if (!StringUtils.hasText(processData.getHdsType())) {
+			String hdsType = processData.getHdsType();
+			if (!StringUtils.hasText(hdsType) || !hdsType.toUpperCase().equals(hdsType)) {
 				isValid = false;
 				logger.info("HDS Type required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("HDS Type cannot be empty")
+									 .messageDesc("HDS Type cannot be empty and must be in full uppercase")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+			
+			String sourceStatus = processData.getSourceStatus();
+			if (!StringUtils.hasText(sourceStatus) || !sourceStatus.toUpperCase().equals(sourceStatus)) {
+				isValid = false;
+				logger.info("Source Status required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Source Status cannot be empty and must be in full uppercase")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
