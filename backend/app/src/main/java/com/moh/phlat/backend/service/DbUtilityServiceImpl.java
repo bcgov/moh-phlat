@@ -23,9 +23,11 @@ import com.moh.phlat.backend.esb.json.PlrRequest;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 
 @Service
@@ -41,6 +43,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Autowired
 	private TableColumnInfoRepository tableColumnInfoRepository;
+
+	@Autowired
+	private SourceDataRepository sourceDataRepository;
 
 	@Autowired
 	private ProcessDataRepository processDataRepository;
@@ -257,6 +262,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}	
 
+			// optional or conditional checks
+
 			String mailCountry = "";
 			mailCountry = processData.getMailCountry().toUpperCase();
 
@@ -274,8 +281,8 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					messageService.createMessage(msg);
 				}
 			}
-
-			AtomicBoolean hasCorrectEndReasons = new AtomicBoolean(true);
+			
+			AtomicBoolean hasCorrectEndReasons = new AtomicBoolean(isValid);
 			processData.mapOfHdsGroupActions().forEach((group,action) -> {
 				
 				if (StringUtils.hasText(action)) {
@@ -300,7 +307,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			});
 			isValid = hasCorrectEndReasons.get();
 
-			AtomicBoolean hasCorrectDateFormats = new AtomicBoolean(true);
+			AtomicBoolean hasCorrectDateFormats = new AtomicBoolean(isValid);
 			processData.mapOfHdsGroupEffectiveDates().forEach((group,dates) -> {
 				
 				String startDate = dates.get(0);
@@ -328,6 +335,87 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			});
 			isValid = hasCorrectDateFormats.get();
 			
+			if (StringUtils.hasText(processData.getHdsProviderIdentifier1() + processData.getHdsProviderIdentifierType1())) {
+				if (!StringUtils.hasText(processData.getHdsProviderIdentifier1())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifier1 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier 1 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(processData.getHdsProviderIdentifierType1())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifierType1 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier Type 1 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+					
+				}
+			}
+			
+			if (StringUtils.hasText(processData.getHdsProviderIdentifier2() + processData.getHdsProviderIdentifierType2())) {
+				if (!StringUtils.hasText(processData.getHdsProviderIdentifier2())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifier2 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier 2 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(processData.getHdsProviderIdentifierType2())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifierType2 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier Type 2 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+					
+				}
+			}
+			
+			if (StringUtils.hasText(processData.getHdsProviderIdentifier3() + processData.getHdsProviderIdentifierType3())) {
+				if (!StringUtils.hasText(processData.getHdsProviderIdentifier3())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifier3 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier 3 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(processData.getHdsProviderIdentifierType3())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifierType3 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier Type 3 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+					
+				}
+			}
+			
 			// error detection
 
 			if (isValid) { 
@@ -354,6 +442,22 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				logger.error("Error occured: {}", e.getMessage(), e);
 			}	
 
+			Optional<SourceData> sourceData = sourceDataRepository.findById(processData.getId());
+			String sourceCivicAddress = "";
+			boolean isCivicAddressForced = false;
+			try {
+				if (sourceData.isPresent()) {
+					SourceData source1 = sourceData.get();
+					sourceCivicAddress = source1.getFacCivicAddress();
+					
+					if (StringUtils.hasText(sourceCivicAddress) && sourceCivicAddress.equals(processData.getFacCivicAddr())) {
+						isCivicAddressForced = true;
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}
+
 			logger.info("Call dataBC on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
 			
 			try {
@@ -368,6 +472,10 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				logger.error("Error occured: {}", e.getMessage(), e);
 			}				
 
+			if (isCivicAddressForced) {
+				processData.setFacCivicAddr(sourceCivicAddress);
+			}
+			
 			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
 				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
 					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
@@ -392,42 +500,44 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
 				dataBcPrecisionPoints = Integer.parseInt(processData.getFacPrecisionPoints());
 			}
-
-			if (dataBcScore != null && dataBcPrecisionPoints != null) {
-				if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			} else if (dataBcScore != null) {
-				if (dataBcScore < 96) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Data SCORE is less than 96")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			} else if (dataBcPrecisionPoints != null) {
-				if ((dataBcPrecisionPoints < 98)) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("PRECISION_POINTS is less than 98")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
+			
+			if (!isCivicAddressForced) {
+				if (dataBcScore != null && dataBcPrecisionPoints != null) {
+					if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
+				} else if (dataBcScore != null) {
+					if (dataBcScore < 96) {
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("Data SCORE is less than 96")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
+				} else if (dataBcPrecisionPoints != null) {
+					if ((dataBcPrecisionPoints < 98)) {
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("PRECISION_POINTS is less than 98")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
 				}
 			}
 

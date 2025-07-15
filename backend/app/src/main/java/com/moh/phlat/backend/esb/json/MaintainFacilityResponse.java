@@ -79,6 +79,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 					if (StringUtils.hasText(msgText) && msgText.contains("IFC.")) {
 						String facilityIdentifier = msgText.substring(msgText.indexOf("IFC")).trim();
 						processData.setFacIfcId(facilityIdentifier);
+						loaded = true;
 					}
 					
 				} else if (hasError && !duplicate
