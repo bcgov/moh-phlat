@@ -440,22 +440,40 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				addressDoctorValidation.validateAddresses(control, processData);
 			} catch (Exception e) {
 				logger.error("Error occured: {}", e.getMessage(), e);
-			}	
+			}
 
 			Optional<SourceData> sourceData = sourceDataRepository.findById(processData.getId());
-			String sourceCivicAddress = "";
+			String civicAddressOverride = processData.getFacCivicAddr();
 			boolean isCivicAddressForced = false;
 			try {
+				// If the user supplied a civic address, save the AddressDoctor result or the provided address as an override
 				if (sourceData.isPresent()) {
 					SourceData source1 = sourceData.get();
-					sourceCivicAddress = source1.getFacCivicAddress();
+					String civicAddressSource = source1.getFacCivicAddress();
 					
-					if (StringUtils.hasText(sourceCivicAddress) && sourceCivicAddress.equals(processData.getFacCivicAddr())) {
+					if (StringUtils.hasText(civicAddressSource)) {
 						isCivicAddressForced = true;
+						if (!isValidCivicAddress(civicAddressOverride)) {
+							// AddressDoctor civic address is inaccurate, resort to the user's supplied civic address
+							civicAddressOverride = civicAddressSource;
+						}
 					}
 				}
 			} catch (Exception e) {
 				logger.error("Error occured: {}", e.getMessage(), e);
+			}
+			
+			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
+				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										.messageDesc("Address Doctor mailability score is less than 3")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
 			}
 
 			logger.info("Call dataBC on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
@@ -470,28 +488,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				dataBCValidation.getCHSAResults(processData);
 			} catch (Exception e) {
 				logger.error("Error occured: {}", e.getMessage(), e);
-			}				
-
-			if (isCivicAddressForced) {
-				processData.setFacCivicAddr(sourceCivicAddress);
-			}
-			
-			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
-				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
-					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
-										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
-										.messageDesc("Address Doctor mailability score is less than 3")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
 			}
 
 			Integer dataBcScore = null;
-
 			if (StringUtils.hasText(processData.getFacScore())) {
 				dataBcScore = Integer.parseInt(processData.getFacScore());
 			}
@@ -501,7 +500,22 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				dataBcPrecisionPoints = Integer.parseInt(processData.getFacPrecisionPoints());
 			}
 			
-			if (!isCivicAddressForced) {
+			if (isCivicAddressForced) {
+				// If the user supplied a civic address, do not treat low DataBC scores as Invalid and override its returned civic address
+				if ((dataBcScore != null && dataBcScore < 96) 
+						|| (dataBcPrecisionPoints != null && dataBcPrecisionPoints < 98)) {
+					processData.setFacCivicAddr(civicAddressOverride);
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98. CIVIC_ADDRESS overriden as VALID by user")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			} else {
+				// The user did not provide a civic address, so verify the DataBC scores and use its civic address
 				if (dataBcScore != null && dataBcPrecisionPoints != null) {
 					if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
 						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
@@ -582,7 +596,6 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					messageService.createMessage(msg);
 				} else if (!isAllUpperCase(civicAddress)) {
 					logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
-					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
 					Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
