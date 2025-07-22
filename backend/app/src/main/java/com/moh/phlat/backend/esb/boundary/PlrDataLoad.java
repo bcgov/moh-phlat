@@ -59,8 +59,6 @@ public class PlrDataLoad {
 		//OF Relationship Load
 		if (control.getLoadTypeOFRelationship()
 				&& StringUtils.hasText(processData.getFacIfcId())
-				&& StringUtils.hasText(processData.getHdsPauthId())
-				&& StringUtils.hasText(processData.getHdsCpnId())
 				&& StringUtils.hasText(processData.getHdsIpcId())) {
 			OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
 			maintainResults.setOFResult(ofResponse);

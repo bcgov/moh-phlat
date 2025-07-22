@@ -43,7 +43,9 @@ public class OFRelationshipRequest implements PlrRequest {
 	
 	public OFRelationshipRequest(ProcessData processData) {
 		this.processData = processData;
-		pauthId = Long.valueOf(this.processData.getHdsPauthId());
+		if (this.processData.getHdsPauthId() != null) {
+			pauthId = Long.valueOf(this.processData.getHdsPauthId());
+		}
 	}
 	
 	@Override

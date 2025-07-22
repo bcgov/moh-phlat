@@ -26,6 +26,7 @@ import lombok.Getter;
 public class MaintainHdsResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(MaintainHdsResponse.class);
 	
+	private static final String DUPLICATE_HDS_RESPONSE_CODE = "PRS.PRV.UNK.CRE.1.0.7068";
 	private static final String HDS_LOADED_RESPONSE_CODE = "PRS.PRV.OID.CRE.0.0.0003";
 
 	private static ObjectMapper objectMapper;
@@ -44,6 +45,7 @@ public class MaintainHdsResponse implements PlrResponse {
 	
 	@Getter
 	private boolean loaded = false;
+	private boolean duplicate = false;
 	private boolean hasError = false;
 	
 	public MaintainHdsResponse(ProcessData processData) {
@@ -68,7 +70,20 @@ public class MaintainHdsResponse implements PlrResponse {
 					// PLR is returning one or more errors; set hasError to true and look for other PLR error(s) in the response
 					hasError = true;
 						
-				} else if (hasError
+				} else if (msgCode.contains(DUPLICATE_HDS_RESPONSE_CODE)) {
+					// PLR found a duplicate HDS record; set duplicate to true and mark this ProcessData record as a duplicate
+					logger.warn("{} was identifed as a duplicate HDS by PLR: {}", processData.getId(), msgText);
+					addError(DUPLICATE_HDS_RESPONSE_CODE, "WARNING", msgText);
+					duplicate = true;
+					
+					// If an IPC is provided in the response message, save it in the ProcessData record
+					if (StringUtils.hasText(msgText) && msgText.contains("IPC.")) {
+						String hdsIdentifier = msgText.substring(msgText.indexOf("IPC")).trim();
+						processData.setHdsIpcId(hdsIdentifier);
+						loaded = true;
+					}
+					
+				} else if (hasError && !duplicate
 						&& !msgCode.contains(SUCCESSFUL_RESPONSE_CODE)
 						&& !msgCode.contains(HDS_LOADED_RESPONSE_CODE)
 						&& !msgCode.contains(FAILED_RESPONSE_CODE)) {
@@ -143,7 +158,9 @@ public class MaintainHdsResponse implements PlrResponse {
 	}
 	
 	private void setRowStatusCode() {
-		if (hasError) {
+		if (duplicate) {
+			processData.setRowstatusCode(RowStatusService.POTENTIAL_DUPLICATE);
+		} else if (hasError) {
 			processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 		}
 	}
