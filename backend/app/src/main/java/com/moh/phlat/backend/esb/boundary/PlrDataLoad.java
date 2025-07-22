@@ -13,6 +13,7 @@ import com.moh.phlat.backend.esb.json.OFRelationshipResponse;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.service.RowStatusService;
 
 import lombok.Getter;
 
@@ -59,11 +60,14 @@ public class PlrDataLoad {
 		//OF Relationship Load
 		if (control.getLoadTypeOFRelationship()
 				&& StringUtils.hasText(processData.getFacIfcId())
-				&& StringUtils.hasText(processData.getHdsIpcId())) {
+				&& StringUtils.hasText(processData.getHdsIpcId())
+				&& StringUtils.hasText(processData.getHdsCpnId())
+				&& StringUtils.hasText(processData.getHdsPauthId())
+				&& !RowStatusService.POTENTIAL_DUPLICATE.equals(processData.getRowstatusCode())) {
 			OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
 			maintainResults.setOFResult(ofResponse);
 		} else {
-			// Facility and/or HDS is missing; mark as not loaded and skip
+			// Facility and/or HDS are missing or already exist and are likely already related; mark as not loaded and skip
 			maintainResults.setOFResult(new OFRelationshipResponse(false));
 		}
 		return maintainResults;
