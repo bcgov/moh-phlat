@@ -158,6 +158,7 @@ public class FileServiceImpl implements FileService {
                                                  String mailAddr1, String mailAddr2,
                                                  String mailAddr3, String mailAddr4, String mailCity, String mailProvince,
                                                  String mailPcode, String mailCountry, 
+                                                 String facIfcId,
                                                  Date createdAt, String createdBy, Date updatedAt, String updatedBy,
                                                  // Group actions and effective dates
 												 String primaryCareGroupAction, String primaryCareGroupEffectiveStartDate, String primaryCareGroupEffectiveEndDate,
@@ -243,6 +244,7 @@ public class FileServiceImpl implements FileService {
                           .mailProvince(mailProvince)
                           .mailPcode(mailPcode)
                           .mailCountry(mailCountry)
+                          .facIfcId(facIfcId)
                           .createdAt(createdAt)
                           .createdBy(createdBy)
                           .updatedAt(updatedAt)
@@ -402,6 +404,7 @@ public class FileServiceImpl implements FileService {
 				 		csvRecords.get("MAIL_PROVINCE"),
 				 		csvRecords.get("MAIL_PCODE"),
 				 		csvRecords.get("MAIL_COUNTRY"),
+				 		csvRecords.get("FAC_IFC_ID"),
 				 		new Date(), // created_at
 			    		authenticateUserId,
 				 		null, // updated_at
@@ -580,6 +583,7 @@ public class FileServiceImpl implements FileService {
             processData.setMailPcode(s.getMailPcode());      
             processData.setMailCountry(s.getMailCountry());
             processData.setMailAddrValidationStatus("");
+            processData.setFacIfcId(s.getFacIfcId());
             processData.setCreatedAt(s.getCreatedAt());
             processData.setCreatedBy(authenticateUserId);
             // Group actions and effective dates

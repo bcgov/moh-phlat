@@ -308,7 +308,7 @@ public class ProcessData {
     private String plrFacilityId ; 
 
     @Column(name="fac_ifc_id")
-    private String facIfcId ; 
+    private String facIfcId ;
 
     @Column(name="rowstatus_code")
     private String rowstatusCode; 

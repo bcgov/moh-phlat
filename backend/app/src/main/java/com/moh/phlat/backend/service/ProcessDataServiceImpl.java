@@ -103,7 +103,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr3", filterProcess.getMailAddr3());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr4", filterProcess.getMailAddr4());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCity", filterProcess.getMailCity());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailBc", filterProcess.getMailBc());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailProvince", filterProcess.getMailProvince());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailPcode", filterProcess.getMailPcode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", filterProcess.getMailCountry());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrPrpsTypeCd", filterProcess.getMailAddrPrpsTypeCd());

@@ -121,7 +121,7 @@ public class SourceDataServiceImpl implements SourceDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr3", filterSource.getMailAddr3());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddr4", filterSource.getMailAddr4());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCity", filterSource.getMailCity());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailBc", filterSource.getMailBc());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailProvince", filterSource.getMailProvince());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailPcode", filterSource.getMailPcode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailCountry", filterSource.getMailCountry());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrIsPriv", filterSource.getMailAddrIsPriv());

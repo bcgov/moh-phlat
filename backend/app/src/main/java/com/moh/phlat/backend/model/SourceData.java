@@ -176,6 +176,9 @@ public class SourceData {
     @Column(name="mail_country")
     private String mailCountry;  
 
+    @Column(name="fac_ifc_id")
+    private String facIfcId ;
+
  	@Column(name="created_at")
     private Date createdAt;
 
