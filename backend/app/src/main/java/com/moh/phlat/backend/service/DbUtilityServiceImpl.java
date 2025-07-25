@@ -444,17 +444,21 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 			Optional<SourceData> sourceData = sourceDataRepository.findById(processData.getId());
 			String civicAddressOverride = processData.getFacCivicAddr();
+			String facIfcIdSource = "";
 			boolean isCivicAddressForced = false;
 			try {
 				// If the user supplied a civic address, save the AddressDoctor result or the provided address as an override
+				// If the user supplied an IFC as well, skip the civic address validations
 				if (sourceData.isPresent()) {
 					SourceData source1 = sourceData.get();
 					String civicAddressSource = source1.getFacCivicAddress();
+					facIfcIdSource = source1.getFacIfcId();
 					
 					if (StringUtils.hasText(civicAddressSource)) {
 						isCivicAddressForced = true;
-						if (!isValidCivicAddress(civicAddressOverride)) {
-							// AddressDoctor civic address is inaccurate, resort to the user's supplied civic address
+						if (StringUtils.hasText(facIfcIdSource) || !isValidCivicAddress(civicAddressOverride)) {
+							// AddressDoctor civic address is inaccurate or this record's source has an IFC
+							// Resort to the user's supplied civic address
 							civicAddressOverride = civicAddressSource;
 						}
 					}
@@ -500,11 +504,11 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				dataBcPrecisionPoints = Integer.parseInt(processData.getFacPrecisionPoints());
 			}
 			
-			if (isCivicAddressForced) {
-				// If the user supplied a civic address, do not treat low DataBC scores as Invalid and override its returned civic address
+			if (isCivicAddressForced || StringUtils.hasText(facIfcIdSource)) {
+				// If the user supplied a civic address and/or an IFC, do not treat low DataBC scores as Invalid and override its returned civic address
+				processData.setFacCivicAddr(civicAddressOverride);
 				if ((dataBcScore != null && dataBcScore < 96) 
 						|| (dataBcPrecisionPoints != null && dataBcPrecisionPoints < 98)) {
-					processData.setFacCivicAddr(civicAddressOverride);
 					Message msg = Message.builder()
 										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
 										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
@@ -515,7 +519,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					messageService.createMessage(msg);
 				}
 			} else {
-				// The user did not provide a civic address, so verify the DataBC scores and use its civic address
+				// The user did not provide a civic address or IFC, so verify the DataBC scores and use its civic address
 				if (dataBcScore != null && dataBcPrecisionPoints != null) {
 					if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
 						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
@@ -554,59 +558,64 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					}
 				}
 			}
-
-			String civicAddress = "";
-			civicAddress = processData.getFacCivicAddr();
-			if (!StringUtils.hasText(civicAddress) && StringUtils.hasText(processData.getPhysicalAddrValidationStatus())) {
-				logger.info("dataBC lookup failed on process data id: {}", processData.getId());
-				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-				Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("dataBC failed on Civic Address")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-				messageService.createMessage(msg);
-			} else if (!StringUtils.hasText(civicAddress)) {
-				logger.info("Civic Address required check on process data id: {}", processData.getId());
-				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-				Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Civic address cannot be empty")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-				messageService.createMessage(msg);
-			}
-
 			
-			if (StringUtils.hasText(civicAddress)) {
-				if (!isValidCivicAddress(civicAddress)) {
-					logger.info("Validating Civic Address on process data id: {}", processData.getId());
+			// Only validate civic address if there is no IFC attached to this record's source
+			if (!StringUtils.hasText(facIfcIdSource)) {
+				
+				// There is no IFC, so perform civic address validations as normal
+				String civicAddress = "";
+				civicAddress = processData.getFacCivicAddr();
+				
+				if (!StringUtils.hasText(civicAddress) && StringUtils.hasText(processData.getPhysicalAddrValidationStatus())) {
+					logger.info("dataBC lookup failed on process data id: {}", processData.getId());
 					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 					Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Invalid civic address format")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("dataBC failed on Civic Address")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
 					messageService.createMessage(msg);
-				} else if (!isAllUpperCase(civicAddress)) {
-					logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
+				} else if (!StringUtils.hasText(civicAddress)) {
+					logger.info("Civic Address required check on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
 					Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
-									 .messageDesc("Civic address is not in uppercase")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Civic address cannot be empty")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
 					messageService.createMessage(msg);
 				}
-
-			}				
+			
+				if (StringUtils.hasText(civicAddress)) {
+					if (!isValidCivicAddress(civicAddress)) {
+						logger.info("Validating Civic Address on process data id: {}", processData.getId());
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Invalid civic address format")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+						messageService.createMessage(msg);
+					} else if (!isAllUpperCase(civicAddress)) {
+						logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
+						Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										 .messageDesc("Civic address is not in uppercase")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+						messageService.createMessage(msg);
+					}
+	
+				}
+			}
 		}	
 	}
 

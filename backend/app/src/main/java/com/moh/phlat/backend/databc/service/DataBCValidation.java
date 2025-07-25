@@ -27,11 +27,7 @@ public class DataBCValidation {
 		String ordinalStreetName;
 		
 		ordinalStreetName = streetName.toUpperCase();
-		ordinalStreetName = ordinalStreetName.replace("WEST","W");
-		ordinalStreetName = ordinalStreetName.replace("EAST","E");
-		ordinalStreetName = ordinalStreetName.replace("NORTH","N");
-		ordinalStreetName = ordinalStreetName.replace("SOUTH","S");
-
+		
 		ordinalStreetName = ordinalStreetName.replace("1ST","1");
 		ordinalStreetName = ordinalStreetName.replace("2ND","2");
 		ordinalStreetName = ordinalStreetName.replace("3RD","3");
@@ -75,6 +71,22 @@ public class DataBCValidation {
 		ordinalStreetName = ordinalStreetName.replace("TWENTIETH","20");
 
 		return ordinalStreetName;
+	}
+    
+    private String convertOrdinalStreetDirection(String streetDirection) {
+		String ordinalStreetDirection;
+		
+		if (!StringUtils.hasText(streetDirection)) {
+			return "";
+		}
+		ordinalStreetDirection = streetDirection.toUpperCase();
+		
+		ordinalStreetDirection = ordinalStreetDirection.replace("WEST","W");
+		ordinalStreetDirection = ordinalStreetDirection.replace("EAST","E");
+		ordinalStreetDirection = ordinalStreetDirection.replace("NORTH","N");
+		ordinalStreetDirection = ordinalStreetDirection.replace("SOUTH","S");
+
+		return ordinalStreetDirection;
 	}
 
     private String convertOrdinalCity(String cityName) {
@@ -131,7 +143,7 @@ public class DataBCValidation {
                     String street = convertOrdinalStreetName(properties.getStreetName());
                     String streetType = properties.getStreetType();
 
-                    String streetDirection = properties.getStreetDirection();
+                    String streetDirection = convertOrdinalStreetDirection(properties.getStreetDirection());
 
 
                     if(properties.isStreetDirectionPrefix()){
