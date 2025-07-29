@@ -159,7 +159,7 @@ public class MaintainHdsResponse implements PlrResponse {
 	
 	private void setRowStatusCode() {
 		if (duplicate) {
-			processData.setRowstatusCode(RowStatusService.POTENTIAL_DUPLICATE);
+			processData.setRowstatusCode(RowStatusService.POTENTIAL_HDS_DUPLICATE);
 		} else if (hasError) {
 			processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 		}

@@ -178,15 +178,20 @@ public class ProcessDataServiceImpl implements ProcessDataService {
      	ReportSummary rs7 = createReportSummaryData(reportAttributeName, reportAttributeValue);
 		items.add(rs7);
 
-		reportAttributeName = "TOTAL POTENTIAL_DUPLICATE ROWSTATUS";
-		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.POTENTIAL_DUPLICATE);
+		reportAttributeName = "TOTAL POTENTIAL_FAC_DUPLICATE ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.POTENTIAL_FAC_DUPLICATE);
      	ReportSummary rs8 = createReportSummaryData(reportAttributeName, reportAttributeValue);
 		items.add(rs8);
+
+		reportAttributeName = "TOTAL POTENTIAL_HDS_DUPLICATE ROWSTATUS";
+		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.POTENTIAL_HDS_DUPLICATE);
+     	ReportSummary rs9 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs9);
 		
 		reportAttributeName = "TOTAL LOAD_ERROR ROWSTATUS";
 		reportAttributeValue = processDataRepository.countAllByControlTableIdAndRowstatusCode(controlTableId, RowStatusService.LOAD_ERROR);
-     	ReportSummary rs9 = createReportSummaryData(reportAttributeName, reportAttributeValue);
-		items.add(rs9);			
+     	ReportSummary rs10 = createReportSummaryData(reportAttributeName, reportAttributeValue);
+		items.add(rs10);			
 		
 		// adding message code and desc to the list
 

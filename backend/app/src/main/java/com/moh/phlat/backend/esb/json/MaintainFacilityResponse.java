@@ -153,7 +153,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 	
 	private void setRowStatusCode() {
 		if (duplicate) {
-			processData.setRowstatusCode(RowStatusService.POTENTIAL_DUPLICATE);
+			processData.setRowstatusCode(RowStatusService.POTENTIAL_FAC_DUPLICATE);
 		} else if (hasError) {
 			processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 		}

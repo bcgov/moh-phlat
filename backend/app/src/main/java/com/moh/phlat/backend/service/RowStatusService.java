@@ -18,7 +18,8 @@ public interface RowStatusService {
     String PLR_LOAD_COMPLETED = "PLR_LOAD_COMPLETED";
     String PLR_LOAD_IN_PROGRESS = "PLR_LOAD_IN_PROGRESS";
     String WARNING = "WARNING";
-    String POTENTIAL_DUPLICATE = "POTENTIAL_DUPLICATE";
+    String POTENTIAL_FAC_DUPLICATE = "POTENTIAL_FAC_DUPLICATE";
+    String POTENTIAL_HDS_DUPLICATE = "POTENTIAL_HDS_DUPLICATE";
     String LOAD_ERROR = "LOAD_ERROR";
     String ON_HOLD = "ON_HOLD";
     List<RowStatus> getRowStatuses(Boolean isDeleted);
