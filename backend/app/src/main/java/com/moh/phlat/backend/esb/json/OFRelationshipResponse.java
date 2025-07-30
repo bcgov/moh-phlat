@@ -24,6 +24,7 @@ import lombok.Getter;
 public class OFRelationshipResponse implements PlrResponse {
 	private static final Logger logger = LoggerFactory.getLogger(OFRelationshipResponse.class);
 	
+	private static final String DUPLICATE_OF_RESPONSE_CODE = "GRS.SYS.UNK.UNK.1.0.7033";
 	private static final String OF_LOADED_RESPONSE_CODE = "PRS.PRV.OID.CRE.0.0.0003";
 	
 	private static ObjectMapper objectMapper;
@@ -45,6 +46,7 @@ public class OFRelationshipResponse implements PlrResponse {
 	
 	@Getter
 	private boolean loaded = false;
+	private boolean duplicate = false;
 	private boolean hasError = false;
 	
 	public OFRelationshipResponse(ProcessData processData) {
@@ -69,7 +71,13 @@ public class OFRelationshipResponse implements PlrResponse {
 					// PLR is returning one or more errors; set hasError to true and look for other PLR error(s) in the response
 					hasError = true;
 						
-				} else if (hasError
+				} else if (msgCode.contains(DUPLICATE_OF_RESPONSE_CODE)) {
+					// PLR found a duplicate OF relationship; set duplicate to true and mark this ProcessData record as a duplicate
+					logger.warn("{} was identifed as a duplicate OF Relationship by PLR: {}", processData.getId(), msgText);
+					addError(DUPLICATE_OF_RESPONSE_CODE, "WARNING", msgText);
+					loaded = true;
+					
+				} else if (hasError && !duplicate
 						&& !msgCode.contains(SUCCESSFUL_RESPONSE_CODE)
 						&& !msgCode.contains(OF_LOADED_RESPONSE_CODE)
 						&& !msgCode.contains(FAILED_RESPONSE_CODE)) {
@@ -78,7 +86,7 @@ public class OFRelationshipResponse implements PlrResponse {
 					addError(msgCode, "ERROR", msgText);
 				}
 			}
-			if (!hasError) {
+			if (!hasError || duplicate) {
 				loaded = true;
 			}
 			
@@ -122,7 +130,7 @@ public class OFRelationshipResponse implements PlrResponse {
 	}
 	
 	private void setRowStatusCode() {
-		if (hasError) {
+		if (hasError && !duplicate) {
 			processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 		}
 	}
