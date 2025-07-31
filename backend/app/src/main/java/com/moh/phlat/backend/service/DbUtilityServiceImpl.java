@@ -154,6 +154,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		
 		Boolean isValid = true;
 
+		// Facility and HDS validation
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
 			// required checks
 			if (!StringUtils.hasText(processData.getStakeholder())) {
@@ -616,7 +617,50 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 	
 				}
 			}
-		}	
+		}
+		// OF Relationship validation (only if Facility and HDS run types are not set)
+		if (control.getLoadTypeOFRelationship() && !(control.getLoadTypeFacility() || control.getLoadTypeHds())) {
+			
+			String facIfcId = processData.getFacIfcId();
+			String hdsIpcId = processData.getHdsIpcId();
+			
+			// Confirm that IFC and IPC identifiers are set
+			if (StringUtils.hasText(facIfcId) && StringUtils.hasText(hdsIpcId)) {
+				// Both IFC and IPC are present; mark as valid
+				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
+			} else {
+				// IFC or IPC is missing; find and report which of these is missing and invalidate the record
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID,authenticatedUserId);
+				if (!StringUtils.hasText(facIfcId) && !StringUtils.hasText(hdsIpcId)) {
+					Message msg = Message.builder()
+									.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									.messageDesc("Facility IFC and HDS IPC identifiers are missing")
+									.sourceSystemName(MessageSourceSystem.PLR)
+									.processData(processData)
+									.build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(facIfcId)) {
+					Message msg = Message.builder()
+									.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									.messageDesc("Facility IFC identifier is missing")
+									.sourceSystemName(MessageSourceSystem.PLR)
+									.processData(processData)
+									.build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(hdsIpcId)) {
+					Message msg = Message.builder()
+									.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									.messageDesc("HDS IPC identifier is missing")
+									.sourceSystemName(MessageSourceSystem.PLR)
+									.processData(processData)
+									.build();
+					messageService.createMessage(msg);
+				}
+			}
+		}
 	}
 
 	@Async
