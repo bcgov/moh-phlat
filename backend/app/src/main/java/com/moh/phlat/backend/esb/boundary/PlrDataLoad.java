@@ -43,16 +43,16 @@ public class PlrDataLoad {
 					&& !StringUtils.hasText(processData.getHdsPauthId())
 					&& !StringUtils.hasText(processData.getHdsCpnId())
 					&& !StringUtils.hasText(processData.getHdsIpcId())
-					&& !StringUtils.hasText(processData.getRecordAction())) {
+					&& !isHdsUpdate(processData.getRecordAction())) {
 				// Create HDS
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
-			} else if (StringUtils.hasText(processData.getRecordAction())) {
+			} else if (isHdsUpdate(processData.getRecordAction())) {
 				// Update HDS
 				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
 			} else {
-				// HDS Identifiers are present but there's no Record Action; mark as not loaded and skip
+				// HDS Identifiers are present but the Record Action is blank or ADD; mark as not loaded and skip
 				maintainResults.setHdsResult(new MaintainHdsResponse(false));
 			}
 		}
@@ -104,5 +104,9 @@ public class PlrDataLoad {
 		plrEsbBoundary.maintainProvider(control, oFRelationshipRequest, oFRelationshipResponse);
 		
 		return oFRelationshipResponse;
+	}
+	
+	private boolean isHdsUpdate(String recordAction) {
+		return StringUtils.hasText(recordAction) && !"ADD".equals(recordAction);
 	}
 }

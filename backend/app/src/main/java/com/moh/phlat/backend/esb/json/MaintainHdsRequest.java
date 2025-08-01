@@ -38,6 +38,7 @@ public class MaintainHdsRequest implements PlrRequest {
 	private static final String CLINIC_SERVICES = "CLINIC_SERVICES";
 	private static final String CLINIC_TYPE = "CLINIC_TYPE";
 	private static final String PCI_FLAG = "PCI_FLAG";
+	private static final String CHG_DEFAULT = "CHG";
 	
 	private static ObjectMapper objectMapper;
 	static {
@@ -130,6 +131,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		if (StringUtils.hasText(nameAction)) {
 			orgName.setEndReasonCode(nameAction);
+		} else {
+			orgName.setEndReasonCode(CHG_DEFAULT);
 		}
 		orgNameList.add(orgName);
 		
@@ -199,6 +202,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (StringUtils.hasText(groupAction)) {
 			hdsProperty.setEndReasonCode(groupAction);
 			hdsProperty.setPropertyChid(propertyChid);
+		} else {
+			hdsProperty.setEndReasonCode(CHG_DEFAULT);
 		}
 		propertyList.add(hdsProperty);
 	}
@@ -232,6 +237,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			if (StringUtils.hasText(primaryCareGroupAction)) {
 				identifierDto.setEndReasonCode(primaryCareGroupAction);
+			} else {
+				identifierDto.setEndReasonCode(CHG_DEFAULT);
 			}
 			identifierList.add(identifierDto);
 			
@@ -284,6 +291,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		if (StringUtils.hasText(statusAction)) {
 			status.setEndReasonCode(statusAction);
+		} else {
+			status.setEndReasonCode(CHG_DEFAULT);
 		}
 		statusList.add(status);
 		
@@ -346,6 +355,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		if (StringUtils.hasText(processData.getPhysicalAddressGroupAction())) {
 			address.setEndReasonCode(processData.getPhysicalAddressGroupAction());
+		} else {
+			address.setEndReasonCode(CHG_DEFAULT);
 		}
 		
 		return address;
@@ -387,6 +398,8 @@ public class MaintainHdsRequest implements PlrRequest {
 		}
 		if (StringUtils.hasText(processData.getMailingAddressGroupAction())) {
 			address.setEndReasonCode(processData.getMailingAddressGroupAction());
+		} else {
+			address.setEndReasonCode(CHG_DEFAULT);
 		}
 		
 		return address;
@@ -425,6 +438,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			if (StringUtils.hasText(busAction)) {
 				hdsBusTelNumber.setEndReasonCode(busAction);
+			} else {
+				hdsBusTelNumber.setEndReasonCode(CHG_DEFAULT);
 			}
 			telecomList.add(hdsBusTelNumber);
 		}
@@ -445,6 +460,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			if (StringUtils.hasText(cellAction)) {
 				hdsBusCellNumber.setEndReasonCode(cellAction);
+			} else {
+				hdsBusCellNumber.setEndReasonCode(CHG_DEFAULT);
 			}
 			telecomList.add(hdsBusCellNumber);
 		}
@@ -465,6 +482,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			if (StringUtils.hasText(faxAction)) {
 				hdsBusFaxNumber.setEndReasonCode(faxAction);
+			} else {
+				hdsBusFaxNumber.setEndReasonCode(CHG_DEFAULT);
 			}
 			telecomList.add(hdsBusFaxNumber);
 		}
@@ -497,6 +516,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			if (StringUtils.hasText(emailAction)) {
 				hdsEmail.setEndReasonCode(emailAction);
+			} else {
+				hdsEmail.setEndReasonCode(CHG_DEFAULT);
 			}
 			electronicAddressList.add(hdsEmail);
 		}
@@ -515,6 +536,8 @@ public class MaintainHdsRequest implements PlrRequest {
 			}
 			if (StringUtils.hasText(webAction)) {
 				hdsWebsite.setEndReasonCode(webAction);
+			} else {
+				hdsWebsite.setEndReasonCode(CHG_DEFAULT);
 			}
 			electronicAddressList.add(hdsWebsite);
 		}
