@@ -42,7 +42,7 @@ RUN mvn package
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
-FROM openjdk:17-jdk
+FROM eclipse-temurin:17-jdk-alpine
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
 
 EXPOSE 8088
