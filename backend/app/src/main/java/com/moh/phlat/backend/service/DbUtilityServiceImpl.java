@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -316,10 +317,10 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				try {
 					if (!StringUtils.hasText(processData.getRecordAction())
 							|| StringUtils.hasText(processData.mapOfHdsGroupActions().get(group))) {
-						PlrRequest.EFFECTIVE_DATE_FORMAT.parse(startDate);
+						DateUtils.parseDateStrictly(startDate, PlrRequest.EFFECTIVE_DATE_FORMAT_TIMESTAMP, PlrRequest.EFFECTIVE_DATE_FORMAT);
 					}
 					if (StringUtils.hasText(endDate)) {
-						PlrRequest.EFFECTIVE_DATE_FORMAT.parse(endDate);
+						DateUtils.parseDateStrictly(endDate, PlrRequest.EFFECTIVE_DATE_FORMAT_TIMESTAMP, PlrRequest.EFFECTIVE_DATE_FORMAT);
 					}
 				} catch (ParseException ex) {
 					hasCorrectDateFormats.set(false);
@@ -327,7 +328,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					Message msg = Message.builder()
 										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Effective Start and End dates must be in yyyy-MM-dd format")
+										.messageDesc("Effective dates must be in yyyy-MM-dd HH:mm:ss format (HH:mm:ss is optional)")
 										.sourceSystemName(MessageSourceSystem.PLR)
 										.processData(processData)
 										.build();
