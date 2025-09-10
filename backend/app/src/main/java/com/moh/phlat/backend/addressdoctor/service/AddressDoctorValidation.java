@@ -48,7 +48,7 @@ public class AddressDoctorValidation {
 		SOAPEnvelopeOutput physicalResponse = addressDoctorService.validateAddress(control, physicalRequest);
 		processPhysicalAddressResult(physicalResponse, processData);
 		
-		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailProvince())) {
+		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailCity())) {
 			SOAPEnvelopeInput mailingRequest = mailingAddressToAddressDoctorRequest(processData);
 			SOAPEnvelopeOutput mailingResponse = addressDoctorService.validateAddress(control, mailingRequest);
 			processMailingAddressResult(mailingResponse, processData);

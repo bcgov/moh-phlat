@@ -265,11 +265,25 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			}	
 
 			// optional or conditional checks
-
+			
 			String mailCountry = "";
 			mailCountry = processData.getMailCountry().toUpperCase();
 
 			if (StringUtils.hasText(processData.getMailAddr1())) {
+
+				if (!StringUtils.hasText(processData.getMailCity())) {
+					isValid = false;
+					logger.info("Mailing Addr City required check failed on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Mailing Addr City cannot be empty if a Mailing Addr is provided")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				}
+				
 				if (StringUtils.hasText(mailCountry) &&  !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
 					isValid = false;
 					logger.info("Out of country mailing address on process data id: {}", processData.getId()); 

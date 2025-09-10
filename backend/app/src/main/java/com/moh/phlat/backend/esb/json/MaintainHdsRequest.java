@@ -309,7 +309,7 @@ public class MaintainHdsRequest implements PlrRequest {
 		if (!isUpdate || isUpdate && StringUtils.hasText(processData.getPhysicalAddressGroupAction())) {
 			addressList.add(createPhysicalAddressDto());
 		}
-		if ((StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailProvince()))
+		if ((StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailCity()))
 				&& (!isUpdate || isUpdate && StringUtils.hasText(processData.getMailingAddressGroupAction()))) {
 			addressList.add(createMailingAddressDto());
 		}
