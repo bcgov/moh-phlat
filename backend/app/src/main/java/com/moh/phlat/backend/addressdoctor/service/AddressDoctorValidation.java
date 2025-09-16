@@ -227,6 +227,16 @@ public class AddressDoctorValidation {
 		if (!address.getPostalCode().getString().isEmpty()) {
 			processData.setMailPcode(address.getPostalCode().getString().get(0));
 		}
+		// Clean up MailAddressLine1 if there is duplicate data from other fields
+		clearDataFromMailAddr1(processData, processData.getMailAddr2());
+		clearDataFromMailAddr1(processData, processData.getMailAddr3());
+		clearDataFromMailAddr1(processData, processData.getMailAddr4());
+		if (!address.getSubBuilding().getString().isEmpty()) {
+			clearDataFromMailAddr1(processData, address.getSubBuilding().getString().get(0));
+			if (!StringUtils.hasText(processData.getMailAddr2())) {
+				processData.setMailAddr2(address.getSubBuilding().getString().get(0));
+			}
+		}
 	}
 	
 	private Result parseAdressDoctorResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
@@ -265,6 +275,15 @@ public class AddressDoctorValidation {
 		return response.getResults().getResult().get(0);
 	}
 	
+	private void clearDataFromMailAddr1(ProcessData processData, String otherAddrLine) {
+		if (StringUtils.hasText(otherAddrLine) && processData.getMailAddr1().contains(otherAddrLine)) {
+			String mailAddr1Clean = processData.getMailAddr1().replaceFirst(otherAddrLine, "");
+			if (StringUtils.hasText(mailAddr1Clean) && processData.getMailAddr1().contains(mailAddr1Clean)) {
+				processData.setMailAddr1(mailAddr1Clean);
+			}
+		}
+	}
+	
 	private void addError(ProcessData processData, String errorCode, String errorType, String errorMessage) {
 		
 		Message msg = Message.builder()
@@ -277,5 +296,4 @@ public class AddressDoctorValidation {
 		processData.getMessages().add(msg);
 		processData.setRowstatusCode("INVALID");
 	}
-	
 }

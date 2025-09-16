@@ -330,6 +330,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				String endDate = dates.get(1);
 				try {
 					if (!StringUtils.hasText(processData.getRecordAction())
+							|| "ADD".equals(processData.getRecordAction())
 							|| StringUtils.hasText(processData.mapOfHdsGroupActions().get(group))) {
 						DateUtils.parseDateStrictly(startDate, PlrRequest.EFFECTIVE_DATE_FORMAT_TIMESTAMP, PlrRequest.EFFECTIVE_DATE_FORMAT);
 					}
