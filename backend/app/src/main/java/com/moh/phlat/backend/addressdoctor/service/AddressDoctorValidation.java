@@ -275,10 +275,10 @@ public class AddressDoctorValidation {
 		return response.getResults().getResult().get(0);
 	}
 	
-	private void clearDataFromMailAddr1(ProcessData processData, String otherAddrLine) {
-		if (StringUtils.hasText(otherAddrLine) && processData.getMailAddr1().contains(otherAddrLine)) {
-			String mailAddr1Clean = processData.getMailAddr1().replaceFirst(otherAddrLine, "");
-			if (StringUtils.hasText(mailAddr1Clean) && processData.getMailAddr1().contains(mailAddr1Clean)) {
+	private void clearDataFromMailAddr1(ProcessData processData, String duplicateData) {
+		if (StringUtils.hasText(duplicateData) && processData.getMailAddr1().toUpperCase().contains(duplicateData.toUpperCase())) {
+			String mailAddr1Clean = processData.getMailAddr1().toUpperCase().replaceFirst(duplicateData.toUpperCase(), "");
+			if (StringUtils.hasText(mailAddr1Clean) && processData.getMailAddr1().toUpperCase().contains(mailAddr1Clean)) {
 				processData.setMailAddr1(mailAddr1Clean);
 			}
 		}
