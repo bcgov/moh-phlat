@@ -313,7 +313,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 						Message msg = Message.builder()
 											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-											.messageDesc("End reason code must be CHG, CORR or CEASE")
+											.messageDesc(group + " Group Action must be CHG, CORR or CEASE if provided")
 											.sourceSystemName(MessageSourceSystem.PLR)
 											.processData(processData)
 											.build();
@@ -343,7 +343,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					Message msg = Message.builder()
 										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Effective dates must be in yyyy-MM-dd HH:mm:ss format (HH:mm:ss is optional)")
+										.messageDesc(group + " Effective Dates must be in yyyy-MM-dd HH:mm:ss format (HH:mm:ss is optional)")
 										.sourceSystemName(MessageSourceSystem.PLR)
 										.processData(processData)
 										.build();
