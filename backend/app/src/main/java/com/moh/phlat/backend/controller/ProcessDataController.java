@@ -234,9 +234,6 @@ public class ProcessDataController {
 		if (reqProcessData.getSourceStatus() != null)
 			processData.setSourceStatus(reqProcessData.getSourceStatus().trim());
 		
-		if (reqProcessData.getPcnClinicStatus() != null)
-			processData.setPcnClinicStatus(reqProcessData.getPcnClinicStatus().trim());
-
 		if (reqProcessData.getHdsEffectiveStartDate() != null)
 			processData.setHdsEffectiveStartDate(reqProcessData.getHdsEffectiveStartDate().trim());
 
@@ -381,8 +378,8 @@ public class ProcessDataController {
 		if (reqProcessData.getMailCity() != null)
 			processData.setMailCity(reqProcessData.getMailCity().trim());
 
-		if (reqProcessData.getMailBc() != null)
-			processData.setMailBc(reqProcessData.getMailBc().trim());
+		if (reqProcessData.getMailProvince() != null)
+			processData.setMailProvince(reqProcessData.getMailProvince().trim());
 		
 		if (reqProcessData.getMailPcode() != null)
 			processData.setMailPcode(reqProcessData.getMailPcode().trim());
@@ -407,8 +404,110 @@ public class ProcessDataController {
 
 		if (reqProcessData.getRowstatusCode() != null)
 			processData.setRowstatusCode(reqProcessData.getRowstatusCode().trim());
+	
+		if (reqProcessData.getPrimaryCareGroupAction() != null)
+			processData.setPrimaryCareGroupAction(reqProcessData.getPrimaryCareGroupAction().trim());				
+		
+		if (reqProcessData.getPrimaryCareGroupEffectiveStartDate() != null)
+			processData.setPrimaryCareGroupEffectiveStartDate(reqProcessData.getPrimaryCareGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getPrimaryCareGroupEffectiveEndDate() != null)
+			processData.setPrimaryCareGroupEffectiveEndDate(reqProcessData.getPrimaryCareGroupEffectiveEndDate());				
 
-		processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
+		if (reqProcessData.getHdsSubTypeGroupAction() != null)
+			processData.setHdsSubTypeGroupAction(reqProcessData.getHdsSubTypeGroupAction().trim());				
+		
+		if (reqProcessData.getHdsSubTypeGroupEffectiveStartDate() != null)
+			processData.setHdsSubTypeGroupEffectiveStartDate(reqProcessData.getHdsSubTypeGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getHdsSubTypeGroupEffectiveEndDate() != null)
+			processData.setHdsSubTypeGroupEffectiveEndDate(reqProcessData.getHdsSubTypeGroupEffectiveEndDate());				
+
+		if (reqProcessData.getHdsNameGroupAction() != null)
+			processData.setHdsNameGroupAction(reqProcessData.getHdsNameGroupAction().trim());				
+		
+		if (reqProcessData.getHdsNameGroupEffectiveStartDate() != null)
+			processData.setHdsNameGroupEffectiveStartDate(reqProcessData.getHdsNameGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getHdsNameGroupEffectiveEndDate() != null)
+			processData.setHdsNameGroupEffectiveEndDate(reqProcessData.getHdsNameGroupEffectiveEndDate());				
+		
+		if (reqProcessData.getHdsEmailGroupAction() != null)
+			processData.setHdsEmailGroupAction(reqProcessData.getHdsEmailGroupAction().trim());		
+		
+		if (reqProcessData.getHdsEmailGroupEffectiveStartDate() != null)
+			processData.setHdsEmailGroupEffectiveStartDate(reqProcessData.getHdsEmailGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getHdsEmailGroupEffectiveEndDate() != null)
+			processData.setHdsEmailGroupEffectiveEndDate(reqProcessData.getHdsEmailGroupEffectiveEndDate());				
+
+		if (reqProcessData.getHdsWebsiteGroupAction() != null)
+			processData.setHdsWebsiteGroupAction(reqProcessData.getHdsWebsiteGroupAction().trim());		
+		
+		if (reqProcessData.getHdsWebsiteGroupEffectiveStartDate() != null)
+			processData.setHdsWebsiteGroupEffectiveStartDate(reqProcessData.getHdsWebsiteGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getHdsWebsiteGroupEffectiveEndDate() != null)
+			processData.setHdsWebsiteGroupEffectiveEndDate(reqProcessData.getHdsWebsiteGroupEffectiveEndDate());				
+
+		if (reqProcessData.getBusinessPhoneGroupAction() != null)
+			processData.setBusinessPhoneGroupAction(reqProcessData.getBusinessPhoneGroupAction().trim());		
+		
+		if (reqProcessData.getBusinessPhoneGroupEffectiveStartDate() != null)
+			processData.setBusinessPhoneGroupEffectiveStartDate(reqProcessData.getBusinessPhoneGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getBusinessPhoneGroupEffectiveEndDate() != null)
+			processData.setBusinessPhoneGroupEffectiveEndDate(reqProcessData.getBusinessPhoneGroupEffectiveEndDate());				
+
+		if (reqProcessData.getHdsCellGroupAction() != null)
+			processData.setHdsCellGroupAction(reqProcessData.getHdsCellGroupAction().trim());		
+		
+		if (reqProcessData.getHdsCellGroupEffectiveStartDate() != null)
+			processData.setHdsCellGroupEffectiveStartDate(reqProcessData.getHdsCellGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getHdsCellGroupEffectiveEndDate() != null)
+			processData.setHdsCellGroupEffectiveEndDate(reqProcessData.getHdsCellGroupEffectiveEndDate());				
+
+		if (reqProcessData.getHdsFaxGroupAction() != null)
+			processData.setHdsFaxGroupAction(reqProcessData.getHdsFaxGroupAction().trim());		
+		
+		if (reqProcessData.getHdsFaxGroupEffectiveStartDate() != null)
+			processData.setHdsFaxGroupEffectiveStartDate(reqProcessData.getHdsFaxGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getHdsFaxGroupEffectiveEndDate() != null)
+			processData.setHdsFaxGroupEffectiveEndDate(reqProcessData.getHdsFaxGroupEffectiveEndDate());				
+
+		if (reqProcessData.getStatusGroupAction() != null)
+			processData.setStatusGroupAction(reqProcessData.getStatusGroupAction().trim());
+		
+		if (reqProcessData.getStatusGroupEffectiveStartDate() != null)
+			processData.setStatusGroupEffectiveStartDate(reqProcessData.getStatusGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getStatusGroupEffectiveEndDate() != null)
+			processData.setStatusGroupEffectiveEndDate(reqProcessData.getStatusGroupEffectiveEndDate());				
+
+		if (reqProcessData.getPhysicalAddressGroupAction() != null)
+			processData.setPhysicalAddressGroupAction(reqProcessData.getPhysicalAddressGroupAction().trim());			
+		
+		if (reqProcessData.getPhysicalAddressGroupEffectiveStartDate() != null)
+			processData.setPhysicalAddressGroupEffectiveStartDate(reqProcessData.getPhysicalAddressGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getPhysicalAddressGroupEffectiveEndDate() != null)
+			processData.setPhysicalAddressGroupEffectiveEndDate(reqProcessData.getPhysicalAddressGroupEffectiveEndDate());				
+
+		if (reqProcessData.getMailingAddressGroupAction() != null)
+			processData.setMailingAddressGroupAction(reqProcessData.getMailingAddressGroupAction().trim());			
+		
+		if (reqProcessData.getMailingAddressGroupEffectiveStartDate() != null)
+			processData.setMailingAddressGroupEffectiveStartDate(reqProcessData.getMailingAddressGroupEffectiveStartDate());				
+		
+		if (reqProcessData.getMailingAddressGroupEffectiveEndDate() != null)
+			processData.setMailingAddressGroupEffectiveEndDate(reqProcessData.getMailingAddressGroupEffectiveEndDate());				
+
+		if (reqProcessData.getRecordAction() != null)
+			processData.setRecordAction(reqProcessData.getRecordAction());
+		
+			processData.setUpdatedBy(AuthenticationUtils.getAuthenticatedUserId());
 		processData.setUpdatedAt(new Date());
 
 		try {

@@ -38,27 +38,32 @@ public class PlrDataLoad {
 			}
 		}
 		// HDS Load
-		if (control.getLoadTypeHds() && StringUtils.hasText(processData.getFacIfcId())) {
-			if (!StringUtils.hasText(processData.getHdsPauthId())
+		if (control.getLoadTypeHds()) {
+			if (StringUtils.hasText(processData.getFacIfcId())
+					&& !StringUtils.hasText(processData.getHdsPauthId())
 					&& !StringUtils.hasText(processData.getHdsCpnId())
-					&& !StringUtils.hasText(processData.getHdsIpcId())) {
+					&& !StringUtils.hasText(processData.getHdsIpcId())
+					&& !isHdsUpdate(processData.getRecordAction())) {
+				// Create HDS
 				MaintainHdsResponse hdsResponse = createHdsProvider(control, processData);
 				maintainResults.setHdsResult(hdsResponse);
+			} else if (isHdsUpdate(processData.getRecordAction())) {
+				// Update HDS
+				MaintainHdsResponse hdsResponse = updateHdsProvider(control, processData);
+				maintainResults.setHdsResult(hdsResponse);
 			} else {
-				// If this record already has HDS IDs, mark it as loaded and skip
-				maintainResults.setHdsResult(new MaintainHdsResponse(true));
+				// HDS Identifiers are present but the Record Action is blank or ADD; mark as not loaded and skip
+				maintainResults.setHdsResult(new MaintainHdsResponse(false));
 			}
 		}
 		//OF Relationship Load
 		if (control.getLoadTypeOFRelationship()
 				&& StringUtils.hasText(processData.getFacIfcId())
-				&& StringUtils.hasText(processData.getHdsPauthId())
-				&& StringUtils.hasText(processData.getHdsCpnId())
 				&& StringUtils.hasText(processData.getHdsIpcId())) {
 			OFRelationshipResponse ofResponse = createOFRelationship(control, processData);
 			maintainResults.setOFResult(ofResponse);
 		} else {
-			// Facility and/or HDS is missing; mark as not loaded and skip
+			// Facility and/or HDS are missing; mark as not loaded and skip
 			maintainResults.setOFResult(new OFRelationshipResponse(false));
 		}
 		return maintainResults;
@@ -83,6 +88,15 @@ public class PlrDataLoad {
 		return maintainHdsResponse;
 	}
 	
+	private MaintainHdsResponse updateHdsProvider(Control control, ProcessData processData) {
+		MaintainHdsRequest maintainHdsRequest = new MaintainHdsRequest(processData, true);
+		MaintainHdsResponse maintainHdsResponse = new MaintainHdsResponse(processData);
+		
+		plrEsbBoundary.maintainProvider(control, maintainHdsRequest, maintainHdsResponse);
+		
+		return maintainHdsResponse;
+	}
+	
 	private OFRelationshipResponse createOFRelationship(Control control, ProcessData processData) {
 		OFRelationshipRequest oFRelationshipRequest = new OFRelationshipRequest(processData);
 		OFRelationshipResponse oFRelationshipResponse = new OFRelationshipResponse(processData);
@@ -90,5 +104,9 @@ public class PlrDataLoad {
 		plrEsbBoundary.maintainProvider(control, oFRelationshipRequest, oFRelationshipResponse);
 		
 		return oFRelationshipResponse;
+	}
+	
+	private boolean isHdsUpdate(String recordAction) {
+		return StringUtils.hasText(recordAction) && !"ADD".equals(recordAction);
 	}
 }

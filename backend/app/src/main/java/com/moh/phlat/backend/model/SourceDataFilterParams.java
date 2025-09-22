@@ -77,7 +77,7 @@ public class SourceDataFilterParams {
 	private List<String> mailAddr3;
 	private List<String> mailAddr4;
 	private List<String> mailCity;
-	private List<String> mailBc;
+	private List<String> mailProvince;
 	private List<String> mailPcode;
 	private List<String> mailCountry;
 	private List<String> mailAddrIsPriv;

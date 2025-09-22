@@ -48,7 +48,7 @@ public class AddressDoctorValidation {
 		SOAPEnvelopeOutput physicalResponse = addressDoctorService.validateAddress(control, physicalRequest);
 		processPhysicalAddressResult(physicalResponse, processData);
 		
-		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailBc())) {
+		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailCity())) {
 			SOAPEnvelopeInput mailingRequest = mailingAddressToAddressDoctorRequest(processData);
 			SOAPEnvelopeOutput mailingResponse = addressDoctorService.validateAddress(control, mailingRequest);
 			processMailingAddressResult(mailingResponse, processData);
@@ -80,7 +80,7 @@ public class AddressDoctorValidation {
 		String processAddr3 = isPhysical ? processData.getPhysicalAddr3() : processData.getMailAddr3();
 		String processAddr4 = isPhysical ? processData.getPhysicalAddr4() : processData.getMailAddr4();
 		String processCity = isPhysical ? processData.getPhysicalCity() : processData.getMailCity();
-		String processProvinceBc = isPhysical ? processData.getPhysicalProvince() : processData.getMailBc();
+		String processProvinceBc = isPhysical ? processData.getPhysicalProvince() : processData.getMailProvince();
 		String processCountry = isPhysical ? processData.getPhysicalCountry() : processData.getMailCountry();
 		String processPcode = isPhysical ? processData.getPhysicalPcode() : processData.getMailPcode();
 		
@@ -219,7 +219,7 @@ public class AddressDoctorValidation {
 			processData.setMailCity(address.getLocality().getString().get(0));
 		}
 		if (!address.getProvince().getString().isEmpty()) {
-			processData.setMailBc(address.getProvince().getString().get(0));
+			processData.setMailProvince(address.getProvince().getString().get(0));
 		}
 		if (!address.getCountry().getString().isEmpty()) {
 			processData.setMailCountry(address.getCountry().getString().get(0));

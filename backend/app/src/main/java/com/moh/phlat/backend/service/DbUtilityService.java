@@ -9,6 +9,10 @@ public interface DbUtilityService {
 	String PHLAT_WARNING_TYPE = "WARNING";
     String PHLAT_ERROR_CODE = "100";
 	String PHLAT_WARNING_CODE = "101";
+	String PHLAT_END_REASON_CODE_CHG = "CHG";
+	String PHLAT_END_REASON_CODE_CORR = "CORR";
+	String PHLAT_END_REASON_CODE_CEASE = "CEASE";
+	
 	public String getVariablesByTableNameSortedById(String tableName);
 	public String getHeadersByTableNameSortedById(String tableName);
 	public void setProcessDataStatus(Long processDataId, String rowstatusCode, String authenticatedUserId);

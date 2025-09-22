@@ -1,10 +1,13 @@
 package com.moh.phlat.backend.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +20,15 @@ import com.moh.phlat.backend.addressdoctor.service.AddressDoctorValidation;
 import com.moh.phlat.backend.databc.service.DataBCValidation;
 import com.moh.phlat.backend.esb.boundary.PlrDataLoad;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
+import com.moh.phlat.backend.esb.json.PlrRequest;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
+import com.moh.phlat.backend.model.SourceData;
 import com.moh.phlat.backend.model.TableColumnInfo;
 import com.moh.phlat.backend.repository.ControlRepository;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
+import com.moh.phlat.backend.repository.SourceDataRepository;
 import com.moh.phlat.backend.repository.TableColumnInfoRepository;
 
 @Service
@@ -38,6 +44,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 
 	@Autowired
 	private TableColumnInfoRepository tableColumnInfoRepository;
+
+	@Autowired
+	private SourceDataRepository sourceDataRepository;
 
 	@Autowired
 	private ProcessDataRepository processDataRepository;
@@ -146,6 +155,7 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 		
 		Boolean isValid = true;
 
+		// Facility and HDS validation
 		if (control.getLoadTypeFacility() || control.getLoadTypeHds()) {
 			// required checks
 			if (!StringUtils.hasText(processData.getStakeholder())) {
@@ -174,13 +184,28 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}
 
-			if (!StringUtils.hasText(processData.getHdsType())) {
+			String hdsType = processData.getHdsType();
+			if (!StringUtils.hasText(hdsType) || !hdsType.toUpperCase().equals(hdsType)) {
 				isValid = false;
 				logger.info("HDS Type required check failed on process data id: {}", processData.getId());
 				Message msg = Message.builder()
 									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
 									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("HDS Type cannot be empty")
+									 .messageDesc("HDS Type cannot be empty and must be in full uppercase")
+									 .sourceSystemName(MessageSourceSystem.PLR)
+									 .processData(processData)
+									 .build();
+				messageService.createMessage(msg);
+			}
+			
+			String sourceStatus = processData.getSourceStatus();
+			if (!StringUtils.hasText(sourceStatus) || !sourceStatus.toUpperCase().equals(sourceStatus)) {
+				isValid = false;
+				logger.info("Source Status required check failed on process data id: {}", processData.getId());
+				Message msg = Message.builder()
+									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									 .messageDesc("Source Status cannot be empty and must be in full uppercase")
 									 .sourceSystemName(MessageSourceSystem.PLR)
 									 .processData(processData)
 									 .build();
@@ -239,10 +264,26 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				messageService.createMessage(msg);
 			}	
 
+			// optional or conditional checks
+			
 			String mailCountry = "";
 			mailCountry = processData.getMailCountry().toUpperCase();
 
 			if (StringUtils.hasText(processData.getMailAddr1())) {
+
+				if (!StringUtils.hasText(processData.getMailCity())) {
+					isValid = false;
+					logger.info("Mailing Addr City required check failed on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Mailing Addr City cannot be empty if a Mailing Addr is provided")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				}
+				
 				if (StringUtils.hasText(mailCountry) &&  !mailCountry.equals("CANADA") && !mailCountry.equals("CA")) {
 					isValid = false;
 					logger.info("Out of country mailing address on process data id: {}", processData.getId()); 
@@ -256,6 +297,142 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 					messageService.createMessage(msg);
 				}
 			}
+			
+			AtomicBoolean hasCorrectEndReasons = new AtomicBoolean(isValid);
+			processData.mapOfHdsGroupActions().forEach((group,action) -> {
+				
+				if (StringUtils.hasText(action)) {
+					
+					String actionUpper = action.toUpperCase();
+					if (!actionUpper.equals(DbUtilityService.PHLAT_END_REASON_CODE_CHG)
+							&& !actionUpper.equals(DbUtilityService.PHLAT_END_REASON_CODE_CORR)
+							&& !actionUpper.equals(DbUtilityService.PHLAT_END_REASON_CODE_CEASE)) {
+						
+						hasCorrectEndReasons.set(false);
+						logger.info("Invalid end reason code on {} for process data id: {}", group, processData.getId()); 
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc(group + " Group Action must be CHG, CORR or CEASE if provided")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
+				}
+			});
+			isValid = hasCorrectEndReasons.get();
+
+			AtomicBoolean hasCorrectDateFormats = new AtomicBoolean(isValid);
+			processData.mapOfHdsGroupEffectiveDates().forEach((group,dates) -> {
+				
+				String startDate = dates.get(0);
+				String endDate = dates.get(1);
+				try {
+					if (!StringUtils.hasText(processData.getRecordAction())
+							|| "ADD".equals(processData.getRecordAction())
+							|| StringUtils.hasText(processData.mapOfHdsGroupActions().get(group))) {
+						DateUtils.parseDateStrictly(startDate, PlrRequest.EFFECTIVE_DATE_FORMAT_TIMESTAMP, PlrRequest.EFFECTIVE_DATE_FORMAT);
+					}
+					if (StringUtils.hasText(endDate)) {
+						DateUtils.parseDateStrictly(endDate, PlrRequest.EFFECTIVE_DATE_FORMAT_TIMESTAMP, PlrRequest.EFFECTIVE_DATE_FORMAT);
+					}
+				} catch (ParseException ex) {
+					hasCorrectDateFormats.set(false);
+					logger.info("Invalid date formats on {} for process data id: {}", group, processData.getId()); 
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										.messageDesc(group + " Effective Dates must be in yyyy-MM-dd HH:mm:ss format (HH:mm:ss is optional)")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			});
+			isValid = hasCorrectDateFormats.get();
+			
+			if (StringUtils.hasText(processData.getHdsProviderIdentifier1() + processData.getHdsProviderIdentifierType1())) {
+				if (!StringUtils.hasText(processData.getHdsProviderIdentifier1())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifier1 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier 1 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(processData.getHdsProviderIdentifierType1())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifierType1 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier Type 1 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+					
+				}
+			}
+			
+			if (StringUtils.hasText(processData.getHdsProviderIdentifier2() + processData.getHdsProviderIdentifierType2())) {
+				if (!StringUtils.hasText(processData.getHdsProviderIdentifier2())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifier2 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier 2 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(processData.getHdsProviderIdentifierType2())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifierType2 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier Type 2 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+					
+				}
+			}
+			
+			if (StringUtils.hasText(processData.getHdsProviderIdentifier3() + processData.getHdsProviderIdentifierType3())) {
+				if (!StringUtils.hasText(processData.getHdsProviderIdentifier3())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifier3 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier 3 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(processData.getHdsProviderIdentifierType3())) {
+					isValid = false;
+					logger.info("HdsProviderIdentifierType3 missing on process data id: {}", processData.getId());
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Provider Identifier Type 3 is missing")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+					
+				}
+			}
+			
 			// error detection
 
 			if (isValid) { 
@@ -280,7 +457,45 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				addressDoctorValidation.validateAddresses(control, processData);
 			} catch (Exception e) {
 				logger.error("Error occured: {}", e.getMessage(), e);
-			}	
+			}
+
+			Optional<SourceData> sourceData = sourceDataRepository.findById(processData.getId());
+			String civicAddressOverride = processData.getFacCivicAddr();
+			String facIfcIdSource = "";
+			boolean isCivicAddressForced = false;
+			try {
+				// If the user supplied a civic address, save the AddressDoctor result or the provided address as an override
+				// If the user supplied an IFC as well, skip the civic address validations
+				if (sourceData.isPresent()) {
+					SourceData source1 = sourceData.get();
+					String civicAddressSource = source1.getFacCivicAddress();
+					facIfcIdSource = source1.getFacIfcId();
+					
+					if (StringUtils.hasText(civicAddressSource)) {
+						isCivicAddressForced = true;
+						if (StringUtils.hasText(facIfcIdSource) || !isValidCivicAddress(civicAddressOverride)) {
+							// AddressDoctor civic address is inaccurate or this record's source has an IFC
+							// Resort to the user's supplied civic address
+							civicAddressOverride = civicAddressSource;
+						}
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Error occured: {}", e.getMessage(), e);
+			}
+			
+			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
+				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
+					Message msg = Message.builder()
+										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										.messageDesc("Address Doctor mailability score is less than 3")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
+					messageService.createMessage(msg);
+				}
+			}
 
 			logger.info("Call dataBC on process data id: {} with HDS provider id of {}", processData.getId(), processData.getHdsProviderIdentifier1());
 			
@@ -294,24 +509,9 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 				dataBCValidation.getCHSAResults(processData);
 			} catch (Exception e) {
 				logger.error("Error occured: {}", e.getMessage(), e);
-			}				
-
-			if (StringUtils.hasText(processData.getPhysicalAddrMailabilityScore())) {
-				if (Integer.parseInt(processData.getPhysicalAddrMailabilityScore()) < 3) {
-					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
-										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
-										.messageDesc("Address Doctor mailability score is less than 3")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
 			}
 
 			Integer dataBcScore = null;
-
 			if (StringUtils.hasText(processData.getFacScore())) {
 				dataBcScore = Integer.parseInt(processData.getFacScore());
 			}
@@ -320,99 +520,163 @@ public class DbUtilityServiceImpl implements DbUtilityService {
 			if (StringUtils.hasText(processData.getFacPrecisionPoints())) {
 				dataBcPrecisionPoints = Integer.parseInt(processData.getFacPrecisionPoints());
 			}
-
-			if (dataBcScore != null && dataBcPrecisionPoints != null) {
-				if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			} else if (dataBcScore != null) {
-				if (dataBcScore < 96) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("Data SCORE is less than 96")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			} else if (dataBcPrecisionPoints != null) {
-				if ((dataBcPrecisionPoints < 98)) {
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-					Message msg = Message.builder()
-										.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-										.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-										.messageDesc("PRECISION_POINTS is less than 98")
-										.sourceSystemName(MessageSourceSystem.PLR)
-										.processData(processData)
-										.build();
-					messageService.createMessage(msg);
-				}
-			}
-
-			String civicAddress = "";
-			civicAddress = processData.getFacCivicAddr();
-			if (!StringUtils.hasText(civicAddress) && StringUtils.hasText(processData.getPhysicalAddrValidationStatus())) {
-				logger.info("dataBC lookup failed on process data id: {}", processData.getId());
-				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-				Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("dataBC failed on Civic Address")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-				messageService.createMessage(msg);
-			} else if (!StringUtils.hasText(civicAddress)) {
-				logger.info("Civic Address required check on process data id: {}", processData.getId());
-				setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
-				Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Civic address cannot be empty")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-				messageService.createMessage(msg);
-			}
-
 			
-			if (StringUtils.hasText(civicAddress)) {
-				if (!isValidCivicAddress(civicAddress)) {
-					logger.info("Validating Civic Address on process data id: {}", processData.getId());
-					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+			if (isCivicAddressForced || StringUtils.hasText(facIfcIdSource)) {
+				// If the user supplied a civic address and/or an IFC, do not treat low DataBC scores as Invalid and override its returned civic address
+				processData.setFacCivicAddr(civicAddressOverride);
+				if ((dataBcScore != null && dataBcScore < 96) 
+						|| (dataBcPrecisionPoints != null && dataBcPrecisionPoints < 98)) {
 					Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
-									 .messageDesc("Invalid civic address format")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
-					messageService.createMessage(msg);
-				} else if (!isAllUpperCase(civicAddress)) {
-					logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
-					setProcessDataStatus(processData.getId(), RowStatusService.VALID, authenticatedUserId);
-					Message msg = Message.builder()
-									 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
-									 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
-									 .messageDesc("Civic address is not in uppercase")
-									 .sourceSystemName(MessageSourceSystem.PLR)
-									 .processData(processData)
-									 .build();
+										.messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										.messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98. CIVIC_ADDRESS overriden as VALID by user")
+										.sourceSystemName(MessageSourceSystem.PLR)
+										.processData(processData)
+										.build();
 					messageService.createMessage(msg);
 				}
-
-			}				
-		}	
+			} else {
+				// The user did not provide a civic address or IFC, so verify the DataBC scores and use its civic address
+				if (dataBcScore != null && dataBcPrecisionPoints != null) {
+					if ((dataBcScore < 96) || (dataBcPrecisionPoints < 98)) {
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("Data SCORE is less than 96 or PRECISION_POINTS is less than 98")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
+				} else if (dataBcScore != null) {
+					if (dataBcScore < 96) {
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("Data SCORE is less than 96")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
+				} else if (dataBcPrecisionPoints != null) {
+					if ((dataBcPrecisionPoints < 98)) {
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+											.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+											.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+											.messageDesc("PRECISION_POINTS is less than 98")
+											.sourceSystemName(MessageSourceSystem.PLR)
+											.processData(processData)
+											.build();
+						messageService.createMessage(msg);
+					}
+				}
+			}
+			
+			// Only validate civic address if there is no IFC attached to this record's source
+			if (!StringUtils.hasText(facIfcIdSource)) {
+				
+				// There is no IFC, so perform civic address validations as normal
+				String civicAddress = "";
+				civicAddress = processData.getFacCivicAddr();
+				
+				if (!StringUtils.hasText(civicAddress) && StringUtils.hasText(processData.getPhysicalAddrValidationStatus())) {
+					logger.info("dataBC lookup failed on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("dataBC failed on Civic Address")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(civicAddress)) {
+					logger.info("Civic Address required check on process data id: {}", processData.getId());
+					setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+					Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Civic address cannot be empty")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+					messageService.createMessage(msg);
+				}
+			
+				if (StringUtils.hasText(civicAddress)) {
+					if (!isValidCivicAddress(civicAddress)) {
+						logger.info("Validating Civic Address on process data id: {}", processData.getId());
+						setProcessDataStatus(processData.getId(), RowStatusService.INVALID, authenticatedUserId);
+						Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+										 .messageDesc("Invalid civic address format")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+						messageService.createMessage(msg);
+					} else if (!isAllUpperCase(civicAddress)) {
+						logger.info("Checking upper case Civic Addres on process data id: {}", processData.getId());
+						Message msg = Message.builder()
+										 .messageType(DbUtilityService.PHLAT_WARNING_TYPE)
+										 .messageCode(DbUtilityService.PHLAT_WARNING_CODE)
+										 .messageDesc("Civic address is not in uppercase")
+										 .sourceSystemName(MessageSourceSystem.PLR)
+										 .processData(processData)
+										 .build();
+						messageService.createMessage(msg);
+					}
+	
+				}
+			}
+		}
+		// OF Relationship validation (only if Facility and HDS run types are not set)
+		if (control.getLoadTypeOFRelationship() && !(control.getLoadTypeFacility() || control.getLoadTypeHds())) {
+			
+			String facIfcId = processData.getFacIfcId();
+			String hdsIpcId = processData.getHdsIpcId();
+			
+			// Confirm that IFC and IPC identifiers are set
+			if (StringUtils.hasText(facIfcId) && StringUtils.hasText(hdsIpcId)) {
+				// Both IFC and IPC are present; mark as valid
+				setProcessDataStatus(processData.getId(), RowStatusService.VALID,authenticatedUserId);
+			} else {
+				// IFC or IPC is missing; find and report which of these is missing and invalidate the record
+				setProcessDataStatus(processData.getId(), RowStatusService.INVALID,authenticatedUserId);
+				if (!StringUtils.hasText(facIfcId) && !StringUtils.hasText(hdsIpcId)) {
+					Message msg = Message.builder()
+									.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									.messageDesc("Facility IFC and HDS IPC identifiers are missing")
+									.sourceSystemName(MessageSourceSystem.PLR)
+									.processData(processData)
+									.build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(facIfcId)) {
+					Message msg = Message.builder()
+									.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									.messageDesc("Facility IFC identifier is missing")
+									.sourceSystemName(MessageSourceSystem.PLR)
+									.processData(processData)
+									.build();
+					messageService.createMessage(msg);
+				} else if (!StringUtils.hasText(hdsIpcId)) {
+					Message msg = Message.builder()
+									.messageType(DbUtilityService.PHLAT_ERROR_TYPE)
+									.messageCode(DbUtilityService.PHLAT_ERROR_CODE)
+									.messageDesc("HDS IPC identifier is missing")
+									.sourceSystemName(MessageSourceSystem.PLR)
+									.processData(processData)
+									.build();
+					messageService.createMessage(msg);
+				}
+			}
+		}
 	}
 
 	@Async

@@ -75,6 +75,13 @@ public class MaintainFacilityResponse implements PlrResponse {
 					addError(DUPLICATE_FACILITY_RESPONSE_CODE, "WARNING", msgText);
 					duplicate = true;
 					
+					// If an IFC is provided in the response message, save it in the ProcessData record
+					if (StringUtils.hasText(msgText) && msgText.contains("IFC.")) {
+						String facilityIdentifier = msgText.substring(msgText.indexOf("IFC")).trim();
+						processData.setFacIfcId(facilityIdentifier);
+						loaded = true;
+					}
+					
 				} else if (hasError && !duplicate
 						&& !msgCode.contains(SUCCESSFUL_RESPONSE_CODE)
 						&& !msgCode.contains(FACILITY_LOADED_RESPONSE_CODE)
@@ -146,7 +153,7 @@ public class MaintainFacilityResponse implements PlrResponse {
 	
 	private void setRowStatusCode() {
 		if (duplicate) {
-			processData.setRowstatusCode(RowStatusService.POTENTIAL_DUPLICATE);
+			processData.setRowstatusCode(RowStatusService.POTENTIAL_FAC_DUPLICATE);
 		} else if (hasError) {
 			processData.setRowstatusCode(RowStatusService.LOAD_ERROR);
 		}
