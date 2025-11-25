@@ -90,10 +90,10 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
 {
   "username": "phlat",
   "password": "changeme",
-  "engine": "${data.aws_rds_engine_version.postgresql.version}",
-  "host": "${module.aurora_postgresql_v2.cluster_endpoint}",
-  "port": ${module.aurora_postgresql_v2.cluster_port},
-  "dbClusterIdentifier": "${module.aurora_postgresql_v2.cluster_id}"
+  "engine": "${data.aws_rds_engine_version.postgresql_15.version}",
+  "host": "${module.aurora_postgresql_v2_15.cluster_endpoint}",
+  "port": ${module.aurora_postgresql_v2_15.cluster_port},
+  "dbClusterIdentifier": "${module.aurora_postgresql_v2_15.cluster_id}"
 }
 EOF
   lifecycle {
