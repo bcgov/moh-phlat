@@ -31,6 +31,10 @@ import ca.bc.gov.health.plr.dto.provider.esb.ProviderDetails;
 import ca.bc.gov.health.plr.dto.provider.esb.StatusDto;
 import ca.bc.gov.health.plr.dto.provider.esb.TelecommunicationDto;
 
+import static com.moh.phlat.backend.databc.util.Constants.ADD;
+import static com.moh.phlat.backend.databc.util.Constants.ZERO;
+import static com.moh.phlat.backend.databc.util.Constants.CEASE;
+
 public class MaintainHdsRequest implements PlrRequest {
 	
 	private static final String COMMUNICATION_PURPOSE_CODE = "BC";
@@ -157,11 +161,25 @@ public class MaintainHdsRequest implements PlrRequest {
 					processData.getHdsSubTypeGroupAction(), processData.getHdsSubTypeGroupEffectiveStartDate(), processData.getHdsSubTypeGroupEffectiveEndDate(),
 					processData.getHdsSubTypePropertyChid());
 		}
-		if (StringUtils.hasText(processData.getFacAddressUnit())) {
-			addHdsProperty(propertyList, processData.getFacAddressUnit(), ADDRESS_UNIT, 
-					processData.getPhysicalAddressGroupAction(), processData.getPhysicalAddressGroupEffectiveStartDate(), processData.getPhysicalAddressGroupEffectiveEndDate(),
-					processData.getFacAddressUnitPropertyChid());
-		}
+
+        if (StringUtils.hasText(processData.getFacAddressUnit())) {
+            // Condition for Create and Update(CHG/CORR/CEASE) Unit number when value is present.
+            addHdsProperty(propertyList, processData.getFacAddressUnit(), ADDRESS_UNIT,
+                    processData.getPhysicalAddressGroupAction(), processData.getPhysicalAddressGroupEffectiveStartDate(),
+                    processData.getPhysicalAddressGroupEffectiveEndDate(),
+                    processData.getFacAddressUnitPropertyChid());
+        } else if (!StringUtils.hasText(processData.getFacAddressUnit())
+                && StringUtils.hasText(processData.getFacAddressUnitPropertyChid())
+                && isUpdate && StringUtils.hasText(processData.getPhysicalAddressGroupAction())
+                && !ADD.equals(processData.getPhysicalAddressGroupAction())) {
+            // Condition for Update Unit number with Empty value.
+            // If physical address (empty/null) is updated and new unit number is empty/null with existing value in original record
+            // then 'CEASE' unit number property in PLR - CEASE_update doesn't update the value in DB.
+            addHdsProperty(propertyList, ZERO, ADDRESS_UNIT,
+                    CEASE, processData.getPhysicalAddressGroupEffectiveStartDate(), processData.getPhysicalAddressGroupEffectiveEndDate(),
+                    processData.getFacAddressUnitPropertyChid());
+        }
+
 		if (StringUtils.hasText(processData.getPcnServiceDeliveryType())) {
 			addHdsProperty(propertyList, processData.getPcnServiceDeliveryType(), CLINIC_SERVICES, 
 					processData.getPrimaryCareGroupAction(), processData.getPrimaryCareGroupEffectiveStartDate(), processData.getPrimaryCareGroupEffectiveEndDate(),

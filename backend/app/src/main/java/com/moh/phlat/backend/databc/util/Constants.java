@@ -12,4 +12,7 @@ public class Constants {
     public static final String LHA_NAME = "LOCAL_HLTH_AREA_NAME";
     public static final String HSDA_NAME = "HLTH_SERVICE_DLVR_AREA_NAME";
     public static final String HA_NAME = "HLTH_AUTHORITY_NAME";
+    public static final String ADD = "ADD";
+    public static final String CEASE = "CEASE";
+    public static final String ZERO = "0";
 }
