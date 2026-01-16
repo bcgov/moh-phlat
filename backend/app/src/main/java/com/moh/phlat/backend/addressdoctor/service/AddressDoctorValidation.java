@@ -232,33 +232,33 @@ public class AddressDoctorValidation {
 	private Result parseAdressDoctorResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
 		
 		if (addressDoctorResponse == null) {
-			addError(processData, "ValidationError", "ERROR", "Could not reach or get a response from the AddressDoctor service");
+			addError(processData, "100", "ERROR", "Could not reach or get a response from the AddressDoctor service");
 			return null;
 		}
 		
 		SOAPBodyOutput soapBody = addressDoctorResponse.getSoapBody();
 		if (soapBody == null) {
 			logger.error("The SOAP Body message is missing due to a possible PHLAT misconfiguration or an issue with AddressDoctor");
-			addError(processData, "ValidationError", "ERROR", "Could not reach or get a response from the AddressDoctor service");
+			addError(processData, "100", "ERROR", "Could not reach or get a response from the AddressDoctor service");
 			return null;
 		} else if (soapBody.getFault() != null) {
 			SOAPFault soapFault = soapBody.getFault();
 			logger.error("SOAPFault error occured attempting to call AddressDoctor\r\nFault Code: {}\r\nFault String: {}", soapFault.getFaultcode(), soapFault.getFaultstring());
-			addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
+			addError(processData, "100", "ERROR", "The AddressDoctor service could not process the request");
 			return null;
 		}
 		
 		ProcessResponse processResponse = soapBody.getProcessResponse();
 		if (processResponse == null) {
 			logger.error("Could not find the ProcessResponse object due to an unparsable or unexpected AddressDoctor response");
-			addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
+			addError(processData, "100", "ERROR", "The AddressDoctor service could not process the request");
 			return null;
 		}
 			
 		Response response = processResponse.getProcessResult();
 		if (response.getStatusCode() != 100 && !response.getStatusMessage().equals("OK")) {
 			logger.error("AddressDoctor returned an error response: {} | {}", response.getStatusCode(), response.getStatusMessage());
-			addError(processData, "ValidationError", "ERROR", "The AddressDoctor service could not process the request");
+			addError(processData, "100", "ERROR", "The AddressDoctor service could not process the request");
 			return null;
 		}
 		

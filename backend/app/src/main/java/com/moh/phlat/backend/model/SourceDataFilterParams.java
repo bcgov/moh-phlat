@@ -81,5 +81,6 @@ public class SourceDataFilterParams {
 	private List<String> mailPcode;
 	private List<String> mailCountry;
 	private List<String> mailAddrIsPriv;
+	private List<String> recordAction;
 	private Map<String,String> sort;
 }
