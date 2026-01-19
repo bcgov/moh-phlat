@@ -173,7 +173,7 @@ public class MaintainHdsRequest implements PlrRequest {
                 && isUpdate && StringUtils.hasText(processData.getPhysicalAddressGroupAction())
                 && !ADD.equals(processData.getPhysicalAddressGroupAction())) {
             // Condition for Update Unit number with Empty value.
-            // If physical address (empty/null) is updated and new unit number is empty/null with existing value in original record
+            // If physical address (empty/null) is updated and new unit number is empty/null with an existing value in original record
             // then 'CEASE' unit number property in PLR - CEASE_update doesn't update the value in DB.
             addHdsProperty(propertyList, ZERO, ADDRESS_UNIT,
                     CEASE, processData.getPhysicalAddressGroupEffectiveStartDate(), processData.getPhysicalAddressGroupEffectiveEndDate(),
