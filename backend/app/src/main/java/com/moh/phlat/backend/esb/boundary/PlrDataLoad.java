@@ -13,6 +13,7 @@ import com.moh.phlat.backend.esb.json.OFRelationshipResponse;
 import com.moh.phlat.backend.esb.json.PlrLoadResults;
 import com.moh.phlat.backend.model.Control;
 import com.moh.phlat.backend.model.ProcessData;
+import static com.moh.phlat.backend.databc.util.Constants.ADD;
 
 import lombok.Getter;
 
@@ -105,8 +106,8 @@ public class PlrDataLoad {
 		
 		return oFRelationshipResponse;
 	}
-	
-	private boolean isHdsUpdate(String recordAction) {
-		return StringUtils.hasText(recordAction) && !"ADD".equals(recordAction);
-	}
+
+    private boolean isHdsUpdate(String recordAction) {
+        return StringUtils.hasText(recordAction) && !ADD.equals(recordAction);
+    }
 }

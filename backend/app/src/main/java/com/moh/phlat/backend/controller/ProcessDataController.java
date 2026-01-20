@@ -620,10 +620,10 @@ public class ProcessDataController {
 		}
 
 		List<ProcessData> processDataList = processDataRepository.getAllProcessDataByControlTableId(controlTableId);
-		
-		if (processDataList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Nothing to load to PLR.", null, "[]"));			
-		}
+
+        if (processDataList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("error", 404, "Nothing to load to PLR.", null, "[]"));
+        }
 		
 		String authenticatedUserId= AuthenticationUtils.getAuthenticatedUserId();
 		dbUtilityService.setControlStatus(controlTableId, RowStatusService.PLR_LOAD_IN_PROGRESS,
