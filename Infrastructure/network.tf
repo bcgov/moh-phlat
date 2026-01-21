@@ -13,7 +13,7 @@ locals {
   app_subnet_names   = [for az in local.availability_zones : "App_${local.environment}_az${az}_net"]
   data_subnet_names  = [for az in local.availability_zones : "Data_${local.environment}_az${az}_net"]
 
-  security_group_name_suffix = "_sg"
+  security_group_name_suffix = ""
 
   web_security_group_name  = "Web${local.security_group_name_suffix}"
   app_security_group_name  = "App${local.security_group_name_suffix}"
