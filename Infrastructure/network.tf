@@ -7,7 +7,7 @@ locals {
     unclass = "UnClass"
   }
   environment        = local.env_map[lower(var.target_env)]
-  vpc_name           = "${local.environment}_vpc"
+  vpc_name           = "${local.environment}"
   availability_zones = ["a", "b"]
   web_subnet_names   = [for az in local.availability_zones : "Web_${local.environment}_az${az}_net"]
   app_subnet_names   = [for az in local.availability_zones : "App_${local.environment}_az${az}_net"]
