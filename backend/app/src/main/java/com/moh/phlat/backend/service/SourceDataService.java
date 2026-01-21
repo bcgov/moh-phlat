@@ -20,7 +20,7 @@ public interface SourceDataService {
 			"busOwnerType", "busOwnerTypeOther", "facBuildingName", "facilityHdsDetailsAdditionalInfo", "physicalAddr1", "physicalAddr2", "physicalAddr3", "physicalAddr4",
 			"physicalCity", "physicalProvince", "physicalPcode", "physicalCountry", "physAddrIsPrivate", "mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity",
 			"mailBc", "mailPcode", "mailCountry", "mailAddrIsPrivate","hdsSubType", "hdsMspFacilityNumber", "pcnServiceDeliveryType", "pcnClinicStatus",
-			"hdsEffectiveStartDate", "facAddressUnit", "physicalAddrPrpsTypeCd");
+			"hdsEffectiveStartDate", "facAddressUnit", "physicalAddrPrpsTypeCd","recordAction");
 
 	Page<SourceData> getSourceData(Long controlTableId, int page, int itemsPerPage, SourceDataFilterParams filterSource, List<Order> sortOrders);
 	

@@ -23,7 +23,19 @@ public interface ProcessDataService {
 			"facRelnType", "facTypeCode", "physicalAddr1", "physicalAddr2", "physicalAddr3", "physicalAddr4", "physicalCity", "physicalProvince", "physicalPcode", 
 			"physicalCountry", "physicalAddrPrpsTypeCd", "physicalAddrValidationStatus", "physicalAddrMailabilityScore", 
 			"mailAddr1", "mailAddr2", "mailAddr3", "mailAddr4", "mailCity", "mailBc", "mailPcode", "mailCountry", "mailAddrPrpsTypeCd", "mailAddrValidationStatus", 
-			"mailAddrMailabilityScore", "plrFacilityId", "facIfcId", "rowstatusCode", "createdAt", "updatedAt"
+			"mailAddrMailabilityScore", "plrFacilityId", "facRelnType", "facIfcId", "rowstatusCode", "createdAt", "updatedAt",
+			"primaryCareGroupAction","primaryCareGroupEffectiveStartDate", "primaryCareGroupEffectiveEndDate", 
+			"hdsSubTypeGroupAction","hdsSubTypeGroupEffectiveStartDate", "hdsSubTypeGroupEffectiveEndDate", 
+			"hdsNameGroupAction","hdsNameGroupEffectiveStartDate", "hdsNameGroupEffectiveEndDate", 
+			"statusGroupAction","statusGroupEffectiveStartDate", "statusGroupEffectiveEndDate",
+			"hdsEmailGroupAction","hdsEmailGroupEffectiveStartDate", "hdsEmailGroupEffectiveEndDate", 
+			"hdsWebsiteGroupAction","hdsWebsiteGroupEffectiveStartDate", "hdsWebsiteGroupEffectiveEndDate",
+			"businessPhoneGroupAction","businessPhoneGroupEffectiveStartDate", "businessPhoneGroupEffectiveEndDate",
+			"hdsFaxGroupAction","hdsFaxGroupEffectiveStartDate", "hdsFaxGroupEffectiveEndDate",	
+			"hdsCellGroupAction","hdsCellGroupEffectiveStartDate", "hdsCellGroupEffectiveEndDate",
+			"physicalAddressGroupAction","physicalAddressGroupEffectiveStartDate", "physicalAddressGroupEffectiveEndDate",					
+			"mailingAddressGroupAction","mailingAddressGroupEffectiveStartDate", "mailingAddressGroupEffectiveEndDate",							 			
+			"recordAction"
 			);
 
     List<ReportSummary> getReportSummary(Long controlTableId);
