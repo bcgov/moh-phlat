@@ -1,5 +1,5 @@
 locals {
-  s3_origin_id = "phlat-${var.target_env}"
+  s3_origin_id = "phlat-lza-${var.target_env}"
 }
 
 provider "aws" {

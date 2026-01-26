@@ -170,6 +170,6 @@ jobs:
       - name: Upload to S3 bucket phlat frontend app
         run: |
           cd frontend/app/dist
-          aws s3 sync . s3://phlat-${{ github.event.inputs.environment }}/app --delete
+          aws s3 sync . s3://phlat-lza-${{ github.event.inputs.environment }}/app --delete
         env:
           AWS_REGION: ca-central-1
