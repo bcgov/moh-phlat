@@ -57,3 +57,18 @@ resource "aws_iam_role_policy_attachment" "secret_role" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.get_secret.arn
 }
+
+resource "aws_iam_role_policy" "ecs_task_execution_cloudwatch_logs" {
+  name = "AllowCreateLogGroup"
+  role = aws_iam_role.ecs_task_execution_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "logs:CreateLogGroup"
+        Resource = "arn:aws:logs:ca-central-1:402571584434:log-group:/ecs/phlat*"
+      }
+    ]
+  })
+}
