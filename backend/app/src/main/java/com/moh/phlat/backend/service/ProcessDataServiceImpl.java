@@ -1,5 +1,6 @@
 package com.moh.phlat.backend.service;
 
+import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.repository.ProcessDataFilterSpecification;
@@ -11,17 +12,19 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.moh.phlat.backend.databc.util.Constants.COLON;
 
 @Service
 public class ProcessDataServiceImpl implements ProcessDataService {
@@ -34,26 +37,93 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 
     @Override
     public Page<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, int page, int itemsPerPage, ProcessDataFilterParams filterProcess, 
-			List<Order> sortOrders){
-    	
-    	Pageable pageRequest;
-    	
-		if (!sortOrders.isEmpty()) {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
-		} else {
-			pageRequest = PageRequest.of(page - 1, itemsPerPage);
-		}
+			List<Order> sortOrders) {
 
-		Page<ProcessData> processData = processDataRepository.findAll(buildSpecification(controlTableId, rowStatus, filterProcess), pageRequest);
+        Pageable pageRequest;
 
-		return processData;
+        if (!sortOrders.isEmpty()) {
+            pageRequest = PageRequest.of(page - 1, itemsPerPage, Sort.by(sortOrders));
+        } else {
+            pageRequest = PageRequest.of(page - 1, itemsPerPage);
+        }
+
+        Page<ProcessData> processData;
+        ProcessDataFilterSpecification specificationService = new ProcessDataFilterSpecificationImpl();
+        Specification<ProcessData> combinedSpecification = specificationService.getDataWithMessages(controlTableId);
+        combinedSpecification = buildSpecification(combinedSpecification, rowStatus, filterProcess, specificationService);
+
+        if (CollectionUtils.isEmpty(filterProcess.getMessages())) {
+            processData = processDataRepository.findAll(combinedSpecification, pageRequest);
+        } else {
+            List<ProcessData> processDataMsg = new ArrayList<>();
+            for (String messageCriteria : filterProcess.getMessages()) {
+                // Create new specification for each message criteria (+ along with other filters)
+                // and add them all to create a page.
+                Specification<ProcessData> combinedSpecificationMsg = specificationService
+                        .getProcessDataWithFilterMessages(combinedSpecification, messageCriteria);
+
+                if (combinedSpecificationMsg != null) {
+                    // Find all records with combined filters for Process_data and Messages table
+                    processDataMsg.addAll(processDataRepository.findAll(combinedSpecificationMsg));
+                }
+            }
+            // Convert all records to Page (empty Page when no matching result).
+            processData = getProcessDataPage(pageRequest, processDataMsg, sortOrders);
+        }
+
+        return processData;
     }
-    
-    private Specification<ProcessData> buildSpecification(Long controlId, String reqRowStatusCode, ProcessDataFilterParams filterProcess) {
-		ProcessDataFilterSpecification specificationService = new ProcessDataFilterSpecificationImpl();
 
-		Specification<ProcessData> combinedSpecification = specificationService.getDataWithMessages(controlId);
+    /**
+     * Converts List ProcessData to Page and applies sorting.
+     *
+     * @param pageRequest - pageRequest containing required criteria
+     * @param processDataMsg - List of ProcessData
+     * @param sortOrders - List of required sort Order
+     * @return - Modified Page<ProcessData>
+     */
+    private Page<ProcessData> getProcessDataPage(Pageable pageRequest, List<ProcessData> processDataMsg, List<Order> sortOrders) {
+        Page<ProcessData> processData;
+        Comparator<ProcessData> comparator = Comparator.comparing(ProcessData::getId); // Default Sorting
+        for (Order order : sortOrders) {
+            // First sort criteria for .comparing();
+            String property = sortOrders.get(0).getProperty();
+            comparator = property.equals("hdsName") ? Comparator.comparing(ProcessData::getHdsName) : comparator;
+            comparator = updateComparatorDirection(sortOrders.get(0).isAscending(), comparator);
 
+            if (sortOrders.size() > 1) {
+                // Further sort criteria for .thenComparing();
+                if (order.getProperty().equals("facCivicAddr")) {
+                    comparator = comparator.thenComparing(ProcessData::getFacCivicAddr);
+                    comparator = updateComparatorDirection(order.isAscending(), comparator);
+                }
+            }
+        }
+        processDataMsg = processDataMsg.stream().sorted(comparator).distinct().toList();
+
+        final int startOfPage = (int) pageRequest.getOffset();
+        final int endOfPage = Math.min((startOfPage + pageRequest.getPageSize()), processDataMsg.size());
+        // Convert list to page
+        processData = new PageImpl<>(endOfPage >= startOfPage ? processDataMsg.subList(startOfPage, endOfPage)
+                : processDataMsg.subList(0, pageRequest.getPageSize()), pageRequest, processDataMsg.size());
+        return processData;
+    }
+
+    /**
+     * Updates Comparator Direction Asc-Dsc
+     *
+     * @param isDirectionAsc - boolean is Direction Asc
+     * @param comparator - Comparator
+     * @return - Modified Comparator<ProcessData>
+     */
+    private Comparator<ProcessData> updateComparatorDirection(boolean isDirectionAsc, Comparator<ProcessData> comparator) {
+        if (!isDirectionAsc) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
+    }
+
+    private Specification<ProcessData> buildSpecification( Specification<ProcessData> combinedSpecification, String reqRowStatusCode, ProcessDataFilterParams filterProcess,  ProcessDataFilterSpecification specificationService) {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", reqRowStatusCode);
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "id", filterProcess.getId());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "rowstatusCode", filterProcess.getRowstatusCode());
@@ -110,7 +180,7 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrValidationStatus", filterProcess.getMailAddrValidationStatus());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrMailabilityScore", filterProcess.getMailAddrMailabilityScore());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "plrFacilityId", filterProcess.getPlrFacilityId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facRelnType", filterProcess.getFacRelnType());	
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facRelnType", filterProcess.getFacRelnType());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facAddressUnit", filterProcess.getFacAddressUnit());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facCivicAddr", filterProcess.getFacCivicAddr());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facLatitude", filterProcess.getFacLatitude());
@@ -128,47 +198,47 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnCode", filterProcess.getFacPcnCode());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facPcnName", filterProcess.getFacPcnName());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "facIfcId", filterProcess.getFacIfcId());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrMailabilityScore", filterProcess.getPhysicalAddrMailabilityScore());		
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrMailabilityScore", filterProcess.getMailAddrMailabilityScore());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "primaryCareGroupAction", filterProcess.getPrimaryCareGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "primaryCareGroupEffectiveStartDate", filterProcess.getPrimaryCareGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "primaryCareGroupEffectiveEndDate", filterProcess.getPrimaryCareGroupEffectiveEndDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubTypeGroupAction", filterProcess.getHdsSubTypeGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubTypeGroupEffectiveStartDate", filterProcess.getHdsSubTypeGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubTypeGroupEffectiveEndDate", filterProcess.getHdsSubTypeGroupEffectiveEndDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameGroupAction", filterProcess.getHdsNameGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameGroupEffectiveStartDate", filterProcess.getHdsNameGroupEffectiveStartDate());	
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddrMailabilityScore", filterProcess.getPhysicalAddrMailabilityScore());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailAddrMailabilityScore", filterProcess.getMailAddrMailabilityScore());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "primaryCareGroupAction", filterProcess.getPrimaryCareGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "primaryCareGroupEffectiveStartDate", filterProcess.getPrimaryCareGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "primaryCareGroupEffectiveEndDate", filterProcess.getPrimaryCareGroupEffectiveEndDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubTypeGroupAction", filterProcess.getHdsSubTypeGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubTypeGroupEffectiveStartDate", filterProcess.getHdsSubTypeGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsSubTypeGroupEffectiveEndDate", filterProcess.getHdsSubTypeGroupEffectiveEndDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameGroupAction", filterProcess.getHdsNameGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameGroupEffectiveStartDate", filterProcess.getHdsNameGroupEffectiveStartDate());
 	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameGroupEffectiveEndDate", filterProcess.getHdsNameGroupEffectiveEndDate());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsNameGroupEffectiveEndDate", filterProcess.getHdsNameGroupEffectiveEndDate());
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "statusGroupAction", filterProcess.getStatusGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "statusGroupEffectiveStartDate", filterProcess.getStatusGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "statusGroupEffectiveEndDate", filterProcess.getStatusGroupEffectiveEndDate());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupAction", filterProcess.getHdsEmailGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupEffectiveStartDate", filterProcess.getHdsEmailGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupEffectiveEndDate", filterProcess.getHdsEmailGroupEffectiveEndDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupEffectiveEndDate", filterProcess.getHdsEmailGroupEffectiveEndDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsiteGroupAction", filterProcess.getHdsWebsiteGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsiteGroupEffectiveStartDate", filterProcess.getHdsWebsiteGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsiteGroupEffectiveEndDate", filterProcess.getHdsWebsiteGroupEffectiveEndDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "businessPhoneGroupAction", filterProcess.getBusinessPhoneGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "businessPhoneGroupEffectiveStartDate", filterProcess.getBusinessPhoneGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "businessPhoneGroupEffectiveEndDate", filterProcess.getBusinessPhoneGroupEffectiveEndDate());			
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxGroupAction", filterProcess.getHdsFaxGroupAction());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxGroupEffectiveStartDate", filterProcess.getHdsFaxGroupEffectiveStartDate());	
-	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxGroupEffectiveEndDate", filterProcess.getHdsFaxGroupEffectiveEndDate());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupAction", filterProcess.getHdsCellGroupAction());	
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "statusGroupAction", filterProcess.getStatusGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "statusGroupEffectiveStartDate", filterProcess.getStatusGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "statusGroupEffectiveEndDate", filterProcess.getStatusGroupEffectiveEndDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupAction", filterProcess.getHdsEmailGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupEffectiveStartDate", filterProcess.getHdsEmailGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupEffectiveEndDate", filterProcess.getHdsEmailGroupEffectiveEndDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsEmailGroupEffectiveEndDate", filterProcess.getHdsEmailGroupEffectiveEndDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsiteGroupAction", filterProcess.getHdsWebsiteGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsiteGroupEffectiveStartDate", filterProcess.getHdsWebsiteGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsWebsiteGroupEffectiveEndDate", filterProcess.getHdsWebsiteGroupEffectiveEndDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "businessPhoneGroupAction", filterProcess.getBusinessPhoneGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "businessPhoneGroupEffectiveStartDate", filterProcess.getBusinessPhoneGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "businessPhoneGroupEffectiveEndDate", filterProcess.getBusinessPhoneGroupEffectiveEndDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxGroupAction", filterProcess.getHdsFaxGroupAction());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxGroupEffectiveStartDate", filterProcess.getHdsFaxGroupEffectiveStartDate());
+	    combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsFaxGroupEffectiveEndDate", filterProcess.getHdsFaxGroupEffectiveEndDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupAction", filterProcess.getHdsCellGroupAction());
 		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupEffectiveStartDate", filterProcess.getHdsCellGroupEffectiveStartDate());
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupEffectiveEndDate", filterProcess.getHdsCellGroupEffectiveEndDate());		
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupEffectiveEndDate", filterProcess.getHdsCellGroupEffectiveEndDate());		
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddressGroupAction", filterProcess.getPhysicalAddressGroupAction());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddressGroupEffectiveStartDate", filterProcess.getPhysicalAddressGroupEffectiveStartDate());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddressGroupEffectiveEndDate", filterProcess.getPhysicalAddressGroupEffectiveEndDate());					
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailingAddressGroupAction", filterProcess.getMailingAddressGroupAction());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailingAddressGroupEffectiveStartDate", filterProcess.getMailingAddressGroupEffectiveStartDate());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailingAddressGroupEffectiveEndDate", filterProcess.getMailingAddressGroupEffectiveEndDate());	
-		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "recordAction", filterProcess.getRecordAction());	
-		
-		return combinedSpecification;
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupEffectiveEndDate", filterProcess.getHdsCellGroupEffectiveEndDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "hdsCellGroupEffectiveEndDate", filterProcess.getHdsCellGroupEffectiveEndDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddressGroupAction", filterProcess.getPhysicalAddressGroupAction());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddressGroupEffectiveStartDate", filterProcess.getPhysicalAddressGroupEffectiveStartDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "physicalAddressGroupEffectiveEndDate", filterProcess.getPhysicalAddressGroupEffectiveEndDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailingAddressGroupAction", filterProcess.getMailingAddressGroupAction());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailingAddressGroupEffectiveStartDate", filterProcess.getMailingAddressGroupEffectiveStartDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "mailingAddressGroupEffectiveEndDate", filterProcess.getMailingAddressGroupEffectiveEndDate());
+		combinedSpecification = specificationService.buildSpecificationAnd(combinedSpecification, "recordAction", filterProcess.getRecordAction());
+
+        return combinedSpecification;
     }
 
     private static ReportSummary createReportSummaryData(String reportAttributeName, Long reportAttributeValue) {
@@ -252,17 +322,35 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 
 	@Override
 	public List<String> getUniqueColumnValues(Long controlTableId, String columnKey) {
+        List<String> result;
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<String> query = cb.createQuery(String.class);
-        
-        Root<ProcessData> root = query.from(ProcessData.class);
-	        
-	    query.select(root.get(columnKey)).distinct(true);
-	    query.where(cb.equal(root.get("controlTableId"), controlTableId));
-	    query.orderBy(cb.asc(root.get(columnKey)));
-        
-        return entityManager.createQuery(query).getResultList();
+        if (columnKey.equals("messages")) {
+            // Fetch messages from DB and convert them to String criteria
+            CriteriaQuery<Message> query = cb.createQuery(Message.class);
+            Root<ProcessData> root = query.from(ProcessData.class);
+
+            query.select(root.get(columnKey)).distinct(true);
+            query.where(cb.equal(root.get("controlTableId"), controlTableId));
+            query.orderBy(cb.asc(root.get(columnKey)));
+            List<Message> message = entityManager.createQuery(query).getResultList();
+            result = !CollectionUtils.isEmpty(message)
+                    ? message.stream().sorted(Comparator.comparing(Message::getMessageType))
+                    .map(msg -> msg.getMessageType() + COLON +
+                            msg.getMessageCode() + COLON + msg.getMessageDesc())
+                    .distinct()
+                    .collect(Collectors.toList())
+                    : new ArrayList<>();
+        } else {
+            CriteriaQuery<String> query = cb.createQuery(String.class);
+            Root<ProcessData> root = query.from(ProcessData.class);
+
+            query.select(root.get(columnKey)).distinct(true);
+            query.where(cb.equal(root.get("controlTableId"), controlTableId));
+            query.orderBy(cb.asc(root.get(columnKey)));
+            result = entityManager.createQuery(query).getResultList();
+        }
+        return result;
 		
 	}
 }

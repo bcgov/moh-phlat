@@ -14,7 +14,7 @@ export const useProcessDataStore = defineStore('processdata', {
     fileUploadStatus: undefined,
     validateAllStatus: undefined,
     processingProcessData: false,
-    nonFilterableColumns: ['id', 'actions', 'messages'],
+    nonFilterableColumns: ['id', 'actions'],
   }),
   getters: {},
   actions: {

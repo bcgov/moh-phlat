@@ -25,5 +25,12 @@ public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> 
 	long countByControlTableId(Long controlTableId);   
 	
 	Page<ProcessData> findAll(Specification<ProcessData> spec, Pageable pageable);
+    /**
+     *  Find all ProcessData with message criteria for the required spec and return a list
+     *
+     * @param spec - combined Specification
+     * @return - returns all ProcessData with message criteria for the required spec and return a list
+     */
+    List<ProcessData> findAll(Specification<ProcessData> spec);
 
 }
