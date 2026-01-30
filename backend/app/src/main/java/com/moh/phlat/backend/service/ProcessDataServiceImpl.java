@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.moh.phlat.backend.databc.util.Constants.COLON;
@@ -84,28 +82,27 @@ public class ProcessDataServiceImpl implements ProcessDataService {
      */
     private Page<ProcessData> getProcessDataPage(Pageable pageRequest, List<ProcessData> processDataMsg, List<Order> sortOrders) {
         Page<ProcessData> processData;
-        Comparator<ProcessData> comparator = Comparator.comparing(ProcessData::getId); // Default Sorting
+        Comparator<ProcessData> comparator = Comparator.comparing(ProcessData::getId); // Default Sorting - no sortOrders
         for (Order order : sortOrders) {
-            // First sort criteria for .comparing();
-            String property = sortOrders.get(0).getProperty();
-            comparator = property.equals("hdsName") ? Comparator.comparing(ProcessData::getHdsName) : comparator;
-            comparator = updateComparatorDirection(sortOrders.get(0).isAscending(), comparator);
-
-            if (sortOrders.size() > 1) {
-                // Further sort criteria for .thenComparing();
-                if (order.getProperty().equals("facCivicAddr")) {
-                    comparator = comparator.thenComparing(ProcessData::getFacCivicAddr);
-                    comparator = updateComparatorDirection(order.isAscending(), comparator);
-                }
+            if (sortOrders.indexOf(order) == 0) {
+                // First sort criteria for .comparing()
+                comparator = StringUtils.hasText(order.getProperty()) && order.getProperty().equals("hdsName")
+                        ? Comparator.comparing(ProcessData::getHdsName) : comparator;
+                comparator = updateComparatorDirection(order.isAscending(), comparator);
+            }
+            if (sortOrders.size() > 1 && sortOrders.indexOf(order) != 0) {
+                // Chained sort criteria for .thenComparing()
+                comparator = StringUtils.hasText(order.getProperty()) && order.getProperty().equals("facCivicAddr")
+                        ? comparator.thenComparing(ProcessData::getFacCivicAddr) : comparator;
+                comparator = updateComparatorDirection(order.isAscending(), comparator);
             }
         }
-        processDataMsg = processDataMsg.stream().sorted(comparator).distinct().toList();
-
+        processDataMsg = processDataMsg.stream().distinct().sorted(comparator).toList();
         final int startOfPage = (int) pageRequest.getOffset();
         final int endOfPage = Math.min((startOfPage + pageRequest.getPageSize()), processDataMsg.size());
         // Convert list to page
         processData = new PageImpl<>(endOfPage >= startOfPage ? processDataMsg.subList(startOfPage, endOfPage)
-                : processDataMsg.subList(0, pageRequest.getPageSize()), pageRequest, processDataMsg.size());
+                : processDataMsg.subList(0, Math.min(pageRequest.getPageSize(), processDataMsg.size())), pageRequest, processDataMsg.size());
         return processData;
     }
 
@@ -335,7 +332,10 @@ public class ProcessDataServiceImpl implements ProcessDataService {
             query.orderBy(cb.asc(root.get(columnKey)));
             List<Message> message = entityManager.createQuery(query).getResultList();
             result = !CollectionUtils.isEmpty(message)
-                    ? message.stream().sorted(Comparator.comparing(Message::getMessageType))
+                    ? message.stream()
+                    .filter(msg -> StringUtils.hasText(msg.getMessageType())
+                            && StringUtils.hasText(msg.getMessageCode()) && StringUtils.hasText(msg.getMessageDesc()))
+                    .sorted(Comparator.comparing(Message::getMessageType))
                     .map(msg -> msg.getMessageType() + COLON +
                             msg.getMessageCode() + COLON + msg.getMessageDesc())
                     .distinct()
