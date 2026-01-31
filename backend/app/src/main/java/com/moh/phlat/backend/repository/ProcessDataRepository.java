@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Repository
-public interface ProcessDataRepository extends JpaRepository<ProcessData, Long> {
+public interface ProcessDataRepository extends JpaRepository<ProcessData, Long>, ProcessDataCustomRepository {
     List<ProcessData> getAllProcessDataByControlTableId(Long controlTableId);
 
     List<ProcessData> findByControlTableIdAndRowstatusCode(Long controlTableId, String reqRowStatusCode);

@@ -1,16 +1,11 @@
 package com.moh.phlat.backend.service;
 
-import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
 import com.moh.phlat.backend.model.ProcessDataFilterParams;
 import com.moh.phlat.backend.repository.ProcessDataFilterSpecification;
 import com.moh.phlat.backend.repository.ProcessDataFilterSpecificationImpl;
 import com.moh.phlat.backend.repository.ProcessDataRepository;
 import com.moh.phlat.backend.service.dto.ReportSummary;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
@@ -19,19 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.moh.phlat.backend.databc.util.Constants.COLON;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class ProcessDataServiceImpl implements ProcessDataService {
 
     @Autowired
     ProcessDataRepository processDataRepository;
-    
-	@Autowired
-	EntityManager entityManager;
 
     @Override
     public Page<ProcessData> getProcessDataWithMessages(Long controlTableId, String rowStatus, int page, int itemsPerPage, ProcessDataFilterParams filterProcess, 
@@ -317,40 +308,8 @@ public class ProcessDataServiceImpl implements ProcessDataService {
 		return items;
 	}
 
-	@Override
-	public List<String> getUniqueColumnValues(Long controlTableId, String columnKey) {
-        List<String> result;
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-        if (columnKey.equals("messages")) {
-            // Fetch messages from DB and convert them to String criteria
-            CriteriaQuery<Message> query = cb.createQuery(Message.class);
-            Root<ProcessData> root = query.from(ProcessData.class);
-
-            query.select(root.get(columnKey)).distinct(true);
-            query.where(cb.equal(root.get("controlTableId"), controlTableId));
-            query.orderBy(cb.asc(root.get(columnKey)));
-            List<Message> message = entityManager.createQuery(query).getResultList();
-            result = !CollectionUtils.isEmpty(message)
-                    ? message.stream()
-                    .filter(msg -> StringUtils.hasText(msg.getMessageType())
-                            && StringUtils.hasText(msg.getMessageCode()) && StringUtils.hasText(msg.getMessageDesc()))
-                    .sorted(Comparator.comparing(Message::getMessageType))
-                    .map(msg -> msg.getMessageType() + COLON +
-                            msg.getMessageCode() + COLON + msg.getMessageDesc())
-                    .distinct()
-                    .collect(Collectors.toList())
-                    : new ArrayList<>();
-        } else {
-            CriteriaQuery<String> query = cb.createQuery(String.class);
-            Root<ProcessData> root = query.from(ProcessData.class);
-
-            query.select(root.get(columnKey)).distinct(true);
-            query.where(cb.equal(root.get("controlTableId"), controlTableId));
-            query.orderBy(cb.asc(root.get(columnKey)));
-            result = entityManager.createQuery(query).getResultList();
-        }
-        return result;
-		
-	}
+    @Override
+    public List<String> getUniqueColumnValues(Long controlTableId, String columnKey) {
+        return processDataRepository.getUniqueColumnValues(controlTableId, columnKey);
+    }
 }
