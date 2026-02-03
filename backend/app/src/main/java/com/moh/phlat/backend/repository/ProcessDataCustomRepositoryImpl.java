@@ -43,7 +43,7 @@ public class ProcessDataCustomRepositoryImpl implements ProcessDataCustomReposit
 
             query.select(root.get(columnKey)).distinct(true);
             query.where(cb.equal(root.get("controlTableId"), controlTableId));
-            query.orderBy(cb.asc(root.get(columnKey)));
+            query.orderBy(cb.asc(root.get("id")));
             List<Message> message = entityManager.createQuery(query).getResultList();
             result = !CollectionUtils.isEmpty(message)
                     ? message.stream()
@@ -66,4 +66,5 @@ public class ProcessDataCustomRepositoryImpl implements ProcessDataCustomReposit
         }
         return result;
     }
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.moh.phlat.backend.model.Message;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import com.moh.phlat.backend.model.ProcessData;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import static com.moh.phlat.backend.databc.util.Constants.COLON;
 
 @NoArgsConstructor
+@Component
 public class ProcessDataFilterSpecificationImpl implements ProcessDataFilterSpecification {
     @Override
     public Specification<ProcessData> getDataWithMessages(Long controlId) {
