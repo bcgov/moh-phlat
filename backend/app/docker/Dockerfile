@@ -23,8 +23,8 @@ COPY ext-libs ./ext-libs
 ARG PLR_TLS_TRUST_CERT
 #RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
 #cert is base64 encoded. Decode it before writing to file
-RUN echo $PLR_TLS_TRUST_CERT | base64 -d > ./src/main/resources/plr_tls_trust.cert
-RUN chmod 640 ./src/main/resources/plr_tls_trust.cert
+RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /certificates/HEALTHREGCA.crt
+RUN chmod 640 /certificates/HEALTHREGCA.crt
 
 ARG ADDRESS_DOCTOR_KEYSTORE
 #RUN echo "Value of ADDRESS_DOCTOR_KEYSTORE is: $ADDRESS_DOCTOR_KEYSTORE"

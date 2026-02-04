@@ -57,10 +57,6 @@ spring:
 
   ssl:
     bundle:
-      pem:
-        client:
-          truststore:
-            certificate: classpath:plr_tls_trust.cert
       jks:
         addressdoctor:
           key:
