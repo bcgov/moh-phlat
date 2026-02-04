@@ -20,11 +20,7 @@ COPY pom.xml .
 COPY src/ ./src/
 COPY ext-libs ./ext-libs
 
-ARG PLR_TLS_TRUST_CERT
-#RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
-#cert is base64 encoded. Decode it before writing to file
-RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /certificates/HEALTHREGCA.crt
-RUN chmod 640 /certificates/HEALTHREGCA.crt
+
 
 ARG ADDRESS_DOCTOR_KEYSTORE
 #RUN echo "Value of ADDRESS_DOCTOR_KEYSTORE is: $ADDRESS_DOCTOR_KEYSTORE"
@@ -44,6 +40,14 @@ RUN mv target/*.jar target/phlat-backend.jar
 
 FROM eclipse-temurin:17-jdk-alpine
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
+
+ARG PLR_TLS_TRUST_CERT
+#RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
+#cert is base64 encoded. Decode it before writing to file
+ENV USE_SYSTEM_CA_CERTS=true
+RUN mkdir -p /certificates/
+RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /certificates/HEALTHREGCA.crt
+RUN chmod 640 /certificates/HEALTHREGCA.crt
 
 EXPOSE 8088
 ENTRYPOINT [ "java", "-XX:MaxRAMPercentage=80.0", "-jar", "/app/target/phlat-backend.jar" ]
