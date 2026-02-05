@@ -20,8 +20,6 @@ COPY pom.xml .
 COPY src/ ./src/
 COPY ext-libs ./ext-libs
 
-
-
 ARG ADDRESS_DOCTOR_KEYSTORE
 #RUN echo "Value of ADDRESS_DOCTOR_KEYSTORE is: $ADDRESS_DOCTOR_KEYSTORE"
 #keystore is base64 encoded. Decode it before writing to file
@@ -45,9 +43,10 @@ ARG PLR_TLS_TRUST_CERT
 #RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
 #cert is base64 encoded. Decode it before writing to file
 ENV USE_SYSTEM_CA_CERTS=true
-RUN mkdir -p /certificates/
-RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /certificates/HEALTHREGCA.crt
-RUN chmod 640 /certificates/HEALTHREGCA.crt
+RUN echo "Value of USE_SYSTEM_CA_CERTS is: $USE_SYSTEM_CA_CERTS"
+RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /opt/java/openjdk/lib/security/HEALTHREGCA.crt
+RUN chmod 640 /opt/java/openjdk/lib/security/HEALTHREGCA.crt
+RUN keytool -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias plrcert -file opt/java/openjdk/lib/security/HEALTHREGCA.crt
 
 EXPOSE 8088
 ENTRYPOINT [ "java", "-XX:MaxRAMPercentage=80.0", "-jar", "/app/target/phlat-backend.jar" ]
