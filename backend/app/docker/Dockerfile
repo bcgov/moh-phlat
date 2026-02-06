@@ -46,7 +46,7 @@ ENV USE_SYSTEM_CA_CERTS=true
 RUN echo "Value of USE_SYSTEM_CA_CERTS is: $USE_SYSTEM_CA_CERTS"
 RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /opt/java/openjdk/lib/security/HEALTHREGCA.crt
 RUN chmod 640 /opt/java/openjdk/lib/security/HEALTHREGCA.crt
-RUN keytool -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias plrcert -file opt/java/openjdk/lib/security/HEALTHREGCA.crt
+RUN keytool -importcert -noprompt -cacerts -storepass changeit -trustcacerts -alias plrcert -file opt/java/openjdk/lib/security/HEALTHREGCA.crt
 
 EXPOSE 8088
 ENTRYPOINT [ "java", "-XX:MaxRAMPercentage=80.0", "-jar", "/app/target/phlat-backend.jar" ]
