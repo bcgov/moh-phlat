@@ -84,7 +84,10 @@ resource "aws_ecs_task_definition" "phlat_td" {
           name      = "PLR_API_HOST"
           valueFrom = aws_secretsmanager_secret_version.phlat_plr_api_host.arn
         },
-        
+        {
+          name      = "PLR_API_ADDR_VAL_JKS"
+          valueFrom = aws_secretsmanager_secret_version.phlat_plr_addrvaljks.arn
+        },
         {
           name      = "ADDRESS_DOCTOR_HOST"
           valueFrom = aws_secretsmanager_secret_version.phlat_address_doctor_host.arn
