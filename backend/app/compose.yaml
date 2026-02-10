@@ -41,4 +41,24 @@ services:
       - "-c"
       - "/bin/echo 'postgres:5432:*:dvega:password' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
     networks:
+        - common-network
+
+  phlat:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
+        PLR_TLS_TRUST_CERT: ${PLR_TLS_TRUST_CERT}
+    container_name: phlat
+    image: 'plr/phlat:1.0'
+    depends_on:
+      - postgres
+    ports:
+      - "8088:8088"
+    environment:
+      USE_SYSTEM_CA_CERTS: true
+    env_file:
+      - .env
+    networks:
       - common-network

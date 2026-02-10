@@ -62,7 +62,7 @@ spring:
           key:
             password: ${ADDRESS_DOCTOR_KEY_PASSWORD}
           keystore:
-            location: classpath:addressdoctor_keystore.jks
+            location: /tmp/addrval-temp.jks
             password: ${ADDRESS_DOCTOR_KEYSTORE_PASSWORD}
 
 # -------------- spring related config ends ---------------------------
