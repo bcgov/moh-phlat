@@ -60,7 +60,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_LZA }}
           aws-region: ca-central-1
 
       - name: Amazon ECR Login
@@ -112,7 +112,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_LZA }}
           aws-region: ca-central-1
 
       - name: HashiCorp - Setup Terraform
@@ -158,7 +158,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_LZA }}
           aws-region: ca-central-1
 
       - name: Build project phlat frontend app
