@@ -38,7 +38,7 @@ database using the pgAdmin client, which is accessible from another container at
 ## Running application
 1. Set the above environment variables.
 2. The run/compose command will start Postgres DB container and Postgres Admin container which can be opened on [http://localhost:5050](http://localhost:5050).
-3. Adjust the path to the `compose.yaml` in the `application-local.yml` file if IDE complains about the path to the `compose.yaml` file.
+3. Locate the `compose.yaml` file.
    ```yaml
    file: "./backend/app/compose.yaml"
    ```
