@@ -58,7 +58,7 @@ Method B.
 1. Start the postgres DB and Postgres Admin containers if not running already using the following command.<br>
 This command will also create a network if not existing already, to communicate between the containers. 
 The network name follows the format: "folder/project name where the compose file is located"_common-network (in our case it should be app_common-network)
-as compose file is located in the app folder.
+as compose file is located in the app folder. Remove the 'phlat' container section from `compose.yaml` file.
    ```sh
    docker-compose -f "<absolute/relative path to your compose file>" up -d
    ```
