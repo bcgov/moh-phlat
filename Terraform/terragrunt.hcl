@@ -33,7 +33,7 @@ generate "tfvars" {
   contents          = <<-EOF
     app_image  = "${local.app_image}"
     target_env = "${local.environment}"  
-    application = "phlat"
+    application = get_env("VITE_TITLE")
 EOF
 }
 
