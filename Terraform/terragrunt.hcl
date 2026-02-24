@@ -7,6 +7,7 @@ locals {
   timestamp   = get_env("TF_VAR_TIMESTAMP")
   environment = reverse(split("/", get_terragrunt_dir()))[0]
   app_image   = get_env("app_image", "")
+  application = get_env("VITE_TITLE")
 }
 
 generate "remote_state" {
@@ -33,7 +34,7 @@ generate "tfvars" {
   contents          = <<-EOF
     app_image  = "${local.app_image}"
     target_env = "${local.environment}"  
-    application = get_env("VITE_TITLE")
+    application = "${local.application}"
 EOF
 }
 
