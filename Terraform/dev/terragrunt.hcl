@@ -11,7 +11,7 @@ generate "dev_tfvars" {
   fargate_memory = 1024
   app_port = 8088
   fam_console_idp_name = "DEV-IDIR"
-  application = get_env("VITE_TITLE")
+  application = "phlat"
   application_url = "phlat-dev.hlth.gov.bc.ca"
   api_url = "phlatapi-dev.hlth.gov.bc.ca"
   aurora_acu_min = 0.5
