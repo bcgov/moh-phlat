@@ -67,7 +67,7 @@ resource "aws_iam_role_policy" "ecs_task_execution_cloudwatch_logs" {
       {
         Effect   = "Allow"
         Action   = "logs:CreateLogGroup"
-        Resource = "arn:aws:logs:ca-central-1:402571584434:log-group:/ecs/phlat*"
+        Resource = "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/ecs/${var.application}:*"
       }
     ]
   })
