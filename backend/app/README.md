@@ -1,9 +1,10 @@
 
 
 ## Backend Local setup
-Following environment variables are required to run the application locally. Ask the team for the values of the following<br> 
-environment variables. These values can be retrieved by login in to the cloud dev account and checking the appropriate<br>
-secrets in the secret manager. The secret names are mentioned in the description below.
+Following environment variables are required to run the application locally in .env file. The .env file should be<br>
+placed in the backend/app/ folder. Ask the team for the values of the following environment variables.<br>
+These values can be retrieved by login in to the cloud dev account and checking the appropriate secrets in the secret<br>
+manager. The secret names are mentioned in the description below.
 
 | Name                       | Description                                                                                                              |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------|
@@ -19,49 +20,45 @@ secrets in the secret manager. The secret names are mentioned in the description
 | PLR_KEYCLOAK_PROVIDER_URL  | PLR Keycloak provider URL. Retrieve the value from secret 'phlat_plr_keycloak_provider_url'                              |
 | PLR_KEYCLOAK_CLIENT_SECRET | PLR Keycloak client secret. Retrieve the value from secret 'phlat_keycloak_client_secret'                                |
 | PLR_API_HOST               | PLR API host. Retrieve the value from the secret 'phlat_plr_api_host'                                                    |
+| PLR_TLS_TRUST_CERT         | PLR Health Registries Certificate                                                                                        |
+| ADDRESS_DOCTOR_KEYSTORE    | PLR Address Doctor Keystore                                                                                              |
 
 ## Pre-requisites
-1. Keep the PLR trust certificate in the `backend/app/src/main/resources` folder. The certificate is required to call the PLR API. <br>
-The name of the certificate should be `plr_tls_trust.cert` or as configured in application.yml file.
-2. Encode the PLR trust certificate in base64 format to be used as input to build docker image if you are running the application in Docker.
-3. Install the Docker Desktop and start the Docker service.
+1. Put the value of the PLR trust certificate in .env(ENV var) file in the `backend/app/` folder. The certificate is required to call the PLR API. <br>
+   The name of the certificate should be `PLR_TLS_TRUST_CERT` or as configured in Dockerfile.
+2. Put the value of the AddressDoctor Keystore in same .env(ENV var) file in the `backend/app/` folder. The certificate is required to call the AddressDoctor API. <br>
+   The name of the certificate should be `ADDRESS_DOCTOR_KEYSTORE` or as configured in Dockerfile.
+3. Encode the PLR trust certificate in base64 format to be used as input to build docker image if you are running the application in Docker.
+4. Install the Docker/Rancher Desktop and start the Docker service.
 <br><br>
 **Note:** When you run the application, or follow the instructions for running it in Docker, a database named phlat, with
 the user phlat, and a host/container named phlat_postgres will be created. These details are required to connect to the
 database using the pgAdmin client, which is accessible from another container at http://localhost:5050/. 
 
-## Running using the IDE
-1. For running through your favorite editor Visual Studio Code or IntelliJ, you can run the application by running the main class `BackendApplication`.
-2. Set the above environment variables in the IDE run configuration.
-3. The run command will start Postgres DB container and Postgres Admin container which can be opened on [http://localhost:5050](http://localhost:5050).
-4. Adjust the path to the `compose.yaml` in the `application-local.yml` file if IDE complains about the path to the `compose.yaml` file.
+## Running application
+1. Set the above environment variables.
+2. The run/compose command will start Postgres DB container and Postgres Admin container which can be opened on [http://localhost:5050](http://localhost:5050).
+3. Locate the `compose.yaml` file.
    ```yaml
    file: "./backend/app/compose.yaml"
    ```
-5. The Backend application will be available at [http://localhost:8088/](http://localhost:8088/) and swagger documentation at [http://localhost:8088/swagger-ui/index.html#](http://localhost:8088/swagger-ui/index.html#).
-
-## Running the Application using Spring Boot Maven Plugin
-1. Make sure the required environment variables are set in the command window where you are running the application.
-2. Adjust the path to the `compose.yaml` in the `application-local.yml` file if the command complains about the path to the `compose.yaml` file if the plugin cannot find it.
-   ```yaml
-   file: "./compose.yaml"
-   ```
-3. Switch to `<project root>/backend/app` dir and execute the following command to run the application:
-   ```sh
-   mvn spring-boot:run
-   ```
-4. The command will start Postgres DB container and Postgres Admin container which can be opened on [http://localhost:5050](http://localhost:5050).
-5. The Backend application will be available at [http://localhost:8088/](http://localhost:8088/) and swagger documentation at [http://localhost:8088/swagger-ui/index.html#](http://localhost:8088/swagger-ui/index.html#).
-
+   
 ## Using Docker
 It is recommended to run the application in Docker locally also to avoid any issues in cloud deployment, 
 especially when any configuration related to Docker or application properties are changed.
 
 ### Steps
+Method A.
+ 1. Put the environment variables in .env file and run the following command from where the `compose.yml` is located.
+    ```sh
+    docker-compose up -d
+    ```
+
+Method B.
 1. Start the postgres DB and Postgres Admin containers if not running already using the following command.<br>
 This command will also create a network if not existing already, to communicate between the containers. 
 The network name follows the format: "folder/project name where the compose file is located"_common-network (in our case it should be app_common-network)
-as compose file is located in the app folder.
+as compose file is located in the app folder. Remove the 'phlat' container section from `compose.yaml` file.
    ```sh
    docker-compose -f "<absolute/relative path to your compose file>" up -d
    ```
@@ -77,6 +74,6 @@ as compose file is located in the app folder.
       ```
 4. Run the Docker image using the following command:
    ```sh
-   docker run -d --name phlat --network="app_common_network" -p 8088:8088 --env-file "<name of the env file containing above env variables>" plr/phlat:1.0
+   docker run -d --name phlat --network="app_common-network" -p 8088:8088 --env-file "<name of the env file containing above env variables>" plr/phlat:1.0
    ```
 5. The Backend application will be available at [http://localhost:8088/](http://localhost:8088/) and swagger documentation at [http://localhost:8088/swagger-ui/index.html#](http://localhost:8088/swagger-ui/index.html#).

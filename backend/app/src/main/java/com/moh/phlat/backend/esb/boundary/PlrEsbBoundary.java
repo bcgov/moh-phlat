@@ -37,21 +37,13 @@ public class PlrEsbBoundary {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PlrEsbBoundary.class);
 	private WebClient webClient;
-	
-	private SSLContext sslContext;
-	
+
 	@Autowired
 	private CircuitBreakerRegistry circuitBreakerRegistry;
 	
 	@Autowired
 	private PlrKeyCloak keyCloak;
 
-	@Autowired
-    private void initSslContext(SslBundles sslBundles) throws NoSuchSslBundleException {
-		SslBundle sslBundle = sslBundles.getBundle("client");
-        sslContext = sslBundle.createSslContext();
-    }
-	
 	@Value("${plr.boundary.host}")
 	private String plrBoundaryHost;
 	
@@ -64,7 +56,6 @@ public class PlrEsbBoundary {
 	@PostConstruct
 	public void initPlrEsbBoundary() {
 		HttpClient httpClient = HttpClient.newBuilder()
-				.sslContext(sslContext)
 				.connectTimeout(Duration.ofSeconds(timeout))
 				.build();
 		

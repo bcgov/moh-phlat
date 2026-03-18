@@ -12,10 +12,10 @@ spring:
       on-profile: local
 
 
-  docker:
-    compose:
+  #docker:
+    #compose:
       # possible values are none, start-only, start_and_stop
-      lifecycle-management: start_and_stop
+      #lifecycle-management: start_and_stop
       # below needed for local run from editor. mvn plugin goal spring-boot:run is able to pick up compose file without file attribute
       # path needs to be adjusted by developer as per IDE requirement
       #file: "./backend/app/compose.yaml"

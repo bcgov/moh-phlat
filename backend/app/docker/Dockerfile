@@ -20,24 +20,6 @@ COPY pom.xml .
 COPY src/ ./src/
 COPY ext-libs ./ext-libs
 
-ARG PLR_TLS_TRUST_CERT
-#RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
-#cert is base64 encoded. Decode it before writing to file
-RUN echo $PLR_TLS_TRUST_CERT | base64 -d > ./src/main/resources/plr_tls_trust.cert
-RUN chmod 640 ./src/main/resources/plr_tls_trust.cert
-
-ARG ADDRESS_DOCTOR_KEYSTORE
-#RUN echo "Value of ADDRESS_DOCTOR_KEYSTORE is: $ADDRESS_DOCTOR_KEYSTORE"
-#keystore is base64 encoded. Decode it before writing to file
-RUN echo $ADDRESS_DOCTOR_KEYSTORE | base64 -d > ./src/main/resources/addressdoctor_keystore.jks
-RUN chmod 640 ./src/main/resources/addressdoctor_keystore.jks
-
-ARG ADDRESS_DOCTOR_TRUSTSTORE
-#RUN echo "Value of ADDRESS_DOCTOR_TRUSTSTORE is: $ADDRESS_DOCTOR_TRUSTSTORE"
-#keystore is base64 encoded. Decode it before writing to file
-RUN echo $ADDRESS_DOCTOR_TRUSTSTORE | base64 -d > ./src/main/resources/addressdoctor_truststore.jks
-RUN chmod 640 ./src/main/resources/addressdoctor_truststore.jks
-
 RUN mvn package
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
@@ -45,5 +27,16 @@ RUN mv target/*.jar target/phlat-backend.jar
 FROM eclipse-temurin:17-jdk-alpine
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
 
+ARG PLR_TLS_TRUST_CERT
+#RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
+#cert is base64 encoded. Decode it before writing to file
+ENV USE_SYSTEM_CA_CERTS=true
+RUN echo "Value of USE_SYSTEM_CA_CERTS is: $USE_SYSTEM_CA_CERTS"
+RUN echo $PLR_TLS_TRUST_CERT | base64 -d > /opt/java/openjdk/lib/security/HEALTHREGCA.crt
+RUN chmod 640 /opt/java/openjdk/lib/security/HEALTHREGCA.crt
+RUN keytool -importcert -noprompt -cacerts -storepass changeit -trustcacerts -alias plrcert -file opt/java/openjdk/lib/security/HEALTHREGCA.crt
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 EXPOSE 8088
-ENTRYPOINT [ "java", "-XX:MaxRAMPercentage=80.0", "-jar", "/app/target/phlat-backend.jar" ]
+ENTRYPOINT ["/bin/sh" , "/usr/local/bin/entrypoint.sh"]

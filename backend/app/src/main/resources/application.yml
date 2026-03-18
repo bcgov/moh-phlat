@@ -57,20 +57,13 @@ spring:
 
   ssl:
     bundle:
-      pem:
-        client:
-          truststore:
-            certificate: classpath:plr_tls_trust.cert
       jks:
         addressdoctor:
           key:
             password: ${ADDRESS_DOCTOR_KEY_PASSWORD}
           keystore:
-            location: classpath:addressdoctor_keystore.jks
+            location: /tmp/addrval-temp.jks
             password: ${ADDRESS_DOCTOR_KEYSTORE_PASSWORD}
-          truststore:
-            location: classpath:addressdoctor_truststore.jks
-            password: ${ADDRESS_DOCTOR_TRUSTSTORE_PASSWORD}
 
 # -------------- spring related config ends ---------------------------
 
