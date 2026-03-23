@@ -137,11 +137,12 @@ public class ProcessDataFilterParams{
 	 private List<String> hdsCellGroupEffectiveEndDate;
 	 private List<String> physicalAddressGroupAction;
 	 private List<String> physicalAddressGroupEffectiveStartDate;
-	 private List<String> physicalAddressGroupEffectiveEndDate;	
+	 private List<String> physicalAddressGroupEffectiveEndDate;
 	 private List<String> mailingAddressGroupAction;
 	 private List<String> mailingAddressGroupEffectiveStartDate;
-	 private List<String> mailingAddressGroupEffectiveEndDate;	 
+	 private List<String> mailingAddressGroupEffectiveEndDate;
 	 private List<String> recordAction;
+     private List<String> messages;
 
 	 private Map<String,String> sort;
 }
