@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "static" {
-  bucket = "phlat-lza-${var.target_env}"
+  bucket = "phlat-${var.target_env}"
 
   # tags = {
   #   Environment = "development"
