@@ -7,13 +7,13 @@ locals {
     unclass = "UnClass"
   }
   environment        = local.env_map[lower(var.target_env)]
-  vpc_name           = "${local.environment}_vpc"
-  availability_zones = ["a", "b"]
-  web_subnet_names   = [for az in local.availability_zones : "Web_${local.environment}_az${az}_net"]
-  app_subnet_names   = [for az in local.availability_zones : "App_${local.environment}_az${az}_net"]
-  data_subnet_names  = [for az in local.availability_zones : "Data_${local.environment}_az${az}_net"]
+  vpc_name           = "${local.environment}"
+  availability_zones = ["A", "B"]
+  web_subnet_names  = [for az in local.availability_zones : "${local.environment}-Web-MainTgwAttach-${az}"]
+  app_subnet_names  = [for az in local.availability_zones : "${local.environment}-App-${az}"]
+  data_subnet_names  = [for az in local.availability_zones : "${local.environment}-Data-${az}"]
 
-  security_group_name_suffix = "_sg"
+  security_group_name_suffix = ""
 
   web_security_group_name  = "Web${local.security_group_name_suffix}"
   app_security_group_name  = "App${local.security_group_name_suffix}"
