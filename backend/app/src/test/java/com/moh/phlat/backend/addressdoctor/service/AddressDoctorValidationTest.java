@@ -1,9 +1,7 @@
 package com.moh.phlat.backend.addressdoctor.service;
 
 import com.moh.phlat.backend.addressdoctor.soap.*;
-import com.moh.phlat.backend.model.Message;
 import com.moh.phlat.backend.model.ProcessData;
-import com.moh.phlat.backend.service.MessageSourceSystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +14,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static com.moh.phlat.backend.databc.util.Constants.ADD;
+import static com.moh.phlat.backend.service.DbUtilityService.PHLAT_END_REASON_CODE_CEASE;
+import static com.moh.phlat.backend.service.DbUtilityService.PHLAT_END_REASON_CODE_CHG;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author CGI
@@ -37,7 +37,7 @@ class AddressDoctorValidationTest {
     }
 
     @Test
-    public void testValidatePhysicalAddressWithAddrLine2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testValidatePhysicalAddress_withAddrLine2_reformatted() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         SOAPEnvelopeOutput sOAPEnvelopeOutput = createSOAPEnvelopeOutput();
         ProcessData processData = new ProcessData();
         processData.setPhysicalAddr1("601 WEST BROADWAY");
@@ -64,7 +64,7 @@ class AddressDoctorValidationTest {
     }
 
     @Test
-    public void testValidatePhysicalAddressWithEmptyADAddressLines() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testValidatePhysicalAddress_ADD_withEmptyADAddressLines_error() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         SOAPEnvelopeOutput sOAPEnvelopeOutput = createSOAPEnvelopeEmptyOutput();
         ProcessData processData = new ProcessData();
         processData.setPhysicalAddr1("601 WEST BROADWAY");
@@ -76,6 +76,8 @@ class AddressDoctorValidationTest {
         processData.setPhysicalCountry("CANADA");
         processData.setPhysicalPcode("V5Z 4C2");
         processData.setMessages(new ArrayList<>());
+        processData.setRecordAction(ADD);
+        processData.setPhysicalAddressGroupAction(PHLAT_END_REASON_CODE_CHG);
 
         Method method = AddressDoctorValidation.class.getDeclaredMethod("processPhysicalAddressResult", SOAPEnvelopeOutput.class, ProcessData.class);
         method.setAccessible(true);
@@ -85,6 +87,121 @@ class AddressDoctorValidationTest {
         assertEquals("ERROR", processData.getMessages().get(0).getMessageType());
         assertEquals("100", processData.getMessages().get(0).getMessageCode());
         assertEquals("Physical address line 1 is mandatory.", processData.getMessages().get(0).getMessageDesc());
+    }
+
+    @Test
+    public void testValidatePhysicalAddress_CHG_withEmptyADAddressLines_error() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        SOAPEnvelopeOutput sOAPEnvelopeOutput = createSOAPEnvelopeEmptyOutput();
+        ProcessData processData = new ProcessData();
+        processData.setPhysicalAddr1("601 WEST BROADWAY");
+        processData.setPhysicalAddr2("11TH FL");
+        processData.setPhysicalAddr3("");
+        processData.setPhysicalAddr4("");
+        processData.setPhysicalCity("VANCOUVER");
+        processData.setPhysicalProvince("BC");
+        processData.setPhysicalCountry("CANADA");
+        processData.setPhysicalPcode("V5Z 4C2");
+        processData.setMessages(new ArrayList<>());
+        processData.setRecordAction(PHLAT_END_REASON_CODE_CHG);
+        processData.setPhysicalAddressGroupAction(PHLAT_END_REASON_CODE_CHG);
+
+        Method method = AddressDoctorValidation.class.getDeclaredMethod("processPhysicalAddressResult", SOAPEnvelopeOutput.class, ProcessData.class);
+        method.setAccessible(true);
+        method.invoke(underTest, sOAPEnvelopeOutput, processData);
+        assertNotNull(processData);
+        assertEquals(1, processData.getMessages().size());
+        assertEquals("ERROR", processData.getMessages().get(0).getMessageType());
+        assertEquals("100", processData.getMessages().get(0).getMessageCode());
+        assertEquals("Physical address line 1 is mandatory.", processData.getMessages().get(0).getMessageDesc());
+    }
+
+    @Test
+    public void testValidateMailingAddress_withAddrLine2_reformatted() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        SOAPEnvelopeOutput sOAPEnvelopeOutput = createSOAPEnvelopeOutput();
+        ProcessData processData = new ProcessData();
+        processData.setMailAddr1("601 WEST BROADWAY");
+        processData.setMailAddr2("11TH FL");
+        processData.setMailAddr3("");
+        processData.setMailAddr4("");
+        processData.setMailCity("VANCOUVER");
+        processData.setMailProvince("BC");
+        processData.setMailCountry("CANADA");
+        processData.setMailPcode("V5Z 4C2");
+
+        Method method = AddressDoctorValidation.class.getDeclaredMethod("processMailingAddressResult", SOAPEnvelopeOutput.class, ProcessData.class);
+        method.setAccessible(true);
+        method.invoke(underTest, sOAPEnvelopeOutput, processData);
+        assertNotNull(processData);
+        assertEquals("601 WEST BROADWAY 11TH FL", processData.getMailAddr1());
+        assertEquals("", processData.getMailAddr2());
+        assertEquals("", processData.getMailAddr3());
+        assertEquals("", processData.getMailAddr4());
+        assertEquals("VANCOUVER", processData.getMailCity());
+        assertEquals("CANADA", processData.getMailCountry());
+        assertEquals("BC", processData.getMailProvince());
+        assertEquals("V5Z 4C2", processData.getMailPcode());
+    }
+
+    @Test
+    public void testValidateMailingAddress_ADD_withEmptyADAddressLines() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        SOAPEnvelopeOutput sOAPEnvelopeOutput = createSOAPEnvelopeEmptyOutput();
+        ProcessData processData = new ProcessData();
+        processData.setMailAddr1("601 WEST BROADWAY");
+        processData.setMailAddr2("11TH FL");
+        processData.setMailAddr3("");
+        processData.setMailAddr4("");
+        processData.setMailCity("VANCOUVER");
+        processData.setMailProvince("BC");
+        processData.setMailCountry("CANADA");
+        processData.setMailPcode("V5Z 4C2");
+        processData.setRecordAction(ADD);
+        processData.setMailingAddressGroupAction(PHLAT_END_REASON_CODE_CHG);
+
+        Method method = AddressDoctorValidation.class.getDeclaredMethod("processMailingAddressResult", SOAPEnvelopeOutput.class, ProcessData.class);
+        method.setAccessible(true);
+        method.invoke(underTest, sOAPEnvelopeOutput, processData);
+        assertNotNull(processData);
+        assertNull(processData.getMailAddr1());
+        assertNull(processData.getMailAddr2());
+        assertNull(processData.getMailAddr3());
+        assertNull(processData.getMailAddr4());
+        assertNull(processData.getMailCity());
+        assertNull(processData.getMailCountry());
+        assertNull(processData.getMailProvince());
+        assertNull(processData.getMailPcode());
+        assertEquals(PHLAT_END_REASON_CODE_CHG, processData.getMailingAddressGroupAction());
+        assertEquals(ADD, processData.getRecordAction());
+    }
+
+    @Test
+    public void testValidateMailingAddress_CHG_withEmptyADAddressLines() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        SOAPEnvelopeOutput sOAPEnvelopeOutput = createSOAPEnvelopeEmptyOutput();
+        ProcessData processData = new ProcessData();
+        processData.setMailAddr1("601 WEST BROADWAY");
+        processData.setMailAddr2("11TH FL");
+        processData.setMailAddr3("");
+        processData.setMailAddr4("");
+        processData.setMailCity("VANCOUVER");
+        processData.setMailProvince("BC");
+        processData.setMailCountry("CANADA");
+        processData.setMailPcode("V5Z 4C2");
+        processData.setRecordAction(PHLAT_END_REASON_CODE_CHG);
+        processData.setMailingAddressGroupAction(PHLAT_END_REASON_CODE_CHG);
+
+        Method method = AddressDoctorValidation.class.getDeclaredMethod("processMailingAddressResult", SOAPEnvelopeOutput.class, ProcessData.class);
+        method.setAccessible(true);
+        method.invoke(underTest, sOAPEnvelopeOutput, processData);
+        assertNotNull(processData);
+        assertEquals(PHLAT_END_REASON_CODE_CEASE, processData.getMailingAddressGroupAction());
+        assertEquals(PHLAT_END_REASON_CODE_CHG, processData.getRecordAction());
+        assertEquals("601 WEST BROADWAY", processData.getMailAddr1());
+        assertEquals("11TH FL", processData.getMailAddr2());
+        assertEquals("", processData.getMailAddr3());
+        assertEquals("", processData.getMailAddr4());
+        assertEquals("VANCOUVER", processData.getMailCity());
+        assertEquals("CANADA", processData.getMailCountry());
+        assertEquals("BC", processData.getMailProvince());
+        assertEquals("V5Z 4C2", processData.getMailPcode());
     }
 
     private SOAPEnvelopeOutput createSOAPEnvelopeOutput() {
