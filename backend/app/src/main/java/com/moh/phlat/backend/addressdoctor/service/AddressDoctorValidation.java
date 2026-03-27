@@ -1,5 +1,7 @@
 package com.moh.phlat.backend.addressdoctor.service;
 
+import com.moh.phlat.backend.service.DbUtilityService;
+import com.moh.phlat.backend.service.RowStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ import com.moh.phlat.backend.service.MessageSourceSystem;
 
 import lombok.Getter;
 
+import static com.moh.phlat.backend.databc.util.Constants.ADD;
+import static com.moh.phlat.backend.service.DbUtilityService.PHLAT_END_REASON_CODE_CEASE;
+
 @Component
 public class AddressDoctorValidation {
 	
@@ -43,7 +48,7 @@ public class AddressDoctorValidation {
 	}
 	
 	public void validateAddresses(Control control, ProcessData processData) {
-		
+
 		SOAPEnvelopeInput physicalRequest = physicalAddressToAddressDoctorRequest(processData);
 		SOAPEnvelopeOutput physicalResponse = addressDoctorService.validateAddress(control, physicalRequest);
 		processPhysicalAddressResult(physicalResponse, processData);
@@ -51,9 +56,8 @@ public class AddressDoctorValidation {
 		if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailCity())) {
 			SOAPEnvelopeInput mailingRequest = mailingAddressToAddressDoctorRequest(processData);
 			SOAPEnvelopeOutput mailingResponse = addressDoctorService.validateAddress(control, mailingRequest);
-			processMailingAddressResult(mailingResponse, processData);
+            processMailingAddressResult(mailingResponse, processData);
 		}
-		
 	}
 	
 	private SOAPEnvelopeInput physicalAddressToAddressDoctorRequest(ProcessData processData) {
@@ -127,155 +131,198 @@ public class AddressDoctorValidation {
 	}
 	
 	private void processPhysicalAddressResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
-		
-		Result result = parseAdressDoctorResult(addressDoctorResponse, processData);
-		if (result == null) {
-			return;
-		}
-		processData.setPhysicalAddrValidationStatus(result.getProcessStatus());
-		
-		if (result.getResultDataSet().getResultData().isEmpty()) {
-			return;
-		}
-		ResultData resultData = result.getResultDataSet().getResultData().get(0);
-		processData.setPhysicalAddrMailabilityScore(resultData.getMailabilityScore());
-		
-		Address address = resultData.getAddress();
-		// Address Lines
-		if (!address.getDeliveryAddressLines().getString().isEmpty()) {
-			processData.setPhysicalAddr1(address.getDeliveryAddressLines().getString().get(0));
-		}
-		if (address.getDeliveryAddressLines().getString().size() > 1) {
-			processData.setPhysicalAddr2(address.getDeliveryAddressLines().getString().get(1));
-		}
-		if (address.getDeliveryAddressLines().getString().size() > 2) {
-			processData.setPhysicalAddr3(address.getDeliveryAddressLines().getString().get(2));
-		}
-		if (address.getDeliveryAddressLines().getString().size() > 3) {
-			processData.setPhysicalAddr4(address.getDeliveryAddressLines().getString().get(3));
-		}
-		// City, Province, Country and PostalCode
-		if (!address.getLocality().getString().isEmpty()) {
-			processData.setPhysicalCity(address.getLocality().getString().get(0));
-		}
-		if (!address.getProvince().getString().isEmpty()) {
-			processData.setPhysicalProvince(address.getProvince().getString().get(0));
-		}
-		if (!address.getCountry().getString().isEmpty()) {
-			processData.setPhysicalCountry(address.getCountry().getString().get(0));
-		}
-		if (!address.getPostalCode().getString().isEmpty()) {
-			processData.setPhysicalPcode(address.getPostalCode().getString().get(0));
-		}
-		// Civic Address
-		if (!address.getHouseNumber().getString().isEmpty()
-				&& !address.getStreet().getString().isEmpty()
-				&& !address.getLocality().getString().isEmpty()
-				&& !address.getProvince().getString().isEmpty()) {
-			String civicAddress = address.getHouseNumber().getString().get(0) + " "
-					+ address.getStreet().getString().get(0) + ", "
-					+ address.getLocality().getString().get(0) + ", "
-					+ address.getProvince().getString().get(0);
-			processData.setFacCivicAddr(civicAddress);
-		}
-		if (!address.getBuilding().getString().isEmpty()) {
-			processData.setFacBuildingName(address.getBuilding().getString().get(0));
-		}
-		if (!address.getSubBuilding().getString().isEmpty()) {
-			processData.setFacAddressUnit(address.getSubBuilding().getString().get(0));
-		}
+
+        Result result = parseAdressDoctorResult(addressDoctorResponse, processData);
+        if (result == null) {
+            return;
+        }
+        processData.setPhysicalAddrValidationStatus(result.getProcessStatus());
+
+        if (result.getResultDataSet().getResultData().isEmpty()) {
+            return;
+        }
+        ResultData resultData = result.getResultDataSet().getResultData().get(0);
+        processData.setPhysicalAddrMailabilityScore(resultData.getMailabilityScore());
+
+        Address address = resultData.getAddress();
+        // Address Lines
+        if (address.getDeliveryAddressLines() == null || address.getDeliveryAddressLines().getString().isEmpty()
+                || address.getDeliveryAddressLines().getString().get(0).isEmpty()) {
+            addError(processData, DbUtilityService.PHLAT_ERROR_CODE, DbUtilityService.PHLAT_ERROR_TYPE,
+                    "Physical address line 1 is mandatory.");
+            logger.info("The AddressDoctor returned null Delivery Address Lines for Physical address.");
+            // Don't update ProcessData Physical-address
+            return;
+        } else {
+            processData.setPhysicalAddr1(address.getDeliveryAddressLines().getString().get(0));
+            // Reset ProcessData Physical address lines and load from AD, if available - based on array size.
+            processData.setPhysicalAddr2("");
+            processData.setPhysicalAddr3("");
+            processData.setPhysicalAddr4("");
+            if (address.getDeliveryAddressLines().getString().size() > 1) {
+                processData.setPhysicalAddr2(address.getDeliveryAddressLines().getString().get(1));
+                if (address.getDeliveryAddressLines().getString().size() > 2) {
+                    processData.setPhysicalAddr3(address.getDeliveryAddressLines().getString().get(2));
+                    if (address.getDeliveryAddressLines().getString().size() > 3) {
+                        processData.setPhysicalAddr4(address.getDeliveryAddressLines().getString().get(3));
+                    }
+                }
+            }
+        }
+        // City, Province, Country and PostalCode
+        if (!address.getLocality().getString().isEmpty()) {
+            processData.setPhysicalCity(address.getLocality().getString().get(0));
+        }
+        if (!address.getProvince().getString().isEmpty()) {
+            processData.setPhysicalProvince(address.getProvince().getString().get(0));
+        }
+        if (!address.getCountry().getString().isEmpty()) {
+            processData.setPhysicalCountry(address.getCountry().getString().get(0));
+        }
+        if (!address.getPostalCode().getString().isEmpty()) {
+            processData.setPhysicalPcode(address.getPostalCode().getString().get(0));
+        }
+        // Civic Address
+        if (!address.getHouseNumber().getString().isEmpty()
+                && !address.getStreet().getString().isEmpty()
+                && !address.getLocality().getString().isEmpty()
+                && !address.getProvince().getString().isEmpty()) {
+            String civicAddress = address.getHouseNumber().getString().get(0) + " "
+                    + address.getStreet().getString().get(0) + ", "
+                    + address.getLocality().getString().get(0) + ", "
+                    + address.getProvince().getString().get(0);
+            processData.setFacCivicAddr(civicAddress);
+        }
+        if (address.getBuilding() != null && !address.getBuilding().getString().isEmpty()) {
+            processData.setFacBuildingName(address.getBuilding().getString().get(0));
+        }
+        if (address.getSubBuilding() != null && !address.getSubBuilding().getString().isEmpty()) {
+            processData.setFacAddressUnit(address.getSubBuilding().getString().get(0));
+        }
 	}
 	
 	private void processMailingAddressResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
-		
-		Result result = parseAdressDoctorResult(addressDoctorResponse, processData);
-		if (result == null) {
-			return;
-		}
-		processData.setMailAddrValidationStatus(result.getProcessStatus());
 
-		if (result.getResultDataSet().getResultData().isEmpty()) {
-			return;
-		}
-		ResultData resultData = result.getResultDataSet().getResultData().get(0);
-		processData.setMailAddrMailabilityScore(resultData.getMailabilityScore());
-		
-		Address address = resultData.getAddress();
-		// Address Lines
-		if (!address.getDeliveryAddressLines().getString().isEmpty()) {
-			processData.setMailAddr1(address.getDeliveryAddressLines().getString().get(0));
-		}
-		if (address.getDeliveryAddressLines().getString().size() > 1) {
-			processData.setMailAddr2(address.getDeliveryAddressLines().getString().get(1));
-		}
-		if (address.getDeliveryAddressLines().getString().size() > 2) {
-			processData.setMailAddr3(address.getDeliveryAddressLines().getString().get(2));
-		}
-		if (address.getDeliveryAddressLines().getString().size() > 3) {
-			processData.setMailAddr4(address.getDeliveryAddressLines().getString().get(3));
-		}
-		// City, Province, Country and PostalCode
-		if (!address.getLocality().getString().isEmpty()) {
-			processData.setMailCity(address.getLocality().getString().get(0));
-		}
-		if (!address.getProvince().getString().isEmpty()) {
-			processData.setMailProvince(address.getProvince().getString().get(0));
-		}
-		if (!address.getCountry().getString().isEmpty()) {
-			processData.setMailCountry(address.getCountry().getString().get(0));
-		}
-		if (!address.getPostalCode().getString().isEmpty()) {
-			processData.setMailPcode(address.getPostalCode().getString().get(0));
-		}
+        Result result = parseAdressDoctorResult(addressDoctorResponse, processData);
+        if (result == null) {
+            return;
+        }
+        processData.setMailAddrValidationStatus(result.getProcessStatus());
+
+        if (result.getResultDataSet().getResultData().isEmpty()) {
+            return;
+        }
+        ResultData resultData = result.getResultDataSet().getResultData().get(0);
+        processData.setMailAddrMailabilityScore(resultData.getMailabilityScore());
+
+        Address address = resultData.getAddress();
+        // Address Lines
+        if (address.getDeliveryAddressLines() == null || address.getDeliveryAddressLines().getString().isEmpty()
+                || address.getDeliveryAddressLines().getString().get(0).isEmpty()) {
+            logger.info("The AddressDoctor returned null Delivery Address Lines for Mailing address.");
+            boolean isUpdate = StringUtils.hasText(processData.getRecordAction()) && !ADD.equals(processData.getRecordAction());
+
+            if (StringUtils.hasText(processData.getMailAddr1()) && StringUtils.hasText(processData.getMailCity())) {
+                if (!isUpdate) {
+                    // CREATE/ADD - Don't create Mailing address - remove ProcessData for Mailing address
+                    processData.setMailAddr1(null);
+                    processData.setMailAddr2(null);
+                    processData.setMailAddr3(null);
+                    processData.setMailAddr4(null);
+                    processData.setMailCity(null);
+                    processData.setMailProvince(null);
+                    processData.setMailCountry(null);
+                    processData.setMailPcode(null);
+
+                } else if (isUpdate && StringUtils.hasText(processData.getMailingAddressGroupAction())) {
+                    // UPDATE - Don't update ProcessData Mailing-address and return;
+                    // Set END_REASON_CODE to CEASE
+                    processData.setMailingAddressGroupAction(PHLAT_END_REASON_CODE_CEASE);
+                }
+            }
+        } else {
+            // Reset ProcessData Mail address lines and load from AD, if available - based on array size.
+            processData.setMailAddr1(address.getDeliveryAddressLines().getString().get(0));
+            processData.setMailAddr2("");
+            processData.setMailAddr3("");
+            processData.setMailAddr4("");
+            if (address.getDeliveryAddressLines().getString().size() > 1) {
+                processData.setMailAddr2(address.getDeliveryAddressLines().getString().get(1));
+                if (address.getDeliveryAddressLines().getString().size() > 2) {
+                    processData.setMailAddr3(address.getDeliveryAddressLines().getString().get(2));
+                    if (address.getDeliveryAddressLines().getString().size() > 3) {
+                        processData.setMailAddr4(address.getDeliveryAddressLines().getString().get(3));
+                    }
+                }
+            }
+
+            // City, Province, Country and PostalCode
+            if (!address.getLocality().getString().isEmpty()) {
+                processData.setMailCity(address.getLocality().getString().get(0));
+            }
+            if (!address.getProvince().getString().isEmpty()) {
+                processData.setMailProvince(address.getProvince().getString().get(0));
+            }
+            if (!address.getCountry().getString().isEmpty()) {
+                processData.setMailCountry(address.getCountry().getString().get(0));
+            }
+            if (!address.getPostalCode().getString().isEmpty()) {
+                processData.setMailPcode(address.getPostalCode().getString().get(0));
+            }
+        }
 	}
 	
 	private Result parseAdressDoctorResult(SOAPEnvelopeOutput addressDoctorResponse, ProcessData processData) {
 		
 		if (addressDoctorResponse == null) {
-			addError(processData, "100", "ERROR", "Could not reach or get a response from the AddressDoctor service");
+			addError(processData,  DbUtilityService.PHLAT_ERROR_CODE, DbUtilityService.PHLAT_ERROR_TYPE,
+                    "Could not reach or get a response from the AddressDoctor service");
 			return null;
 		}
-		
-		SOAPBodyOutput soapBody = addressDoctorResponse.getSoapBody();
-		if (soapBody == null) {
-			logger.error("The SOAP Body message is missing due to a possible PHLAT misconfiguration or an issue with AddressDoctor");
-			addError(processData, "100", "ERROR", "Could not reach or get a response from the AddressDoctor service");
-			return null;
-		} else if (soapBody.getFault() != null) {
-			SOAPFault soapFault = soapBody.getFault();
-			logger.error("SOAPFault error occured attempting to call AddressDoctor\r\nFault Code: {}\r\nFault String: {}", soapFault.getFaultcode(), soapFault.getFaultstring());
-			addError(processData, "100", "ERROR", "The AddressDoctor service could not process the request");
-			return null;
-		}
-		
-		ProcessResponse processResponse = soapBody.getProcessResponse();
-		if (processResponse == null) {
-			logger.error("Could not find the ProcessResponse object due to an unparsable or unexpected AddressDoctor response");
-			addError(processData, "100", "ERROR", "The AddressDoctor service could not process the request");
-			return null;
-		}
-			
-		Response response = processResponse.getProcessResult();
-		if (response.getStatusCode() != 100 && !response.getStatusMessage().equals("OK")) {
-			logger.error("AddressDoctor returned an error response: {} | {}", response.getStatusCode(), response.getStatusMessage());
-			addError(processData, "100", "ERROR", "The AddressDoctor service could not process the request");
-			return null;
+
+        SOAPBodyOutput soapBody = addressDoctorResponse.getSoapBody();
+        if (soapBody == null) {
+            logger.error("The SOAP Body message is missing due to a possible PHLAT misconfiguration or an issue with AddressDoctor");
+            addError(processData, DbUtilityService.PHLAT_ERROR_CODE, DbUtilityService.PHLAT_ERROR_TYPE,
+                    "Could not reach or get a response from the AddressDoctor service");
+            return null;
+        } else if (soapBody.getFault() != null) {
+            SOAPFault soapFault = soapBody.getFault();
+            logger.error("SOAPFault error occured attempting to call AddressDoctor\r\nFault Code: {}\r\nFault String: {}", soapFault.getFaultcode(), soapFault.getFaultstring());
+            addError(processData, DbUtilityService.PHLAT_ERROR_CODE, DbUtilityService.PHLAT_ERROR_TYPE,
+                    "The AddressDoctor service could not process the request");
+            return null;
+        }
+
+        ProcessResponse processResponse = soapBody.getProcessResponse();
+        if (processResponse == null) {
+            logger.error("Could not find the ProcessResponse object due to an unparsable or unexpected AddressDoctor response");
+            addError(processData, DbUtilityService.PHLAT_ERROR_CODE, DbUtilityService.PHLAT_ERROR_TYPE,
+                    "The AddressDoctor service could not process the request");
+            return null;
+        }
+
+        Response response = processResponse.getProcessResult();
+        if (response.getStatusCode() != 100 && !response.getStatusMessage().equals("OK")) {
+            logger.error("AddressDoctor returned an error response: {} | {}", response.getStatusCode(), response.getStatusMessage());
+            addError(processData, DbUtilityService.PHLAT_ERROR_CODE, DbUtilityService.PHLAT_ERROR_TYPE,
+                    "The AddressDoctor service could not process the request");
+            return null;
 		}
 		
 		return response.getResults().getResult().get(0);
 	}
-	
-	private void addError(ProcessData processData, String errorCode, String errorType, String errorMessage) {
-		
-		Message msg = Message.builder()
-				 .messageType(errorType)
-				 .messageCode(errorCode)
-				 .messageDesc(errorMessage)
-				 .sourceSystemName(MessageSourceSystem.PHLAT)
-				 .processData(processData)
-				 .build();
-		processData.getMessages().add(msg);
-		processData.setRowstatusCode("INVALID");
-	}
+
+    private void addError(ProcessData processData, String errorCode, String errorType, String errorMessage) {
+        Message msg = Message.builder()
+                .messageType(errorType)
+                .messageCode(errorCode)
+                .messageDesc(errorMessage)
+                .sourceSystemName(MessageSourceSystem.PHLAT)
+                .processData(processData)
+                .build();
+        processData.getMessages().add(msg);
+        processData.setRowstatusCode(RowStatusService.INVALID);
+    }
 	
 }
