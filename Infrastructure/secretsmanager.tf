@@ -93,6 +93,7 @@ resource "aws_secretsmanager_secret_version" "phlat_address_doctor_host" {
   secret_string = "changeme"
 }
 
+# Update the engine version manually in secret when upgrading Postgres version.
 resource "aws_secretsmanager_secret_version" "rds_credentials" {
   secret_id     = aws_secretsmanager_secret.phlat_proxy_user.id
   secret_string = <<EOF
