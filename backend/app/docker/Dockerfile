@@ -22,17 +22,15 @@ COPY src/ ./src/
 COPY ext-libs ./ext-libs
 
 RUN mvn package
-
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17.0.20.1_1-jdk-alpine-3.24
 
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
 
 # Install the tzdata
 RUN apk update && apk upgrade && apk add --no-cache tzdata && apk info tzdata
-
 ENV TZ=America/Vancouver
 
 ARG PLR_TLS_TRUST_CERT
