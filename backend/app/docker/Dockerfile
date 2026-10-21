@@ -9,14 +9,10 @@
 #
 # docker run -i --rm -p 8088:8088 phlat/phlat-backend
 ####
-#FROM quay.io/devfile/maven:3.8.1-openjdk-17-slim AS build
 FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
 ENV TZ=America/Vancouver
 WORKDIR /app
-
-# Install the exact tzdata
-RUN apk update && apk upgrade && apk add --no-cache tzdata && apk info tzdata
 
 # Build dependency offline to streamline build
 COPY pom.xml .
@@ -26,18 +22,18 @@ COPY src/ ./src/
 COPY ext-libs ./ext-libs
 
 RUN mvn package
+
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
 FROM eclipse-temurin:17-jdk-alpine
 
-# Copy the latest timezone data from the build stage
-COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
 
+# Install the tzdata
+RUN apk update && apk upgrade && apk add --no-cache tzdata && apk info tzdata
+
 ENV TZ=America/Vancouver
-#ln -snf makes /etc/localtime a symlink to the selected zoneinfo file instead of copying that file.
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ARG PLR_TLS_TRUST_CERT
 #RUN echo "Value of PLR_TLS_TRUST_CERT is: $PLR_TLS_TRUST_CERT"
