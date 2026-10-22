@@ -9,7 +9,7 @@ networks:
 services:
   postgres:
     container_name: phlat_postgres
-    image: 'postgres:15.10'
+    image: 'postgres:15.19'
     environment:
       POSTGRES_DB: phlat
       POSTGRES_PASSWORD: password
