@@ -10,7 +10,8 @@
 	</parent>
 	<groupId>com.moh.phlat</groupId>
 	<artifactId>phlatbackend</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<!--ESB Upgrades, Bug Fixes and AWS DB upgrade to 15.19 and timezone changes-->
+	<version>1.2.1-SNAPSHOT</version>
 	<name>phlatbackend</name>
 	<description>PHS HDS Data Assistance Tool</description>
 
