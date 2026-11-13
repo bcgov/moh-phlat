@@ -9,7 +9,7 @@
 #
 # docker run -i --rm -p 8088:8088 phlat/phlat-backend
 ####
-FROM quay.io/devfile/maven:3.8.1-openjdk-17-slim AS build
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
 WORKDIR /app
 
@@ -42,8 +42,12 @@ RUN mvn package
 # Rename jar file to have  predictable name
 RUN mv target/*.jar target/phlat-backend.jar
 
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17.0.20.1_1-jdk-alpine-3.24
 COPY --from=build app/target/phlat-backend.jar  /app/target/phlat-backend.jar
+
+# Install the tzdata
+RUN apk update && apk upgrade && apk add --no-cache tzdata && apk info tzdata
+ENV TZ=America/Vancouver
 
 EXPOSE 8088
 ENTRYPOINT [ "java", "-XX:MaxRAMPercentage=80.0", "-jar", "/app/target/phlat-backend.jar" ]
